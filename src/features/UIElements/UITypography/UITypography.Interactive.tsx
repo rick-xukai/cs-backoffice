@@ -45,7 +45,7 @@ const UITypographyInteractive = () => {
         {lengthLimitedStr}
       </Paragraph>
       <Paragraph copyable>This is a copyable text.</Paragraph>
-      <Paragraph copyable={{ text: 'Hello, Imaginato!' }}>
+      <Paragraph copyable={{ text: 'Hello, CrowdServe!' }}>
         Replace copy text.
       </Paragraph>
       <Paragraph

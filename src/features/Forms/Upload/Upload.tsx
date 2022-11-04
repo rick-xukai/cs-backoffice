@@ -28,9 +28,9 @@ const FormsUpload = () => {
     },
   ];
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Form File Upload')} | Imaginato Ui`}</title>
+        <title>{`${t('Form File Upload')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -93,7 +93,7 @@ const FormsUpload = () => {
           </Row>
         </Space>
       </div>
-    </div>
+    </>
   );
 };
 

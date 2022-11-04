@@ -29,7 +29,7 @@ const CardTitle = () => (
     <Row justify="start">
       <Col span={14} className="cart-title">
         <Title level={5}>Free Register</Title>
-        <p>Get your free imaginato</p>
+        <p>Get your free CrowdServe</p>
         <p>account now.</p>
       </Col>
       <Col span={10}>
@@ -61,9 +61,9 @@ const Register = () => {
     }
   };
   return (
-    <div>
+    <>
       <Helmet>
-        <title>Register | Imaginato Ui</title>
+        <title>Register | CrowdServe BO</title>
       </Helmet>
       <Layout hasSider={false} style={{ minHeight: '100vh' }}>
         <Content>
@@ -195,7 +195,7 @@ const Register = () => {
         </Content>
       </Layout>
       <LoadingCover show={loading} />
-    </div>
+    </>
   );
 };
 

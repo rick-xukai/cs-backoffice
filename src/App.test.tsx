@@ -4,11 +4,11 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import App from './App';
 
-test('renders Welcome to Imaginato!', () => {
+test('renders Welcome to CrowdServe!', () => {
   const { getByText } = render(
     <Provider store={store}>
       <App />
     </Provider>,
   );
-  expect(getByText(/Welcome to Imaginato!/i)).toBeInTheDocument();
+  expect(getByText(/Welcome to CrowdServe!/i)).toBeInTheDocument();
 });

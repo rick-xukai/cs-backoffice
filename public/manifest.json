@@ -1,6 +1,6 @@
 {
-  "short_name": "IMGUI",
-  "name": "Imaginato UI",
+  "short_name": "CrowdServe",
+  "name": "CrowdServe BO",
   "icons": [
     {
       "src": "favicon.ico",
@@ -12,5 +12,5 @@
   "display": "standalone",
   "theme_color": "#f2f2f2",
   "background_color": "#28518d",
-  "description": "Imaginato UI"
+  "description": "CrowdServe Backoffice"
 }

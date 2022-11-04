@@ -28,9 +28,9 @@ const TablesBasic = () => {
     },
   ];
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Basic Tables')} | Imaginato Ui`}</title>
+        <title>{`${t('Basic Tables')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -71,7 +71,7 @@ const TablesBasic = () => {
           </Col>
         </Row>
       </div>
-    </div>
+    </>
   );
 };
 

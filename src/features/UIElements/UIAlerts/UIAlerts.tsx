@@ -25,9 +25,9 @@ const getBreadcrumb = (t: TFunction) => [
 const UIAlerts = () => {
   const { t } = useTranslation();
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('UI Elements')} | Imaginato Ui`}</title>
+        <title>{`${t('UI Elements')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -59,7 +59,7 @@ const UIAlerts = () => {
           </Col>
         </Row>
       </div>
-    </div>
+    </>
   );
 };
 

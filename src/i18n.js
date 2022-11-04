@@ -4,26 +4,10 @@ import { initReactI18next } from 'react-i18next';
 
 import { LocalStorageKeys } from './constants/Keys';
 import { useLocalStorage } from './hooks';
-import translationGr from './locales/gr/translation.json';
-import translationIT from './locales/it/translation.json';
-import translationRS from './locales/rs/translation.json';
-import translationSP from './locales/sp/translation.json';
 import translationENG from './locales/en/translation.json';
 
 // the translations
 const resources = {
-  gr: {
-    translation: translationGr,
-  },
-  it: {
-    translation: translationIT,
-  },
-  rs: {
-    translation: translationRS,
-  },
-  sp: {
-    translation: translationSP,
-  },
   en: {
     translation: translationENG,
   },

@@ -39,7 +39,7 @@ const UploadWatermark = () => (
                         ctx.fillStyle = 'red';
                         ctx.textBaseline = 'middle';
                         ctx.font = '33px Arial';
-                        ctx.fillText('Imaginato', 20, 20);
+                        ctx.fillText('CrowdServe', 20, 20);
                       }
                       canvas.toBlob((result) => {
                         if (result) resolve(result);

@@ -102,9 +102,9 @@ const TablesControlColumn = () => {
     </Row>
   );
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Responsive Table')} | Imaginato Ui`}</title>
+        <title>{`${t('Responsive Table')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -127,7 +127,7 @@ const TablesControlColumn = () => {
           </Row>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 

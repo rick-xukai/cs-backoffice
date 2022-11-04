@@ -69,9 +69,9 @@ const Dashboard = () => {
     },
   ];
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Dashboard')} | Imaginato Ui`}</title>
+        <title>{`${t('Dashboard')} | CrowdServe BO`}</title>
       </Helmet>
       <Row>
         <Col span={24}>
@@ -140,7 +140,7 @@ const Dashboard = () => {
           </Col>
         </Row>
       </div>
-    </div>
+    </>
   );
 };
 

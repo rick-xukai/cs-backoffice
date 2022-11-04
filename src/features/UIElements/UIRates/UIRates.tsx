@@ -26,9 +26,9 @@ const UIRates = () => {
   ];
 
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('UI Elements')} | Imaginato Ui`}</title>
+        <title>{`${t('UI Elements')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -60,7 +60,7 @@ const UIRates = () => {
           </Col>
         </Row>
       </div>
-    </div>
+    </>
   );
 };
 

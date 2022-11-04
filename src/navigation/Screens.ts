@@ -1,6 +1,6 @@
 import { UserRoutes, AuthRoutes } from './Routes';
-// User featuers
-import Dashboard from '../features/Dashboard';
+// User features
+import Dashboard from '../features/Dashboard/Loadable';
 import TablesBasic from '../features/Tables/Basic';
 import TablesResponsive from '../features/Tables/Responsive';
 import TablesControlColumn from '../features/Tables/ControlColumn';
@@ -17,14 +17,14 @@ import UITypography from '../features/UIElements/UITypography';
 import UIRates from '../features/UIElements/UIRates';
 import UINotification from '../features/UIElements/UINotification';
 // Auth features
-import Login from '../features/Authentication/Login';
-import Register from '../features/Authentication/Register';
+import Login from '../features/Authentication/Login/Loadable';
+import Register from '../features/Authentication/Register/Loadable';
 import { MenuKeys as hMenuKeys } from '../components/HorizontalLayout/MenuKeys';
 import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
 
 export const UserScreens = {
   Dashboard: {
-    title: 'Dashboard - Imaginato UI',
+    title: 'Dashboard - CrowdServe BO',
     path: UserRoutes.dashboard,
     component: Dashboard,
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.dashboard],
@@ -33,7 +33,7 @@ export const UserScreens = {
     guard: true,
   },
   DashboardSaas: {
-    title: 'Saas Dashboard - Imaginato UI',
+    title: 'Saas Dashboard - CrowdServe BO',
     path: UserRoutes.dashboardSaas,
     component: Dashboard,
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.dashboard],
@@ -42,7 +42,7 @@ export const UserScreens = {
     guard: true,
   },
   FormsColors: {
-    title: 'Form Colors - Forms - Imaginato UI',
+    title: 'Form Colors - Forms - CrowdServe BO',
     path: UserRoutes.forms.colors,
     component: FormsColors,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
@@ -51,7 +51,7 @@ export const UserScreens = {
     guard: true,
   },
   FormsElements: {
-    title: 'Form Elements - Forms - Imaginato UI',
+    title: 'Form Elements - Forms - CrowdServe BO',
     path: UserRoutes.forms.elements,
     component: FormsElements,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
@@ -60,7 +60,7 @@ export const UserScreens = {
     guard: true,
   },
   FormsLayouts: {
-    title: 'Form Layouts - Forms - Imaginato UI',
+    title: 'Form Layouts - Forms - CrowdServe BO',
     path: UserRoutes.forms.layouts,
     component: FormsLayouts,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
@@ -69,7 +69,7 @@ export const UserScreens = {
     guard: true,
   },
   FormsValidation: {
-    title: 'Form Validation - Forms - Imaginato UI',
+    title: 'Form Validation - Forms - CrowdServe BO',
     path: UserRoutes.forms.validation,
     component: FormsValidation,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
@@ -78,7 +78,7 @@ export const UserScreens = {
     guard: true,
   },
   FormsUpload: {
-    title: 'Form Upload - Forms - Imaginato UI',
+    title: 'Form Upload - Forms - CrowdServe BO',
     path: UserRoutes.forms.upload,
     component: FormsUpload,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
@@ -87,7 +87,7 @@ export const UserScreens = {
     guard: true,
   },
   FormsWizard: {
-    title: 'Form Wizard - Forms - Imaginato UI',
+    title: 'Form Wizard - Forms - CrowdServe BO',
     path: UserRoutes.forms.wizard,
     component: FormsWizard,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
@@ -96,7 +96,7 @@ export const UserScreens = {
     guard: true,
   },
   TablesBasic: {
-    title: 'Basic Tables - Imaginato UI',
+    title: 'Basic Tables - CrowdServe BO',
     path: UserRoutes.tablesBasic,
     component: TablesBasic,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.tables],
@@ -105,7 +105,7 @@ export const UserScreens = {
     guard: true,
   },
   TablesResponsive: {
-    title: 'Responsive Tables - Imaginato UI',
+    title: 'Responsive Tables - CrowdServe BO',
     path: UserRoutes.tablesResponsive,
     component: TablesResponsive,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.tables],
@@ -114,7 +114,7 @@ export const UserScreens = {
     guard: true,
   },
   TablesControlColumn: {
-    title: 'Control Column Tables - Imaginato UI',
+    title: 'Control Column Tables - CrowdServe BO',
     path: UserRoutes.tablesControlColumn,
     component: TablesControlColumn,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.tables],
@@ -123,7 +123,7 @@ export const UserScreens = {
     guard: true,
   },
   UIAlerts: {
-    title: 'UI Alerts - UI Elements - Imaginato UI',
+    title: 'UI Alerts - UI Elements - CrowdServe BO',
     path: UserRoutes.uielements.uiAlerts,
     component: UIAlerts,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
@@ -132,7 +132,7 @@ export const UserScreens = {
     guard: true,
   },
   UICards: {
-    title: 'UI Cards - UI Elements - Imaginato UI',
+    title: 'UI Cards - UI Elements - CrowdServe BO',
     path: UserRoutes.uielements.uiCards,
     component: UICards,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
@@ -141,7 +141,7 @@ export const UserScreens = {
     guard: true,
   },
   UIProgress: {
-    title: 'UI Progress - UI Elements - Imaginato UI',
+    title: 'UI Progress - UI Elements - CrowdServe BO',
     path: UserRoutes.uielements.uiProgress,
     component: UIProgress,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
@@ -150,7 +150,7 @@ export const UserScreens = {
     guard: true,
   },
   UITypography: {
-    title: 'UI Typography - UI Elements - Imaginato UI',
+    title: 'UI Typography - UI Elements - CrowdServe BO',
     path: UserRoutes.uielements.uiTypography,
     component: UITypography,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
@@ -159,7 +159,7 @@ export const UserScreens = {
     guard: true,
   },
   UIRates: {
-    title: 'UI Rates - UI Elements - Imaginato UI',
+    title: 'UI Rates - UI Elements - CrowdServe BO',
     path: UserRoutes.uielements.uiRates,
     component: UIRates,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
@@ -168,7 +168,7 @@ export const UserScreens = {
     guard: true,
   },
   UINotification: {
-    title: 'UI Notification - UI Elements - Imaginato UI',
+    title: 'UI Notification - UI Elements - CrowdServe BO',
     path: UserRoutes.uielements.uiNotification,
     component: UINotification,
     subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
@@ -177,7 +177,7 @@ export const UserScreens = {
     guard: true,
   },
   Home: {
-    title: 'Home - Imaginato UI',
+    title: 'Home - CrowdServe BO',
     path: UserRoutes.home,
     component: null,
     guard: false,
@@ -187,13 +187,13 @@ export const UserScreens = {
 
 export const AuthScreens = {
   Login: {
-    title: 'Login - Imaginato UI',
+    title: 'Login - CrowdServe BO',
     path: AuthRoutes.login,
     component: Login,
     guard: false,
   },
   register: {
-    title: 'Register - Imaginato UI',
+    title: 'Register - CrowdServe BO',
     path: AuthRoutes.register,
     component: Register,
     guard: false,

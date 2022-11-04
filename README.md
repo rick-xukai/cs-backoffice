@@ -59,8 +59,8 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Example
 
-1. Run `yarn` to install the node modules
-2. Run `cp development.env .env` to initial the env file
+1. Run `yarn install` to install the node modules
+2. Run `cp example.env .env` to initial the env file
 3. Run `yarn start` to run the project
-4. Open [http://localhost:3000/submit-cv/new](http://localhost:3000/submit-cv/new) to view it in the browser.
+4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 

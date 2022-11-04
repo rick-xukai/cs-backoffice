@@ -5,7 +5,7 @@ import ZoomShareIcon from '../assets/images/icons/zoom-share.svg';
 import StatusInterviewed from '../assets/images/icons/status-interviewed.svg';
 import StatusExpired from '../assets/images/icons/status-expired.svg';
 import ZoomLinkCopy from '../assets/images/icons/zoom-link-copy.svg';
-import SayAnser from '../assets/images/icons/say-anwser.svg';
+import SayAnswer from '../assets/images/icons/say-answer.svg';
 import Good from '../assets/images/icons/good.svg';
 import Unavailable from '../assets/images/icons/unavailable.svg';
 import Passed from '../assets/images/icons/passed.svg';
@@ -20,7 +20,7 @@ const Images = {
   StatusInterviewed,
   StatusExpired,
   ZoomLinkCopy,
-  SayAnser,
+  SayAnswer,
   Good,
   Counter,
   Unavailable,

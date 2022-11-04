@@ -111,9 +111,9 @@ const FormsValidation = () => {
     />
   );
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Form Validation')} | Imaginato Ui`}</title>
+        <title>{`${t('Form Validation')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -258,7 +258,7 @@ const FormsValidation = () => {
           </Form>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 

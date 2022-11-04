@@ -6,7 +6,7 @@ const { Footer } = Layout;
 const FooterCmp = () => (
   <Footer>
     <Row justify="center" align="middle">
-      <Col>{new Date().getFullYear()} © Imaginato.</Col>
+      <Col>{new Date().getFullYear()} © CrowdServe.</Col>
     </Row>
   </Footer>
 );

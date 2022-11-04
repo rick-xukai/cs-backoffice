@@ -31,7 +31,7 @@ const CardTitle = () => (
   <div className="bg-primary bg-soft">
     <Row justify="start">
       <Col span={14} className="cart-title">
-        <Title level={5}>Welcome to Imaginato!</Title>
+        <Title level={5}>Welcome to CrowdServe!</Title>
         <p>Sign in to continue</p>
       </Col>
       <Col span={10}>
@@ -85,9 +85,9 @@ const Login = () => {
     }
   };
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Login')} | Imaginato Ui`}</title>
+        <title>{`${t('Login')} | CrowdServe BO`}</title>
       </Helmet>
       <Layout hasSider={false} style={{ minHeight: '100vh' }}>
         <Content>
@@ -110,7 +110,7 @@ const Login = () => {
                           {
                             type: 'email',
                             required: true,
-                            message: 'Plaese input your email',
+                            message: 'Please input your email',
                           },
                         ]}
                       >
@@ -127,7 +127,7 @@ const Login = () => {
                         rules={[
                           {
                             required: true,
-                            message: 'Plaese input your password',
+                            message: 'Please input your password',
                           },
                         ]}
                       >
@@ -177,7 +177,7 @@ const Login = () => {
         </Content>
       </Layout>
       <LoadingCover show={loading} />
-    </div>
+    </>
   );
 };
 

@@ -27,9 +27,9 @@ const FormsElements = () => {
     },
   ];
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Form Elements')} | Imaginato Ui`}</title>
+        <title>{`${t('Form Elements')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -103,7 +103,7 @@ const FormsElements = () => {
           </Card>
         </Space>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -31,9 +31,9 @@ const FormColors = () => {
   ];
 
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Forms')} | Imaginato Ui`}</title>
+        <title>{`${t('Forms')} | CrowdServe BO`}</title>
       </Helmet>
       <Row>
         <Col span={24}>
@@ -80,7 +80,7 @@ const FormColors = () => {
           </Col>
         </Row>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -45,8 +45,8 @@ const CardTitle = () => (
   <div className="bg-primary bg-soft">
     <Row justify="start">
       <Col span={14} className="cart-title">
-        <Title level={5}>Welcome to Imaginato!</Title>
-        <p>Imaginato Dashboard</p>
+        <Title level={5}>Welcome to CrowdServe!</Title>
+        <p>CrowdServe Dashboard</p>
       </Col>
       <Col span={10}>
         <img

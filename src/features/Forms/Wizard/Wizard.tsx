@@ -20,9 +20,9 @@ const FormsWizard = () => {
     },
   ];
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Form Wizard')} | Imaginato Ui`}</title>
+        <title>{`${t('Form Wizard')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -39,7 +39,7 @@ const FormsWizard = () => {
           </Card>
         </Space>
       </div>
-    </div>
+    </>
   );
 };
 

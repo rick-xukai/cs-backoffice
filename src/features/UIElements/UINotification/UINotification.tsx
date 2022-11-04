@@ -25,9 +25,9 @@ const UINotification = () => {
   ];
 
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('UI Elements')} | Imaginato Ui`}</title>
+        <title>{`${t('UI Elements')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -56,7 +56,7 @@ const UINotification = () => {
           </Col>
         </Row>
       </div>
-    </div>
+    </>
   );
 };
 

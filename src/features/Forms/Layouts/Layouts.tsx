@@ -22,9 +22,9 @@ const FormsLayouts = () => {
     },
   ];
   return (
-    <div>
+    <>
       <Helmet>
-        <title>{`${t('Form Layouts')} | Imaginato Ui`}</title>
+        <title>{`${t('Form Layouts')} | CrowdServe BO`}</title>
       </Helmet>
       <Row justify="start">
         <Col span={24}>
@@ -53,7 +53,7 @@ const FormsLayouts = () => {
           </Card>
         </Space>
       </div>
-    </div>
+    </>
   );
 };
 
