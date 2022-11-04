@@ -1,0 +1,11 @@
+//
+// table.scss
+//
+
+@each $color, $value in $theme-colors {
+  .table-#{$color} {
+    th, td {
+      background: $value !important;
+    }
+  }
+}

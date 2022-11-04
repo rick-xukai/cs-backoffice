@@ -1,0 +1,20 @@
+// Core files
+@import "variables";
+
+// Structure
+@import "custom/structure/topbar";
+@import "custom/structure/vertical";
+
+// Plugins
+@import "custom/plugins/custom-scrollbar";
+
+body {
+  font-family: 'Roboto';
+  font-weight: normal;
+  color: #000;
+  background-color: $body-bg;
+}
+
+.icon-btn {
+  border: none;
+}

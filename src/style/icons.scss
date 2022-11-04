@@ -1,0 +1,39 @@
+.icon {
+  font-weight: normal;
+  font-style: normal;
+  font-variant: normal;
+  line-height: 1;
+  display: inline-block;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-tada {
+  -webkit-animation: tada 1.5s ease infinite;
+  animation: tada 1.5s ease infinite;
+}
+
+.icon-tada-hover:hover {
+  -webkit-animation: tada 1.5s ease infinite;
+  animation: tada 1.5s ease infinite;
+}
+
+.icon-spin {
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+.icon-spin-hover:hover {
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+.icon-fade-right
+{
+    -webkit-animation: fade-right 1.5s infinite linear;
+            animation: fade-right 1.5s infinite linear;
+}
+.icon-fade-right-hover:hover
+{
+    -webkit-animation: fade-right 1.5s infinite linear;
+            animation: fade-right 1.5s infinite linear;
+}
