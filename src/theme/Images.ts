@@ -1,3 +1,4 @@
+import Logo from '../assets/images/logo.png';
 import LogoSMLight from '../assets/images/logo-sm-light.png';
 import LogoDark from '../assets/images/logo-dark.png';
 import LogoLight from '../assets/images/logo-light.png';
@@ -13,6 +14,7 @@ import Counter from '../assets/images/icons/counter-icon.svg';
 import ProfileImg from '../assets/images/profile-img.png';
 
 const Images = {
+  Logo,
   LogoSMLight,
   LogoDark,
   LogoLight,

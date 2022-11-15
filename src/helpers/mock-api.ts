@@ -22,7 +22,7 @@ const MockAPI = () => {
   mock.onPost(API.login.post).reply((config: any) => {
     const user = JSON.parse(config.data);
     const validUser = Users.filter(
-      (usr) => usr.email === user.email && usr.password === user.password,
+      (usr) => usr.username === user.username && usr.password === user.password,
     );
 
     return new Promise((resolve, reject) => {
@@ -51,7 +51,7 @@ const MockAPI = () => {
         } else {
           reject(
             new Error(
-              'Email and password are invalid. Please enter correct email and password',
+              'Username and password are invalid. Please enter correct username and password',
             ),
           );
         }
