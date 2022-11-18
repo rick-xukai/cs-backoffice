@@ -29,7 +29,7 @@ const MenuRender = (menus: IMenu[]) =>
       );
     }
     return (
-      <Menu.Item key={menu.key}>
+      <Menu.Item key={menu.key} icon={menu.icon}>
         <Link to={menu.path}>{menu.title}</Link>
       </Menu.Item>
     );

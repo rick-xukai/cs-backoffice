@@ -1,7 +1,7 @@
 import { SiderTheme } from 'antd/lib/layout/Sider';
 
 export const LgWidth = 992;
-export const SidebarWidth = 200;
+export const SidebarWidth = 240;
 export const CollapsedWidth = 80;
 export const HeaderHeight = 64;
 export const LayoutTypes = {

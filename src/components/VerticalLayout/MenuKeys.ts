@@ -1,6 +1,10 @@
 export const MenuKeys = {
   menu: 'menu',
   dashboard: 'menu-dashboard',
+  events: 'menu-events',
+  users: 'menu-users',
+  tickets: 'menu-tickets',
+  settings: 'menu-settings',
   dashboardDefault: 'menu-dashboard-default',
   dashboardSaas: 'menu-dashboard-saas',
   components: 'components',
