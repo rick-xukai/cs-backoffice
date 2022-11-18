@@ -1,13 +1,61 @@
 .ant-layout-sider {
-  text-align: center;
+  background: $black;
+  padding-left: 16px;
+  padding-right: 16px;
+  .ant-menu-item:hover {
+    background: $black900;
+    border-radius: 4px;
+
+    .ant-menu-item-icon {
+      color: $red;
+      path {
+        fill: $red;
+      }
+    }
+  }
+  .ant-menu-item-group-title {
+    display: none;
+  }
+  .ant-menu-item {
+    margin-bottom: 12px !important;
+    .ant-menu-title-content {
+      margin-left: 12px;
+    }
+  }
+  .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background-color: $black900;
+    border-radius: 4px;
+    .ant-menu-item-icon {
+      color: $red;
+      path {
+        fill: $red;
+      }
+    }
+  }
+  .ant-menu-dark.ant-menu-inline .ant-menu-item {
+    padding-left: 10px !important;
+    height: 42px;
+    font-size: 15px;
+    font-weight: 400;
+    color: $gray-600;
+  }
+  .ant-menu {
+    background: $black !important;
+  }
 }
 
 .logo-box {
-  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 36px;
   transition: background 0.3s, width 0.3s cubic-bezier(0.2, 0, 0, 1) 0s;
   outline: none;
   box-sizing: border-box;
-  width: $sidebar-width;
+  .logo {
+    img {
+      width: 80px;
+      height: 42px;
+    }
+  }
   @media (max-width: 992px) {
     width: auto;
   }

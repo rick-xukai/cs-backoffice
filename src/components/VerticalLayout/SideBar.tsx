@@ -45,20 +45,9 @@ const SideBar = ({
       }}
     >
       <div className="logo-box">
-        <Link to="/" className="logo logo-dark">
-          <span className="logo-sm">
-            <img src={Images.LogoSMLight} alt="Logo" height="22" />
-          </span>
-          <span className="logo-lg">
-            <img src={Images.LogoDark} alt="Logo" height="30" />
-          </span>
-        </Link>
-        <Link to="/" className="logo logo-light">
-          <span className="logo-sm">
-            <img src={Images.LogoSMLight} alt="Logo" height="22" />
-          </span>
-          <span className="logo-lg">
-            <img src={Images.LogoLight} alt="" height="30" />
+        <Link to="/" className="logo">
+          <span>
+            <img src={Images.Logo} alt="" />
           </span>
         </Link>
       </div>

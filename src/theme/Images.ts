@@ -12,6 +12,8 @@ import Unavailable from '../assets/images/icons/unavailable.svg';
 import Passed from '../assets/images/icons/passed.svg';
 import Counter from '../assets/images/icons/counter-icon.svg';
 import ProfileImg from '../assets/images/profile-img.png';
+import Events from '../assets/images/icons/events.svg';
+import Tickets from '../assets/images/icons/tickets.svg';
 
 const Images = {
   Logo,
@@ -30,6 +32,8 @@ const Images = {
   dashboard: {
     ProfileImg,
   },
+  Events,
+  Tickets,
 };
 
 export default Images;
