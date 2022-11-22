@@ -64,7 +64,7 @@ const Authmiddleware = ({
         }
         return (
           Component && (
-            <Layout>
+            <Layout {...optProps}>
               <Component {...routeProps} />
             </Layout>
           )

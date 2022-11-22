@@ -21,6 +21,10 @@ export const UserRoutes = {
     uiRates: '/ui-rates',
     uiNotification: '/ui-notification',
   },
+  events: '/events',
+  users: '/users',
+  tickets: '/tickets',
+  settings: '/settings',
 };
 
 export const AuthRoutes = {

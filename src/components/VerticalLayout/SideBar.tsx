@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Layout } from 'antd';
+import { LogoutOutlined } from '@ant-design/icons';
 import { SiderTheme } from 'antd/lib/layout/Sider';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -25,6 +27,7 @@ const SideBar = ({
   handleBroken: (c: boolean) => void;
   sidebarTheme: SiderTheme;
 }) => {
+  const { t } = useTranslation();
   const [collapsedWidth, setCollapsedWidth] = useState(CollapsedWidth);
   return (
     <SidebarCmp
@@ -52,6 +55,12 @@ const SideBar = ({
         </Link>
       </div>
       <SidebarContent sidebarTheme={sidebarTheme} />
+      <div className="logout-container">
+        <div className="text">
+          <LogoutOutlined className="logout-icon" />
+          {t('Logout')}
+        </div>
+      </div>
     </SidebarCmp>
   );
 };

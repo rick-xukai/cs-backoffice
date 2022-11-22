@@ -16,6 +16,7 @@ import UIProgress from '../features/UIElements/UIProgress';
 import UITypography from '../features/UIElements/UITypography';
 import UIRates from '../features/UIElements/UIRates';
 import UINotification from '../features/UIElements/UINotification';
+import Events from '../features/Events/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -25,6 +26,7 @@ import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
 export const UserScreens = {
   Dashboard: {
     title: 'Dashboard - CrowdServe BO',
+    headerBarTitle: 'Dashboard',
     path: UserRoutes.dashboard,
     component: Dashboard,
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.dashboard],
@@ -182,6 +184,15 @@ export const UserScreens = {
     component: null,
     guard: false,
     exact: true,
+  },
+  Events: {
+    title: 'Events - CrowdServe BO',
+    headerBarTitle: 'Events',
+    path: UserRoutes.events,
+    component: Events,
+    subMenuKeys: [vMenuKeys.menu, vMenuKeys.events],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
   },
 };
 

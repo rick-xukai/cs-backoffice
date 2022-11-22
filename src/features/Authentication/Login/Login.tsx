@@ -73,6 +73,7 @@ const Login = () => {
             alignItems: 'center',
             width: '100%',
             background: `${Colors.black3}`,
+            margin: '0',
           }}
         >
           <LoginContainer>

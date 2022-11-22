@@ -2,6 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
 import API from '../constants/API';
+import { EventsListDataType } from '../features/Events/Events.slice';
 
 const ACCESS_TOKEN =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -84,6 +85,341 @@ const MockAPI = () => {
             'Email and password are invalid. Please enter correct email and password',
           ),
         );
+      }
+    });
+  });
+
+  mock.onGet(API.getEventsList.get).reply((config: any) => {
+    const { params } = config;
+    let eventsListData: EventsListDataType[] = [
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+      {
+        event_name: 'Event 1 Event 1 Event 1',
+        event_time: {
+          date: 'Nov 5, 2022',
+          timeRange: '5:30~17:30',
+        },
+        location: 'Singaprore',
+        organizer: 'Organizer 2',
+        partner: 'Partner3',
+        created_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '6:30',
+        },
+        status: 'Upcoming',
+      },
+    ];
+
+    if (params.page === 2) {
+      const eventsListDataEnded: EventsListDataType[] = [];
+      eventsListData.forEach((item, index) => {
+        if (index <= 4) {
+          eventsListDataEnded.push({ ...item, status: 'Ended' });
+        }
+      });
+      eventsListData = eventsListDataEnded;
+    }
+
+    return new Promise((resolve, reject) => {
+      if (resolve) {
+        setTimeout(() => {
+          resolve([
+            200,
+            {
+              success: true,
+              results: {
+                data: eventsListData,
+                total: 25,
+              },
+            },
+          ]);
+        }, 2000);
+      } else {
+        reject(new Error('Something is wrong'));
       }
     });
   });

@@ -5,6 +5,9 @@ const API = {
   register: {
     post: 'register',
   },
+  getEventsList: {
+    get: '/events/list',
+  },
 };
 
 export default API;

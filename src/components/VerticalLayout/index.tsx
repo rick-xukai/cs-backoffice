@@ -18,12 +18,16 @@ import {
 } from '../../app/layout.slice';
 import Header from './Header';
 import SideBar from './SideBar';
-import Footer from './Footer';
 
 const { Content } = Layout;
 
 /* eslint-disable complexity */
-const LayoutCmp = ({ children }: { children: React.ReactChildren }) => {
+const LayoutCmp = ({
+  children,
+  ...optProps
+}: {
+  children: React.ReactChildren;
+}) => {
   const layoutType = useAppSelector(selectLayoutType);
   const sidebarType = useAppSelector(selectSidebarType);
   const sidebarTheme = useAppSelector(selectSidebarTheme);
@@ -67,13 +71,8 @@ const LayoutCmp = ({ children }: { children: React.ReactChildren }) => {
         handleBroken={handleBroken}
       />
       <Layout className="content-layout">
-        <Header
-          sidebarType={sidebarType}
-          toggle={toggleMenu}
-          toggleRightbar={toggleRightbar}
-        />
+        <Header sidebarType={sidebarType} toggle={toggleMenu} {...optProps} />
         <Content className="page-content">{children}</Content>
-        <Footer />
       </Layout>
       <SettingDrawer visible={rightbar} toggleRightbar={toggleRightbar} />
     </Layout>
