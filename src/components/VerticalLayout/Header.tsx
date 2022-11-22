@@ -1,27 +1,18 @@
 import React, { MouseEventHandler } from 'react';
-import { Layout, Button, Row, Col } from 'antd';
-import {
-  MenuOutlined,
-  FullscreenOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { Layout } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
 
-import { toggleFullscreen } from '../../utils/func';
 import { SidebarTypes } from '../../constants/Layout';
-import LanguageDropdown from '../LanguageDropdown';
-import NotificationDropdown from '../NotificationDropdown';
-import ProfileDropdown from '../ProfileDropdown';
 
 const { Header } = Layout;
 
 const HeaderCmp = ({
   sidebarType,
   toggle,
-  toggleRightbar,
+  ...optProps
 }: {
   sidebarType: string;
   toggle: MouseEventHandler;
-  toggleRightbar: () => void;
 }) => (
   <Header className="header-layout">
     <div>
@@ -31,35 +22,7 @@ const HeaderCmp = ({
           onClick: toggle,
         })}
     </div>
-    <div>
-      <Row gutter={{ lg: 12, xs: 0 }}>
-        <Col>
-          <LanguageDropdown />
-        </Col>
-        <Col xs={0}>
-          <Button
-            className="icon-btn full-screen-btn"
-            icon={<FullscreenOutlined />}
-            size="large"
-            onClick={toggleFullscreen}
-          />
-        </Col>
-        <Col>
-          <NotificationDropdown />
-        </Col>
-        <Col>
-          <ProfileDropdown />
-        </Col>
-        <Col>
-          <Button
-            className="icon-btn icon-spin"
-            icon={<SettingOutlined />}
-            size="large"
-            onClick={toggleRightbar}
-          />
-        </Col>
-      </Row>
-    </div>
+    <div className="page-title">{(optProps as any).headerBarTitle}</div>
   </Header>
 );
 
