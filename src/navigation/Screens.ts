@@ -1,9 +1,6 @@
 import { UserRoutes, AuthRoutes } from './Routes';
 // User features
 import Dashboard from '../features/Dashboard/Loadable';
-import TablesBasic from '../features/Tables/Basic';
-import TablesResponsive from '../features/Tables/Responsive';
-import TablesControlColumn from '../features/Tables/ControlColumn';
 import FormsColors from '../features/Forms/Colors';
 import FormsElements from '../features/Forms/Elements';
 import FormsLayouts from '../features/Forms/Layouts';
@@ -17,6 +14,7 @@ import UITypography from '../features/UIElements/UITypography';
 import UIRates from '../features/UIElements/UIRates';
 import UINotification from '../features/UIElements/UINotification';
 import Events from '../features/Events/Loadable';
+import Tickets from '../features/Tickets/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -97,33 +95,6 @@ export const UserScreens = {
     hMenuKeys: [hMenuKeys.formsWizard],
     guard: true,
   },
-  TablesBasic: {
-    title: 'Basic Tables - CrowdServe BO',
-    path: UserRoutes.tablesBasic,
-    component: TablesBasic,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.tables],
-    menuKeys: [vMenuKeys.tablesBasic],
-    hMenuKeys: [hMenuKeys.tablesBasic],
-    guard: true,
-  },
-  TablesResponsive: {
-    title: 'Responsive Tables - CrowdServe BO',
-    path: UserRoutes.tablesResponsive,
-    component: TablesResponsive,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.tables],
-    menuKeys: [vMenuKeys.tablesResponsive],
-    hMenuKeys: [hMenuKeys.tablesResponsive],
-    guard: true,
-  },
-  TablesControlColumn: {
-    title: 'Control Column Tables - CrowdServe BO',
-    path: UserRoutes.tablesControlColumn,
-    component: TablesControlColumn,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.tables],
-    menuKeys: [vMenuKeys.tablesControlColumn],
-    hMenuKeys: [hMenuKeys.tablesControlColumn],
-    guard: true,
-  },
   UIAlerts: {
     title: 'UI Alerts - UI Elements - CrowdServe BO',
     path: UserRoutes.uielements.uiAlerts,
@@ -192,6 +163,15 @@ export const UserScreens = {
     component: Events,
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.events],
     menuKeys: [vMenuKeys.events],
+    guard: true,
+  },
+  Tickets: {
+    title: 'Tickets - CrowdServe BO',
+    headerBarTitle: 'Tickets',
+    path: UserRoutes.tickets,
+    component: Tickets,
+    subMenuKeys: [vMenuKeys.menu, vMenuKeys.tickets],
+    menuKeys: [vMenuKeys.tickets],
     guard: true,
   },
 };

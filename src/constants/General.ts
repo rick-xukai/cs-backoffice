@@ -3,4 +3,4 @@
  */
 export const test = 'test';
 export const defaultCurrentPage = 1;
-export const pageSize = 20;
+export const defaultPageSize = 20;

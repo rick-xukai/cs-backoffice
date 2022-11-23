@@ -65,6 +65,19 @@
 .ant-spin {
   max-height: unset !important;
 }
+.ant-tooltip-content,
+.ant-tooltip-inner {
+  background: $white;
+  font-weight: 400;
+  font-size: 15px;
+  color: $black900;
+  border-radius: 2px;
+}
+.ant-tooltip-arrow-content {
+  background: $white;
+  width: 8px;
+  height: 8px;
+}
 .page-content {
   padding: calc(60px + 0px) 0px 0;
 }

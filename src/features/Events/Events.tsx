@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Button, Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 
-import Pagination from '../../components/Pagination';
-import { pageSize, defaultCurrentPage } from '../../constants/General';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import TableComponent from '../../components/Table/Table';
 import { EventsContainer } from './EventsComponent';
 import {
+  reset,
   getEventsListAction,
   selectLoading,
   selectData,
   selectDataTotal,
   EventsListDataType,
+  paginationChangeAction,
+  selectCurrentPage,
+  selectCurrentPageSize,
 } from './Events.slice';
 
 const Events = () => {
@@ -20,7 +22,8 @@ const Events = () => {
   const loading = useAppSelector(selectLoading);
   const eventsListData = useAppSelector(selectData);
   const eventsListDataTotal = useAppSelector(selectDataTotal);
-  const [currentPage, setCurrentPage] = useState(defaultCurrentPage);
+  const currentPage = useAppSelector(selectCurrentPage);
+  const currentPageSize = useAppSelector(selectCurrentPageSize);
 
   const columns = [
     {
@@ -77,29 +80,28 @@ const Events = () => {
     },
   ];
 
+  // eslint-disable-next-line
   useEffect(() => {
-    dispatch(getEventsListAction({ page: currentPage, count: pageSize }));
+    return () => {
+      dispatch(reset());
+    };
+  }, []);
+
+  useEffect(() => {
+    dispatch(getEventsListAction());
   }, [currentPage]);
 
   return (
     <EventsContainer>
-      <Spin
-        spinning={loading}
-        indicator={<LoadingOutlined style={{ color: 'black' }} spin />}
-        size="large"
-      >
-        <Table
-          columns={columns}
-          dataSource={eventsListData}
-          pagination={false}
-        />
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={eventsListDataTotal}
-          onChange={(page) => setCurrentPage(page)}
-        />
-      </Spin>
+      <TableComponent
+        loading={loading}
+        currentPage={currentPage}
+        currentPageSize={currentPageSize}
+        columns={columns}
+        tableData={eventsListData}
+        tableDataTotal={eventsListDataTotal}
+        paginationChange={(page) => dispatch(paginationChangeAction(page))}
+      />
     </EventsContainer>
   );
 };
