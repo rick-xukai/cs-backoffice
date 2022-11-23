@@ -99,27 +99,6 @@ const MenuList = (): IMenu[] => {
             },
           ],
         },
-        {
-          key: MenuKeys.tables,
-          title: t('Tables'),
-          children: [
-            {
-              key: MenuKeys.tablesBasic,
-              title: t('Basic Tables'),
-              path: UserScreens.TablesBasic.path,
-            },
-            {
-              key: MenuKeys.tablesResponsive,
-              title: t('Responsive Table'),
-              path: UserScreens.TablesResponsive.path,
-            },
-            {
-              key: MenuKeys.tablesControlColumn,
-              title: t('Control Column'),
-              path: UserScreens.TablesControlColumn.path,
-            },
-          ],
-        },
       ],
     },
   ];

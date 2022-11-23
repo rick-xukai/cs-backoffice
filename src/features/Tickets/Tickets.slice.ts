@@ -1,47 +1,45 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { RootState } from '../../app/store';
-import EventsService from '../../services/API/Events';
+import TicketsService from '../../services/API/Tickets';
 import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
+
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
   message: string;
 }
 
-export interface EventsListDataType {
+export interface TicketsListDataType {
   id: number;
-  event_name: string;
-  event_time: {
+  ticket_number: string;
+  bought_at: {
     date: string;
     timeRange: string;
   };
-  location: string;
-  organizer: string;
-  partner: string;
-  created_at: {
-    date: string;
-    timeRange: string;
-  };
+  user_name: string;
+  user_email: string;
+  ticket_type: string;
+  seat_number: string;
   status: string;
 }
 
 /**
- * Events
+ * Tickets
  */
-export const getEventsListAction = createAsyncThunk<
-  EventsListDataType,
+export const getTicketsListAction = createAsyncThunk<
+  TicketsListDataType,
   undefined,
   {
     rejectValue: ErrorType;
     state: RootState;
   }
 >(
-  'getEventsList/getEventsListAction',
+  'getTicketsList/getTicketsListAction',
   async (_, { rejectWithValue, getState }) => {
-    const { page, pageSize } = getState().events;
+    const { page, pageSize } = getState().tickets;
     try {
-      const response = await EventsService.getEventsList({ page, pageSize });
+      const response = await TicketsService.getTicketsList({ page, pageSize });
       if (response.success) {
         return response.results;
       }
@@ -59,7 +57,7 @@ export const getEventsListAction = createAsyncThunk<
   },
 );
 
-interface EventsState {
+interface TicketsState {
   loading: boolean;
   page: number;
   pageSize: number;
@@ -73,7 +71,7 @@ interface EventsState {
     | null;
 }
 
-const initialState: EventsState = {
+const initialState: TicketsState = {
   loading: false,
   page: defaultCurrentPage,
   pageSize: defaultPageSize,
@@ -82,8 +80,8 @@ const initialState: EventsState = {
   error: null,
 };
 
-export const eventsSlice = createSlice({
-  name: 'events',
+export const ticketsSlice = createSlice({
+  name: 'tickets',
   initialState,
   reducers: {
     reset: () => initialState,
@@ -93,16 +91,16 @@ export const eventsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getEventsListAction.pending, (state) => {
+      .addCase(getTicketsListAction.pending, (state) => {
         state.data = [];
         state.loading = true;
       })
-      .addCase(getEventsListAction.fulfilled, (state, action: any) => {
+      .addCase(getTicketsListAction.fulfilled, (state, action: any) => {
         state.loading = false;
         state.data = action.payload.data;
         state.total = action.payload.total;
       })
-      .addCase(getEventsListAction.rejected, (state, action) => {
+      .addCase(getTicketsListAction.rejected, (state, action) => {
         state.loading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
@@ -113,14 +111,14 @@ export const eventsSlice = createSlice({
   },
 });
 
-export const { reset, paginationChangeAction } = eventsSlice.actions;
+export const { reset, paginationChangeAction } = ticketsSlice.actions;
 
-export const selectLoading = (state: RootState) => state.events.loading;
-export const selectError = (state: RootState) => state.events.error;
-export const selectData = (state: RootState) => state.events.data;
-export const selectDataTotal = (state: RootState) => state.events.total;
-export const selectCurrentPage = (state: RootState) => state.events.page;
+export const selectLoading = (state: RootState) => state.tickets.loading;
+export const selectError = (state: RootState) => state.tickets.error;
+export const selectData = (state: RootState) => state.tickets.data;
+export const selectDataTotal = (state: RootState) => state.tickets.total;
+export const selectCurrentPage = (state: RootState) => state.tickets.page;
 export const selectCurrentPageSize = (state: RootState) =>
-  state.events.pageSize;
+  state.tickets.pageSize;
 
-export default eventsSlice.reducer;
+export default ticketsSlice.reducer;
