@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, Tooltip } from 'antd';
 
 import TableComponent from '../../components/Table/Table';
+import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { TicketsContainer } from './TicketsComponent';
 import {
@@ -18,6 +20,7 @@ import {
 } from './Tickets.slice';
 
 const Tickets = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectLoading);
   const ticketsListData = useAppSelector(selectData);
@@ -92,15 +95,18 @@ const Tickets = () => {
 
   return (
     <TicketsContainer>
-      <TableComponent
-        loading={loading}
-        currentPage={currentPage}
-        currentPageSize={currentPageSize}
-        columns={columns}
-        tableData={ticketsListData}
-        tableDataTotal={ticketsListDataTotal}
-        paginationChange={(page) => dispatch(paginationChangeAction(page))}
-      />
+      <PageHeaderComponent title={t('Tickets')} />
+      <div className="page-main">
+        <TableComponent
+          loading={loading}
+          currentPage={currentPage}
+          currentPageSize={currentPageSize}
+          columns={columns}
+          tableData={ticketsListData}
+          tableDataTotal={ticketsListDataTotal}
+          paginationChange={(page) => dispatch(paginationChangeAction(page))}
+        />
+      </div>
     </TicketsContainer>
   );
 };
