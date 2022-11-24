@@ -8,6 +8,10 @@ import { Colors } from '../../theme';
 import Pagination from '../Pagination';
 
 const TableContainer = styled.div`
+  padding: 24px;
+  background: ${Colors.white};
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
   .ant-table-content {
     font-size: 15px;
     font-weight: 400;

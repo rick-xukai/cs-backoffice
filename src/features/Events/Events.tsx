@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
+import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { EventsContainer } from './EventsComponent';
 import {
   reset,
@@ -18,6 +20,7 @@ import {
 } from './Events.slice';
 
 const Events = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectLoading);
   const eventsListData = useAppSelector(selectData);
@@ -93,15 +96,18 @@ const Events = () => {
 
   return (
     <EventsContainer>
-      <TableComponent
-        loading={loading}
-        currentPage={currentPage}
-        currentPageSize={currentPageSize}
-        columns={columns}
-        tableData={eventsListData}
-        tableDataTotal={eventsListDataTotal}
-        paginationChange={(page) => dispatch(paginationChangeAction(page))}
-      />
+      <PageHeaderComponent title={t('Events')} />
+      <div className="page-main">
+        <TableComponent
+          loading={loading}
+          currentPage={currentPage}
+          currentPageSize={currentPageSize}
+          columns={columns}
+          tableData={eventsListData}
+          tableDataTotal={eventsListDataTotal}
+          paginationChange={(page) => dispatch(paginationChangeAction(page))}
+        />
+      </div>
     </EventsContainer>
   );
 };

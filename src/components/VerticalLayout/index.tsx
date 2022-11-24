@@ -16,18 +16,12 @@ import {
   switchTopbarThemeAction,
   toggloRightbarAction,
 } from '../../app/layout.slice';
-import Header from './Header';
 import SideBar from './SideBar';
 
 const { Content } = Layout;
 
 /* eslint-disable complexity */
-const LayoutCmp = ({
-  children,
-  ...optProps
-}: {
-  children: React.ReactChildren;
-}) => {
+const LayoutCmp = ({ children }: { children: React.ReactChildren }) => {
   const layoutType = useAppSelector(selectLayoutType);
   const sidebarType = useAppSelector(selectSidebarType);
   const sidebarTheme = useAppSelector(selectSidebarTheme);
@@ -41,13 +35,6 @@ const LayoutCmp = ({
     dispatch(switchSidebarThemeAction(sidebarTheme));
     dispatch(switchTopbarThemeAction(topbarTheme));
   }, []);
-  const toggleMenu = useCallback(() => {
-    if (sidebarType === SidebarTypes.default) {
-      dispatch(switchSidebarTypeAction(SidebarTypes.condensed));
-    } else if (sidebarType === SidebarTypes.condensed) {
-      dispatch(switchSidebarTypeAction(SidebarTypes.default));
-    }
-  }, [sidebarType]);
   const handleBroken = (b: boolean) => {
     if (sidebarType === SidebarTypes.icon) {
       dispatch(switchSidebarTypeAction(sidebarType));
@@ -71,7 +58,6 @@ const LayoutCmp = ({
         handleBroken={handleBroken}
       />
       <Layout className="content-layout">
-        <Header sidebarType={sidebarType} toggle={toggleMenu} {...optProps} />
         <Content className="page-content">{children}</Content>
       </Layout>
       <SettingDrawer visible={rightbar} toggleRightbar={toggleRightbar} />
