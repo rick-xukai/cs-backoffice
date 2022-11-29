@@ -16,6 +16,7 @@ import UINotification from '../features/UIElements/UINotification';
 import Events from '../features/Events/Loadable';
 import Tickets from '../features/Tickets/Loadable';
 import EventDetail from '../features/EventDetail/Loadable';
+import TicketDetail from '../features/TicketDetail/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -180,6 +181,15 @@ export const UserScreens = {
     headerBarTitle: 'Tickets',
     path: UserRoutes.tickets,
     component: Tickets,
+    subMenuKeys: [vMenuKeys.menu, vMenuKeys.tickets],
+    menuKeys: [vMenuKeys.tickets],
+    guard: true,
+  },
+  TicketDetail: {
+    title: 'Tickets Details - CrowdServe BO',
+    headerBarTitle: 'Tickets Details',
+    path: UserRoutes.ticketDetail,
+    component: TicketDetail,
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.tickets],
     menuKeys: [vMenuKeys.tickets],
     guard: true,

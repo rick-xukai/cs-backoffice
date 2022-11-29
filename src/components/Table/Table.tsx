@@ -78,11 +78,7 @@ const TableComponent = ({
   paginationChange: (page: number) => void;
 }) => (
   <TableContainer>
-    <Spin
-      spinning={loading}
-      indicator={<LoadingOutlined style={{ color: 'black' }} spin />}
-      size="large"
-    >
+    <Spin spinning={loading} indicator={<LoadingOutlined spin />} size="large">
       <Table
         scroll={{ x: true }}
         rowKey={rowKey}

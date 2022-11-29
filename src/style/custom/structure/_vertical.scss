@@ -79,6 +79,22 @@
   width: 8px;
   height: 8px;
 }
+.ant-select-item {
+  font-weight: 400;
+  font-size: 15px;
+  color: $black900;
+}
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: $white-100;
+  color: $black900;
+  font-weight: 400;
+}
+.ant-select-item-option-disabled {
+  color: $gray-600;
+}
+.anticon-loading {
+  color: $red;
+}
 .page-content {
   padding: calc(60px + 0px) 0px 0;
 }

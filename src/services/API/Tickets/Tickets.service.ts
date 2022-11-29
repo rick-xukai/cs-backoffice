@@ -13,4 +13,22 @@ const getTicketsList = async (payload: any) => {
   return response;
 };
 
-export default { getTicketsList };
+const getTicketsDetail = async (payload: string) => {
+  const uri = API.ticketsDetail.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .setQueryParameter(payload)
+    .doGet();
+  return response;
+};
+
+const updateTicketsDetail = async (payload: any) => {
+  const uri = API.ticketsDetail.put;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .doPut();
+  return response;
+};
+
+export default { getTicketsList, getTicketsDetail, updateTicketsDetail };

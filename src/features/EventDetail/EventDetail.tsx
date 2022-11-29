@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Tabs, Spin } from 'antd';
+import { Tabs, Spin, message } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -27,6 +27,7 @@ import {
   selectDetailLoading,
   selectDetailData,
   EventDetailDataType,
+  selectError,
 } from './EventDetail.slice';
 import EventInfo from './Component/EventInfo';
 
@@ -37,6 +38,7 @@ const EventDetail = () => {
   const localStorage = useLocalStorage();
   const dispatch = useAppDispatch();
 
+  const error = useAppSelector(selectError);
   const loadingForTicketList = useAppSelector(selectLoading);
   const ticketListdata = useAppSelector(selectData);
   const ticketListdataTotal = useAppSelector(selectDataTotal);
@@ -62,6 +64,12 @@ const EventDetail = () => {
   useEffect(() => {
     dispatch(getTicketsListAction({ id }));
   }, [currentPage]);
+
+  useEffect(() => {
+    if (error) {
+      message.error(error.message);
+    }
+  }, [error]);
 
   useEffect(() => {
     dispatch(getEventDetailAction(id));
@@ -97,7 +105,7 @@ const EventDetail = () => {
             {(loadingForDetail && (
               <Spin
                 spinning={loadingForDetail}
-                indicator={<LoadingOutlined style={{ color: 'black' }} spin />}
+                indicator={<LoadingOutlined spin />}
                 size="large"
               />
             )) || <EventInfo data={detailData} />}

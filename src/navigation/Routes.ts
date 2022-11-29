@@ -26,6 +26,7 @@ export const UserRoutes = {
   users: '/users',
   tickets: '/tickets',
   settings: '/settings',
+  ticketDetail: '/ticket-detail/:id',
 };
 
 export const AuthRoutes = {

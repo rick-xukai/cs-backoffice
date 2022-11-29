@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, Tooltip } from 'antd';
 
+import { UserRoutes } from '../../navigation/Routes';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -26,7 +27,9 @@ export const columns = [
     key: 'ticket_number',
     render: (text: string, record: TicketsListDataType) => (
       <Button className="name-btn" disabled={record.status === 'Cancelled'}>
-        <Link to="/">{text}</Link>
+        <Link to={UserRoutes.ticketDetail.replace(':id', record.ticket_number)}>
+          {text}
+        </Link>
       </Button>
     ),
   },

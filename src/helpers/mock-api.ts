@@ -5,6 +5,7 @@ import API from '../constants/API';
 import { Images } from '../theme';
 import { EventsListDataType } from '../features/Events/Events.slice';
 import { TicketsListDataType } from '../features/Tickets/Tickets.slice';
+import { TicketsDetailDataType } from '../features/TicketDetail/TicketDetail.slice';
 
 const ACCESS_TOKEN =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -820,6 +821,67 @@ const MockAPI = () => {
         }
       });
     });
+
+  mock
+    .onGet(new RegExp(`${API.ticketsDetail.get}`.replace('{id}', '(.*)')))
+    .reply(() => {
+      const ticketsDetailData: TicketsDetailDataType = {
+        user_name: 'User 1',
+        user_email: 'user1@crowdserve.com',
+        event_name: 'Event 1 Event 1 Event 1',
+        organizer: 'Organizer 1',
+        ticket_type: 'General',
+        seat_number: '01',
+        price: '$ 300',
+        ticket_number: 'K0J2947294759275',
+        nft_ticket: 'Test event 12937493 - VIP',
+        view_blockchain: 'https://app.crowdserve.xyz',
+        ticket_status: 'Upcoming',
+        allowed_status: ['Upcoming', 'Cancelled', 'Used'],
+        last_updates: 'Nov 20, 2022  15:32:38',
+      };
+
+      return new Promise((resolve, reject) => {
+        if (resolve) {
+          setTimeout(() => {
+            resolve([
+              200,
+              {
+                success: true,
+                results: {
+                  data: ticketsDetailData,
+                },
+              },
+            ]);
+          }, 2000);
+        } else {
+          reject(new Error('Something is wrong'));
+        }
+      });
+    });
+
+  mock
+    .onPut(new RegExp(`${API.ticketsDetail.put}`.replace('{id}', '(.*)')))
+    .reply(
+      () =>
+        new Promise((resolve, reject) => {
+          if (resolve) {
+            setTimeout(() => {
+              resolve([
+                200,
+                {
+                  success: true,
+                  results: {
+                    data: {},
+                  },
+                },
+              ]);
+            }, 2000);
+          } else {
+            reject(new Error('Something is wrong'));
+          }
+        }),
+    );
 };
 
 export default MockAPI;

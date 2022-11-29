@@ -175,5 +175,16 @@
   "Time": "Time",
   "Ticket Type": "Ticket Type",
   "NFT Image": "NFT Image",
-  "NFT Description": " NFT Description"
+  "NFT Description": " NFT Description",
+  "User Name": "User Name",
+  "User Email": "User Email",
+  "Seat Number": "Seat Number",
+  "Price": "Price",
+  "Ticket Number": "Ticket Number",
+  "NFT Ticket": "NFT Ticket",
+  "View on blockchain": "View on blockchain",
+  "Ticket Status": "Ticket Status",
+  "Save": "Save",
+  "Cancel": "Cancel",
+  "Last Updates": "Last Updates"
 }
