@@ -6,40 +6,6 @@ const EventsContainer = styled.div`
     padding: calc(60px + 24px) 24px 24px;
     background: ${Colors.grey5};
   }
-  .ant-table-content {
-    font-size: 15px;
-    font-weight: 400;
-  }
-  .ant-table-thead {
-    th {
-      height: 40px;
-      background: ${Colors.grey5};
-      padding-top: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-      border-top-left-radius: unset;
-      font-weight: 400;
-      font-size: 14px;
-      color: ${Colors.grey6};
-      ::before {
-        display: none;
-      }
-    }
-  }
-  .ant-table-tbody {
-    td {
-      padding-top: 10px;
-      padding-bottom: 10px;
-      p {
-        margin-bottom: 0;
-      }
-    }
-    .ant-table-row:hover {
-      td {
-        background: ${Colors.white};
-      }
-    }
-  }
   .name-btn {
     border: none;
     padding: 0;

@@ -10,6 +10,10 @@ const PageHeaderContainer = styled(Row)`
   padding-left: 24px;
   padding-right: 24px;
   height: 60px;
+  &.children-header {
+    padding-top: 16px;
+    height: unset;
+  }
   background: ${Colors.white};
   align-items: center;
   position: fixed;
@@ -32,27 +36,43 @@ const PageHeaderContainer = styled(Row)`
     font-size: 18px;
     margin-right: 16px;
   }
+  .ant-tabs {
+    margin-top: -5px;
+  }
+  .ant-tabs-nav {
+    margin: 0;
+  }
+  .ant-tabs-tab {
+    font-weight: 500;
+    font-size: 15px;
+    color: ${Colors.black5};
+  }
 `;
 
 const PageHeaderComponent = ({
   title,
   showBackArrow = false,
+  clickBack,
+  children,
 }: {
   title: string;
   showBackArrow?: boolean;
+  clickBack?: () => void;
+  children?: React.ReactChild;
 }) => {
   const { toggleMenu } = useToggleMenu();
 
   return (
-    <PageHeaderContainer className="page-header">
-      <Col>
+    <PageHeaderContainer className={`${children && 'children-header'}`}>
+      <Col span={24} style={{ marginBottom: children && 16 }}>
         {React.createElement(MenuOutlined, {
           className: 'top-menu-btn',
           onClick: toggleMenu,
         })}
-        {showBackArrow && <ArrowLeftOutlined />}
+        {showBackArrow && <ArrowLeftOutlined onClick={clickBack} />}
         <span className="title">{title}</span>
       </Col>
+      {children && <Col span={24}>{children}</Col>}
     </PageHeaderContainer>
   );
 };

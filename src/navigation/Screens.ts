@@ -15,6 +15,7 @@ import UIRates from '../features/UIElements/UIRates';
 import UINotification from '../features/UIElements/UINotification';
 import Events from '../features/Events/Loadable';
 import Tickets from '../features/Tickets/Loadable';
+import EventDetail from '../features/EventDetail/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -161,6 +162,15 @@ export const UserScreens = {
     headerBarTitle: 'Events',
     path: UserRoutes.events,
     component: Events,
+    subMenuKeys: [vMenuKeys.menu, vMenuKeys.events],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+  },
+  EventInfo: {
+    title: 'Event Info - CrowdServe BO',
+    headerBarTitle: 'Event Info',
+    path: UserRoutes.eventDetail,
+    component: EventDetail,
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.events],
     menuKeys: [vMenuKeys.events],
     guard: true,

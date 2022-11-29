@@ -84,6 +84,7 @@ const TableComponent = ({
       size="large"
     >
       <Table
+        scroll={{ x: true }}
         rowKey={rowKey}
         columns={columns}
         dataSource={tableData}

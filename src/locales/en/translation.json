@@ -163,5 +163,17 @@
   "Forgot your password?": "Forgot your password?",
   "Sign In": "Sign In",
   "Events": "Events",
-  "Tickets": "Tickets"
+  "Tickets": "Tickets",
+  "Event Details": "Event Details",
+  "Event Info": "Event Info",
+  "Ticket List": "Ticket List",
+  "Event Name": "Event Name",
+  "Organizer": "Organizer",
+  "Event Description": "Event Description",
+  "Location": "Location",
+  "Date": "Date",
+  "Time": "Time",
+  "Ticket Type": "Ticket Type",
+  "NFT Image": "NFT Image",
+  "NFT Description": " NFT Description"
 }

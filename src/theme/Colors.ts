@@ -14,6 +14,7 @@ const Colors = {
   grey5: '#EEEEF3',
   grey6: '#717179',
   grey7: '#ABACB6',
+  grey8: '#DCDCE1',
   primary: '#ed9617',
   secondary: '#1b1e23',
   secondaryHover: '#1b1e23',

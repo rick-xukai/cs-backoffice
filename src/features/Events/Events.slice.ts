@@ -10,7 +10,7 @@ export interface ErrorType {
 }
 
 export interface EventsListDataType {
-  id: number;
+  id: string;
   event_name: string;
   event_time: {
     date: string;

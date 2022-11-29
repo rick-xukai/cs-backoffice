@@ -12,6 +12,7 @@ export interface ErrorType {
 
 export interface TicketsListDataType {
   id: number;
+  event_id: string;
   ticket_number: string;
   bought_at: {
     date: string;
@@ -29,17 +30,21 @@ export interface TicketsListDataType {
  */
 export const getTicketsListAction = createAsyncThunk<
   TicketsListDataType,
-  undefined,
+  {} | undefined,
   {
     rejectValue: ErrorType;
     state: RootState;
   }
 >(
   'getTicketsList/getTicketsListAction',
-  async (_, { rejectWithValue, getState }) => {
+  async (payload, { rejectWithValue, getState }) => {
     const { page, pageSize } = getState().tickets;
     try {
-      const response = await TicketsService.getTicketsList({ page, pageSize });
+      const response = await TicketsService.getTicketsList({
+        ...payload,
+        page,
+        pageSize,
+      });
       if (response.success) {
         return response.results;
       }

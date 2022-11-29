@@ -19,6 +19,60 @@ import {
   selectCurrentPageSize,
 } from './Tickets.slice';
 
+export const columns = [
+  {
+    title: 'Ticket Number',
+    dataIndex: 'ticket_number',
+    key: 'ticket_number',
+    render: (text: string, record: TicketsListDataType) => (
+      <Button className="name-btn" disabled={record.status === 'Cancelled'}>
+        <Link to="/">{text}</Link>
+      </Button>
+    ),
+  },
+  {
+    title: 'User Name',
+    dataIndex: 'user_name',
+    key: 'user_name',
+  },
+  {
+    title: 'User Email',
+    dataIndex: 'user_email',
+    key: 'user_email',
+    render: (text: string) => (
+      <Tooltip title={text}>
+        <p className="email">{text}</p>
+      </Tooltip>
+    ),
+  },
+  {
+    title: 'Ticket Type',
+    dataIndex: 'ticket_type',
+    key: 'ticket_type',
+  },
+  {
+    title: 'Seat Number',
+    dataIndex: 'seat_number',
+    key: 'seat_number',
+  },
+  {
+    title: 'Bought at',
+    dataIndex: 'bought_at',
+    key: 'bought_at',
+    render: (_: string, record: TicketsListDataType) => (
+      <div>
+        <p>{record.bought_at.date}</p>
+        <p style={{ fontSize: 13 }}>{record.bought_at.timeRange}</p>
+      </div>
+    ),
+  },
+  {
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
+  },
+];
+
 const Tickets = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -27,60 +81,6 @@ const Tickets = () => {
   const ticketsListDataTotal = useAppSelector(selectDataTotal);
   const currentPage = useAppSelector(selectCurrentPage);
   const currentPageSize = useAppSelector(selectCurrentPageSize);
-
-  const columns = [
-    {
-      title: 'Ticket Number',
-      dataIndex: 'ticket_number',
-      key: 'ticket_number',
-      render: (text: string, record: TicketsListDataType) => (
-        <Button className="name-btn" disabled={record.status === 'Cancelled'}>
-          <Link to="/">{text}</Link>
-        </Button>
-      ),
-    },
-    {
-      title: 'User Name',
-      dataIndex: 'user_name',
-      key: 'user_name',
-    },
-    {
-      title: 'User Email',
-      dataIndex: 'user_email',
-      key: 'user_email',
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <p className="email">{text}</p>
-        </Tooltip>
-      ),
-    },
-    {
-      title: 'Ticket Type',
-      dataIndex: 'ticket_type',
-      key: 'ticket_type',
-    },
-    {
-      title: 'Seat Number',
-      dataIndex: 'seat_number',
-      key: 'seat_number',
-    },
-    {
-      title: 'Bought at',
-      dataIndex: 'bought_at',
-      key: 'bought_at',
-      render: (_: string, record: TicketsListDataType) => (
-        <div>
-          <p>{record.bought_at.date}</p>
-          <p style={{ fontSize: 13 }}>{record.bought_at.timeRange}</p>
-        </div>
-      ),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-    },
-  ];
 
   // eslint-disable-next-line
   useEffect(() => {
