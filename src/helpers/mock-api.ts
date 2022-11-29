@@ -2,6 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
 import API from '../constants/API';
+import { Images } from '../theme';
 import { EventsListDataType } from '../features/Events/Events.slice';
 import { TicketsListDataType } from '../features/Tickets/Tickets.slice';
 
@@ -94,7 +95,7 @@ const MockAPI = () => {
     const { params } = config;
     let eventsListData: EventsListDataType[] = [
       {
-        id: 1,
+        id: '20221125',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -110,7 +111,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 2,
+        id: '20221126',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -126,7 +127,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 3,
+        id: '20221127',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -142,7 +143,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 4,
+        id: '20221128',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -158,7 +159,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 5,
+        id: '20221129',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -174,7 +175,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 6,
+        id: '202211210',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -190,7 +191,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 7,
+        id: '2022112111',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -206,7 +207,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 8,
+        id: '2022112122',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -222,7 +223,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 9,
+        id: '2022112133',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -238,7 +239,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 10,
+        id: '202211214',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -254,7 +255,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 11,
+        id: '202211215',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -270,7 +271,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 12,
+        id: '202211216',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -286,7 +287,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 13,
+        id: '202211217',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -302,7 +303,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 14,
+        id: '202211218',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -318,7 +319,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 15,
+        id: '202211219',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -334,7 +335,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 16,
+        id: '202211220',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -350,7 +351,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 17,
+        id: '202211211',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -366,7 +367,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 18,
+        id: '202211212',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -382,7 +383,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 19,
+        id: '202211213',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -398,7 +399,7 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
       {
-        id: 20,
+        id: '2022112144',
         event_name: 'Event 1 Event 1 Event 1',
         event_time: {
           date: 'Nov 5, 2022',
@@ -450,6 +451,7 @@ const MockAPI = () => {
     let ticketsListData = [
       {
         id: 1,
+        event_id: '20221125',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -463,6 +465,7 @@ const MockAPI = () => {
       },
       {
         id: 2,
+        event_id: '20221125',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -476,6 +479,7 @@ const MockAPI = () => {
       },
       {
         id: 3,
+        event_id: '20221125',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -489,6 +493,7 @@ const MockAPI = () => {
       },
       {
         id: 4,
+        event_id: '20221125',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -502,6 +507,7 @@ const MockAPI = () => {
       },
       {
         id: 5,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -515,6 +521,7 @@ const MockAPI = () => {
       },
       {
         id: 6,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -528,6 +535,7 @@ const MockAPI = () => {
       },
       {
         id: 7,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -541,6 +549,7 @@ const MockAPI = () => {
       },
       {
         id: 8,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -554,6 +563,7 @@ const MockAPI = () => {
       },
       {
         id: 9,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -567,6 +577,7 @@ const MockAPI = () => {
       },
       {
         id: 10,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -580,6 +591,7 @@ const MockAPI = () => {
       },
       {
         id: 11,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -593,6 +605,7 @@ const MockAPI = () => {
       },
       {
         id: 12,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -606,6 +619,7 @@ const MockAPI = () => {
       },
       {
         id: 13,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -619,6 +633,7 @@ const MockAPI = () => {
       },
       {
         id: 14,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -632,6 +647,7 @@ const MockAPI = () => {
       },
       {
         id: 15,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -645,6 +661,7 @@ const MockAPI = () => {
       },
       {
         id: 16,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -658,6 +675,7 @@ const MockAPI = () => {
       },
       {
         id: 17,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -671,6 +689,7 @@ const MockAPI = () => {
       },
       {
         id: 18,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -684,6 +703,7 @@ const MockAPI = () => {
       },
       {
         id: 19,
+        event_id: '20221126',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -697,6 +717,7 @@ const MockAPI = () => {
       },
       {
         id: 20,
+        event_id: '20221125',
         ticket_number: 'K0J2947294759275',
         user_name: 'User1',
         user_email: 'user1@crowdserve.com',
@@ -709,6 +730,13 @@ const MockAPI = () => {
         status: 'Upcoming',
       },
     ];
+
+    if (params.id) {
+      const ticketsForEvent = ticketsListData.filter(
+        (item) => item.event_id === params.id,
+      );
+      ticketsListData = ticketsForEvent;
+    }
 
     if (params.page === 2) {
       const ticketsListDataCancelled: TicketsListDataType[] = [];
@@ -729,7 +757,7 @@ const MockAPI = () => {
               success: true,
               results: {
                 data: ticketsListData,
-                total: 25,
+                total: (params.eventId && 5) || 25,
               },
             },
           ]);
@@ -739,6 +767,59 @@ const MockAPI = () => {
       }
     });
   });
+
+  mock
+    .onGet(new RegExp(`${API.getEventsDetail.get}`.replace('{id}', '(.*)')))
+    .reply(() => {
+      const eventDetailData = {
+        event_id: '20221125',
+        event_name: 'Test event 12937493',
+        organizer: 'CrowdServe',
+        event_description:
+          'Serving the Crowd, empowering fans and artistes through blockchain. CrowdServe believes that the events industry should be powered by the fans and the artistes.',
+        location: 'Singapore',
+        date: 'Nov 5, 2022',
+        time: '15:30 - 17:30',
+        ticketInfo: [
+          {
+            ticket_type: 'VIP 1',
+            nft_image: Images.TestImg,
+            nft_description:
+              'Serving the Crowd, empowering fans and artistes through blockchain. CrowdServe believes that the events industry should be powered by the fans and the artistes.',
+          },
+          {
+            ticket_type: 'VIP 2',
+            nft_image: Images.TestImg,
+            nft_description:
+              'Serving the Crowd, empowering fans and artistes through blockchain. CrowdServe believes that the events industry should be powered by the fans and the artistes.',
+          },
+          {
+            ticket_type: 'VIP 3',
+            nft_image: Images.TestImg,
+            nft_description:
+              'Serving the Crowd, empowering fans and artistes through blockchain. CrowdServe believes that the events industry should be powered by the fans and the artistes.',
+          },
+        ],
+      };
+
+      return new Promise((resolve, reject) => {
+        if (resolve) {
+          setTimeout(() => {
+            resolve([
+              200,
+              {
+                success: true,
+                results: {
+                  data: eventDetailData,
+                },
+              },
+            ]);
+          }, 2000);
+        } else {
+          reject(new Error('Something is wrong'));
+        }
+      });
+    });
 };
 
 export default MockAPI;

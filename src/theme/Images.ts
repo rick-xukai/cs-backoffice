@@ -14,6 +14,7 @@ import Counter from '../assets/images/icons/counter-icon.svg';
 import ProfileImg from '../assets/images/profile-img.png';
 import Events from '../assets/images/icons/events.svg';
 import Tickets from '../assets/images/icons/tickets.svg';
+import TestImg from '../assets/images/test-nft-img.png';
 
 const Images = {
   Logo,
@@ -34,6 +35,7 @@ const Images = {
   },
   Events,
   Tickets,
+  TestImg,
 };
 
 export default Images;

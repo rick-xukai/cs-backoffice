@@ -13,4 +13,10 @@ const getEventsList = async (payload: any) => {
   return response;
 };
 
-export default { getEventsList };
+const getEventDetail = async (payload: string) => {
+  const uri = API.getEventsDetail.get.replace('{id}', payload);
+  const response = await requestClient().setUri(uri).doGet();
+  return response;
+};
+
+export default { getEventsList, getEventDetail };

@@ -2,6 +2,7 @@ export const MenuKeys = {
   menu: 'menu',
   dashboard: 'menu-dashboard',
   events: 'menu-events',
+  eventDetail: 'menu-event-detail',
   users: 'menu-users',
   tickets: 'menu-tickets',
   settings: 'menu-settings',

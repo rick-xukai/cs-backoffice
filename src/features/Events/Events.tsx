@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 
+import { UserRoutes } from '../../navigation/Routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -35,7 +36,11 @@ const Events = () => {
       key: 'event_name',
       render: (text: string, record: EventsListDataType) => (
         <Button className="name-btn" disabled={record.status === 'Ended'}>
-          <Link to="/">{text}</Link>
+          <Link
+            to={UserRoutes.eventDetail.replace(':id', record.id.toString())}
+          >
+            {text}
+          </Link>
         </Button>
       ),
     },

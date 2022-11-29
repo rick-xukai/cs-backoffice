@@ -8,6 +8,9 @@ const API = {
   getEventsList: {
     get: '/events/list',
   },
+  getEventsDetail: {
+    get: '/eventDetail/{id}',
+  },
   getTicketsList: {
     get: '/tickets/list',
   },

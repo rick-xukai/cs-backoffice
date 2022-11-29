@@ -7,6 +7,7 @@ import loginReducer from '../features/Authentication/Login/Login.slice';
 import registerReducer from '../features/Authentication/Register/Register.slice';
 import eventsReducer from '../features/Events/Events.slice';
 import ticketsReducer from '../features/Tickets/Tickets.slice';
+import eventsDetailReducer from '../features/EventDetail/EventDetail.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -17,6 +18,7 @@ const createRootReducer = (history: any) =>
     register: registerReducer,
     events: eventsReducer,
     tickets: ticketsReducer,
+    eventDetail: eventsDetailReducer,
   });
 
 export default createRootReducer;
