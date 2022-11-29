@@ -14,6 +14,10 @@ const API = {
   getTicketsList: {
     get: '/tickets/list',
   },
+  ticketsDetail: {
+    get: '/ticketsDetail/{id}',
+    put: '/updateTicket/{id}',
+  },
 };
 
 export default API;

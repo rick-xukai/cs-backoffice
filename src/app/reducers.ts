@@ -8,6 +8,7 @@ import registerReducer from '../features/Authentication/Register/Register.slice'
 import eventsReducer from '../features/Events/Events.slice';
 import ticketsReducer from '../features/Tickets/Tickets.slice';
 import eventsDetailReducer from '../features/EventDetail/EventDetail.slice';
+import ticketsDetailReducer from '../features/TicketDetail/TicketDetail.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -19,6 +20,7 @@ const createRootReducer = (history: any) =>
     events: eventsReducer,
     tickets: ticketsReducer,
     eventDetail: eventsDetailReducer,
+    ticketsDetail: ticketsDetailReducer,
   });
 
 export default createRootReducer;

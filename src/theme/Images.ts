@@ -15,6 +15,8 @@ import ProfileImg from '../assets/images/profile-img.png';
 import Events from '../assets/images/icons/events.svg';
 import Tickets from '../assets/images/icons/tickets.svg';
 import TestImg from '../assets/images/test-nft-img.png';
+import Edit from '../assets/images/icons/edit.svg';
+import EditDisabled from '../assets/images/icons/edit-disabled.svg';
 
 const Images = {
   Logo,
@@ -36,6 +38,8 @@ const Images = {
   Events,
   Tickets,
   TestImg,
+  Edit,
+  EditDisabled,
 };
 
 export default Images;
