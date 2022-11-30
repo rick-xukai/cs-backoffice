@@ -17,6 +17,8 @@ import Tickets from '../assets/images/icons/tickets.svg';
 import TestImg from '../assets/images/test-nft-img.png';
 import Edit from '../assets/images/icons/edit.svg';
 import EditDisabled from '../assets/images/icons/edit-disabled.svg';
+import LoginBackground from '../assets/images/login-background.png';
+import PasswordHidden from '../assets/images/icons/password-hidden.svg';
 
 const Images = {
   Logo,
@@ -40,6 +42,8 @@ const Images = {
   TestImg,
   Edit,
   EditDisabled,
+  LoginBackground,
+  PasswordHidden,
 };
 
 export default Images;

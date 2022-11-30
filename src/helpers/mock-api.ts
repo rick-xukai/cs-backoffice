@@ -53,13 +53,9 @@ const MockAPI = () => {
             },
           ]);
         } else {
-          reject(
-            new Error(
-              'Username and password are invalid. Please enter correct username and password',
-            ),
-          );
+          reject(new Error('Username and password are invalid.'));
         }
-      });
+      }, 2000);
     });
   });
 
