@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Layout } from 'antd';
+import { Layout, Row } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import { SiderTheme } from 'antd/lib/layout/Sider';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
+import { AuthRoutes } from '../../navigation/Routes';
+import { useCookie } from '../../hooks';
+import { CookieKeys } from '../../constants/Keys';
 import Images from '../../theme/Images';
 import { SidebarWidth, CollapsedWidth } from '../../constants/Layout';
 import SidebarContent from './SidebarContent';
@@ -28,7 +31,16 @@ const SideBar = ({
   sidebarTheme: SiderTheme;
 }) => {
   const { t } = useTranslation();
+  const history = useHistory();
+  const cookies = useCookie([CookieKeys.authUser]);
+
   const [collapsedWidth, setCollapsedWidth] = useState(CollapsedWidth);
+
+  const logout = () => {
+    cookies.removeCookie(CookieKeys.authUser);
+    history.push(AuthRoutes.login);
+  };
+
   return (
     <SidebarCmp
       trigger={null}
@@ -55,12 +67,12 @@ const SideBar = ({
         </Link>
       </div>
       <SidebarContent sidebarTheme={sidebarTheme} />
-      <div className="logout-container">
+      <Row className="logout-container" onClick={logout}>
         <div className="text">
           <LogoutOutlined className="logout-icon" />
           {t('Logout')}
         </div>
-      </div>
+      </Row>
     </SidebarCmp>
   );
 };
