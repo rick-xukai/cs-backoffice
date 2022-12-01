@@ -9,6 +9,12 @@ export const LoginContainer = styled(Row)`
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;
+    padding-top: 48px;
+    padding-left: 48px;
+    .logo {
+      width: 96px;
+      height: 50px;
+    }
   }
   .login-form {
     display: block;
@@ -68,6 +74,10 @@ export const LoginContainer = styled(Row)`
       .ant-form-item-control-input {
         min-height: unset;
       }
+    }
+    .ant-input-affix-wrapper-focused {
+      border-color: ${Colors.black5};
+      box-shadow: unset;
     }
   }
 `;
