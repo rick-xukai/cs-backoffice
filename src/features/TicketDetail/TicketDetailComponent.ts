@@ -51,9 +51,9 @@ const TicketDetailContainer = styled.div`
       }
     }
     .action-view {
-      padding-left: 15px;
       white-space: nowrap;
       a {
+        margin-left: 24px;
         color: ${Colors.grey6};
         :hover {
           text-decoration: underline;
@@ -61,7 +61,9 @@ const TicketDetailContainer = styled.div`
       }
     }
     .edit-status {
-      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      margin-left: 24px;
       SVG:hover {
         cursor: pointer;
         path {

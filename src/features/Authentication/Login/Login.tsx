@@ -61,11 +61,11 @@ const Login = () => {
   const onFinish = async (values: any) => {
     const result = await dispatch(loginAction(values));
     if (result.type === loginAction.fulfilled.toString()) {
-      if (values.rememberMe) {
+      if (rememberMeChecked) {
         localStorage.setItem(
           LocalStorageKeys.rememberMe,
           JSON.stringify({
-            email: values.email,
+            username: values.username,
             password: values.password,
           }),
         );
@@ -91,7 +91,9 @@ const Login = () => {
           }}
         >
           <LoginContainer>
-            <Col span={10} className="login-background" />
+            <Col span={10} className="login-background">
+              <img src={Images.Logo} alt="" className="logo" />
+            </Col>
             <Col span={14} style={{ display: 'flex' }}>
               <Row className="login-form">
                 <Col span={24} className="login-title">
@@ -138,6 +140,7 @@ const Login = () => {
                     </Form.Item>
                     <Form.Item name="remember" className="remember-me">
                       <Checkbox
+                        name="remember"
                         checked={rememberMeChecked}
                         onChange={(e) => setRememberMeChecked(e.target.checked)}
                       >

@@ -115,34 +115,33 @@ const TicketDetail = () => {
               <Col span={8} className="item-key">
                 {t('NFT Ticket')}
               </Col>
-              <Col span={16}>
-                <Row>
-                  <Col span={14}>{ticketsDetailData.nft_ticket}</Col>
-                  <Col span={10} className="action-view">
-                    <a href={ticketsDetailData.view_blockchain} target="_blank">
-                      {t('View on blockchain')}
-                    </a>
-                  </Col>
-                </Row>
+              <Col span={16} className="action-view">
+                <span>{ticketsDetailData.nft_ticket}</span>
+                <a href={ticketsDetailData.view_blockchain} target="_blank">
+                  {t('View on blockchain')}
+                </a>
               </Col>
             </Row>
             <Row className="item">
               <Col span={8} className="item-key">
                 {t('Ticket Status')}
               </Col>
-              <Col span={16}>
+              <Col
+                span={16}
+                style={{
+                  display: `${(!changeStatusFlag && 'flex') || 'block'}`,
+                }}
+              >
                 {(!changeStatusFlag && (
-                  <Row>
-                    <Col span={8}>{ticketsDetailData.ticket_status}</Col>
-                    <Col span={16}>
-                      <div className="edit-status">
-                        <SVG
-                          src={Images.Edit}
-                          onClick={() => setChangeStatusFlag(true)}
-                        />
-                      </div>
-                    </Col>
-                  </Row>
+                  <>
+                    <span>{ticketsDetailData.ticket_status}</span>
+                    <span className="edit-status">
+                      <SVG
+                        src={Images.Edit}
+                        onClick={() => setChangeStatusFlag(true)}
+                      />
+                    </span>
+                  </>
                 )) || (
                   <Row>
                     <Col span={14} style={{ paddingRight: 24 }}>
