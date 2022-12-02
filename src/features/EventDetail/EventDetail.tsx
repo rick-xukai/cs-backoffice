@@ -118,7 +118,9 @@ const EventDetail = () => {
             columns={columns}
             tableData={ticketListdata}
             tableDataTotal={ticketListdataTotal}
-            paginationChange={(page) => dispatch(paginationChangeAction(page))}
+            paginationChange={(page, pageSize) =>
+              dispatch(paginationChangeAction({ page, pageSize }))
+            }
           />
         )}
       </div>
