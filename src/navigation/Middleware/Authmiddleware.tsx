@@ -34,6 +34,8 @@ const Authmiddleware = ({
         ? (optProps as any).hMenuKeys
         : (optProps as any).menuKeys,
   };
+  const { role } = cookies.getCookie(CookieKeys.authUser) || {};
+
   useEffect(() => {
     if (payload.selectedKeys) {
       dispatch(triggerMenuAction(payload));
@@ -58,6 +60,15 @@ const Authmiddleware = ({
           );
         }
         if (path === UserRoutes.home) {
+          return (
+            <Redirect
+              to={{
+                pathname: UserRoutes.dashboard,
+              }}
+            />
+          );
+        }
+        if (role && !(optProps as any).role.includes(role)) {
           return (
             <Redirect
               to={{

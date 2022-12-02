@@ -13,10 +13,17 @@ const ACCESS_TOKEN =
 const Users = [
   {
     uid: 1,
-    username: 'ui-react',
+    username: 'crowdserve-admin',
     role: 'admin',
-    password: 'uireact',
-    email: 'ui-react@imaginato.com',
+    password: 'crowdserve',
+    email: 'backoffice@crowdserve.xyz',
+  },
+  {
+    uid: 2,
+    username: 'crowdserve-guest',
+    role: 'guest',
+    password: 'crowdserve',
+    email: 'backoffice@crowdserve.xyz',
   },
 ];
 

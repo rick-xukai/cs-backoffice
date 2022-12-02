@@ -85,7 +85,7 @@ const TicketDetailContainer = styled.div`
       box-shadow: unset !important;
     }
     .ant-select-selection-item {
-      line-height: 32px;
+      line-height: 32px !important;
     }
     .status-btn {
       > :last-child {
