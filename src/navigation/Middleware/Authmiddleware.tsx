@@ -68,7 +68,11 @@ const Authmiddleware = ({
             />
           );
         }
-        if (role && !(optProps as any).role.includes(role)) {
+        if (
+          (optProps as any).role &&
+          role &&
+          !(optProps as any).role.includes(role)
+        ) {
           return (
             <Redirect
               to={{

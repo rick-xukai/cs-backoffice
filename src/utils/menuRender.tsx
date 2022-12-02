@@ -15,7 +15,7 @@ export interface IMenu {
 const MenuRender = (menus: IMenu[], menuRole?: string) =>
   menus &&
   menus.map((menu: IMenu) => {
-    if (!menu.role?.includes(menuRole as string)) {
+    if (menu.role && !menu.role.includes(menuRole as string)) {
       return null;
     }
     if (menu.isGroup) {

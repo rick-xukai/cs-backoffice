@@ -12,13 +12,6 @@ import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
 import { UserRoleKeys } from '../constants/Keys';
 
 export const UserScreens = {
-  Home: {
-    title: 'Home - CrowdServe BO',
-    path: UserRoutes.home,
-    component: null,
-    guard: false,
-    exact: true,
-  },
   Dashboard: {
     title: 'Dashboard - CrowdServe BO',
     path: UserRoutes.dashboard,
@@ -26,7 +19,7 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.dashboard],
     menuKeys: [vMenuKeys.dashboardDefault],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: undefined,
   },
   Events: {
     title: 'Events - CrowdServe BO',
@@ -35,7 +28,7 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.events],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   EventInfo: {
     title: 'Event Info - CrowdServe BO',
@@ -44,7 +37,7 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.events],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   Tickets: {
     title: 'Tickets - CrowdServe BO',
@@ -53,7 +46,7 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.tickets],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [UserRoleKeys.admin],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   TicketDetail: {
     title: 'Tickets Details - CrowdServe BO',
@@ -62,7 +55,7 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.tickets],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [UserRoleKeys.admin],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   Users: {
     title: 'Users - CrowdServe BO',
@@ -71,7 +64,7 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.users],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [UserRoleKeys.admin],
   },
   Settings: {
     title: 'Settings - CrowdServe BO',
@@ -80,23 +73,31 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.menu, vMenuKeys.settings],
     menuKeys: [vMenuKeys.settings],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [],
   },
 };
 
 export const AuthScreens = {
+  Home: {
+    title: 'Home - CrowdServe BO',
+    path: UserRoutes.home,
+    component: null,
+    guard: false,
+    exact: true,
+    role: undefined,
+  },
   Login: {
     title: 'Login - CrowdServe BO',
     path: AuthRoutes.login,
     component: Login,
     guard: false,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: undefined,
   },
   register: {
     title: 'Register - CrowdServe BO',
     path: AuthRoutes.register,
     component: Register,
     guard: false,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: undefined,
   },
 };
