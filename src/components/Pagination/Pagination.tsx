@@ -38,6 +38,22 @@ const PaginationContainer = styled.div`
       border: none;
       font-family: Heebo;
     }
+    .ant-pagination-options-size-changer,
+    .ant-select-selection-search-input,
+    .ant-select-selector {
+      height: 32px !important;
+      font-weight: 400;
+      font-size: 15px;
+      color: ${Colors.black5};
+    }
+    .ant-select-selection-item {
+      line-height: 32px !important;
+    }
+    .ant-select-arrow {
+      font-weight: 400;
+      font-size: 15px;
+      color: ${Colors.grey7};
+    }
   }
 `;
 
@@ -45,7 +61,7 @@ const PaginationCmp = (props: PaginationProps) => (
   <PaginationContainer>
     <div className="container-text">
       <p>Total {props.total} items</p>
-      <Pagination {...props} />
+      <Pagination {...props} showSizeChanger />
     </div>
   </PaginationContainer>
 );

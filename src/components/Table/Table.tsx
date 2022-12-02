@@ -75,12 +75,12 @@ const TableComponent = ({
   columns: ColumnsType<any>;
   tableData: object[];
   tableDataTotal: number;
-  paginationChange: (page: number) => void;
+  paginationChange: (page: number, pageSize?: number) => void;
 }) => (
   <TableContainer>
     <Spin spinning={loading} indicator={<LoadingOutlined spin />} size="large">
       <Table
-        scroll={{ x: true }}
+        scroll={{ x: 950, y: 580 }}
         rowKey={rowKey}
         columns={columns}
         dataSource={tableData}
