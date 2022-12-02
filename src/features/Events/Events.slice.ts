@@ -88,7 +88,11 @@ export const eventsSlice = createSlice({
   reducers: {
     reset: () => initialState,
     paginationChangeAction: (state, action) => {
-      state.page = action.payload.page;
+      if (action.payload.pageSize !== state.pageSize) {
+        state.page = 1;
+      } else {
+        state.page = action.payload.page;
+      }
       state.pageSize = action.payload.pageSize;
     },
   },
