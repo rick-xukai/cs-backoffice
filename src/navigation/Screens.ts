@@ -12,6 +12,13 @@ import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
 import { UserRoleKeys } from '../constants/Keys';
 
 export const UserScreens = {
+  Home: {
+    title: 'Home - CrowdServe BO',
+    path: UserRoutes.home,
+    component: null,
+    guard: false,
+    exact: true,
+  },
   Dashboard: {
     title: 'Dashboard - CrowdServe BO',
     path: UserRoutes.dashboard,
