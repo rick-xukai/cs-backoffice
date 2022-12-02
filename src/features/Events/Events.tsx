@@ -97,7 +97,7 @@ const Events = () => {
 
   useEffect(() => {
     dispatch(getEventsListAction());
-  }, [currentPage]);
+  }, [currentPage, currentPageSize]);
 
   return (
     <EventsContainer>
@@ -110,7 +110,9 @@ const Events = () => {
           columns={columns}
           tableData={eventsListData}
           tableDataTotal={eventsListDataTotal}
-          paginationChange={(page) => dispatch(paginationChangeAction(page))}
+          paginationChange={(page, pageSize) =>
+            dispatch(paginationChangeAction({ page, pageSize }))
+          }
         />
       </div>
     </EventsContainer>

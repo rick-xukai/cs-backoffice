@@ -37,6 +37,7 @@ export const columns = [
     title: 'User Name',
     dataIndex: 'user_name',
     key: 'user_name',
+    width: 110,
   },
   {
     title: 'User Email',
@@ -52,11 +53,13 @@ export const columns = [
     title: 'Ticket Type',
     dataIndex: 'ticket_type',
     key: 'ticket_type',
+    width: 110,
   },
   {
     title: 'Seat Number',
     dataIndex: 'seat_number',
     key: 'seat_number',
+    width: 120,
   },
   {
     title: 'Bought at',
@@ -94,7 +97,7 @@ const Tickets = () => {
 
   useEffect(() => {
     dispatch(getTicketsListAction());
-  }, [currentPage]);
+  }, [currentPage, currentPageSize]);
 
   return (
     <TicketsContainer>
@@ -107,7 +110,9 @@ const Tickets = () => {
           columns={columns}
           tableData={ticketsListData}
           tableDataTotal={ticketsListDataTotal}
-          paginationChange={(page) => dispatch(paginationChangeAction(page))}
+          paginationChange={(page, pageSize) =>
+            dispatch(paginationChangeAction({ page, pageSize }))
+          }
         />
       </div>
     </TicketsContainer>
