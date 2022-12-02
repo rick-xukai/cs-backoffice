@@ -9,7 +9,7 @@ import SVG from 'react-inlinesvg';
 import { MenuKeys } from './MenuKeys';
 import { Images } from '../../theme';
 import { IMenu } from '../../utils/menuRender';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserScreens } from '../../navigation/Screens';
 
 const MenuList = (): IMenu[] => {
   const { t } = useTranslation();
@@ -18,31 +18,36 @@ const MenuList = (): IMenu[] => {
       key: MenuKeys.dashboardDefault,
       title: t('Dashboard'),
       icon: <DashboardOutlined />,
-      path: UserRoutes.dashboard,
+      path: UserScreens.Dashboard.path,
+      role: UserScreens.Dashboard.role,
     },
     {
       key: MenuKeys.events,
       title: t('Events'),
       icon: <SVG src={Images.Events} />,
-      path: UserRoutes.events,
+      path: UserScreens.Events.path,
+      role: UserScreens.Events.role,
     },
     {
       key: MenuKeys.users,
       title: t('Users'),
       icon: <UserOutlined />,
-      path: UserRoutes.users,
+      path: UserScreens.Users.path,
+      role: UserScreens.Users.role,
     },
     {
       key: MenuKeys.tickets,
       title: t('Tickets'),
       icon: <SVG src={Images.Tickets} />,
-      path: UserRoutes.tickets,
+      path: UserScreens.Tickets.path,
+      role: UserScreens.Tickets.role,
     },
     {
       key: MenuKeys.settings,
       title: t('Settings'),
       icon: <SettingOutlined />,
-      path: UserRoutes.settings,
+      path: UserScreens.Settings.path,
+      role: UserScreens.Settings.role,
     },
   ];
 };

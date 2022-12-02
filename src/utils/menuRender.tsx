@@ -9,11 +9,15 @@ export interface IMenu {
   path?: any;
   icon?: React.ReactNode;
   children?: IMenu[];
+  role?: string[];
 }
 
-const MenuRender = (menus: IMenu[]) =>
+const MenuRender = (menus: IMenu[], menuRole?: string) =>
   menus &&
   menus.map((menu: IMenu) => {
+    if (!menu.role?.includes(menuRole as string)) {
+      return null;
+    }
     if (menu.isGroup) {
       return (
         <Menu.ItemGroup key={menu.key} title={menu.title}>
