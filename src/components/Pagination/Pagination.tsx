@@ -36,7 +36,7 @@ const PaginationContainer = styled.div`
       font-weight: 600;
       font-size: 15px;
       border: none;
-      font-family: Heebo;
+      font-family: Heebo, sans-serif;
     }
     .ant-pagination-options-size-changer,
     .ant-select-selection-search-input,

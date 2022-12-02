@@ -15,7 +15,7 @@ const MenuList = (): IMenu[] => {
   const { t } = useTranslation();
   return [
     {
-      key: MenuKeys.dashboardDefault,
+      key: MenuKeys.dashboard,
       title: t('Dashboard'),
       icon: <DashboardOutlined />,
       path: UserScreens.Dashboard.path,
