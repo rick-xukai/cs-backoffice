@@ -26,7 +26,10 @@ export const UserRoutes = {
   users: '/users',
   tickets: '/tickets',
   settings: '/settings',
-  ticketDetail: '/ticket-detail/:id',
+  ticketDetail: '/ticket-detail/:ticketId',
+  eventInfo: '/event-info/:id',
+  eventTickets: '/event-tickets/:id',
+  eventTicketsDetail: '/event-tickets-detail/:eventId/:ticketId',
 };
 
 export const AuthRoutes = {

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-import { CookieKeys, LocalStorageKeys } from '../../constants/Keys';
+import { CookieKeys } from '../../constants/Keys';
 import { UserRoutes, AuthRoutes } from '../Routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { useCookie, useLocalStorage } from '../../hooks';
+import { useCookie } from '../../hooks';
 import { triggerMenuAction } from '../../app/menu.slice';
 import { selectLayoutType } from '../../app/layout.slice';
 
@@ -26,7 +26,6 @@ const Authmiddleware = ({
   const dispatch = useAppDispatch();
   const layoutType = useAppSelector(selectLayoutType);
   const cookies = useCookie([CookieKeys.authUser]);
-  const localStorage = useLocalStorage();
   const payload = {
     openKeys: (optProps as any).subMenuKeys,
     selectedKeys:
@@ -39,9 +38,6 @@ const Authmiddleware = ({
   useEffect(() => {
     if (payload.selectedKeys) {
       dispatch(triggerMenuAction(payload));
-    }
-    if (path !== UserRoutes.eventDetail) {
-      localStorage.removeItem(LocalStorageKeys.eventDetailCurrentTab);
     }
   }, [path]);
   return (

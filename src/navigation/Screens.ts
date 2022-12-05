@@ -2,6 +2,8 @@ import { UserRoutes, AuthRoutes } from './Routes';
 // User features
 import Dashboard from '../features/Dashboard/Loadable';
 import Events from '../features/Events/Loadable';
+import EventTickets from '../features/EventTickets/Loadable';
+import EventTicketsDetail from '../features/EventTicketsDetail/Loadable';
 import Tickets from '../features/Tickets/Loadable';
 import EventDetail from '../features/EventDetail/Loadable';
 import TicketDetail from '../features/TicketDetail/Loadable';
@@ -32,8 +34,26 @@ export const UserScreens = {
   },
   EventInfo: {
     title: 'Event Info - CrowdServe BO',
-    path: UserRoutes.eventDetail,
+    path: UserRoutes.eventInfo,
     component: EventDetail,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+  },
+  EventTickets: {
+    title: 'Event Tickets - CrowdServe BO',
+    path: UserRoutes.eventTickets,
+    component: EventTickets,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+  },
+  EventTicketsDetail: {
+    title: 'Event Tickets Detail - CrowdServe BO',
+    path: UserRoutes.eventTicketsDetail,
+    component: EventTicketsDetail,
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,

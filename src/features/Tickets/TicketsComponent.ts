@@ -18,13 +18,6 @@ const TicketsContainer = styled.div`
       }
     }
   }
-  .email {
-    cursor: pointer;
-    max-width: 210px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
 `;
 
 export { TicketsContainer };

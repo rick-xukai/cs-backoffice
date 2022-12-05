@@ -21,10 +21,10 @@ import {
 
 const { Option } = Select;
 
-const TicketDetail = () => {
+const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const { id }: { id: string } = useParams();
+  const { ticketId }: { ticketId: string } = useParams();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -34,7 +34,7 @@ const TicketDetail = () => {
   const [ticketStatus, setTicketStatus] = useState<string>('');
 
   useEffect(() => {
-    dispatch(getTicketsDetailAction(id));
+    dispatch(getTicketsDetailAction(ticketId));
   }, []);
 
   useEffect(() => {
@@ -55,13 +55,15 @@ const TicketDetail = () => {
 
   return (
     <TicketDetailContainer>
-      <PageHeaderComponent
-        title="Tickets Details"
-        showBackArrow
-        clickBack={() => history.push(UserRoutes.tickets)}
-      />
+      {showHeader && (
+        <PageHeaderComponent
+          title={t('Tickets Details')}
+          showBackArrow
+          clickBack={() => history.push(UserRoutes.tickets)}
+        />
+      )}
       {(!loading && (
-        <div className="page-main">
+        <div className={`${showHeader && 'page-main'}`}>
           <div className="detail-container">
             <Row className="item">
               <Col span={8} className="item-key">

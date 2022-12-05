@@ -20,64 +20,78 @@ import {
   selectCurrentPageSize,
 } from './Tickets.slice';
 
-export const columns = [
-  {
-    title: 'Ticket Number',
-    dataIndex: 'ticket_number',
-    key: 'ticket_number',
-    render: (text: string, record: TicketsListDataType) => (
-      <Button className="name-btn" disabled={record.status === 'Cancelled'}>
-        <Link to={UserRoutes.ticketDetail.replace(':id', record.ticket_number)}>
-          {text}
-        </Link>
-      </Button>
-    ),
-  },
-  {
-    title: 'User Name',
-    dataIndex: 'user_name',
-    key: 'user_name',
-    width: 110,
-  },
-  {
-    title: 'User Email',
-    dataIndex: 'user_email',
-    key: 'user_email',
-    render: (text: string) => (
-      <Tooltip title={text}>
-        <p className="email">{text}</p>
-      </Tooltip>
-    ),
-  },
-  {
-    title: 'Ticket Type',
-    dataIndex: 'ticket_type',
-    key: 'ticket_type',
-    width: 110,
-  },
-  {
-    title: 'Seat Number',
-    dataIndex: 'seat_number',
-    key: 'seat_number',
-    width: 120,
-  },
-  {
-    title: 'Bought at',
-    dataIndex: 'bought_at',
-    key: 'bought_at',
-    render: (_: string, record: TicketsListDataType) => (
-      <div>
-        <p>{record.bought_at.date}</p>
-        <p style={{ fontSize: 13 }}>{record.bought_at.timeRange}</p>
-      </div>
-    ),
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
-  },
-];
+export const columns = (type?: string) => {
+  const columnType = type;
+  return [
+    {
+      title: 'Ticket Number',
+      dataIndex: 'ticket_number',
+      key: 'ticket_number',
+      width: 180,
+      render: (text: string, record: TicketsListDataType) => (
+        <Button className="name-btn" disabled={record.status === 'Cancelled'}>
+          <Link
+            to={
+              (!columnType &&
+                UserRoutes.ticketDetail.replace(
+                  ':ticketId',
+                  record.ticket_number,
+                )) ||
+              UserRoutes.eventTicketsDetail
+                .replace(':eventId', record.event_id)
+                .replace(':ticketId', record.ticket_number)
+            }
+          >
+            {text}
+          </Link>
+        </Button>
+      ),
+    },
+    {
+      title: 'User Name',
+      dataIndex: 'user_name',
+      key: 'user_name',
+    },
+    {
+      title: 'User Email',
+      dataIndex: 'user_email',
+      key: 'user_email',
+      width: 200,
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <p className="email">{text}</p>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Ticket Type',
+      dataIndex: 'ticket_type',
+      key: 'ticket_type',
+    },
+    {
+      title: 'Seat Number',
+      dataIndex: 'seat_number',
+      key: 'seat_number',
+    },
+    {
+      title: 'Bought at',
+      dataIndex: 'bought_at',
+      key: 'bought_at',
+      render: (_: string, record: TicketsListDataType) => (
+        <div>
+          <p>{record.bought_at.date}</p>
+          <p style={{ fontSize: 13 }}>{record.bought_at.timeRange}</p>
+        </div>
+      ),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: 110,
+    },
+  ];
+};
 
 const Tickets = () => {
   const { t } = useTranslation();
@@ -107,7 +121,7 @@ const Tickets = () => {
           loading={loading}
           currentPage={currentPage}
           currentPageSize={currentPageSize}
-          columns={columns}
+          columns={columns()}
           tableData={ticketsListData}
           tableDataTotal={ticketsListDataTotal}
           paginationChange={(page, pageSize) =>
