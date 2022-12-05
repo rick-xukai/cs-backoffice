@@ -46,6 +46,13 @@ const TableContainer = styled.div`
         background: ${Colors.white};
       }
     }
+    .email {
+      cursor: pointer;
+      max-width: 170px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
   .ant-btn[disabled] {
     background: unset;

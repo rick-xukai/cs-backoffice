@@ -34,11 +34,10 @@ const Events = () => {
       title: 'Event Name',
       dataIndex: 'event_name',
       key: 'event_name',
+      width: 200,
       render: (text: string, record: EventsListDataType) => (
         <Button className="name-btn" disabled={record.status === 'Ended'}>
-          <Link
-            to={UserRoutes.eventDetail.replace(':id', record.id.toString())}
-          >
+          <Link to={UserRoutes.eventInfo.replace(':id', record.id.toString())}>
             {text}
           </Link>
         </Button>
@@ -85,6 +84,7 @@ const Events = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: 110,
     },
   ];
 
