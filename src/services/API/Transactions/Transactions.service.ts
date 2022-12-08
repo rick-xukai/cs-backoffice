@@ -13,6 +13,15 @@ const getTransactionsList = async (payload: any) => {
   return response;
 };
 
+const getTransactionDetail = async (payload: any) => {
+  const uri = API.transactions.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .setQueryParameter(payload)
+    .doGet();
+  return response;
+};
+
 const changeTransactionsStatus = async (payload: any) => {
   const uri = API.transactions.post;
   const response = await requestClient()
@@ -22,4 +31,8 @@ const changeTransactionsStatus = async (payload: any) => {
   return response;
 };
 
-export default { getTransactionsList, changeTransactionsStatus };
+export default {
+  getTransactionsList,
+  changeTransactionsStatus,
+  getTransactionDetail,
+};

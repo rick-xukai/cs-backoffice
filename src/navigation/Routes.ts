@@ -31,6 +31,7 @@ export const UserRoutes = {
   eventTickets: '/event-tickets/:id',
   eventTicketsDetail: '/event-tickets-detail/:eventId/:ticketId',
   transactions: '/transactions',
+  transactionsDetail: '/transactions-detail/:transactionsId',
 };
 
 export const AuthRoutes = {
