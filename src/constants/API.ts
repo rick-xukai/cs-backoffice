@@ -18,6 +18,13 @@ const API = {
     get: '/ticketsDetail/{id}',
     put: '/updateTicket/{id}',
   },
+  getTransactionsList: {
+    get: '/transactions/list',
+  },
+  transactions: {
+    get: '/transactionDetail/{id}',
+    post: '/transactions/status',
+  },
 };
 
 export default API;

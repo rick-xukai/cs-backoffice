@@ -43,6 +43,13 @@ const MenuList = (): IMenu[] => {
       role: UserScreens.Tickets.role,
     },
     {
+      key: MenuKeys.transactions,
+      title: t('Transactions'),
+      icon: <SVG src={Images.Transactions} />,
+      path: UserScreens.Transactions.path,
+      role: UserScreens.Transactions.role,
+    },
+    {
       key: MenuKeys.settings,
       title: t('Settings'),
       icon: <SettingOutlined />,

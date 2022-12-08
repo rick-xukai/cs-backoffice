@@ -85,9 +85,9 @@
   color: $black900;
 }
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
-  background-color: $white-100;
-  color: $black900;
-  font-weight: 400;
+  background-color: $white-100 !important;
+  color: $black900 !important;
+  font-weight: 400 !important;
 }
 .ant-select-item-option-disabled {
   color: $gray-600;
@@ -114,7 +114,54 @@
     width: auto;
   }
 }
-
+.ant-modal {
+  .ant-modal-content {
+    border-radius: 2px;
+  }
+  .ant-modal-body {
+    padding: 24px !important;
+    font-size: 15px;
+    color: $black900;
+    font-weight: 400;
+    .ant-modal-confirm-title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .ant-modal-confirm-btns {
+      .ant-btn {
+        padding: 0;
+        width: 68px;
+        height: 32px;
+        border: 1px solid $black700;
+        border-radius: 2px;
+        font-weight: 400;
+        font-size: 15px;
+        color: $black700;
+      }
+      .ant-btn-primary {
+        border: none;
+        color: $white;
+      }
+    }
+  }
+}
+// .ant-picker-footer-extra {
+//   display: flex;
+//   justify-content: flex-end;
+//   padding-top: 10px !important;
+//   padding-bottom: 10px !important;
+//   .ant-btn {
+//     padding: 0;
+//     border: none;
+//     width: 34px;
+//     height: 24px;
+//     background: $red;
+//     border-radius: 2px;
+//     font-weight: 400;
+//     font-size: 15px;
+//     color: $white;
+//   }
+// }
 .logout-container {
   color: $gray-600;
   padding-left: 16px;

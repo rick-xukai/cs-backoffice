@@ -885,6 +885,300 @@ const MockAPI = () => {
           }
         }),
     );
+
+  mock.onGet(API.getTransactionsList.get).reply((config: any) => {
+    const { params } = config;
+    let transactionsListData = [
+      {
+        id: 1,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user1@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 2,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user2@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 3,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user3@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 4,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user4@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 5,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user5@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 6,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user6@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 7,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user7@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 8,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user8@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 9,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user9@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 10,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user10@crowdserve.com',
+        status: 'Pending',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 11,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user11@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 12,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user12@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 13,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user13@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 14,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user14@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 15,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user15@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 16,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user16@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 1, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 17,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user17@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 28, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 18,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user18@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 19,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user19@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 30, 2022',
+          timeRange: '18:30',
+        },
+      },
+      {
+        id: 20,
+        bank_holder: 'Sledge Hammer',
+        bank_account: 'BNP Paribas SA 1234 5678 9012 345',
+        amount_reflected: '10.00 SGD',
+        user_email: 'user20@crowdserve.com',
+        status: 'Completed',
+        submitted_at: {
+          date: 'Oct 31, 2022',
+          timeRange: '15:30',
+        },
+      },
+    ];
+
+    if (params.page === 2) {
+      const transactionsListDataCompleted: any = [];
+      transactionsListData.forEach((item, index) => {
+        if (index <= 4) {
+          transactionsListDataCompleted.push({ ...item, status: 'Completed' });
+        }
+      });
+      transactionsListData = transactionsListDataCompleted;
+    }
+    return new Promise((resolve, reject) => {
+      if (resolve) {
+        setTimeout(() => {
+          resolve([
+            200,
+            {
+              success: true,
+              results: {
+                data: transactionsListData,
+                total: 25,
+              },
+            },
+          ]);
+        }, 2000);
+      } else {
+        reject(new Error('Something is wrong'));
+      }
+    });
+  });
+  mock.onPost(API.transactions.post).reply(
+    () =>
+      new Promise((resolve, reject) => {
+        if (resolve) {
+          setTimeout(() => {
+            resolve([
+              200,
+              {
+                success: true,
+                results: {
+                  data: {},
+                },
+              },
+            ]);
+          }, 2000);
+        } else {
+          reject(new Error('Something is wrong'));
+        }
+      }),
+  );
 };
 
 export default MockAPI;
