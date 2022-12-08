@@ -24,6 +24,17 @@ export interface TransactionsListDataType {
   };
 }
 
+export interface TransactionDetailDataType {
+  id?: number;
+  user_email: string;
+  bank_name: string;
+  amount: string;
+  bank_holder: string;
+  bank_account: string;
+  submitted_at: string;
+  last_action_at: string;
+  status: string;
+}
 export interface UpdateTransactionsStatusPayload {
   status: string;
   transactions: number[];
@@ -50,6 +61,34 @@ export const getTransactionsListAction = createAsyncThunk<
         page,
         pageSize,
       });
+      if (response.success) {
+        return response.results;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+export const getTransactionDetailAction = createAsyncThunk<
+  TransactionDetailDataType,
+  {},
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getTransactionDetail/getTransactionDetailAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await TransactionsService.getTransactionDetail(payload);
       if (response.success) {
         return response.results;
       }
@@ -101,6 +140,7 @@ interface TransactionsListState {
   loading: boolean;
   changeStatusSuccess: boolean;
   data: TransactionsListDataType[];
+  detailData: TransactionDetailDataType;
   page: number;
   pageSize: number;
   sort: { sortName: string; sortValue: string };
@@ -133,6 +173,16 @@ const initialState: TransactionsListState = {
     end_date: null,
   },
   data: [],
+  detailData: {
+    user_email: '',
+    bank_name: '',
+    amount: '',
+    bank_holder: '',
+    bank_account: '',
+    submitted_at: '',
+    last_action_at: '',
+    status: '',
+  },
   total: 0,
   error: null,
 };
@@ -178,6 +228,21 @@ export const transactionsListSlice = createSlice({
           state.error = action.error as ErrorType;
         }
       })
+      .addCase(getTransactionDetailAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getTransactionDetailAction.fulfilled, (state, action: any) => {
+        state.loading = false;
+        state.detailData = action.payload.data;
+      })
+      .addCase(getTransactionDetailAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
       .addCase(updateTransactionsStatusAction.pending, (state) => {
         state.loading = true;
         state.changeStatusSuccess = false;
@@ -216,6 +281,8 @@ export const selectChangeStatusSuccess = (state: RootState) =>
   state.transactionsList.changeStatusSuccess;
 export const selectFilters = (state: RootState) =>
   state.transactionsList.filters;
+export const selectDetailData = (state: RootState) =>
+  state.transactionsList.detailData;
 export const selectData = (state: RootState) => state.transactionsList.data;
 export const selectError = (state: RootState) => state.transactionsList.error;
 export const selectSort = (state: RootState) => state.transactionsList.sort;

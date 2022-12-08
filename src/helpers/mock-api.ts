@@ -1179,6 +1179,40 @@ const MockAPI = () => {
         }
       }),
   );
+
+  mock
+    .onGet(new RegExp(`${API.transactions.get}`.replace('{id}', '(.*)')))
+    .reply(() => {
+      const transactionDetailData = {
+        id: 1,
+        user_email: 'user1@crowdserve.com',
+        bank_name: 'BNP Paribas SA',
+        amount: '10.00 SGD',
+        bank_holder: 'Sledge Hammer',
+        bank_account: '1234 5678 9012 345',
+        submitted_at: 'Oct 31, 2022 15:32:38',
+        last_action_at: '',
+        status: 'Pending',
+      };
+
+      return new Promise((resolve, reject) => {
+        if (resolve) {
+          setTimeout(() => {
+            resolve([
+              200,
+              {
+                success: true,
+                results: {
+                  data: transactionDetailData,
+                },
+              },
+            ]);
+          }, 2000);
+        } else {
+          reject(new Error('Something is wrong'));
+        }
+      });
+    });
 };
 
 export default MockAPI;

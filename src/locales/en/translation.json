@@ -199,5 +199,13 @@
   "Yes": "Yes",
   "No": "No",
   "View": "View",
-  "Are you sure these transactions have been completed? This action cannot be undone": "Are you sure these transactions have been completed? This action cannot be undone"
+  "Are you sure these transactions have been completed? This action cannot be undone": "Are you sure these transactions have been completed? This action cannot be undone",
+  "Transactions Details": "Transactions Details",
+  "Edit": "Edit",
+  "Bank Name": "Bank Name",
+  "Amount": "Amount",
+  "Bank Holder": "Bank Holder",
+  "Bank Account": "Bank Account",
+  "Submitted At": "Submitted At",
+  "Last Action At": "Last Action At"
 }

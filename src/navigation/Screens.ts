@@ -8,6 +8,7 @@ import Tickets from '../features/Tickets/Loadable';
 import EventDetail from '../features/EventDetail/Loadable';
 import TicketDetail from '../features/TicketDetail/Loadable';
 import Transactions from '../features/Transactions/Loadable';
+import TransactionsDetail from '../features/TransactionsDetail/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -100,6 +101,15 @@ export const UserScreens = {
     title: 'Transactions - CrowdServe BO',
     path: UserRoutes.transactions,
     component: Transactions,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.transactions],
+    guard: true,
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+  },
+  TransactionsDetail: {
+    title: 'Transactions Detail - CrowdServe BO',
+    path: UserRoutes.transactionsDetail,
+    component: TransactionsDetail,
     subMenuKeys: [],
     menuKeys: [vMenuKeys.transactions],
     guard: true,

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { getUnixTime } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +20,7 @@ import type { TablePaginationConfig } from 'antd/es/table';
 import { FilterValue, SorterResult, SortOrder } from 'antd/es/table/interface';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
+import { UserRoutes } from '../../navigation/Routes';
 import { StatusKeys, SortKeys } from '../../constants/Keys';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
@@ -95,11 +97,13 @@ const Transactions = () => {
       title: 'Bank Account',
       dataIndex: 'bank_account',
       key: 'bank_account',
+      width: 170,
     },
     {
       title: 'Amount reflected',
       dataIndex: 'amount_reflected',
       key: 'amount_reflected',
+      width: 160,
     },
     {
       title: 'Submitted At',
@@ -128,7 +132,26 @@ const Transactions = () => {
             status={(text === StatusKeys.pending && 'warning') || 'success'}
             text={text}
           />
-          <span className="view-detail">{t('View')}</span>
+        </div>
+      ),
+    },
+    {
+      title: '',
+      dataIndex: 'view_detail',
+      key: 'view_detail',
+      width: 80,
+      render: (_: string, record: TransactionsListDataType) => (
+        <div className="status-container">
+          <span className="view-detail">
+            <Link
+              to={UserRoutes.transactionsDetail.replace(
+                ':transactionsId',
+                record.id.toString(),
+              )}
+            >
+              {t('View')}
+            </Link>
+          </span>
         </div>
       ),
     },
