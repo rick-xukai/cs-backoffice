@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Table, Spin } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { Colors } from '../../theme';
@@ -19,17 +20,21 @@ const TableContainer = styled.div`
   .ant-table-thead {
     th {
       height: 40px;
-      background: ${Colors.grey5};
+      background: ${Colors.grey9};
       padding-top: 0;
       padding-bottom: 0;
       border-bottom: none;
       border-top-left-radius: unset !important;
       border-top-right-radius: unset !important;
       font-weight: 400;
-      font-size: 14px;
+      font-size: 15px;
       color: ${Colors.grey6};
       ::before {
         display: none;
+      }
+      &.ant-table-column-sort,
+      &.ant-table-column-has-sorters:hover {
+        background: ${Colors.grey9};
       }
     }
   }
@@ -37,8 +42,14 @@ const TableContainer = styled.div`
     td {
       padding-top: 10px;
       padding-bottom: 10px;
+      font-weight: 400;
+      font-size: 15px;
+      color: ${Colors.grey6};
       p {
         margin-bottom: 0;
+      }
+      &.ant-table-column-sort {
+        background: unset;
       }
     }
     .ant-table-row:hover {
@@ -52,6 +63,29 @@ const TableContainer = styled.div`
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+    }
+    .status-container {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 5px;
+      .view-detail {
+        font-weight: 400;
+        font-size: 15px;
+        color: ${Colors.branding};
+      }
+    }
+    .ant-badge-status-text {
+      font-weight: 400 !important;
+      font-size: 15px !important;
+      color: ${Colors.grey6} !important;
+    }
+    .ant-table-row-selected {
+      td {
+        background: ${Colors.white};
+      }
+    }
+    .ant-checkbox-inner {
+      border: 1px solid ${Colors.grey8};
     }
   }
   .ant-btn[disabled] {
@@ -67,6 +101,9 @@ const TableContainer = styled.div`
 
 const TableComponent = ({
   rowKey = 'id',
+  rowSelection = undefined,
+  showHeader,
+  children,
   loading,
   currentPage,
   currentPageSize,
@@ -74,8 +111,12 @@ const TableComponent = ({
   tableData,
   tableDataTotal,
   paginationChange,
+  onChange,
 }: {
   rowKey?: string;
+  rowSelection?: object;
+  showHeader?: boolean;
+  children?: React.ReactChild;
   loading: boolean;
   currentPage: number;
   currentPageSize: number;
@@ -83,9 +124,15 @@ const TableComponent = ({
   tableData: object[];
   tableDataTotal: number;
   paginationChange: (page: number, pageSize?: number) => void;
+  onChange?: (
+    pagination: TablePaginationConfig,
+    filters: Record<string, FilterValue | null>,
+    sorter: SorterResult<any> | any,
+  ) => void;
 }) => (
   <TableContainer>
     <Spin spinning={loading} indicator={<LoadingOutlined spin />} size="large">
+      {children && <div>{children}</div>}
       <Table
         scroll={{ x: 950, y: 580 }}
         rowKey={rowKey}
@@ -93,6 +140,9 @@ const TableComponent = ({
         dataSource={tableData}
         pagination={false}
         locale={{ emptyText: loading ? <div /> : null }}
+        rowSelection={rowSelection}
+        showHeader={showHeader}
+        onChange={onChange}
       />
       <Pagination
         current={currentPage}

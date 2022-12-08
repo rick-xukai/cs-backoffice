@@ -13,3 +13,12 @@ export const UserRoleKeys = {
   admin: 'admin',
   guest: 'guest',
 };
+export const StatusKeys = {
+  all: 'All',
+  pending: 'Pending',
+  completed: 'Completed',
+};
+export const SortKeys = {
+  descend: 'descend',
+  ascend: 'ascend',
+};

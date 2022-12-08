@@ -5,4 +5,5 @@ export const MenuKeys = {
   users: 'menu-users',
   tickets: 'menu-tickets',
   settings: 'menu-settings',
+  transactions: 'menu-transactions',
 };

@@ -188,5 +188,16 @@
   "Cancel": "Cancel",
   "Last Updates": "Last Updates",
   "WELCOME TO CROWDSERVE!": "WELCOME TO CROWDSERVE!",
-  "Tickets Details": "Tickets Details"
+  "Tickets Details": "Tickets Details",
+  "Status": "Status:",
+  "Submitted Date": "Submitted Date:",
+  "Change status": "Change status",
+  "Clear": "Clear",
+  "Transactions": "Transactions",
+  "TransactionCompleted": "Transaction completed",
+  "TransactionCompleted_plural": "Transactions completed",
+  "Yes": "Yes",
+  "No": "No",
+  "View": "View",
+  "Are you sure these transactions have been completed? This action cannot be undone": "Are you sure these transactions have been completed? This action cannot be undone"
 }
