@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
-import { getUnixTime } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import {
   Col,
@@ -20,8 +19,9 @@ import type { TablePaginationConfig } from 'antd/es/table';
 import { FilterValue, SorterResult, SortOrder } from 'antd/es/table/interface';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
+import { formatTimeStrByTimeString } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
-import { StatusKeys, SortKeys } from '../../constants/Keys';
+import { StatusKeys, SortKeys, FormatTimeKeys } from '../../constants/Keys';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -40,7 +40,7 @@ import {
   selectError,
   getTransactionsListAction,
   paginationChangeAction,
-  TransactionsListDataType,
+  TransactionsDataType,
   updateTransactionsStatusAction,
   selectChangeStatusSuccess,
   sortChangeAction,
@@ -71,7 +71,7 @@ const Transactions = () => {
   const [showTableHeader, setShowTableHeader] = useState<boolean>(true);
   const [allRowKeys, setAllRowKeys] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState<boolean>(false);
-  const [changeStatusItems, setChangeStatusItems] = useState<number[]>([]);
+  const [changeStatusItems, setChangeStatusItems] = useState<string[]>([]);
   const [selectItemsQuantity, setSelectItemsQuantity] = useState<number>(0);
   const [canSelectItemsQuantity, setCanSelectItemsQuantity] =
     useState<number>(0);
@@ -79,8 +79,8 @@ const Transactions = () => {
   const columns = [
     {
       title: 'User Email',
-      dataIndex: 'user_email',
-      key: 'user_email',
+      dataIndex: 'userEmail',
+      key: 'userEmail',
       width: 200,
       render: (text: string) => (
         <Tooltip title={text}>
@@ -89,36 +89,48 @@ const Transactions = () => {
       ),
     },
     {
-      title: 'Bank Holder',
-      dataIndex: 'bank_holder',
-      key: 'bank_holder',
+      title: 'Card Holder',
+      dataIndex: 'cardHolder',
+      key: 'cardHolder',
     },
     {
       title: 'Bank Account',
-      dataIndex: 'bank_account',
-      key: 'bank_account',
-      width: 170,
+      dataIndex: 'bankName',
+      key: 'bankName',
+      width: 200,
+      render: (text: string, record: TransactionsDataType) => (
+        <p>
+          {text}
+          <br />
+          {record.cardNo}
+        </p>
+      ),
     },
     {
-      title: 'Amount reflected',
-      dataIndex: 'amount_reflected',
-      key: 'amount_reflected',
-      width: 160,
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      width: 120,
+      render: (text: string, record: TransactionsDataType) => (
+        <p>{`${text} ${record.currency}`}</p>
+      ),
     },
     {
       title: 'Submitted At',
-      dataIndex: 'submitted_at',
-      key: 'submitted_at',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       showSorterTooltip: false,
       width: 140,
       sorter: true,
       defaultSortOrder: SortKeys.descend as SortOrder,
       sortOrder: sort.sortValue as SortOrder,
       sortDirections: [SortKeys.descend, SortKeys.ascend] as SortOrder[],
-      render: (text: { date: string; timeRange: string }) => (
+      render: (text: string) => (
         <div>
-          <p>{text.date}</p>
-          <p style={{ fontSize: 13 }}>{text.timeRange}</p>
+          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
+          <p style={{ fontSize: 13 }}>
+            {formatTimeStrByTimeString(text, FormatTimeKeys.hms)}
+          </p>
         </div>
       ),
     },
@@ -126,11 +138,14 @@ const Transactions = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (text: string) => (
+      render: (text: number) => (
         <div className="status-container">
           <Badge
-            status={(text === StatusKeys.pending && 'warning') || 'success'}
-            text={text}
+            status={(text === StatusKeys.pending.key && 'warning') || 'success'}
+            text={
+              (text === StatusKeys.pending.key && StatusKeys.pending.text) ||
+              StatusKeys.completed.text
+            }
           />
         </div>
       ),
@@ -140,7 +155,7 @@ const Transactions = () => {
       dataIndex: 'view_detail',
       key: 'view_detail',
       width: 80,
-      render: (_: string, record: TransactionsListDataType) => (
+      render: (_: string, record: TransactionsDataType) => (
         <div className="status-container">
           <span className="view-detail">
             <Link
@@ -160,9 +175,9 @@ const Transactions = () => {
   const rowSelection = {
     onChange: (
       selectedRowKeys: number[],
-      selectedRows: TransactionsListDataType[],
+      selectedRows: TransactionsDataType[],
     ) => {
-      const changeStatus: number[] = [];
+      const changeStatus: string[] = [];
       if (!isEmpty(selectedRows)) {
         selectedRows.forEach((item) => {
           changeStatus.push(item.id);
@@ -174,8 +189,8 @@ const Transactions = () => {
       setAllRowKeys(selectedRowKeys);
       setSelectItemsQuantity(selectedRowKeys.length);
     },
-    getCheckboxProps: (record: TransactionsListDataType) => ({
-      disabled: record.status === StatusKeys.completed,
+    getCheckboxProps: (record: TransactionsDataType) => ({
+      disabled: record.status === StatusKeys.completed.key,
       name: record.status,
     }),
     onSelectAll: (selected: boolean) => {
@@ -186,10 +201,10 @@ const Transactions = () => {
 
   const onSelectAll = (event: any) => {
     const canSelectDataKeys: number[] = [];
-    const changeStatus: number[] = [];
+    const changeStatus: string[] = [];
     if (event.target.checked) {
       data
-        .filter((record) => record.status !== StatusKeys.completed)
+        .filter((record) => record.status !== StatusKeys.completed.key)
         .forEach((item, index) => {
           changeStatus.push(item.id);
           canSelectDataKeys.push(index + 1);
@@ -217,8 +232,8 @@ const Transactions = () => {
         setShowTableHeader(true);
         dispatch(
           updateTransactionsStatusAction({
-            status: StatusKeys.completed,
-            transactions: changeStatusItems,
+            note: StatusKeys.completed.text,
+            ids: changeStatusItems,
           }),
         );
       },
@@ -236,6 +251,16 @@ const Transactions = () => {
         sortValue: sorter.order || SortKeys.descend,
       }),
     );
+  };
+
+  const handleStatusChange = (status: string) => {
+    let currentStatus: number | null = null;
+    if (status === StatusKeys.pending.text) {
+      currentStatus = StatusKeys.pending.key;
+    } else if (status === StatusKeys.completed.text) {
+      currentStatus = StatusKeys.completed.key;
+    }
+    dispatch(filtersChangeAction({ status: currentStatus }));
   };
 
   useEffect(() => {
@@ -256,7 +281,7 @@ const Transactions = () => {
   useEffect(() => {
     if (data) {
       setCanSelectItemsQuantity(
-        data.filter((item) => item.status !== StatusKeys.completed).length,
+        data.filter((item) => item.status !== StatusKeys.completed.key).length,
       );
     }
   }, [data]);
@@ -307,15 +332,13 @@ const Transactions = () => {
                   <Col span={8} className="filter-status">
                     <span>{t('Status')}</span>
                     <Select
-                      defaultValue={StatusKeys.all}
-                      onChange={(status) =>
-                        dispatch(filtersChangeAction({ status }))
-                      }
+                      defaultValue={StatusKeys.all.text}
+                      onChange={handleStatusChange}
                       defaultActiveFirstOption={false}
                     >
                       {Object.values(StatusKeys).map((item) => (
-                        <Option key={item} value={item}>
-                          {item}
+                        <Option key={item.text} value={item.text}>
+                          {item.text}
                         </Option>
                       ))}
                     </Select>
@@ -323,13 +346,14 @@ const Transactions = () => {
                   <Col span={16} className="filter-picker">
                     <span>{t('Submitted Date')}</span>
                     <RangePicker
-                      onChange={(date: any) =>
+                      onChange={(_date: any, dateString: string[]) =>
                         dispatch(
                           filtersChangeAction({
-                            start_date:
-                              (date && getUnixTime(new Date(date[0]))) || null,
-                            end_date:
-                              (date && getUnixTime(new Date(date[1]))) || null,
+                            startDate: dateString[0] || null,
+                            endDate:
+                              (dateString[1] &&
+                                `${dateString[1]} ${'23:59:59'}`) ||
+                              null,
                           }),
                         )
                       }

@@ -14,11 +14,25 @@ export const UserRoleKeys = {
   guest: 'guest',
 };
 export const StatusKeys = {
-  all: 'All',
-  pending: 'Pending',
-  completed: 'Completed',
+  all: {
+    text: 'All',
+    key: null,
+  },
+  pending: {
+    text: 'Pending',
+    key: 0,
+  },
+  completed: {
+    text: 'Completed',
+    key: 1,
+  },
 };
 export const SortKeys = {
   descend: 'descend',
   ascend: 'ascend',
+};
+export const FormatTimeKeys = {
+  norm: 'MMM dd, yyyy HH:mm:ss',
+  mdy: 'MMM dd, yyyy',
+  hms: 'HH:mm:ss',
 };
