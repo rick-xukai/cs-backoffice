@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { verificationApi } from '../../utils/func';
 import { SortKeys } from '../../constants/Keys';
 import { RootState } from '../../app/store';
 import TransactionsService from '../../services/API/Transactions';
@@ -11,40 +12,29 @@ export interface ErrorType {
   message: string;
 }
 
-export interface TransactionsListDataType {
-  id: number;
-  bank_holder: string;
-  bank_account: string;
-  amount_reflected: string;
-  user_email: string;
-  status: string;
-  submitted_at: {
-    date: string;
-    timeRange: string;
-  };
+export interface TransactionsDataType {
+  id: string;
+  userEmail: string;
+  bankName: string;
+  cardHolder: string;
+  cardNo: string;
+  amount: number;
+  currency: string;
+  status: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface TransactionDetailDataType {
-  id?: number;
-  user_email: string;
-  bank_name: string;
-  amount: string;
-  bank_holder: string;
-  bank_account: string;
-  submitted_at: string;
-  last_action_at: string;
-  status: string;
-}
 export interface UpdateTransactionsStatusPayload {
-  status: string;
-  transactions: number[];
+  note: string;
+  ids: string[];
 }
 
 /**
  * Transactions List
  */
 export const getTransactionsListAction = createAsyncThunk<
-  TransactionsListDataType[],
+  { count: number; list: TransactionsDataType[] },
   {} | undefined,
   {
     rejectValue: ErrorType;
@@ -53,16 +43,15 @@ export const getTransactionsListAction = createAsyncThunk<
 >(
   'getTransactionsList/getTransactionsListAction',
   async (_payload, { rejectWithValue, getState }) => {
-    const { page, pageSize, sort, filters } = getState().transactionsList;
+    const { page, pageSize, filters } = getState().transactionsList;
     try {
       const response = await TransactionsService.getTransactionsList({
-        ...sort,
         ...filters,
         page,
-        pageSize,
+        size: pageSize,
       });
-      if (response.success) {
-        return response.results;
+      if (verificationApi(response)) {
+        return response.data;
       }
       return rejectWithValue({
         message: response.message,
@@ -79,18 +68,22 @@ export const getTransactionsListAction = createAsyncThunk<
 );
 
 export const getTransactionDetailAction = createAsyncThunk<
-  TransactionDetailDataType,
-  {},
+  TransactionsDataType,
+  undefined,
   {
     rejectValue: ErrorType;
+    state: RootState;
   }
 >(
   'getTransactionDetail/getTransactionDetailAction',
-  async (payload, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
+    const { transactionId } = getState().transactionsList;
     try {
-      const response = await TransactionsService.getTransactionDetail(payload);
-      if (response.success) {
-        return response.results;
+      const response = await TransactionsService.getTransactionDetail(
+        transactionId,
+      );
+      if (verificationApi(response)) {
+        return response.data;
       }
       return rejectWithValue({
         message: response.message,
@@ -111,16 +104,25 @@ export const updateTransactionsStatusAction = createAsyncThunk<
   UpdateTransactionsStatusPayload,
   {
     rejectValue: ErrorType;
+    state: RootState;
   }
 >(
   'updateTransactionsStatus/updateTransactionsStatusAction',
-  async (payload: UpdateTransactionsStatusPayload, { rejectWithValue }) => {
+  async (
+    payload: UpdateTransactionsStatusPayload,
+    { rejectWithValue, dispatch, getState },
+  ) => {
     try {
+      const { transactionId } = getState().transactionsList;
       const response = await TransactionsService.changeTransactionsStatus(
         payload,
       );
-      if (response.success) {
-        return response.results;
+      if (verificationApi(response)) {
+        dispatch(getTransactionsListAction());
+        if (transactionId) {
+          dispatch(getTransactionDetailAction());
+        }
+        return response;
       }
       return rejectWithValue({
         message: response.message,
@@ -139,16 +141,17 @@ export const updateTransactionsStatusAction = createAsyncThunk<
 interface TransactionsListState {
   loading: boolean;
   changeStatusSuccess: boolean;
-  data: TransactionsListDataType[];
-  detailData: TransactionDetailDataType;
+  data: TransactionsDataType[];
+  detailData: TransactionsDataType;
   page: number;
   pageSize: number;
   sort: { sortName: string; sortValue: string };
   filters: {
-    status: string;
-    start_date: number | null;
-    end_date: number | null;
+    status: number | null;
+    startDate: string | null;
+    endDate: string | null;
   };
+  transactionId: string;
   total: number;
   error:
     | {
@@ -168,20 +171,23 @@ const initialState: TransactionsListState = {
     sortValue: SortKeys.descend,
   },
   filters: {
-    status: '',
-    start_date: null,
-    end_date: null,
+    status: null,
+    startDate: null,
+    endDate: null,
   },
+  transactionId: '',
   data: [],
   detailData: {
-    user_email: '',
-    bank_name: '',
-    amount: '',
-    bank_holder: '',
-    bank_account: '',
-    submitted_at: '',
-    last_action_at: '',
-    status: '',
+    id: '',
+    userEmail: '',
+    bankName: '',
+    cardHolder: '',
+    cardNo: '',
+    amount: 0,
+    currency: '',
+    status: 0,
+    createdAt: '',
+    updatedAt: '',
   },
   total: 0,
   error: null,
@@ -208,6 +214,9 @@ export const transactionsListSlice = createSlice({
       state.filters = { ...state.filters, ...action.payload };
       state.page = 1;
     },
+    setTransactionIdAction: (state, action) => {
+      state.transactionId = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -217,8 +226,8 @@ export const transactionsListSlice = createSlice({
       })
       .addCase(getTransactionsListAction.fulfilled, (state, action: any) => {
         state.loading = false;
-        state.data = action.payload.data;
-        state.total = action.payload.total;
+        state.data = action.payload.list;
+        state.total = action.payload.count;
       })
       .addCase(getTransactionsListAction.rejected, (state, action) => {
         state.loading = false;
@@ -233,7 +242,7 @@ export const transactionsListSlice = createSlice({
       })
       .addCase(getTransactionDetailAction.fulfilled, (state, action: any) => {
         state.loading = false;
-        state.detailData = action.payload.data;
+        state.detailData = action.payload;
       })
       .addCase(getTransactionDetailAction.rejected, (state, action) => {
         state.loading = false;
@@ -267,6 +276,7 @@ export const {
   paginationChangeAction,
   sortChangeAction,
   filtersChangeAction,
+  setTransactionIdAction,
 } = transactionsListSlice.actions;
 
 export const selectLoading = (state: RootState) =>

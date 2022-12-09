@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { ACCESS_TOKEN, Users } from '../../../helpers/mock-api';
 import { RootState } from '../../../app/store';
 import AuthenticationService from '../../../services/API/Authentication';
 
@@ -10,7 +11,7 @@ export interface ErrorType {
 }
 
 export interface LoginPayload {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -18,20 +19,36 @@ export interface LoginPayload {
  * Login
  */
 export const loginAction = createAsyncThunk<
-  string,
+  any,
   LoginPayload,
   {
     rejectValue: ErrorType;
   }
 >('login/loginAction', async (payload: LoginPayload, { rejectWithValue }) => {
   try {
+    const validUser = Users.filter(
+      (usr) =>
+        usr.username === payload.username && usr.password === payload.password,
+    );
+    if (validUser.length === 1) {
+      const token = ACCESS_TOKEN;
+      const tokenObj = { accessToken: token }; // Token Obj
+      const userObj = {
+        uid: validUser[0].uid,
+        username: validUser[0].username,
+        role: validUser[0].role,
+        email: validUser[0].email,
+      };
+      const validUserObj = { ...userObj, ...tokenObj };
+      return validUserObj;
+    }
+    return rejectWithValue({
+      message: 'Username and password are invalid.',
+    } as ErrorType);
     const response = await AuthenticationService.doLogin(payload);
     if (response.success) {
       return response.results;
     }
-    return rejectWithValue({
-      message: response.message,
-    } as ErrorType);
   } catch (err) {
     if (!err.response) {
       throw err;

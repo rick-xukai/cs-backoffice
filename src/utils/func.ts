@@ -9,8 +9,10 @@ import {
 const OneMin = 60;
 const OneHour = 3600;
 
-export const formatTimeStrByTimestamp = (timestamp: number) =>
-  format(timestamp * 1000, 'MMM dd, yyyy HH:mm');
+export const formatTimeStrByTimeString = (
+  timeString: string,
+  formatType: string,
+) => format(new Date(timeString), formatType);
 
 export const timeCounterFunc = (timestamp: number) => {
   const currentTimestamp = getUnixTime(new Date());
@@ -102,3 +104,6 @@ export const toggleFullscreen = () => {
     fsDocElem.webkitCancelFullScreen();
   }
 };
+
+export const verificationApi = (response: any) =>
+  response.code === 200 && response.message === 'OK';

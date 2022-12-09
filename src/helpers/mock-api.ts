@@ -7,10 +7,10 @@ import { EventsListDataType } from '../features/Events/Events.slice';
 import { TicketsListDataType } from '../features/Tickets/Tickets.slice';
 import { TicketsDetailDataType } from '../features/TicketDetail/TicketDetail.slice';
 
-const ACCESS_TOKEN =
+export const ACCESS_TOKEN =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
-const Users = [
+export const Users = [
   {
     uid: 1,
     username: 'crowdserve-admin',

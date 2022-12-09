@@ -13,12 +13,9 @@ const getTransactionsList = async (payload: any) => {
   return response;
 };
 
-const getTransactionDetail = async (payload: any) => {
-  const uri = API.transactions.get;
-  const response = await requestClient()
-    .setUri(uri)
-    .setQueryParameter(payload)
-    .doGet();
+const getTransactionDetail = async (payload: string) => {
+  const uri = API.transactions.get.replace('{transactionId}', payload);
+  const response = await requestClient().setUri(uri).doGet();
   return response;
 };
 

@@ -19,11 +19,11 @@ const API = {
     put: '/updateTicket/{id}',
   },
   getTransactionsList: {
-    get: '/transactions/list',
+    get: '/admin/withdraw',
   },
   transactions: {
-    get: '/transactionDetail/{id}',
-    post: '/transactions/status',
+    get: '/admin/withdraw/{transactionId}',
+    post: '/admin/withdraw',
   },
 };
 

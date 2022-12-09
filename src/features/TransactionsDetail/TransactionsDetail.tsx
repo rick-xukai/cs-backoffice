@@ -8,9 +8,10 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 
+import { formatTimeStrByTimeString } from '../../utils/func';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserRoutes } from '../../navigation/Routes';
-import { StatusKeys } from '../../constants/Keys';
+import { StatusKeys, FormatTimeKeys } from '../../constants/Keys';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import {
   reset,
@@ -19,6 +20,7 @@ import {
   selectLoading,
   selectDetailData,
   selectChangeStatusSuccess,
+  setTransactionIdAction,
 } from '../Transactions/Transactions.slice';
 import { TransactionsDetailContainer } from './TransactionsDetailComponent';
 
@@ -51,8 +53,8 @@ const TransactionsDetail = () => {
       onOk() {
         dispatch(
           updateTransactionsStatusAction({
-            status: transactionStatus,
-            transactions: [Number(transactionsId)],
+            note: transactionStatus,
+            ids: [transactionsId],
           }),
         );
       },
@@ -67,7 +69,8 @@ const TransactionsDetail = () => {
   }, [changeStatusSuccess]);
 
   useEffect(() => {
-    dispatch(getTransactionDetailAction({ id: transactionsId }));
+    dispatch(setTransactionIdAction(transactionsId));
+    dispatch(getTransactionDetailAction());
     return () => {
       dispatch(reset());
     };
@@ -86,7 +89,7 @@ const TransactionsDetail = () => {
             <Col span={24} className="edit-status">
               {(!edit && (
                 <Button
-                  disabled={data.status === StatusKeys.completed}
+                  disabled={data.status === StatusKeys.completed.key}
                   type="primary"
                   danger
                   onClick={() => setEdit(true)}
@@ -108,7 +111,7 @@ const TransactionsDetail = () => {
             <Row className="item-row">
               <Col span={12}>
                 <p className="item">{t('User Email')}</p>
-                <p className="value">{data.user_email}</p>
+                <p className="value">{data.userEmail}</p>
               </Col>
               <Col span={12}>
                 <p className="item">{t('Status')}</p>
@@ -116,23 +119,31 @@ const TransactionsDetail = () => {
                   <p className="value">
                     <Badge
                       status={
-                        (data.status === StatusKeys.pending && 'warning') ||
+                        (data.status === StatusKeys.pending.key && 'warning') ||
                         'success'
                       }
-                      text={data.status}
+                      text={
+                        (data.status === StatusKeys.pending.key &&
+                          StatusKeys.pending.text) ||
+                        StatusKeys.completed.text
+                      }
                     />
                   </p>
                 )) || (
                   <Select
-                    defaultValue={data.status}
+                    defaultValue={
+                      (data.status === StatusKeys.pending.key &&
+                        StatusKeys.pending.text) ||
+                      StatusKeys.completed.text
+                    }
                     defaultActiveFirstOption={false}
-                    onChange={(status) => setTransactionStatus(status)}
+                    onChange={(status: any) => setTransactionStatus(status)}
                   >
                     {Object.values(StatusKeys).map((item) => {
-                      if (item !== StatusKeys.all) {
+                      if (item.key !== StatusKeys.all.key) {
                         return (
-                          <Option key={item} value={item}>
-                            {item}
+                          <Option key={item.text} value={item.text}>
+                            {item.text}
                           </Option>
                         );
                       }
@@ -145,31 +156,45 @@ const TransactionsDetail = () => {
             <Row className="item-row">
               <Col span={12}>
                 <p className="item">{t('Bank Name')}</p>
-                <p className="value">{data.bank_name}</p>
+                <p className="value">{data.bankName}</p>
               </Col>
               <Col span={12}>
                 <p className="item">{t('Amount')}</p>
-                <p className="value">{data.amount}</p>
+                <p className="value">{`${data.amount} ${data.currency}`}</p>
               </Col>
             </Row>
             <Row className="item-row">
               <Col span={12}>
-                <p className="item">{t('Bank Holder')}</p>
-                <p className="value">{data.bank_holder}</p>
+                <p className="item">{t('Card Holder')}</p>
+                <p className="value">{data.cardHolder}</p>
               </Col>
               <Col span={12}>
                 <p className="item">{t('Bank Account')}</p>
-                <p className="value">{data.bank_account}</p>
+                <p className="value">{data.cardNo}</p>
               </Col>
             </Row>
             <Row className="item-row">
               <Col span={12}>
                 <p className="item">{t('Submitted At')}</p>
-                <p className="value">{data.submitted_at}</p>
+                <p className="value">
+                  {(data.createdAt &&
+                    formatTimeStrByTimeString(
+                      data.createdAt,
+                      FormatTimeKeys.norm,
+                    )) ||
+                    '-'}
+                </p>
               </Col>
               <Col span={12}>
                 <p className="item">{t('Last Action At')}</p>
-                <p className="value">{data.last_action_at || '-'}</p>
+                <p className="value">
+                  {(data.updatedAt &&
+                    formatTimeStrByTimeString(
+                      data.updatedAt,
+                      FormatTimeKeys.norm,
+                    )) ||
+                    '-'}
+                </p>
               </Col>
             </Row>
           </div>
