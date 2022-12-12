@@ -92,6 +92,7 @@ const Transactions = () => {
       title: 'Card Holder',
       dataIndex: 'cardHolder',
       key: 'cardHolder',
+      width: 130,
     },
     {
       title: 'Bank Account',
@@ -149,12 +150,13 @@ const Transactions = () => {
           />
         </div>
       ),
+      width: 140,
     },
     {
       title: '',
       dataIndex: 'view_detail',
       key: 'view_detail',
-      width: 80,
+      width: 65,
       render: (_: string, record: TransactionsDataType) => (
         <div className="status-container">
           <span className="view-detail">
