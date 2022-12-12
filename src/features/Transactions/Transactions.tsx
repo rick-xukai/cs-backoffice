@@ -69,7 +69,7 @@ const Transactions = () => {
   const filters = useAppSelector(selectFilters);
 
   const [showTableHeader, setShowTableHeader] = useState<boolean>(true);
-  const [allRowKeys, setAllRowKeys] = useState<number[]>([]);
+  const [allRowKeys, setAllRowKeys] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const [changeStatusItems, setChangeStatusItems] = useState<string[]>([]);
   const [selectItemsQuantity, setSelectItemsQuantity] = useState<number>(0);
@@ -174,7 +174,7 @@ const Transactions = () => {
 
   const rowSelection = {
     onChange: (
-      selectedRowKeys: number[],
+      selectedRowKeys: string[],
       selectedRows: TransactionsDataType[],
     ) => {
       const changeStatus: string[] = [];
@@ -200,14 +200,14 @@ const Transactions = () => {
   };
 
   const onSelectAll = (event: any) => {
-    const canSelectDataKeys: number[] = [];
+    const canSelectDataKeys: string[] = [];
     const changeStatus: string[] = [];
     if (event.target.checked) {
       data
         .filter((record) => record.status !== StatusKeys.completed.key)
-        .forEach((item, index) => {
+        .forEach((item) => {
           changeStatus.push(item.id);
-          canSelectDataKeys.push(index + 1);
+          canSelectDataKeys.push(item.id);
         });
     } else {
       setShowTableHeader(true);
