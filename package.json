@@ -6,8 +6,7 @@
     "start": "nodemon -w ./src/style/AntDesign/customTheme.less ./src/style/*.scss --exec \"craco start\"",
     "build": "craco build",
     "start:prod": "cross-env PORT=8081 NODE_ENV=production node server",
-    "pm2": "pm2 start 'BROWSER=none PORT=8081 craco start' --name crowdserve-frontend-bo",
-    "pm2:stop": "pm2 stop crowdserve-frontend-bo",
+    "pm2": "pm2 start 'yarn start:prod' --name crowdserve-frontend-bo",
     "pm2:restart": "pm2 restart crowdserve-frontend-bo",
     "test": "craco test --watchAll=false",
     "eject": "craco eject"
