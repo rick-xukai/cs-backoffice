@@ -68,7 +68,7 @@ export const updateTransactionsStatusAction = createAsyncThunk<
     state: RootState;
   }
 >(
-  'updateTransactionsStatus/updateTransactionsStatusAction',
+  'transactionsDetail/updateTransactionsStatusAction',
   async (
     payload: UpdateTransactionsStatusPayload,
     { rejectWithValue, dispatch, getState },
