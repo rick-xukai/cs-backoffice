@@ -14,84 +14,82 @@ const EventInfo = ({ data }: { data: EventDetailDataType }) => {
   }
 
   return (
-    <div>
-      <EventInfoContainer>
-        <div>
-          <Col span={24} className="title">
-            Lorem ipsum
-          </Col>
-          <Row className="item">
-            <Col span={8} className="item-key">
-              {t('Event Name')}
-            </Col>
-            <Col span={16}>{data.event_name}</Col>
-          </Row>
-          <Row className="item">
-            <Col span={8} className="item-key">
-              {t('Organizer')}
-            </Col>
-            <Col span={16}>{data.organizer}</Col>
-          </Row>
-          <Row className="item">
-            <Col span={8} className="item-key">
-              {t('Event Description')}
-            </Col>
-            <Col span={16}>{data.event_description}</Col>
-          </Row>
-          <Row className="item">
-            <Col span={8} className="item-key">
-              {t('Location')}
-            </Col>
-            <Col span={16}>{data.location}</Col>
-          </Row>
-          <Row className="item">
-            <Col span={8} className="item-key">
-              {t('Date')}
-            </Col>
-            <Col span={16}>{data.date}</Col>
-          </Row>
-          <Row className="item">
-            <Col span={8} className="item-key">
-              {t('Time')}
-            </Col>
-            <Col span={16}>{data.time}</Col>
-          </Row>
-        </div>
-      </EventInfoContainer>
-      {!isEmpty(data.ticketInfo) && (
-        <EventInfoContainer style={{ marginTop: 24 }}>
-          <div className="ticket-info">
-            <Col span={24} className="title">
-              Lorem ipsum
-            </Col>
-            {data.ticketInfo.map((item) => (
-              <div className="item-main" key={item.ticket_type}>
-                <Row className="item">
-                  <Col span={8} className="item-key">
-                    {t('Ticket Type')}
-                  </Col>
-                  <Col span={16}>{item.ticket_type}</Col>
-                </Row>
-                <Row className="item">
-                  <Col span={8} className="item-key">
-                    {t('NFT Image')}
-                  </Col>
-                  <Col span={16}>
-                    <img className="nft-img" src={item.nft_image} alt="" />
-                  </Col>
-                </Row>
-                <Row className="item">
-                  <Col span={8} className="item-key">
-                    {t('NFT Description')}
-                  </Col>
-                  <Col span={16}>{item.nft_description}</Col>
-                </Row>
-              </div>
-            ))}
+    <EventInfoContainer gutter={[24, 24]}>
+      <Col span={12}>
+        <div className="main-box">
+          <div>
+            <Row className="item">
+              <Col span={24} className="item-key">
+                {t('Event Name')}
+              </Col>
+              <Col span={24}>{data.event_name}</Col>
+            </Row>
+            <Row className="item">
+              <Col span={24} className="item-key">
+                {t('Organizer')}
+              </Col>
+              <Col span={24}>{data.organizer}</Col>
+            </Row>
+            <Row className="item">
+              <Col span={24} className="item-key">
+                {t('Location')}
+              </Col>
+              <Col span={24}>{data.location}</Col>
+            </Row>
+            <Row className="item">
+              <Col span={24} className="item-key">
+                {t('Time')}
+              </Col>
+              <Col span={24}>{data.time}</Col>
+            </Row>
+            <Row className="item">
+              <Col span={24} className="item-key">
+                {t('Date')}
+              </Col>
+              <Col span={24}>{data.date}</Col>
+            </Row>
+            <Row className="item">
+              <Col span={24} className="item-key">
+                {t('Event Description')}
+              </Col>
+              <Col span={24}>{data.event_description}</Col>
+            </Row>
           </div>
-        </EventInfoContainer>
-      )}
-    </div>
+        </div>
+      </Col>
+      <Col span={12}>
+        {!isEmpty(data.ticketInfo) && (
+          <div className="main-box">
+            <div className="ticket-info">
+              {data.ticketInfo.map((item) => (
+                <div className="item-main" key={item.ticket_type}>
+                  <Row className="item">
+                    <Col span={9} className="item-key">
+                      {t('Ticket Type')}
+                    </Col>
+                    <Col span={15}>{item.ticket_type}</Col>
+                  </Row>
+                  <Row className="item">
+                    <Col span={9} className="item-key">
+                      {t('NFT Image')}
+                    </Col>
+                    <Col span={15}>
+                      <img className="nft-img" src={item.nft_image} alt="" />
+                    </Col>
+                  </Row>
+                  <Row className="item">
+                    <Col span={9} className="item-key">
+                      {t('NFT Description')}
+                    </Col>
+                    <Col span={15}>{item.nft_description}</Col>
+                  </Row>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </Col>
+    </EventInfoContainer>
   );
 };
 

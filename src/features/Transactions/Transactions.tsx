@@ -42,7 +42,7 @@ import {
   paginationChangeAction,
   TransactionsDataType,
   updateTransactionsStatusAction,
-  selectChangeStatusSuccess,
+  selectchangeStatusSuccess,
   sortChangeAction,
   selectSort,
   filtersChangeAction,
@@ -65,7 +65,7 @@ const Transactions = () => {
   const total = useAppSelector(selectDataTotal);
   const currentPage = useAppSelector(selectCurrentPage);
   const currentPageSize = useAppSelector(selectCurrentPageSize);
-  const changeStatusSuccess = useAppSelector(selectChangeStatusSuccess);
+  const changeStatusSuccess = useAppSelector(selectchangeStatusSuccess);
   const filters = useAppSelector(selectFilters);
 
   const [showTableHeader, setShowTableHeader] = useState<boolean>(true);
@@ -81,7 +81,7 @@ const Transactions = () => {
       title: 'User Email',
       dataIndex: 'userEmail',
       key: 'userEmail',
-      width: 200,
+      width: 165,
       render: (text: string) => (
         <Tooltip title={text}>
           <p className="email">{text}</p>
@@ -92,13 +92,13 @@ const Transactions = () => {
       title: 'Card Holder',
       dataIndex: 'cardHolder',
       key: 'cardHolder',
-      width: 130,
+      width: 120,
     },
     {
       title: 'Bank Account',
       dataIndex: 'bankName',
       key: 'bankName',
-      width: 200,
+      width: 240,
       render: (text: string, record: TransactionsDataType) => (
         <p>
           {text}
@@ -111,9 +111,11 @@ const Transactions = () => {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      width: 120,
-      render: (text: string, record: TransactionsDataType) => (
-        <p>{`${text} ${record.currency}`}</p>
+      width: 85,
+      render: (text: number, record: TransactionsDataType) => (
+        <p style={{ whiteSpace: 'nowrap' }}>
+          {`${text.toFixed(2)} ${record.currency}`}
+        </p>
       ),
     },
     {
@@ -121,8 +123,8 @@ const Transactions = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       showSorterTooltip: false,
-      width: 140,
-      sorter: true,
+      width: 120,
+      sorter: false,
       defaultSortOrder: SortKeys.descend as SortOrder,
       sortOrder: sort.sortValue as SortOrder,
       sortDirections: [SortKeys.descend, SortKeys.ascend] as SortOrder[],
@@ -150,13 +152,13 @@ const Transactions = () => {
           />
         </div>
       ),
-      width: 140,
+      width: 100,
     },
     {
       title: '',
       dataIndex: 'view_detail',
       key: 'view_detail',
-      width: 65,
+      width: 55,
       render: (_: string, record: TransactionsDataType) => (
         <div className="status-container">
           <span className="view-detail">
@@ -332,7 +334,7 @@ const Transactions = () => {
               <Col span={20}>
                 <Row>
                   <Col span={8} className="filter-status">
-                    <span>{t('Status')}</span>
+                    <span>{t('Status')}:</span>
                     <Select
                       defaultValue={StatusKeys.all.text}
                       onChange={handleStatusChange}
@@ -346,7 +348,7 @@ const Transactions = () => {
                     </Select>
                   </Col>
                   <Col span={16} className="filter-picker">
-                    <span>{t('Submitted Date')}</span>
+                    <span>{t('Submitted Date')}:</span>
                     <RangePicker
                       onChange={(_date: any, dateString: string[]) =>
                         dispatch(

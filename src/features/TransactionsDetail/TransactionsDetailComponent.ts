@@ -36,7 +36,7 @@ const TransactionsDetailContainer = styled.div`
       }
     }
     .main-container {
-      padding: 24px;
+      padding: 36px;
       margin-top: 24px;
       border-radius: 4px;
       background: ${Colors.white};
@@ -49,6 +49,7 @@ const TransactionsDetailContainer = styled.div`
         color: ${Colors.grey7};
       }
       .value {
+        margin-bottom: 0;
         color: ${Colors.black5};
       }
       > :last-child {

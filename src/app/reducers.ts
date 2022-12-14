@@ -10,6 +10,7 @@ import ticketsReducer from '../features/Tickets/Tickets.slice';
 import eventsDetailReducer from '../features/EventDetail/EventDetail.slice';
 import ticketsDetailReducer from '../features/TicketDetail/TicketDetail.slice';
 import transactionsListReducer from '../features/Transactions/Transactions.slice';
+import transactionsDetailReducer from '../features/TransactionsDetail/TransactionsDetail.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -23,6 +24,7 @@ const createRootReducer = (history: any) =>
     eventDetail: eventsDetailReducer,
     ticketsDetail: ticketsDetailReducer,
     transactionsList: transactionsListReducer,
+    transactionsDetail: transactionsDetailReducer,
   });
 
 export default createRootReducer;

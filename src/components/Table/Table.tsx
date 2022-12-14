@@ -37,6 +37,13 @@ const TableContainer = styled.div`
         background: ${Colors.grey9};
       }
     }
+    .ant-table-column-sorters {
+      padding-right: 15px;
+      .ant-table-column-title {
+        white-space: nowrap;
+        margin-right: 8px;
+      }
+    }
   }
   .ant-table-tbody {
     td {
@@ -44,7 +51,7 @@ const TableContainer = styled.div`
       padding-bottom: 10px;
       font-weight: 400;
       font-size: 15px;
-      color: ${Colors.grey6};
+      color: ${Colors.black5};
       p {
         margin-bottom: 0;
       }
@@ -58,8 +65,7 @@ const TableContainer = styled.div`
       }
     }
     .email {
-      cursor: pointer;
-      max-width: 170px;
+      max-width: 165px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -72,7 +78,13 @@ const TableContainer = styled.div`
         font-weight: 400;
         font-size: 15px;
         color: ${Colors.branding};
+        a:hover {
+          text-decoration: underline;
+        }
       }
+    }
+    .ant-badge {
+      white-space: nowrap;
     }
     .ant-badge-status-text {
       font-weight: 400 !important;

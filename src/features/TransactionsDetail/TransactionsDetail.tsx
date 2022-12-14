@@ -18,10 +18,10 @@ import {
   updateTransactionsStatusAction,
   getTransactionDetailAction,
   selectLoading,
-  selectDetailData,
-  selectChangeStatusSuccess,
+  selectData,
+  selectchangeStatusSuccess,
   setTransactionIdAction,
-} from '../Transactions/Transactions.slice';
+} from './TransactionsDetail.slice';
 import { TransactionsDetailContainer } from './TransactionsDetailComponent';
 
 const { Option } = Select;
@@ -34,8 +34,8 @@ const TransactionsDetail = () => {
   const history = useHistory();
 
   const loading = useAppSelector(selectLoading);
-  const data = useAppSelector(selectDetailData);
-  const changeStatusSuccess = useAppSelector(selectChangeStatusSuccess);
+  const data = useAppSelector(selectData);
+  const changeStatusSuccess = useAppSelector(selectchangeStatusSuccess);
 
   const [edit, setEdit] = useState<boolean>(false);
   const [transactionStatus, setTransactionStatus] = useState<string>('');
@@ -53,7 +53,7 @@ const TransactionsDetail = () => {
       onOk() {
         dispatch(
           updateTransactionsStatusAction({
-            note: transactionStatus,
+            note: '',
             ids: [transactionsId],
           }),
         );
@@ -67,6 +67,15 @@ const TransactionsDetail = () => {
       setEdit(false);
     }
   }, [changeStatusSuccess]);
+
+  useEffect(() => {
+    if (data) {
+      if (data.status === StatusKeys.completed.key) {
+        setTransactionStatus(StatusKeys.completed.text);
+      }
+      setTransactionStatus(StatusKeys.pending.text);
+    }
+  }, [data]);
 
   useEffect(() => {
     dispatch(setTransactionIdAction(transactionsId));
@@ -99,8 +108,24 @@ const TransactionsDetail = () => {
                 </Button>
               )) || (
                 <div>
-                  <Button onClick={() => setEdit(false)}>{t('Cancel')}</Button>
-                  <Button type="primary" danger onClick={showConfirmModal}>
+                  <Button
+                    onClick={() => {
+                      setEdit(false);
+                      setTransactionStatus(
+                        (data.status === StatusKeys.completed.key &&
+                          StatusKeys.completed.text) ||
+                          StatusKeys.pending.text,
+                      );
+                    }}
+                  >
+                    {t('Cancel')}
+                  </Button>
+                  <Button
+                    type="primary"
+                    disabled={transactionStatus === StatusKeys.pending.text}
+                    danger
+                    onClick={showConfirmModal}
+                  >
                     {t('Save')}
                   </Button>
                 </div>
@@ -160,7 +185,9 @@ const TransactionsDetail = () => {
               </Col>
               <Col span={12}>
                 <p className="item">{t('Amount')}</p>
-                <p className="value">{`${data.amount} ${data.currency}`}</p>
+                <p className="value">{`${data.amount.toFixed(2)} ${
+                  data.currency
+                }`}</p>
               </Col>
             </Row>
             <Row className="item-row">

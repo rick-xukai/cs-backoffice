@@ -7,7 +7,7 @@ import { Colors } from '../../theme';
 
 const PaginationContainer = styled.div`
   display: flex;
-  margin-top: 25px;
+  margin-top: 24px;
   justify-content: flex-end;
   .container-text {
     display: flex;

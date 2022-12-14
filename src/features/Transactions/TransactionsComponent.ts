@@ -22,7 +22,7 @@ const TransactionsContainer = styled.div`
 `;
 
 const TableFilterContainer = styled(Row)`
-  margin-bottom: 16px;
+  margin-bottom: 24px;
   .filter-picker,
   .filter-status {
     display: flex;
@@ -92,7 +92,7 @@ const TableFilterContainer = styled(Row)`
 `;
 
 const TableSelectItemsContainer = styled(Row)`
-  padding-left: 8px;
+  padding-left: 12px;
   padding-right: 24px;
   height: 40px;
   background: ${Colors.white2};
@@ -150,7 +150,7 @@ const TableSelectItemsContainer = styled(Row)`
     }
   }
   .ant-checkbox-wrapper {
-    margin-right: 22px;
+    margin-right: 26px;
   }
 `;
 
