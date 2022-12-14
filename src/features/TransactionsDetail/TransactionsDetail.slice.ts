@@ -1,10 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { verificationApi } from '../../utils/func';
-import { SortKeys } from '../../constants/Keys';
 import { RootState } from '../../app/store';
 import TransactionsService from '../../services/API/Transactions';
-import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -30,26 +28,21 @@ export interface UpdateTransactionsStatusPayload {
   ids: string[];
 }
 
-/**
- * Transactions List
- */
-export const getTransactionsListAction = createAsyncThunk<
-  { count: number; list: TransactionsDataType[] },
-  {} | undefined,
+export const getTransactionDetailAction = createAsyncThunk<
+  TransactionsDataType,
+  undefined,
   {
     rejectValue: ErrorType;
     state: RootState;
   }
 >(
-  'getTransactionsList/getTransactionsListAction',
-  async (_payload, { rejectWithValue, getState }) => {
-    const { page, pageSize, filters } = getState().transactionsList;
+  'getTransactionDetail/getTransactionDetailAction',
+  async (_, { rejectWithValue, getState }) => {
+    const { transactionId } = getState().transactionsDetail;
     try {
-      const response = await TransactionsService.getTransactionsList({
-        ...filters,
-        page,
-        size: pageSize,
-      });
+      const response = await TransactionsService.getTransactionDetail(
+        transactionId,
+      );
       if (verificationApi(response)) {
         return response.data;
       }
@@ -78,14 +71,17 @@ export const updateTransactionsStatusAction = createAsyncThunk<
   'updateTransactionsStatus/updateTransactionsStatusAction',
   async (
     payload: UpdateTransactionsStatusPayload,
-    { rejectWithValue, dispatch },
+    { rejectWithValue, dispatch, getState },
   ) => {
     try {
+      const { transactionId } = getState().transactionsDetail;
       const response = await TransactionsService.changeTransactionsStatus(
         payload,
       );
       if (verificationApi(response)) {
-        dispatch(getTransactionsListAction());
+        if (transactionId) {
+          dispatch(getTransactionDetailAction());
+        }
         return response;
       }
       return rejectWithValue({
@@ -102,19 +98,11 @@ export const updateTransactionsStatusAction = createAsyncThunk<
   },
 );
 
-interface TransactionsState {
+interface TransactionsDetailState {
   loading: boolean;
   changeStatusSuccess: boolean;
-  data: TransactionsDataType[];
-  page: number;
-  pageSize: number;
-  sort: { sortName: string; sortValue: string };
-  filters: {
-    status: number | null;
-    startDate: string | null;
-    endDate: string | null;
-  };
-  total: number;
+  data: TransactionsDataType;
+  transactionId: string;
   error:
     | {
         message: string | undefined;
@@ -123,59 +111,44 @@ interface TransactionsState {
     | null;
 }
 
-const initialState: TransactionsState = {
+const initialState: TransactionsDetailState = {
   loading: false,
   changeStatusSuccess: false,
-  page: defaultCurrentPage,
-  pageSize: defaultPageSize,
-  sort: {
-    sortName: 'submitted_at',
-    sortValue: SortKeys.descend,
+  transactionId: '',
+  data: {
+    id: '',
+    userEmail: '',
+    bankName: '',
+    cardHolder: '',
+    cardNo: '',
+    amount: 0,
+    currency: '',
+    status: 0,
+    createdAt: '',
+    updatedAt: '',
   },
-  filters: {
-    status: null,
-    startDate: null,
-    endDate: null,
-  },
-  data: [],
-  total: 0,
   error: null,
 };
 
-export const transactionsListSlice = createSlice({
-  name: 'transactionsList',
+export const transactionsDetailSlice = createSlice({
+  name: 'transactionsDetail',
   initialState,
   reducers: {
     reset: () => initialState,
-    paginationChangeAction: (state, action) => {
-      if (action.payload.pageSize !== state.pageSize) {
-        state.page = 1;
-      } else {
-        state.page = action.payload.page;
-      }
-      state.pageSize = action.payload.pageSize;
-    },
-    sortChangeAction: (state, action) => {
-      state.sort = action.payload;
-      state.page = 1;
-    },
-    filtersChangeAction: (state, action) => {
-      state.filters = { ...state.filters, ...action.payload };
-      state.page = 1;
+    setTransactionIdAction: (state, action) => {
+      state.transactionId = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getTransactionsListAction.pending, (state) => {
-        state.data = [];
+      .addCase(getTransactionDetailAction.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getTransactionsListAction.fulfilled, (state, action: any) => {
+      .addCase(getTransactionDetailAction.fulfilled, (state, action: any) => {
         state.loading = false;
-        state.data = action.payload.list;
-        state.total = action.payload.count;
+        state.data = action.payload;
       })
-      .addCase(getTransactionsListAction.rejected, (state, action) => {
+      .addCase(getTransactionDetailAction.rejected, (state, action) => {
         state.loading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
@@ -202,27 +175,14 @@ export const transactionsListSlice = createSlice({
   },
 });
 
-export const {
-  reset,
-  paginationChangeAction,
-  sortChangeAction,
-  filtersChangeAction,
-} = transactionsListSlice.actions;
+export const { reset, setTransactionIdAction } =
+  transactionsDetailSlice.actions;
 
-export const selectCurrentPageSize = (state: RootState) =>
-  state.transactionsList.pageSize;
 export const selectchangeStatusSuccess = (state: RootState) =>
-  state.transactionsList.changeStatusSuccess;
+  state.transactionsDetail.changeStatusSuccess;
+export const selectData = (state: RootState) => state.transactionsDetail.data;
 export const selectLoading = (state: RootState) =>
-  state.transactionsList.loading;
-export const selectDataTotal = (state: RootState) =>
-  state.transactionsList.total;
-export const selectCurrentPage = (state: RootState) =>
-  state.transactionsList.page;
-export const selectFilters = (state: RootState) =>
-  state.transactionsList.filters;
-export const selectData = (state: RootState) => state.transactionsList.data;
-export const selectError = (state: RootState) => state.transactionsList.error;
-export const selectSort = (state: RootState) => state.transactionsList.sort;
+  state.transactionsDetail.loading;
+export const selectError = (state: RootState) => state.transactionsDetail.error;
 
-export default transactionsListSlice.reducer;
+export default transactionsDetailSlice.reducer;
