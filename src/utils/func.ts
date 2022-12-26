@@ -1,6 +1,8 @@
 import { format, getUnixTime } from 'date-fns';
 import { utcToZonedTime, format as formatTZ } from 'date-fns-tz';
+import CryptoJS from 'crypto-js';
 
+import { DataEncryptionKeys } from '../constants/Keys';
 import {
   FullScreenDocument,
   FullScreenDocumentElement,
@@ -8,6 +10,7 @@ import {
 
 const OneMin = 60;
 const OneHour = 3600;
+const encryptionKey = process.env.REACT_APP_ENCRYPTION_KEY as string;
 
 export const formatTimeStrByTimeString = (
   timeString: string,
@@ -107,3 +110,15 @@ export const toggleFullscreen = () => {
 
 export const verificationApi = (response: any) =>
   response.code === 200 && response.message === 'OK';
+
+export const dataEncryption = (data: any, type: string) => {
+  let formatData = '';
+  if (type === DataEncryptionKeys.encrypt) {
+    formatData = CryptoJS.AES.encrypt(data, encryptionKey).toString();
+  } else {
+    formatData = CryptoJS.AES.decrypt(data, encryptionKey).toString(
+      CryptoJS.enc.Utf8,
+    );
+  }
+  return formatData;
+};
