@@ -20,7 +20,12 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 
-import { CookieKeys, LocalStorageKeys } from '../../../constants/Keys';
+import { dataEncryption } from '../../../utils/func';
+import {
+  CookieKeys,
+  LocalStorageKeys,
+  DataEncryptionKeys,
+} from '../../../constants/Keys';
 import { UserRoutes } from '../../../navigation/Routes';
 import LoadingCover from '../../../components/LoadingCover';
 import Images from '../../../theme/Images';
@@ -50,12 +55,17 @@ const Login = () => {
   }, [error]);
 
   let initialVlue = {};
-  const rememberMe = localStorage.getItem(LocalStorageKeys.rememberMe);
-  if (rememberMe) {
-    initialVlue = {
-      ...JSON.parse(rememberMe),
-      rememberMe: true,
-    };
+  if (localStorage.getItem(LocalStorageKeys.rememberMe)) {
+    const rememberMe = dataEncryption(
+      localStorage.getItem(LocalStorageKeys.rememberMe),
+      DataEncryptionKeys.decrypt,
+    );
+    if (rememberMe) {
+      initialVlue = {
+        ...JSON.parse(rememberMe),
+        rememberMe: true,
+      };
+    }
   }
 
   const onFinish = async (values: any) => {
@@ -64,10 +74,13 @@ const Login = () => {
       if (rememberMeChecked) {
         localStorage.setItem(
           LocalStorageKeys.rememberMe,
-          JSON.stringify({
-            username: values.username,
-            password: values.password,
-          }),
+          dataEncryption(
+            JSON.stringify({
+              username: values.username,
+              password: values.password,
+            }),
+            DataEncryptionKeys.encrypt,
+          ),
         );
       } else {
         localStorage.removeItem(LocalStorageKeys.rememberMe);
