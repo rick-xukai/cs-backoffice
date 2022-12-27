@@ -112,13 +112,16 @@ export const verificationApi = (response: any) =>
   response.code === 200 && response.message === 'OK';
 
 export const dataEncryption = (data: any, type: string) => {
-  let formatData = '';
-  if (type === DataEncryptionKeys.encrypt) {
-    formatData = CryptoJS.AES.encrypt(data, encryptionKey).toString();
-  } else {
-    formatData = CryptoJS.AES.decrypt(data, encryptionKey).toString(
-      CryptoJS.enc.Utf8,
-    );
-  }
+  let formatData = '{}';
+  try {
+    if (type === DataEncryptionKeys.encrypt) {
+      formatData = CryptoJS.AES.encrypt(data, encryptionKey).toString();
+    } else {
+      formatData = CryptoJS.AES.decrypt(data, encryptionKey).toString(
+        CryptoJS.enc.Utf8,
+      );
+    }
+    // eslint-disable-next-line no-empty
+  } catch (_) {}
   return formatData;
 };
