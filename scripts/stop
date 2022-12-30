@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "$APPLICATION_NAME" == "crowdserve-dev" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-admin" ]; then
+    pm2 stop crowdserve-frontend-admin
+fi
+
+if [ "$APPLICATION_NAME" == "crowdserve-prod" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-admin" ]; then
+    echo "production"
+fi
