@@ -32,7 +32,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   EventInfo: {
     title: 'Event Info - CrowdServe BO',
@@ -41,7 +41,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   EventTickets: {
     title: 'Event Tickets - CrowdServe BO',
@@ -50,7 +50,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   EventTicketsDetail: {
     title: 'Event Tickets Detail - CrowdServe BO',
@@ -59,7 +59,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   Tickets: {
     title: 'Tickets - CrowdServe BO',

@@ -17,6 +17,11 @@ const TableContainer = styled.div`
     font-size: 15px;
     font-weight: 400;
   }
+  .ant-table-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .ant-table-thead {
     th {
       height: 40px;

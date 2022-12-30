@@ -14,7 +14,7 @@ const getEventsList = async (payload: any) => {
 };
 
 const getEventDetail = async (payload: string) => {
-  const uri = API.getEventsDetail.get.replace('{id}', payload);
+  const uri = API.getEventsDetail.get.replace('{ticketId}', payload);
   const response = await requestClient().setUri(uri).doGet();
   return response;
 };

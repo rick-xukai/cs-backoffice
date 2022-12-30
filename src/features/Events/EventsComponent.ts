@@ -12,6 +12,10 @@ const EventsContainer = styled.div`
     height: auto;
     color: ${Colors.branding};
     transition: unset;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     :hover {
       a {
         text-decoration: underline;

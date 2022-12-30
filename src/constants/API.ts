@@ -6,10 +6,10 @@ const API = {
     post: 'register',
   },
   getEventsList: {
-    get: '/events/list',
+    get: '/admin/ticket',
   },
   getEventsDetail: {
-    get: '/eventDetail/{id}',
+    get: '/admin/ticket/{ticketId}',
   },
   getTicketsList: {
     get: '/tickets/list',
