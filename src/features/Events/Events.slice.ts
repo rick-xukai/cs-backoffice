@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { verificationApi } from '../../utils/func';
 import { RootState } from '../../app/store';
 import EventsService from '../../services/API/Events';
 import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
@@ -11,26 +12,21 @@ export interface ErrorType {
 
 export interface EventsListDataType {
   id: string;
-  event_name: string;
-  event_time: {
-    date: string;
-    timeRange: string;
-  };
+  eventName: string;
+  eventStartTime: string;
+  eventEndTime: string;
+  createdAt: string;
   location: string;
   organizer: string;
-  partner: string;
-  created_at: {
-    date: string;
-    timeRange: string;
-  };
-  status: string;
+  partner?: string;
+  status?: string;
 }
 
 /**
  * Events
  */
 export const getEventsListAction = createAsyncThunk<
-  EventsListDataType,
+  { count: number; list: EventsListDataType[] },
   undefined,
   {
     rejectValue: ErrorType;
@@ -41,9 +37,12 @@ export const getEventsListAction = createAsyncThunk<
   async (_, { rejectWithValue, getState }) => {
     const { page, pageSize } = getState().events;
     try {
-      const response = await EventsService.getEventsList({ page, pageSize });
-      if (response.success) {
-        return response.results;
+      const response = await EventsService.getEventsList({
+        page,
+        size: pageSize,
+      });
+      if (verificationApi(response)) {
+        return response.data;
       }
       return rejectWithValue({
         message: response.message,
@@ -104,8 +103,8 @@ export const eventsSlice = createSlice({
       })
       .addCase(getEventsListAction.fulfilled, (state, action: any) => {
         state.loading = false;
-        state.data = action.payload.data;
-        state.total = action.payload.total;
+        state.data = action.payload.list;
+        state.total = action.payload.count;
       })
       .addCase(getEventsListAction.rejected, (state, action) => {
         state.loading = false;

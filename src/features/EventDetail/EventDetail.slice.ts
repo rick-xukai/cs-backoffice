@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { verificationApi } from '../../utils/func';
 import { RootState } from '../../app/store';
 import EventsService from '../../services/API/Events';
 /* eslint-disable no-param-reassign, complexity */
@@ -8,19 +9,22 @@ export interface ErrorType {
   message: string;
 }
 
+export interface TicketTypesItemType {
+  id: number;
+  image: string;
+  name: string;
+  description?: string;
+}
 export interface EventDetailDataType {
-  event_id: string;
-  event_name: string;
-  organizer: string;
-  event_description: string;
+  id: number;
+  createdAt: string;
+  eventDesc: string;
+  eventEndTime: string;
+  eventName: string;
+  eventStartTime: string;
   location: string;
-  date: string;
-  time: string;
-  ticketInfo: {
-    ticket_type: string;
-    nft_image: string;
-    nft_description: string;
-  }[];
+  organizer: string;
+  ticketTypes: TicketTypesItemType[];
 }
 
 /**
@@ -37,8 +41,8 @@ export const getEventDetailAction = createAsyncThunk<
   async (payload, { rejectWithValue }) => {
     try {
       const response = await EventsService.getEventDetail(payload);
-      if (response.success) {
-        return response.results;
+      if (verificationApi(response)) {
+        return response;
       }
       return rejectWithValue({
         message: response.message,
@@ -68,14 +72,15 @@ interface EventDetailState {
 const initialState: EventDetailState = {
   loading: false,
   data: {
-    event_id: '',
-    event_name: '',
-    organizer: '',
-    event_description: '',
+    id: 0,
+    createdAt: '',
+    eventDesc: '',
+    eventEndTime: '',
+    eventName: '',
+    eventStartTime: '',
     location: '',
-    date: '',
-    time: '',
-    ticketInfo: [],
+    organizer: '',
+    ticketTypes: [],
   },
   error: null,
 };

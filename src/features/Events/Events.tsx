@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 
+import { FormatTimeKeys } from '../../constants/Keys';
+import { formatTimeStrByTimeString } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
@@ -32,25 +34,37 @@ const Events = () => {
   const columns = [
     {
       title: 'Event Name',
-      dataIndex: 'event_name',
-      key: 'event_name',
+      dataIndex: 'eventName',
+      key: 'eventName',
       width: 200,
       render: (text: string, record: EventsListDataType) => (
-        <Button className="name-btn" disabled={record.status === 'Ended'}>
-          <Link to={UserRoutes.eventInfo.replace(':id', record.id.toString())}>
-            {text}
-          </Link>
-        </Button>
+        <Tooltip title={text}>
+          <Button className="name-btn" disabled={record.status === 'Ended'}>
+            <Link
+              to={UserRoutes.eventInfo.replace(':id', record.id.toString())}
+            >
+              {text}
+            </Link>
+          </Button>
+        </Tooltip>
       ),
     },
     {
       title: 'Event Time',
-      dataIndex: 'event_time',
-      key: 'event_time',
-      render: (_: string, record: EventsListDataType) => (
+      dataIndex: 'eventStartTime',
+      key: 'eventStartTime',
+      render: (text: string, record: EventsListDataType) => (
         <div>
-          <p>{record.event_time.date}</p>
-          <p style={{ fontSize: 13 }}>{record.event_time.timeRange}</p>
+          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
+          <p style={{ fontSize: 13 }}>
+            {`${formatTimeStrByTimeString(
+              text,
+              FormatTimeKeys.hm,
+            )}~${formatTimeStrByTimeString(
+              record.eventEndTime,
+              FormatTimeKeys.hm,
+            )}`}
+          </p>
         </div>
       ),
     },
@@ -58,6 +72,11 @@ const Events = () => {
       title: 'Location',
       dataIndex: 'location',
       key: 'location',
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <p className="text-ellipsis">{text}</p>
+        </Tooltip>
+      ),
     },
     {
       title: 'Organizer',
@@ -68,15 +87,18 @@ const Events = () => {
       title: 'Partner',
       dataIndex: 'partner',
       key: 'partner',
+      render: (text: string) => <span>{text || '-'}</span>,
     },
     {
       title: 'Created at',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      render: (_: string, record: EventsListDataType) => (
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text: string) => (
         <div>
-          <p>{record.created_at.date}</p>
-          <p style={{ fontSize: 13 }}>{record.created_at.timeRange}</p>
+          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
+          <p style={{ fontSize: 13 }}>
+            {formatTimeStrByTimeString(text, FormatTimeKeys.hm)}
+          </p>
         </div>
       ),
     },
@@ -85,6 +107,7 @@ const Events = () => {
       dataIndex: 'status',
       key: 'status',
       width: 110,
+      render: (text: string) => <span>{text || '-'}</span>,
     },
   ];
 

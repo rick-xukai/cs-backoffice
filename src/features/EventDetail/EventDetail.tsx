@@ -15,6 +15,7 @@ import {
   selectDetailData,
   EventDetailDataType,
   selectError,
+  reset,
 } from './EventDetail.slice';
 import EventInfo from './Component/EventInfo';
 
@@ -27,6 +28,13 @@ const EventDetail = () => {
   const error = useAppSelector(selectError);
   const loadingForDetail = useAppSelector(selectDetailLoading);
   const detailData: EventDetailDataType = useAppSelector(selectDetailData);
+
+  // eslint-disable-next-line
+  useEffect(() => {
+    return () => {
+      dispatch(reset());
+    };
+  }, []);
 
   useEffect(() => {
     if (error) {
