@@ -14,7 +14,7 @@ import NonAuthLayout from './components/NonAuthLayout';
 import { selectLayoutType } from './app/layout.slice';
 import './style/theme.scss';
 
-if (MOCK) {
+if (MOCK === 'true') {
   MockAPI();
 }
 

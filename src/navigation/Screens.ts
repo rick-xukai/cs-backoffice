@@ -1,201 +1,143 @@
 import { UserRoutes, AuthRoutes } from './Routes';
 // User features
 import Dashboard from '../features/Dashboard/Loadable';
-import TablesBasic from '../features/Tables/Basic';
-import TablesResponsive from '../features/Tables/Responsive';
-import TablesControlColumn from '../features/Tables/ControlColumn';
-import FormsColors from '../features/Forms/Colors';
-import FormsElements from '../features/Forms/Elements';
-import FormsLayouts from '../features/Forms/Layouts';
-import FormsValidation from '../features/Forms/Validation';
-import FormsUpload from '../features/Forms/Upload';
-import FormsWizard from '../features/Forms/Wizard';
-import UIAlerts from '../features/UIElements/UIAlerts';
-import UICards from '../features/UIElements/UICards';
-import UIProgress from '../features/UIElements/UIProgress';
-import UITypography from '../features/UIElements/UITypography';
-import UIRates from '../features/UIElements/UIRates';
-import UINotification from '../features/UIElements/UINotification';
+import Events from '../features/Events/Loadable';
+import EventTickets from '../features/EventTickets/Loadable';
+import EventTicketsDetail from '../features/EventTicketsDetail/Loadable';
+import Tickets from '../features/Tickets/Loadable';
+import EventDetail from '../features/EventDetail/Loadable';
+import TicketDetail from '../features/TicketDetail/Loadable';
+import Transactions from '../features/Transactions/Loadable';
+import TransactionsDetail from '../features/TransactionsDetail/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
-import { MenuKeys as hMenuKeys } from '../components/HorizontalLayout/MenuKeys';
 import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
+import { UserRoleKeys } from '../constants/Keys';
 
 export const UserScreens = {
   Dashboard: {
     title: 'Dashboard - CrowdServe BO',
     path: UserRoutes.dashboard,
     component: Dashboard,
-    subMenuKeys: [vMenuKeys.menu, vMenuKeys.dashboard],
-    menuKeys: [vMenuKeys.dashboardDefault],
-    hMenuKeys: [hMenuKeys.dashboardDefault],
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.dashboard],
     guard: true,
+    role: [],
   },
-  DashboardSaas: {
-    title: 'Saas Dashboard - CrowdServe BO',
-    path: UserRoutes.dashboardSaas,
+  Events: {
+    title: 'Events - CrowdServe BO',
+    path: UserRoutes.events,
+    component: Events,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [],
+  },
+  EventInfo: {
+    title: 'Event Info - CrowdServe BO',
+    path: UserRoutes.eventInfo,
+    component: EventDetail,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [],
+  },
+  EventTickets: {
+    title: 'Event Tickets - CrowdServe BO',
+    path: UserRoutes.eventTickets,
+    component: EventTickets,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [],
+  },
+  EventTicketsDetail: {
+    title: 'Event Tickets Detail - CrowdServe BO',
+    path: UserRoutes.eventTicketsDetail,
+    component: EventTicketsDetail,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [],
+  },
+  Tickets: {
+    title: 'Tickets - CrowdServe BO',
+    path: UserRoutes.tickets,
+    component: Tickets,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.tickets],
+    guard: true,
+    role: [],
+  },
+  TicketDetail: {
+    title: 'Tickets Details - CrowdServe BO',
+    path: UserRoutes.ticketDetail,
+    component: TicketDetail,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.tickets],
+    guard: true,
+    role: [],
+  },
+  Users: {
+    title: 'Users - CrowdServe BO',
+    path: UserRoutes.dashboard,
     component: Dashboard,
-    subMenuKeys: [vMenuKeys.menu, vMenuKeys.dashboard],
-    menuKeys: [vMenuKeys.dashboardSaas],
-    hMenuKeys: [hMenuKeys.dashboardSaas],
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.users],
     guard: true,
+    role: [],
   },
-  FormsColors: {
-    title: 'Form Colors - Forms - CrowdServe BO',
-    path: UserRoutes.forms.colors,
-    component: FormsColors,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
-    menuKeys: [vMenuKeys.formsColors],
-    hMenuKeys: [hMenuKeys.formsColors],
+  Settings: {
+    title: 'Settings - CrowdServe BO',
+    path: UserRoutes.dashboard,
+    component: Dashboard,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.settings],
     guard: true,
+    role: [],
   },
-  FormsElements: {
-    title: 'Form Elements - Forms - CrowdServe BO',
-    path: UserRoutes.forms.elements,
-    component: FormsElements,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
-    menuKeys: [vMenuKeys.formsElements],
-    hMenuKeys: [hMenuKeys.formsElements],
+  Transactions: {
+    title: 'Transactions - CrowdServe BO',
+    path: UserRoutes.transactions,
+    component: Transactions,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.transactions],
     guard: true,
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
-  FormsLayouts: {
-    title: 'Form Layouts - Forms - CrowdServe BO',
-    path: UserRoutes.forms.layouts,
-    component: FormsLayouts,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
-    menuKeys: [vMenuKeys.formsLayouts],
-    hMenuKeys: [hMenuKeys.formsLayouts],
+  TransactionsDetail: {
+    title: 'Transactions Detail - CrowdServe BO',
+    path: UserRoutes.transactionsDetail,
+    component: TransactionsDetail,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.transactions],
     guard: true,
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
-  FormsValidation: {
-    title: 'Form Validation - Forms - CrowdServe BO',
-    path: UserRoutes.forms.validation,
-    component: FormsValidation,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
-    menuKeys: [vMenuKeys.formsValidation],
-    hMenuKeys: [hMenuKeys.formsValidation],
-    guard: true,
-  },
-  FormsUpload: {
-    title: 'Form Upload - Forms - CrowdServe BO',
-    path: UserRoutes.forms.upload,
-    component: FormsUpload,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
-    menuKeys: [vMenuKeys.formsUpload],
-    hMenuKeys: [hMenuKeys.formsUpload],
-    guard: true,
-  },
-  FormsWizard: {
-    title: 'Form Wizard - Forms - CrowdServe BO',
-    path: UserRoutes.forms.wizard,
-    component: FormsWizard,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.forms],
-    menuKeys: [vMenuKeys.formsWizard],
-    hMenuKeys: [hMenuKeys.formsWizard],
-    guard: true,
-  },
-  TablesBasic: {
-    title: 'Basic Tables - CrowdServe BO',
-    path: UserRoutes.tablesBasic,
-    component: TablesBasic,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.tables],
-    menuKeys: [vMenuKeys.tablesBasic],
-    hMenuKeys: [hMenuKeys.tablesBasic],
-    guard: true,
-  },
-  TablesResponsive: {
-    title: 'Responsive Tables - CrowdServe BO',
-    path: UserRoutes.tablesResponsive,
-    component: TablesResponsive,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.tables],
-    menuKeys: [vMenuKeys.tablesResponsive],
-    hMenuKeys: [hMenuKeys.tablesResponsive],
-    guard: true,
-  },
-  TablesControlColumn: {
-    title: 'Control Column Tables - CrowdServe BO',
-    path: UserRoutes.tablesControlColumn,
-    component: TablesControlColumn,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.tables],
-    menuKeys: [vMenuKeys.tablesControlColumn],
-    hMenuKeys: [hMenuKeys.tablesControlColumn],
-    guard: true,
-  },
-  UIAlerts: {
-    title: 'UI Alerts - UI Elements - CrowdServe BO',
-    path: UserRoutes.uielements.uiAlerts,
-    component: UIAlerts,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
-    menuKeys: [vMenuKeys.uiElementsAlerts],
-    hMenuKeys: [hMenuKeys.uiElementsAlerts],
-    guard: true,
-  },
-  UICards: {
-    title: 'UI Cards - UI Elements - CrowdServe BO',
-    path: UserRoutes.uielements.uiCards,
-    component: UICards,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
-    menuKeys: [vMenuKeys.uiElementsCards],
-    hMenuKeys: [hMenuKeys.uiElementsCards],
-    guard: true,
-  },
-  UIProgress: {
-    title: 'UI Progress - UI Elements - CrowdServe BO',
-    path: UserRoutes.uielements.uiProgress,
-    component: UIProgress,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
-    menuKeys: [vMenuKeys.uiElementsProgress],
-    hMenuKeys: [hMenuKeys.uiElementsProgress],
-    guard: true,
-  },
-  UITypography: {
-    title: 'UI Typography - UI Elements - CrowdServe BO',
-    path: UserRoutes.uielements.uiTypography,
-    component: UITypography,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
-    menuKeys: [vMenuKeys.uiElementsTypography],
-    hMenuKeys: [hMenuKeys.uiElementsTypography],
-    guard: true,
-  },
-  UIRates: {
-    title: 'UI Rates - UI Elements - CrowdServe BO',
-    path: UserRoutes.uielements.uiRates,
-    component: UIRates,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
-    menuKeys: [vMenuKeys.uiElementsRates],
-    hMenuKeys: [hMenuKeys.uiElementsRates],
-    guard: true,
-  },
-  UINotification: {
-    title: 'UI Notification - UI Elements - CrowdServe BO',
-    path: UserRoutes.uielements.uiNotification,
-    component: UINotification,
-    subMenuKeys: [vMenuKeys.components, vMenuKeys.uiElements],
-    menuKeys: [vMenuKeys.uiElementsNotification],
-    hMenuKeys: [hMenuKeys.uiElementsNotification],
-    guard: true,
-  },
+};
+
+export const AuthScreens = {
   Home: {
     title: 'Home - CrowdServe BO',
     path: UserRoutes.home,
     component: null,
     guard: false,
     exact: true,
+    role: undefined,
   },
-};
-
-export const AuthScreens = {
   Login: {
     title: 'Login - CrowdServe BO',
     path: AuthRoutes.login,
     component: Login,
     guard: false,
+    role: undefined,
   },
   register: {
     title: 'Register - CrowdServe BO',
     path: AuthRoutes.register,
     component: Register,
     guard: false,
+    role: undefined,
   },
 };

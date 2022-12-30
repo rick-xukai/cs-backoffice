@@ -1,49 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   Layout,
-  Row,
   Col,
-  Typography,
   Form,
   Input,
   Checkbox,
   message,
+  Row,
+  Button,
+  Spin,
 } from 'antd';
+import {
+  LockOutlined,
+  UserOutlined,
+  EyeOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
 
-import { CookieKeys, LocalStorageKeys } from '../../../constants/Keys';
-import { UserRoutes, AuthRoutes } from '../../../navigation/Routes';
+import { dataEncryption } from '../../../utils/func';
+import {
+  CookieKeys,
+  LocalStorageKeys,
+  DataEncryptionKeys,
+} from '../../../constants/Keys';
+import { UserRoutes } from '../../../navigation/Routes';
 import LoadingCover from '../../../components/LoadingCover';
-import PrimaryButton from '../../../components/PrimaryButton';
 import Images from '../../../theme/Images';
-import Avatar from '../../../components/Avatar';
-import { LoginContainer, LoginCard } from './Login.components';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import Colors from '../../../theme/Colors';
+import { LoginContainer } from './LoginComponents';
+import { useAppSelector, useAppDispatch } from '../../../app/hooks';
 import { selectLoading, selectError, loginAction } from './Login.slice';
 import { useCookie, useLocalStorage } from '../../../hooks';
 
 const { Content } = Layout;
-const { Title } = Typography;
-
-const CardTitle = () => (
-  <div className="bg-primary bg-soft">
-    <Row justify="start">
-      <Col span={14} className="cart-title">
-        <Title level={5}>Welcome to CrowdServe!</Title>
-        <p>Sign in to continue</p>
-      </Col>
-      <Col span={10}>
-        <img
-          className="img-fluid "
-          src={Images.dashboard.ProfileImg}
-          alt="profile img"
-        />
-      </Col>
-    </Row>
-  </div>
-);
 
 const Login = () => {
   const { t } = useTranslation();
@@ -53,29 +45,42 @@ const Login = () => {
   const history = useHistory();
   const localStorage = useLocalStorage();
   const cookies = useCookie([CookieKeys.authUser]);
+
+  const [rememberMeChecked, setRememberMeChecked] = useState<boolean>(true);
+
   useEffect(() => {
     if (error) {
       message.error(error.message);
     }
   }, [error]);
+
   let initialVlue = {};
-  const rememberMe = localStorage.getItem(LocalStorageKeys.rememberMe);
-  if (rememberMe) {
-    initialVlue = {
-      ...JSON.parse(rememberMe),
-      rememberMe: true,
-    };
+  if (localStorage.getItem(LocalStorageKeys.rememberMe)) {
+    const rememberMe = dataEncryption(
+      localStorage.getItem(LocalStorageKeys.rememberMe),
+      DataEncryptionKeys.decrypt,
+    );
+    if (rememberMe) {
+      initialVlue = {
+        ...JSON.parse(rememberMe),
+        rememberMe: true,
+      };
+    }
   }
+
   const onFinish = async (values: any) => {
     const result = await dispatch(loginAction(values));
     if (result.type === loginAction.fulfilled.toString()) {
-      if (values.rememberMe) {
+      if (rememberMeChecked) {
         localStorage.setItem(
           LocalStorageKeys.rememberMe,
-          JSON.stringify({
-            email: values.email,
-            password: values.password,
-          }),
+          dataEncryption(
+            JSON.stringify({
+              username: values.username,
+              password: values.password,
+            }),
+            DataEncryptionKeys.encrypt,
+          ),
         );
       } else {
         localStorage.removeItem(LocalStorageKeys.rememberMe);
@@ -84,94 +89,100 @@ const Login = () => {
       history.replace(UserRoutes.dashboard);
     }
   };
+
   return (
     <>
       <Helmet>
         <title>{`${t('Login')} | CrowdServe BO`}</title>
       </Helmet>
       <Layout hasSider={false} style={{ minHeight: '100vh' }}>
-        <Content>
-          <LoginContainer justify="center" align="top">
-            <Col sm={16} xs={22}>
-              <LoginCard title={<CardTitle />}>
-                <Avatar src={Images.LogoSMLight} size={72} />
-                <Form
-                  name="login-form"
-                  initialValues={initialVlue}
-                  onFinish={onFinish}
-                >
-                  <Row justify="start" align="middle">
-                    <Col span={24}>
-                      <Form.Item
-                        labelCol={{ span: 24 }}
-                        label="Email"
-                        name="email"
-                        rules={[
-                          {
-                            type: 'email',
-                            required: true,
-                            message: 'Please input your email',
-                          },
-                        ]}
-                      >
-                        <Input placeholder="Your email" />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                  <Row justify="start" align="middle">
-                    <Col span={24}>
-                      <Form.Item
-                        labelCol={{ span: 24 }}
-                        label="Password"
-                        name="password"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Please input your password',
-                          },
-                        ]}
-                      >
-                        <Input.Password />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                  <Row justify="start" align="middle">
-                    <Col span={24}>
-                      <Form.Item
-                        className="remember-me"
-                        name="rememberMe"
-                        valuePropName="checked"
-                      >
-                        <Checkbox>Remember Me</Checkbox>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                  <Row justify="start" align="middle">
-                    <Col span={24}>
-                      <Form.Item>
-                        <PrimaryButton
-                          block
-                          htmlType="submit"
-                          loading={loading}
-                        >
-                          Sign In
-                        </PrimaryButton>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Form>
-                <Row>
-                  <p className="signup">
-                    Don&#39;t have an account ?{' '}
-                    <Link
-                      to={AuthRoutes.register}
-                      className="fw-medium text-primary"
+        <Content
+          style={{
+            width: '100%',
+            background: `${Colors.grey5}`,
+            margin: '0',
+          }}
+        >
+          <LoginContainer>
+            <Col span={10} className="login-background">
+              <img src={Images.Logo} alt="" className="logo" />
+            </Col>
+            <Col span={14} style={{ display: 'flex' }}>
+              <Row className="login-form">
+                <Col span={24} className="login-title">
+                  {t('WELCOME TO CROWDSERVE!')}
+                </Col>
+                <Col span={24}>
+                  <Form
+                    initialValues={initialVlue}
+                    name="login"
+                    onFinish={onFinish}
+                  >
+                    <Form.Item
+                      name="username"
+                      rules={[
+                        {
+                          required: true,
+                          message: `${t('Please input your username!')}`,
+                        },
+                      ]}
                     >
-                      Signup now
-                    </Link>
-                  </p>
-                </Row>
-              </LoginCard>
+                      <Input
+                        placeholder="User Name"
+                        prefix={<UserOutlined />}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="password"
+                      rules={[
+                        {
+                          required: true,
+                          message: `${t('Please input your password!')}`,
+                        },
+                      ]}
+                    >
+                      <Input.Password
+                        placeholder="Password"
+                        prefix={<LockOutlined />}
+                        iconRender={(visible) =>
+                          (!visible && (
+                            <img src={Images.PasswordHidden} alt="" />
+                          )) || <EyeOutlined />
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item name="remember" className="remember-me">
+                      <Checkbox
+                        name="remember"
+                        checked={rememberMeChecked}
+                        onChange={(e) => setRememberMeChecked(e.target.checked)}
+                      >
+                        {t('Remember me')}
+                      </Checkbox>
+                    </Form.Item>
+                    <Form.Item>
+                      <Button
+                        disabled={loading}
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        {(loading && (
+                          <Spin
+                            indicator={
+                              <LoadingOutlined
+                                spin
+                                style={{ color: Colors.white }}
+                              />
+                            }
+                            size="default"
+                          />
+                        )) ||
+                          t('Sign In')}
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </Col>
+              </Row>
             </Col>
           </LoginContainer>
         </Content>

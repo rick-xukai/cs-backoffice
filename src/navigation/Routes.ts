@@ -21,6 +21,17 @@ export const UserRoutes = {
     uiRates: '/ui-rates',
     uiNotification: '/ui-notification',
   },
+  events: '/events',
+  eventDetail: '/event-detail/:id',
+  users: '/users',
+  tickets: '/tickets',
+  settings: '/settings',
+  ticketDetail: '/ticket-detail/:ticketId',
+  eventInfo: '/event-info/:id',
+  eventTickets: '/event-tickets/:id',
+  eventTicketsDetail: '/event-tickets-detail/:eventId/:ticketId',
+  transactions: '/transactions',
+  transactionsDetail: '/transactions-detail/:transactionsId',
 };
 
 export const AuthRoutes = {

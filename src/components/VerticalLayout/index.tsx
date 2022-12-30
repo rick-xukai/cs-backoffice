@@ -16,9 +16,7 @@ import {
   switchTopbarThemeAction,
   toggloRightbarAction,
 } from '../../app/layout.slice';
-import Header from './Header';
 import SideBar from './SideBar';
-import Footer from './Footer';
 
 const { Content } = Layout;
 
@@ -37,13 +35,6 @@ const LayoutCmp = ({ children }: { children: React.ReactChildren }) => {
     dispatch(switchSidebarThemeAction(sidebarTheme));
     dispatch(switchTopbarThemeAction(topbarTheme));
   }, []);
-  const toggleMenu = useCallback(() => {
-    if (sidebarType === SidebarTypes.default) {
-      dispatch(switchSidebarTypeAction(SidebarTypes.condensed));
-    } else if (sidebarType === SidebarTypes.condensed) {
-      dispatch(switchSidebarTypeAction(SidebarTypes.default));
-    }
-  }, [sidebarType]);
   const handleBroken = (b: boolean) => {
     if (sidebarType === SidebarTypes.icon) {
       dispatch(switchSidebarTypeAction(sidebarType));
@@ -67,13 +58,7 @@ const LayoutCmp = ({ children }: { children: React.ReactChildren }) => {
         handleBroken={handleBroken}
       />
       <Layout className="content-layout">
-        <Header
-          sidebarType={sidebarType}
-          toggle={toggleMenu}
-          toggleRightbar={toggleRightbar}
-        />
         <Content className="page-content">{children}</Content>
-        <Footer />
       </Layout>
       <SettingDrawer visible={rightbar} toggleRightbar={toggleRightbar} />
     </Layout>

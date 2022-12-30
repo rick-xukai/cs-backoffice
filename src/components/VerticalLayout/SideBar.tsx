@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Layout } from 'antd';
+import { useTranslation } from 'react-i18next';
+import { Layout, Row } from 'antd';
+import { LogoutOutlined } from '@ant-design/icons';
 import { SiderTheme } from 'antd/lib/layout/Sider';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
+import { AuthRoutes } from '../../navigation/Routes';
+import { useCookie } from '../../hooks';
+import { CookieKeys } from '../../constants/Keys';
 import Images from '../../theme/Images';
 import { SidebarWidth, CollapsedWidth } from '../../constants/Layout';
 import SidebarContent from './SidebarContent';
@@ -25,7 +30,17 @@ const SideBar = ({
   handleBroken: (c: boolean) => void;
   sidebarTheme: SiderTheme;
 }) => {
+  const { t } = useTranslation();
+  const history = useHistory();
+  const cookies = useCookie([CookieKeys.authUser]);
+
   const [collapsedWidth, setCollapsedWidth] = useState(CollapsedWidth);
+
+  const logout = () => {
+    cookies.removeCookie(CookieKeys.authUser);
+    history.push(AuthRoutes.login);
+  };
+
   return (
     <SidebarCmp
       trigger={null}
@@ -45,24 +60,19 @@ const SideBar = ({
       }}
     >
       <div className="logo-box">
-        <Link to="/" className="logo logo-dark">
-          <span className="logo-sm">
-            <img src={Images.LogoSMLight} alt="Logo" height="22" />
-          </span>
-          <span className="logo-lg">
-            <img src={Images.LogoDark} alt="Logo" height="30" />
-          </span>
-        </Link>
-        <Link to="/" className="logo logo-light">
-          <span className="logo-sm">
-            <img src={Images.LogoSMLight} alt="Logo" height="22" />
-          </span>
-          <span className="logo-lg">
-            <img src={Images.LogoLight} alt="" height="30" />
+        <Link to="/" className="logo">
+          <span>
+            <img src={Images.Logo} alt="" />
           </span>
         </Link>
       </div>
       <SidebarContent sidebarTheme={sidebarTheme} />
+      <Row className="logout-container" onClick={logout}>
+        <div className="text">
+          <LogoutOutlined className="logout-icon" />
+          {t('Logout')}
+        </div>
+      </Row>
     </SidebarCmp>
   );
 };

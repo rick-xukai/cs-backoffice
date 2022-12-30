@@ -1,171 +1,169 @@
 import React from 'react';
-import { Col, Row, Table } from 'antd';
 import styled from 'styled-components';
-import { SizeType } from 'antd/lib/config-provider/SizeContext';
-import { TablePaginationConfig } from 'antd/lib/table';
-import { PanelRender, RowClassName } from 'rc-table/lib/interface';
+import { Table, Spin } from 'antd';
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import { FilterValue, SorterResult } from 'antd/es/table/interface';
+import { LoadingOutlined } from '@ant-design/icons';
 
-import DescriptionsList from './DescriptionsList';
+import { Colors } from '../../theme';
+import Pagination from '../Pagination';
 
-/* eslint-disable no-nested-ternary, complexity */
-interface ColorType {
-  text?: string;
-  bg?: string;
-  hoverText?: string;
-  hoverBg?: string;
-}
-interface TableBoxType {
-  rowKey: string;
-  columns: object[];
-  dataSource: object[];
-  className?: string;
-  color?: ColorType;
-  dark?: boolean;
-  bordered?: boolean;
-  neat?: boolean;
-  disableHover?: boolean;
-  pagination?: false | TablePaginationConfig;
-  size?: SizeType;
-  scroll?: {
-    x?: number | true | string;
-    y?: number | string;
-  } & {
-    scrollToFirstRowOnChange?: boolean;
-  };
-  rowClassName?: string | RowClassName<object>;
-  title?: PanelRender<object>;
-  footer?: PanelRender<object>;
-}
-interface TableType extends TableBoxType {
-  responsive?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
-}
-
-const TableContainer = styled(Table)<{
-  color?: ColorType;
-  dark?: boolean;
-  neat?: boolean;
-  disableHover?: boolean;
-}>`
-  .ant-table table {
-    tr:hover > td {
-      color: ${(props) =>
-        props.disableHover
-          ? props.color && props.color.text
-            ? props.color.text
-            : 'unset'
-          : props.color && props.color.hoverText
-          ? props.color.hoverText
-          : props.dark
-          ? '#fff'
-          : '#001529'};
-      background: ${(props) =>
-        props.disableHover
-          ? props.color && props.color.bg
-            ? props.color.bg
-            : 'unset'
-          : props.color && props.color.hoverBg
-          ? props.color.hoverBg
-          : props.dark
-          ? '#343a40'
-          : '#fafafa'};
+const TableContainer = styled.div`
+  padding: 24px;
+  background: ${Colors.white};
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  .ant-table-content {
+    font-size: 15px;
+    font-weight: 400;
+  }
+  .ant-table-thead {
+    th {
+      height: 40px;
+      background: ${Colors.grey9};
+      padding-top: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+      border-top-left-radius: unset !important;
+      border-top-right-radius: unset !important;
+      font-weight: 400;
+      font-size: 15px;
+      color: ${Colors.grey6};
+      ::before {
+        display: none;
+      }
+      &.ant-table-column-sort,
+      &.ant-table-column-has-sorters:hover {
+        background: ${Colors.grey9};
+      }
+    }
+    .ant-table-column-sorters {
+      padding-right: 15px;
+      .ant-table-column-title {
+        white-space: nowrap;
+        margin-right: 8px;
+      }
     }
   }
-  .ant-table-thead > tr > th {
-    color: ${(props) =>
-      props.color && props.color.text
-        ? props.color.text
-        : props.dark
-        ? '#fff'
-        : '#001529'};
-    background: ${(props) =>
-      props.color && props.color.bg
-        ? props.color.bg
-        : props.dark
-        ? '#001529'
-        : '#fff'};
-    &::before {
-      display: none;
+  .ant-table-tbody {
+    td {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-weight: 400;
+      font-size: 15px;
+      color: ${Colors.black5};
+      p {
+        margin-bottom: 0;
+      }
+      &.ant-table-column-sort {
+        background: unset;
+      }
+    }
+    .ant-table-row:hover {
+      td {
+        background: ${Colors.white};
+      }
+    }
+    .email {
+      max-width: 165px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .status-container {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 5px;
+      .view-detail {
+        font-weight: 400;
+        font-size: 15px;
+        color: ${Colors.branding};
+        a:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    .ant-badge {
+      white-space: nowrap;
+    }
+    .ant-badge-status-text {
+      font-weight: 400 !important;
+      font-size: 15px !important;
+      color: ${Colors.grey6} !important;
+    }
+    .ant-table-row-selected {
+      td {
+        background: ${Colors.white};
+      }
+    }
+    .ant-checkbox-inner {
+      border: 1px solid ${Colors.grey8};
     }
   }
-  .ant-table-tbody > tr > td {
-    color: ${(props) =>
-      props.color && props.color.text
-        ? props.color.text
-        : props.dark
-        ? '#fff'
-        : '#001529'};
-    background: ${(props) =>
-      props.color && props.color.bg
-        ? props.color.bg
-        : props.dark
-        ? '#001529'
-        : '#fff'};
-  }
-  .ant-table-thead > tr > th,
-  .ant-table-tbody > tr > td {
-    border-bottom: ${(props) => (props.neat ? 0 : '1px solid #f0f0f0')};
-  }
-  .ant-table-title {
-    padding: 0;
+  .ant-btn[disabled] {
+    background: unset;
+    color: ${Colors.grey7};
+    :hover {
+      a {
+        text-decoration: unset;
+      }
+    }
   }
 `;
 
-const TableBox = (props: TableBoxType) => {
-  const {
-    rowKey,
-    columns,
-    dataSource,
-    className,
-    color,
-    dark,
-    bordered,
-    neat,
-    disableHover,
-    pagination,
-    size,
-    scroll,
-    rowClassName,
-    title,
-    footer,
-  } = props;
-  return (
-    <TableContainer
-      rowKey={rowKey}
-      size={size}
-      className={className}
-      columns={columns}
-      dataSource={dataSource}
-      color={color}
-      dark={dark}
-      bordered={bordered}
-      neat={neat}
-      disableHover={disableHover}
-      pagination={pagination}
-      scroll={scroll}
-      rowClassName={rowClassName}
-      title={title}
-      footer={footer}
-    />
-  );
-};
+const TableComponent = ({
+  rowKey = 'id',
+  rowSelection = undefined,
+  showHeader,
+  children,
+  loading,
+  currentPage,
+  currentPageSize,
+  columns,
+  tableData,
+  tableDataTotal,
+  paginationChange,
+  onChange,
+}: {
+  rowKey?: string;
+  rowSelection?: object;
+  showHeader?: boolean;
+  children?: React.ReactChild;
+  loading: boolean;
+  currentPage: number;
+  currentPageSize: number;
+  columns: ColumnsType<any>;
+  tableData: object[];
+  tableDataTotal: number;
+  paginationChange: (page: number, pageSize?: number) => void;
+  onChange?: (
+    pagination: TablePaginationConfig,
+    filters: Record<string, FilterValue | null>,
+    sorter: SorterResult<any> | any,
+  ) => void;
+}) => (
+  <TableContainer>
+    <Spin spinning={loading} indicator={<LoadingOutlined spin />} size="large">
+      {children && <div>{children}</div>}
+      <Table
+        scroll={{ x: 950, y: 580 }}
+        rowKey={rowKey}
+        columns={columns}
+        dataSource={tableData}
+        pagination={false}
+        locale={{ emptyText: loading ? <div /> : null }}
+        rowSelection={rowSelection}
+        showHeader={showHeader}
+        onChange={onChange}
+      />
+      <Pagination
+        current={currentPage}
+        pageSize={currentPageSize}
+        total={tableDataTotal}
+        onChange={paginationChange}
+      />
+    </Spin>
+  </TableContainer>
+);
 
-const CustomTable = (props: TableType) => {
-  const { responsive, columns, dataSource } = props;
-  if (responsive) {
-    const colProps = { span: 0, [responsive]: 24 };
-    const smallColProps = { span: 24, [responsive]: 0 };
-    return (
-      <Row>
-        <Col {...colProps}>
-          <TableBox {...props} />
-        </Col>
-        <Col {...smallColProps}>
-          <DescriptionsList columns={columns} dataSource={dataSource} />
-        </Col>
-      </Row>
-    );
-  }
-  return <TableBox {...props} />;
-};
-
-export default CustomTable;
+export default TableComponent;

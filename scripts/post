@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$APPLICATION_NAME" == "crowdserve-dev" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-admin" ]; then
+    cd /mnt/frontend_admin
+    yarn install --prod --frozen-lockfile --cache-folder /mnt/ycache --network-timeout 300000
+    rm -f index.js && cp server/index.js . && rm -rf server
+fi
+
+if [ "$APPLICATION_NAME" == "crowdserve-prod" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-admin" ]; then
+    echo "production"
+fi

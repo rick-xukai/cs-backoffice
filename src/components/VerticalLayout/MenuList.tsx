@@ -1,145 +1,60 @@
 import React from 'react';
 import {
-  HomeOutlined,
-  GlobalOutlined,
-  UnorderedListOutlined,
-  FormOutlined,
+  DashboardOutlined,
+  UserOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-
+import SVG from 'react-inlinesvg';
 import { MenuKeys } from './MenuKeys';
-import { UserScreens } from '../../navigation/Screens';
+import { Images } from '../../theme';
 import { IMenu } from '../../utils/menuRender';
+import { UserScreens } from '../../navigation/Screens';
 
 const MenuList = (): IMenu[] => {
   const { t } = useTranslation();
   return [
     {
-      key: MenuKeys.menu,
-      title: t('Menu'),
-      isGroup: true,
-      children: [
-        {
-          key: MenuKeys.dashboard,
-          title: t('Dashboard'),
-          icon: <HomeOutlined />,
-          children: [
-            {
-              key: MenuKeys.dashboardDefault,
-              title: t('Default'),
-              path: UserScreens.Dashboard.path,
-            },
-            {
-              key: MenuKeys.dashboardSaas,
-              title: t('Saas'),
-              path: UserScreens.Dashboard.path,
-            },
-          ],
-        },
-      ],
+      key: MenuKeys.dashboard,
+      title: t('Dashboard'),
+      icon: <DashboardOutlined />,
+      path: UserScreens.Dashboard.path,
+      role: UserScreens.Dashboard.role,
     },
     {
-      key: MenuKeys.components,
-      title: t('Components'),
-      isGroup: true,
-      children: [
-        {
-          key: MenuKeys.uiElements,
-          title: t('UI Elements'),
-          icon: <UnorderedListOutlined />,
-          children: [
-            {
-              key: MenuKeys.uiElementsAlerts,
-              title: t('Alerts'),
-              path: UserScreens.UIAlerts.path,
-            },
-            {
-              key: MenuKeys.uiElementsCards,
-              title: t('Cards'),
-              path: UserScreens.UICards.path,
-            },
-            {
-              key: MenuKeys.uiElementsProgress,
-              title: t('Progress Bars'),
-              path: UserScreens.UIProgress.path,
-            },
-            {
-              key: MenuKeys.uiElementsTypography,
-              title: t('Typography'),
-              path: UserScreens.UITypography.path,
-            },
-            {
-              key: MenuKeys.uiElementsRates,
-              title: t('Rating'),
-              path: UserScreens.UIRates.path,
-            },
-            {
-              key: MenuKeys.uiElementsNotification,
-              title: t('Notifications'),
-              path: UserScreens.UINotification.path,
-            },
-          ],
-        },
-        {
-          key: MenuKeys.forms,
-          title: t('Forms'),
-          icon: <FormOutlined />,
-          children: [
-            {
-              key: MenuKeys.formsColors,
-              title: t('Form Colors'),
-              path: UserScreens.FormsColors.path,
-            },
-            {
-              key: MenuKeys.formsElements,
-              title: t('Form Elements'),
-              path: UserScreens.FormsElements.path,
-            },
-            {
-              key: MenuKeys.formsLayouts,
-              title: t('Form Layouts'),
-              path: UserScreens.FormsLayouts.path,
-            },
-            {
-              key: MenuKeys.formsValidation,
-              title: t('Form Validation'),
-              path: UserScreens.FormsValidation.path,
-            },
-            {
-              key: MenuKeys.formsUpload,
-              title: t('Form File Upload'),
-              path: UserScreens.FormsUpload.path,
-            },
-            {
-              key: MenuKeys.formsWizard,
-              title: t('Form Wizard'),
-              path: UserScreens.FormsWizard.path,
-            },
-          ],
-        },
-        {
-          key: MenuKeys.tables,
-          title: t('Tables'),
-          icon: <GlobalOutlined />,
-          children: [
-            {
-              key: MenuKeys.tablesBasic,
-              title: t('Basic Tables'),
-              path: UserScreens.TablesBasic.path,
-            },
-            {
-              key: MenuKeys.tablesResponsive,
-              title: t('Responsive Table'),
-              path: UserScreens.TablesResponsive.path,
-            },
-            {
-              key: MenuKeys.tablesControlColumn,
-              title: t('Control Column'),
-              path: UserScreens.TablesControlColumn.path,
-            },
-          ],
-        },
-      ],
+      key: MenuKeys.events,
+      title: t('Events'),
+      icon: <SVG src={Images.Events} />,
+      path: UserScreens.Events.path,
+      role: UserScreens.Events.role,
+    },
+    {
+      key: MenuKeys.users,
+      title: t('Users'),
+      icon: <UserOutlined />,
+      path: UserScreens.Users.path,
+      role: UserScreens.Users.role,
+    },
+    {
+      key: MenuKeys.tickets,
+      title: t('Tickets'),
+      icon: <SVG src={Images.Tickets} />,
+      path: UserScreens.Tickets.path,
+      role: UserScreens.Tickets.role,
+    },
+    {
+      key: MenuKeys.transactions,
+      title: t('Transactions'),
+      icon: <SVG src={Images.Transactions} />,
+      path: UserScreens.Transactions.path,
+      role: UserScreens.Transactions.role,
+    },
+    {
+      key: MenuKeys.settings,
+      title: t('Settings'),
+      icon: <SettingOutlined />,
+      path: UserScreens.Settings.path,
+      role: UserScreens.Settings.role,
     },
   ];
 };
