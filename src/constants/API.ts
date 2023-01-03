@@ -12,11 +12,11 @@ const API = {
     get: '/admin/ticket/{ticketId}',
   },
   getTicketsList: {
-    get: '/tickets/list',
+    get: '/admin/user_ticket',
   },
   ticketsDetail: {
-    get: '/ticketsDetail/{id}',
-    put: '/updateTicket/{id}',
+    get: '/admin/user_ticket/{userTicketId}',
+    put: '/admin/user_ticket/{userTicketId}/status',
   },
   getTransactionsList: {
     get: '/admin/withdraw',

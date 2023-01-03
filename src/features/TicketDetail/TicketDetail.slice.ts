@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { verificationApi } from '../../utils/func';
 import { RootState } from '../../app/store';
 import TicketsService from '../../services/API/Tickets';
 
@@ -10,19 +11,29 @@ export interface ErrorType {
 }
 
 export interface TicketsDetailDataType {
-  user_name: string;
-  user_email: string;
-  event_name: string;
-  organizer: string;
-  ticket_type: string;
-  seat_number: string;
-  price: string;
-  ticket_number: string;
-  nft_ticket: string;
-  view_blockchain: string;
-  ticket_status: string;
-  allowed_status: string[];
-  last_updates: string;
+  id: number;
+  cancelledAt: string;
+  createdAt: string;
+  event: {
+    description: string;
+    endTime: string;
+    id: number;
+    location: string;
+    name: string;
+    startTime: string;
+  };
+  organizerName: string;
+  price: number;
+  redeemedAt: string;
+  seat: number;
+  status: number;
+  ticketNo: string;
+  ticketType: string;
+  updatedAt: string;
+  userEmail: string;
+  userId: number;
+  userName: string;
+  collectionAddress?: string;
 }
 
 /**
@@ -30,7 +41,7 @@ export interface TicketsDetailDataType {
  */
 export const getTicketsDetailAction = createAsyncThunk<
   TicketsDetailDataType,
-  string,
+  { userTicketId: string },
   {
     rejectValue: ErrorType;
   }
@@ -39,8 +50,8 @@ export const getTicketsDetailAction = createAsyncThunk<
   async (payload, { rejectWithValue }) => {
     try {
       const response = await TicketsService.getTicketsDetail(payload);
-      if (response.success) {
-        return response.results;
+      if (verificationApi(response)) {
+        return response;
       }
       return rejectWithValue({
         message: response.message,
@@ -58,18 +69,20 @@ export const getTicketsDetailAction = createAsyncThunk<
 
 export const updateTicketsDetailAction = createAsyncThunk<
   {},
-  TicketsDetailDataType,
+  { userTicketId: string; data: { status: number } },
   {
     rejectValue: ErrorType;
   }
 >(
   'updateTicketsDetail/updateTicketsDetailAction',
-  async (payload: TicketsDetailDataType, { rejectWithValue, dispatch }) => {
+  async (payload, { rejectWithValue, dispatch }) => {
     try {
       const response = await TicketsService.updateTicketsDetail(payload);
-      if (response.success) {
-        dispatch(getTicketsDetailAction(payload.ticket_number));
-        return response.results;
+      if (verificationApi(response)) {
+        dispatch(
+          getTicketsDetailAction({ userTicketId: payload.userTicketId }),
+        );
+        return response;
       }
       return rejectWithValue({
         message: response.message,
@@ -99,19 +112,29 @@ interface TicketsDetailState {
 const initialState: TicketsDetailState = {
   loading: false,
   data: {
-    user_name: '',
-    user_email: '',
-    event_name: '',
-    organizer: '',
-    ticket_type: '',
-    seat_number: '',
-    price: '',
-    ticket_number: '',
-    nft_ticket: '',
-    view_blockchain: '',
-    ticket_status: '',
-    allowed_status: [],
-    last_updates: '',
+    id: 0,
+    cancelledAt: '',
+    createdAt: '',
+    event: {
+      description: '',
+      endTime: '',
+      id: 0,
+      location: '',
+      name: '',
+      startTime: '',
+    },
+    organizerName: '',
+    price: 0,
+    redeemedAt: '',
+    seat: 0,
+    status: 0,
+    ticketNo: '',
+    ticketType: '',
+    updatedAt: '',
+    userEmail: '',
+    userId: 0,
+    userName: '',
+    collectionAddress: '',
   },
   error: null,
 };

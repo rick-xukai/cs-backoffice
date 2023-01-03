@@ -41,7 +41,7 @@ const EventTickets = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getTicketsListAction({ id }));
+    dispatch(getTicketsListAction({ ticketId: id }));
   }, [currentPage, currentPageSize]);
 
   const handleTabChange = (activeKey: string) => {
@@ -76,7 +76,7 @@ const EventTickets = () => {
           loading={loadingForTicketList}
           currentPage={currentPage}
           currentPageSize={currentPageSize}
-          columns={columns(UserRoutes.eventTicketsDetail)}
+          columns={columns(id, UserRoutes.eventTicketsDetail)}
           tableData={ticketListdata}
           tableDataTotal={ticketListdataTotal}
           paginationChange={(page, pageSize) =>

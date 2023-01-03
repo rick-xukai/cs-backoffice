@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { verificationApi } from '../../utils/func';
 import { RootState } from '../../app/store';
 import TicketsService from '../../services/API/Tickets';
 import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
@@ -12,24 +13,22 @@ export interface ErrorType {
 
 export interface TicketsListDataType {
   id: number;
-  event_id: string;
-  ticket_number: string;
-  bought_at: {
-    date: string;
-    timeRange: string;
-  };
-  user_name: string;
-  user_email: string;
-  ticket_type: string;
-  seat_number: string;
-  status: string;
+  createdAt: string;
+  price: number;
+  seat: number;
+  status: number;
+  ticketNo: string;
+  ticketType: string;
+  userEmail: string;
+  userId: number;
+  userName: string;
 }
 
 /**
  * Tickets
  */
 export const getTicketsListAction = createAsyncThunk<
-  TicketsListDataType,
+  { count: number; list: TicketsListDataType[] },
   {} | undefined,
   {
     rejectValue: ErrorType;
@@ -43,10 +42,10 @@ export const getTicketsListAction = createAsyncThunk<
       const response = await TicketsService.getTicketsList({
         ...payload,
         page,
-        pageSize,
+        size: pageSize,
       });
-      if (response.success) {
-        return response.results;
+      if (verificationApi(response)) {
+        return response.data;
       }
       return rejectWithValue({
         message: response.message,
@@ -107,8 +106,8 @@ export const ticketsSlice = createSlice({
       })
       .addCase(getTicketsListAction.fulfilled, (state, action: any) => {
         state.loading = false;
-        state.data = action.payload.data;
-        state.total = action.payload.total;
+        state.data = action.payload.list;
+        state.total = action.payload.count;
       })
       .addCase(getTicketsListAction.rejected, (state, action) => {
         state.loading = false;

@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, Tooltip } from 'antd';
 
+import { FormatTimeKeys } from '../../constants/Keys';
+import { ticketStatus } from '../../constants/General';
+import { formatTimeStrByTimeString } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -20,26 +23,26 @@ import {
   selectCurrentPageSize,
 } from './Tickets.slice';
 
-export const columns = (type?: string) => {
+export const columns = (ticketId?: string, type?: string) => {
   const columnType = type;
   return [
     {
       title: 'Ticket Number',
-      dataIndex: 'ticket_number',
-      key: 'ticket_number',
-      width: 180,
+      dataIndex: 'ticketNo',
+      key: 'ticketNo',
+      width: 160,
       render: (text: string, record: TicketsListDataType) => (
-        <Button className="name-btn" disabled={record.status === 'Cancelled'}>
+        <Button className="name-btn">
           <Link
             to={
               (!columnType &&
                 UserRoutes.ticketDetail.replace(
                   ':ticketId',
-                  record.ticket_number,
+                  record.id.toString(),
                 )) ||
               UserRoutes.eventTicketsDetail
-                .replace(':eventId', record.event_id)
-                .replace(':ticketId', record.ticket_number)
+                .replace(':eventId', ticketId as string)
+                .replace(':ticketId', record.id.toString())
             }
           >
             {text}
@@ -49,13 +52,18 @@ export const columns = (type?: string) => {
     },
     {
       title: 'User Name',
-      dataIndex: 'user_name',
-      key: 'user_name',
+      dataIndex: 'userName',
+      key: 'userName',
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <p className="email">{text}</p>
+        </Tooltip>
+      ),
     },
     {
       title: 'User Email',
-      dataIndex: 'user_email',
-      key: 'user_email',
+      dataIndex: 'userEmail',
+      key: 'userEmail',
       width: 200,
       render: (text: string) => (
         <Tooltip title={text}>
@@ -65,22 +73,24 @@ export const columns = (type?: string) => {
     },
     {
       title: 'Ticket Type',
-      dataIndex: 'ticket_type',
-      key: 'ticket_type',
+      dataIndex: 'ticketType',
+      key: 'ticketType',
     },
     {
       title: 'Seat Number',
-      dataIndex: 'seat_number',
-      key: 'seat_number',
+      dataIndex: 'seat',
+      key: 'seat',
     },
     {
       title: 'Bought at',
-      dataIndex: 'bought_at',
-      key: 'bought_at',
-      render: (_: string, record: TicketsListDataType) => (
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text: string) => (
         <div>
-          <p>{record.bought_at.date}</p>
-          <p style={{ fontSize: 13 }}>{record.bought_at.timeRange}</p>
+          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
+          <p style={{ fontSize: 13 }}>
+            {formatTimeStrByTimeString(text, FormatTimeKeys.hm)}
+          </p>
         </div>
       ),
     },
@@ -89,6 +99,9 @@ export const columns = (type?: string) => {
       dataIndex: 'status',
       key: 'status',
       width: 110,
+      render: (status: number) => (
+        <span>{ticketStatus.find((item) => item.key === status)?.text}</span>
+      ),
     },
   ];
 };
