@@ -13,20 +13,26 @@ const getTicketsList = async (payload: any) => {
   return response;
 };
 
-const getTicketsDetail = async (payload: string) => {
-  const uri = API.ticketsDetail.get;
-  const response = await requestClient()
-    .setUri(uri)
-    .setQueryParameter(payload)
-    .doGet();
+const getTicketsDetail = async (payload: { userTicketId: string }) => {
+  const uri = API.ticketsDetail.get.replace(
+    '{userTicketId}',
+    payload.userTicketId,
+  );
+  const response = await requestClient().setUri(uri).doGet();
   return response;
 };
 
-const updateTicketsDetail = async (payload: any) => {
-  const uri = API.ticketsDetail.put;
+const updateTicketsDetail = async (payload: {
+  userTicketId: string;
+  data: { status: number };
+}) => {
+  const uri = API.ticketsDetail.put.replace(
+    '{userTicketId}',
+    payload.userTicketId,
+  );
   const response = await requestClient()
     .setUri(uri)
-    .setPayload(payload)
+    .setPayload(payload.data)
     .doPut();
   return response;
 };

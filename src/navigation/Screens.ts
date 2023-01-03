@@ -68,7 +68,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   TicketDetail: {
     title: 'Tickets Details - CrowdServe BO',
@@ -77,7 +77,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   Users: {
     title: 'Users - CrowdServe BO',

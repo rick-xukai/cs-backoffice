@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Row, Col, Select, Button, Spin, message } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import SVG from 'react-inlinesvg';
-import { isEmpty } from 'lodash';
 
+import { FormatTimeKeys } from '../../constants/Keys';
+import { ticketStatus } from '../../constants/General';
+import { formatTimeStrByTimeString } from '../../utils/func';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserRoutes } from '../../navigation/Routes';
 import Images from '../../theme/Images';
@@ -17,6 +19,7 @@ import {
   selectLoading,
   selectError,
   selectData,
+  reset,
 } from './TicketDetail.slice';
 
 const { Option } = Select;
@@ -31,10 +34,13 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
   const ticketsDetailData = useAppSelector(selectData);
 
   const [changeStatusFlag, setChangeStatusFlag] = useState<boolean>(false);
-  const [ticketStatus, setTicketStatus] = useState<string>('');
+  const [ticketStatusKey, setTicketStatusKey] = useState<number>(0);
 
   useEffect(() => {
-    dispatch(getTicketsDetailAction(ticketId));
+    dispatch(getTicketsDetailAction({ userTicketId: ticketId }));
+    return () => {
+      dispatch(reset());
+    };
   }, []);
 
   useEffect(() => {
@@ -47,8 +53,8 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
     setChangeStatusFlag(false);
     dispatch(
       updateTicketsDetailAction({
-        ...ticketsDetailData,
-        ticket_status: ticketStatus,
+        userTicketId: ticketId,
+        data: { status: ticketStatusKey },
       }),
     );
   };
@@ -69,37 +75,37 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
               <Col span={8} className="item-key">
                 {t('User Name')}
               </Col>
-              <Col span={16}>{ticketsDetailData.user_name}</Col>
+              <Col span={16}>{ticketsDetailData.userName}</Col>
             </Row>
             <Row className="item">
               <Col span={8} className="item-key">
                 {t('User Email')}
               </Col>
-              <Col span={16}>{ticketsDetailData.user_email}</Col>
+              <Col span={16}>{ticketsDetailData.userEmail}</Col>
             </Row>
             <Row className="item">
               <Col span={8} className="item-key">
                 {t('Event Name')}
               </Col>
-              <Col span={16}>{ticketsDetailData.event_name}</Col>
+              <Col span={16}>{ticketsDetailData.event.name}</Col>
             </Row>
             <Row className="item">
               <Col span={8} className="item-key">
                 {t('Organizer')}
               </Col>
-              <Col span={16}>{ticketsDetailData.organizer}</Col>
+              <Col span={16}>{ticketsDetailData.organizerName}</Col>
             </Row>
             <Row className="item">
               <Col span={8} className="item-key">
                 {t('Ticket Type')}
               </Col>
-              <Col span={16}>{ticketsDetailData.ticket_type}</Col>
+              <Col span={16}>{ticketsDetailData.ticketType}</Col>
             </Row>
             <Row className="item">
               <Col span={8} className="item-key">
                 {t('Seat Number')}
               </Col>
-              <Col span={16}>{ticketsDetailData.seat_number}</Col>
+              <Col span={16}>{ticketsDetailData.seat}</Col>
             </Row>
             <Row className="item">
               <Col span={8} className="item-key">
@@ -111,19 +117,21 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
               <Col span={8} className="item-key">
                 {t('Ticket Number')}
               </Col>
-              <Col span={16}>{ticketsDetailData.ticket_number}</Col>
+              <Col span={16}>{ticketsDetailData.ticketNo}</Col>
             </Row>
-            <Row className="item">
-              <Col span={8} className="item-key">
-                {t('NFT Ticket')}
-              </Col>
-              <Col span={16} className="action-view">
-                <span>{ticketsDetailData.nft_ticket}</span>
-                <a href={ticketsDetailData.view_blockchain} target="_blank">
-                  {t('View on blockchain')}
-                </a>
-              </Col>
-            </Row>
+            {ticketsDetailData.collectionAddress && (
+              <Row className="item">
+                <Col span={8} className="item-key">
+                  {t('NFT Ticket')}
+                </Col>
+                <Col span={16} className="action-view">
+                  <span>{ticketsDetailData.ticketType}</span>
+                  <a href={ticketsDetailData.collectionAddress} target="_blank">
+                    {t('View on blockchain')}
+                  </a>
+                </Col>
+              </Row>
+            )}
             <Row className="item">
               <Col span={8} className="item-key">
                 {t('Ticket Status')}
@@ -136,7 +144,13 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
               >
                 {(!changeStatusFlag && (
                   <>
-                    <span>{ticketsDetailData.ticket_status}</span>
+                    <span>
+                      {
+                        ticketStatus.find(
+                          (item) => item.key === ticketsDetailData.status,
+                        )?.text
+                      }
+                    </span>
                     <span className="edit-status">
                       <SVG
                         src={Images.Edit}
@@ -148,19 +162,24 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
                   <Row>
                     <Col span={14} style={{ paddingRight: 24 }}>
                       <Select
-                        defaultValue={ticketsDetailData.ticket_status}
-                        onChange={(status: string) => setTicketStatus(status)}
+                        defaultValue={
+                          ticketStatus.find(
+                            (item) => item.key === ticketsDetailData.status,
+                          )?.text
+                        }
+                        onChange={(status: string) =>
+                          setTicketStatusKey(
+                            ticketStatus.find((item) => item.text === status)
+                              ?.key as number,
+                          )
+                        }
                         defaultActiveFirstOption={false}
                       >
-                        {!isEmpty(ticketsDetailData.allowed_status) && (
-                          <>
-                            {ticketsDetailData.allowed_status.map((item) => (
-                              <Option key={item} value={item}>
-                                {item}
-                              </Option>
-                            ))}
-                          </>
-                        )}
+                        {ticketStatus.map((item) => (
+                          <Option key={item.key} value={item.text}>
+                            {item.text}
+                          </Option>
+                        ))}
                       </Select>
                     </Col>
                     <Col span={10}>
@@ -184,7 +203,14 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
               <Col span={8} className="item-key">
                 {t('Last Updates')}
               </Col>
-              <Col span={16}>{ticketsDetailData.last_updates}</Col>
+              <Col span={16}>
+                {(ticketsDetailData.updatedAt &&
+                  formatTimeStrByTimeString(
+                    ticketsDetailData.updatedAt,
+                    FormatTimeKeys.norm,
+                  )) ||
+                  '-'}
+              </Col>
             </Row>
           </div>
         </div>
