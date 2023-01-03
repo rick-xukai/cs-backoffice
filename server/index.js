@@ -1,10 +1,14 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 
 const workingDir = process.cwd();
 const buildDir = path.resolve(workingDir, 'build');
+
+// Create start time file to check whether the deployment is successful
+fs.writeFile(path.join(buildDir, 'start-time.txt'), 'Start At: ' + new Date().toLocaleString(), () => {});
 
 require('dotenv').config({
   path: path.join(workingDir, '.env'),
