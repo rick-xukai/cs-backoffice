@@ -11,6 +11,30 @@ const TicketDetailContainer = styled.div`
   .page-main {
     padding: calc(60px + 24px) 24px 24px;
     background: ${Colors.grey5};
+    .edit-status {
+      text-align: right;
+      .ant-btn {
+        font-weight: 400;
+        font-size: 15px;
+        border: 1px solid ${Colors.grey6};
+        color: ${Colors.grey6};
+        height: 32px;
+        background: unset;
+        border-radius: 2px;
+        padding: 0;
+        padding: 2px 10px 0 10px;
+        margin-left: 24px;
+        &:disabled {
+          background: ${Colors.grey9};
+          color: ${Colors.grey7};
+        }
+      }
+      .ant-btn-primary {
+        background: ${Colors.branding};
+        color: ${Colors.white};
+        border: none;
+      }
+    }
   }
   .name-btn {
     border: none;
@@ -37,7 +61,8 @@ const TicketDetailContainer = styled.div`
     background: ${Colors.white};
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
     border-radius: 4px;
-    padding: 36px 276px;
+    padding: 24px;
+    margin-top: 24px;
     > :last-child {
       margin-bottom: 0 !important;
     }
@@ -48,6 +73,13 @@ const TicketDetailContainer = styled.div`
       color: ${Colors.black5};
       .item-key {
         color: ${Colors.grey7};
+      }
+      .item-key-title {
+        color: ${Colors.grey7};
+      }
+      .item-key-value {
+        margin-bottom: 0;
+        color: ${Colors.black5};
       }
     }
     .action-view {

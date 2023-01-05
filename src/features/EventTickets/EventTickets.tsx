@@ -53,6 +53,7 @@ const EventTickets = () => {
     }
     dispatch(
       getTicketsListAction({
+        ticketId: id,
         page: Number(page) || currentPaginationConfig.currentPage,
         size: Number(pageSize) || currentPaginationConfig.currentPageSize,
       }),

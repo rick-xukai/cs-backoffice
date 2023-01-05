@@ -100,6 +100,7 @@ export const updateTicketsDetailAction = createAsyncThunk<
 
 interface TicketsDetailState {
   loading: boolean;
+  changeStatusSuccess: boolean;
   data: TicketsDetailDataType;
   error:
     | {
@@ -111,6 +112,7 @@ interface TicketsDetailState {
 
 const initialState: TicketsDetailState = {
   loading: false,
+  changeStatusSuccess: false,
   data: {
     id: 0,
     cancelledAt: '',
@@ -164,7 +166,11 @@ export const ticketsDetailSlice = createSlice({
         }
       })
       .addCase(updateTicketsDetailAction.pending, (state) => {
+        state.changeStatusSuccess = false;
         state.loading = true;
+      })
+      .addCase(updateTicketsDetailAction.fulfilled, (state) => {
+        state.changeStatusSuccess = true;
       })
       .addCase(updateTicketsDetailAction.rejected, (state, action) => {
         state.loading = false;
@@ -180,6 +186,8 @@ export const ticketsDetailSlice = createSlice({
 export const { reset } = ticketsDetailSlice.actions;
 
 export const selectLoading = (state: RootState) => state.ticketsDetail.loading;
+export const selectChangeStatusSuccess = (state: RootState) =>
+  state.ticketsDetail.changeStatusSuccess;
 export const selectError = (state: RootState) => state.ticketsDetail.error;
 export const selectData = (state: RootState) => state.ticketsDetail.data;
 
