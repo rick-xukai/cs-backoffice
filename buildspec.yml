@@ -11,11 +11,13 @@ phases:
             - yarn build
 artifacts:
     files:
-        - ./package.json
-        - ./yarn.lock
-        - ./build/**/*
-        - ./server/**/*
-        - ./scripts/*
-        - ./appspec.yml
-        - ./release
+        - package.json
+        - yarn.lock
+        - build/**/*
+        - server/**/*
+        - scripts/*
+        - appspec.yml
+        - deployspec.yml
+        - release
+        - Dockerfile
     discard-paths: no
