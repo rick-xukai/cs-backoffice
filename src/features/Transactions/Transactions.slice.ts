@@ -30,25 +30,31 @@ export interface UpdateTransactionsStatusPayload {
   ids: string[];
 }
 
+interface GetTransactionsListPayload {
+  page: number;
+  size: number;
+  filters: object;
+  sort: object;
+}
 /**
  * Transactions List
  */
 export const getTransactionsListAction = createAsyncThunk<
   { count: number; list: TransactionsDataType[] },
-  {} | undefined,
+  GetTransactionsListPayload | undefined,
   {
     rejectValue: ErrorType;
-    state: RootState;
   }
 >(
   'getTransactionsList/getTransactionsListAction',
-  async (_payload, { rejectWithValue, getState }) => {
-    const { page, pageSize, filters } = getState().transactionsList;
+  async (payload, { rejectWithValue }) => {
+    const { filters, sort, page, size } = payload || {};
     try {
       const response = await TransactionsService.getTransactionsList({
-        ...filters,
         page,
-        size: pageSize,
+        size,
+        ...filters,
+        ...sort,
       });
       if (verificationApi(response)) {
         return response.data;

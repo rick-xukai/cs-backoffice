@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,10 +15,16 @@ import {
   Checkbox,
   Modal,
 } from 'antd';
+import qs from 'qs';
 import type { TablePaginationConfig } from 'antd/es/table';
 import { FilterValue, SorterResult, SortOrder } from 'antd/es/table/interface';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
+import {
+  defaultPageSize,
+  defaultCurrentPage,
+  decimalPlaces,
+} from '../../constants/General';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import { StatusKeys, SortKeys, FormatTimeKeys } from '../../constants/Keys';
@@ -34,12 +40,9 @@ import {
   reset,
   selectLoading,
   selectDataTotal,
-  selectCurrentPage,
-  selectCurrentPageSize,
   selectData,
   selectError,
   getTransactionsListAction,
-  paginationChangeAction,
   TransactionsDataType,
   updateTransactionsStatusAction,
   selectchangeStatusSuccess,
@@ -57,14 +60,14 @@ const { confirm } = Modal;
 const Transactions = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const history = useHistory();
+  const location = useLocation();
 
   const loading = useAppSelector(selectLoading);
   const data = useAppSelector(selectData);
   const sort = useAppSelector(selectSort);
   const error = useAppSelector(selectError);
   const total = useAppSelector(selectDataTotal);
-  const currentPage = useAppSelector(selectCurrentPage);
-  const currentPageSize = useAppSelector(selectCurrentPageSize);
   const changeStatusSuccess = useAppSelector(selectchangeStatusSuccess);
   const filters = useAppSelector(selectFilters);
 
@@ -75,6 +78,10 @@ const Transactions = () => {
   const [selectItemsQuantity, setSelectItemsQuantity] = useState<number>(0);
   const [canSelectItemsQuantity, setCanSelectItemsQuantity] =
     useState<number>(0);
+  const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
+    currentPage: defaultCurrentPage,
+    currentPageSize: defaultPageSize,
+  });
 
   const columns = [
     {
@@ -114,7 +121,7 @@ const Transactions = () => {
       width: 85,
       render: (text: number, record: TransactionsDataType) => (
         <p style={{ whiteSpace: 'nowrap' }}>
-          {`${text.toFixed(2)} ${record.currency}`}
+          {`${text.toFixed(decimalPlaces)} ${record.currency}`}
         </p>
       ),
     },
@@ -291,8 +298,22 @@ const Transactions = () => {
   }, [data]);
 
   useEffect(() => {
-    dispatch(getTransactionsListAction());
-  }, [currentPage, currentPageSize, filters, sort]);
+    const { page, pageSize } = qs.parse(location.search.slice(1));
+    if (page && pageSize) {
+      setCurrentPaginationConfig({
+        currentPage: Number(page),
+        currentPageSize: Number(pageSize),
+      });
+    }
+    dispatch(
+      getTransactionsListAction({
+        page: Number(page) || currentPaginationConfig.currentPage,
+        size: Number(pageSize) || currentPaginationConfig.currentPageSize,
+        filters,
+        sort,
+      }),
+    );
+  }, [location.search, filters, sort]);
 
   useEffect(() => {
     if (error) {
@@ -314,8 +335,8 @@ const Transactions = () => {
       <div className="page-main">
         <TableComponent
           loading={loading}
-          currentPage={currentPage}
-          currentPageSize={currentPageSize}
+          currentPage={currentPaginationConfig.currentPage}
+          currentPageSize={currentPaginationConfig.currentPageSize}
           columns={columns}
           tableData={data}
           tableDataTotal={total}
@@ -326,7 +347,13 @@ const Transactions = () => {
             ...rowSelection,
           }}
           paginationChange={(page, pageSize) =>
-            dispatch(paginationChangeAction({ page, pageSize }))
+            history.push(
+              `${UserRoutes.transactions}?page=${
+                (pageSize === currentPaginationConfig.currentPageSize &&
+                  page) ||
+                defaultCurrentPage
+              }&pageSize=${pageSize}`,
+            )
           }
         >
           <div>
