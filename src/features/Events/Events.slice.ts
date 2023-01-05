@@ -27,36 +27,28 @@ export interface EventsListDataType {
  */
 export const getEventsListAction = createAsyncThunk<
   { count: number; list: EventsListDataType[] },
-  undefined,
+  {} | undefined,
   {
     rejectValue: ErrorType;
-    state: RootState;
   }
->(
-  'getEventsList/getEventsListAction',
-  async (_, { rejectWithValue, getState }) => {
-    const { page, pageSize } = getState().events;
-    try {
-      const response = await EventsService.getEventsList({
-        page,
-        size: pageSize,
-      });
-      if (verificationApi(response)) {
-        return response.data;
-      }
-      return rejectWithValue({
-        message: response.message,
-      } as ErrorType);
-    } catch (err: any) {
-      if (!err.response) {
-        throw err;
-      }
-      return rejectWithValue({
-        message: err.response,
-      } as ErrorType);
+>('getEventsList/getEventsListAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await EventsService.getEventsList({ ...payload });
+    if (verificationApi(response)) {
+      return response.data;
     }
-  },
-);
+    return rejectWithValue({
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
 
 interface EventsState {
   loading: boolean;

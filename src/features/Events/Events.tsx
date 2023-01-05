@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Button, Tooltip } from 'antd';
+import qs from 'qs';
 
+import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
 import { FormatTimeKeys } from '../../constants/Keys';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
@@ -17,19 +19,22 @@ import {
   selectData,
   selectDataTotal,
   EventsListDataType,
-  paginationChangeAction,
-  selectCurrentPage,
-  selectCurrentPageSize,
 } from './Events.slice';
 
 const Events = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const history = useHistory();
+  const location = useLocation();
+
   const loading = useAppSelector(selectLoading);
   const eventsListData = useAppSelector(selectData);
   const eventsListDataTotal = useAppSelector(selectDataTotal);
-  const currentPage = useAppSelector(selectCurrentPage);
-  const currentPageSize = useAppSelector(selectCurrentPageSize);
+
+  const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
+    currentPage: defaultCurrentPage,
+    currentPageSize: defaultPageSize,
+  });
 
   const columns = [
     {
@@ -41,7 +46,13 @@ const Events = () => {
         <Tooltip title={text}>
           <Button className="name-btn" disabled={record.status === 'Ended'}>
             <Link
-              to={UserRoutes.eventInfo.replace(':id', record.id.toString())}
+              to={{
+                pathname: UserRoutes.eventInfo.replace(
+                  ':id',
+                  record.id.toString(),
+                ),
+                state: currentPaginationConfig,
+              }}
             >
               {text}
             </Link>
@@ -119,8 +130,20 @@ const Events = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getEventsListAction());
-  }, [currentPage, currentPageSize]);
+    const { page, pageSize } = qs.parse(location.search.slice(1));
+    if (page && pageSize) {
+      setCurrentPaginationConfig({
+        currentPage: Number(page),
+        currentPageSize: Number(pageSize),
+      });
+    }
+    dispatch(
+      getEventsListAction({
+        page: Number(page) || currentPaginationConfig.currentPage,
+        size: Number(pageSize) || currentPaginationConfig.currentPageSize,
+      }),
+    );
+  }, [location.search]);
 
   return (
     <EventsContainer>
@@ -128,13 +151,19 @@ const Events = () => {
       <div className="page-main">
         <TableComponent
           loading={loading}
-          currentPage={currentPage}
-          currentPageSize={currentPageSize}
+          currentPage={currentPaginationConfig.currentPage}
+          currentPageSize={currentPaginationConfig.currentPageSize}
           columns={columns}
           tableData={eventsListData}
           tableDataTotal={eventsListDataTotal}
           paginationChange={(page, pageSize) =>
-            dispatch(paginationChangeAction({ page, pageSize }))
+            history.push(
+              `${UserRoutes.events}?page=${
+                (pageSize === currentPaginationConfig.currentPageSize &&
+                  page) ||
+                defaultCurrentPage
+              }&pageSize=${pageSize}`,
+            )
           }
         />
       </div>

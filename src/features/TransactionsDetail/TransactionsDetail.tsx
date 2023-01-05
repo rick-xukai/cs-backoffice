@@ -8,6 +8,7 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 
+import { decimalPlaces } from '../../constants/General';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserRoutes } from '../../navigation/Routes';
@@ -185,7 +186,7 @@ const TransactionsDetail = () => {
               </Col>
               <Col span={12}>
                 <p className="item">{t('Amount')}</p>
-                <p className="value">{`${data.amount.toFixed(2)} ${
+                <p className="value">{`${data.amount.toFixed(decimalPlaces)} ${
                   data.currency
                 }`}</p>
               </Col>

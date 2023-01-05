@@ -32,18 +32,12 @@ export const getTicketsListAction = createAsyncThunk<
   {} | undefined,
   {
     rejectValue: ErrorType;
-    state: RootState;
   }
 >(
   'getTicketsList/getTicketsListAction',
-  async (payload, { rejectWithValue, getState }) => {
-    const { page, pageSize } = getState().tickets;
+  async (payload, { rejectWithValue }) => {
     try {
-      const response = await TicketsService.getTicketsList({
-        ...payload,
-        page,
-        size: pageSize,
-      });
+      const response = await TicketsService.getTicketsList({ ...payload });
       if (verificationApi(response)) {
         return response.data;
       }

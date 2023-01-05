@@ -6,11 +6,11 @@ export const defaultCurrentPage = 1;
 export const defaultPageSize = 20;
 export const ticketStatus = [
   {
-    text: 'Unused',
+    text: 'Uncoming',
     key: 0,
   },
   {
-    text: 'Redeemed',
+    text: 'Used',
     key: 1,
   },
   {
@@ -22,7 +22,7 @@ export const ticketStatus = [
     key: 3,
   },
   {
-    text: 'Onsale',
+    text: 'On Sale',
     key: 4,
   },
   {
@@ -30,3 +30,5 @@ export const ticketStatus = [
     key: 5,
   },
 ];
+export const priceUnit = 'SGD';
+export const decimalPlaces = 2;

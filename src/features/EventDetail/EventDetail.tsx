@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Tabs, Spin, message } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
+import { defaultCurrentPage, defaultPageSize } from '../../constants/General';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { EventTabsKey } from '../../constants/Keys';
 import { UserRoutes } from '../../navigation/Routes';
@@ -19,11 +20,19 @@ import {
 } from './EventDetail.slice';
 import EventInfo from './Component/EventInfo';
 
+interface RouteConfigType {
+  state: {
+    currentPage: number;
+    currentPageSize: number;
+  };
+}
+
 const EventDetail = () => {
   const { t } = useTranslation();
   const { id }: { id: string } = useParams();
   const history = useHistory();
   const dispatch = useAppDispatch();
+  const location: RouteConfigType = useLocation();
 
   const error = useAppSelector(selectError);
   const loadingForDetail = useAppSelector(selectDetailLoading);
@@ -57,7 +66,17 @@ const EventDetail = () => {
       <PageHeaderComponent
         title={t('Event Details')}
         showBackArrow
-        clickBack={() => history.push(UserRoutes.events)}
+        clickBack={() =>
+          history.push(
+            `${UserRoutes.events}?page=${
+              (location.state && location.state.currentPage) ||
+              defaultCurrentPage
+            }&pageSize=${
+              (location.state && location.state.currentPageSize) ||
+              defaultPageSize
+            }`,
+          )
+        }
       >
         <Tabs
           defaultActiveKey={EventTabsKey.eventInfo}

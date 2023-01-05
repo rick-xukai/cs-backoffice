@@ -1,10 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Button, Tooltip } from 'antd';
+import qs from 'qs';
 
 import { FormatTimeKeys } from '../../constants/Keys';
-import { ticketStatus } from '../../constants/General';
+import {
+  ticketStatus,
+  defaultPageSize,
+  defaultCurrentPage,
+} from '../../constants/General';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import TableComponent from '../../components/Table/Table';
@@ -18,12 +23,9 @@ import {
   selectData,
   selectDataTotal,
   TicketsListDataType,
-  paginationChangeAction,
-  selectCurrentPage,
-  selectCurrentPageSize,
 } from './Tickets.slice';
 
-export const columns = (ticketId?: string, type?: string) => {
+export const columns = (routeConfig: any, ticketId?: string, type?: string) => {
   const columnType = type;
   return [
     {
@@ -34,16 +36,18 @@ export const columns = (ticketId?: string, type?: string) => {
       render: (text: string, record: TicketsListDataType) => (
         <Button className="name-btn">
           <Link
-            to={
-              (!columnType &&
-                UserRoutes.ticketDetail.replace(
-                  ':ticketId',
-                  record.id.toString(),
-                )) ||
-              UserRoutes.eventTicketsDetail
-                .replace(':eventId', ticketId as string)
-                .replace(':ticketId', record.id.toString())
-            }
+            to={{
+              pathname:
+                (!columnType &&
+                  UserRoutes.ticketDetail.replace(
+                    ':ticketId',
+                    record.id.toString(),
+                  )) ||
+                UserRoutes.eventTicketsDetail
+                  .replace(':eventId', ticketId as string)
+                  .replace(':ticketId', record.id.toString()),
+              state: routeConfig,
+            }}
           >
             {text}
           </Link>
@@ -108,12 +112,18 @@ export const columns = (ticketId?: string, type?: string) => {
 
 const Tickets = () => {
   const { t } = useTranslation();
+  const history = useHistory();
   const dispatch = useAppDispatch();
+  const location = useLocation();
+
   const loading = useAppSelector(selectLoading);
   const ticketsListData = useAppSelector(selectData);
   const ticketsListDataTotal = useAppSelector(selectDataTotal);
-  const currentPage = useAppSelector(selectCurrentPage);
-  const currentPageSize = useAppSelector(selectCurrentPageSize);
+
+  const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
+    currentPage: defaultCurrentPage,
+    currentPageSize: defaultPageSize,
+  });
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -123,8 +133,20 @@ const Tickets = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getTicketsListAction());
-  }, [currentPage, currentPageSize]);
+    const { page, pageSize } = qs.parse(location.search.slice(1));
+    if (page && pageSize) {
+      setCurrentPaginationConfig({
+        currentPage: Number(page),
+        currentPageSize: Number(pageSize),
+      });
+    }
+    dispatch(
+      getTicketsListAction({
+        page: Number(page) || currentPaginationConfig.currentPage,
+        size: Number(pageSize) || currentPaginationConfig.currentPageSize,
+      }),
+    );
+  }, [location.search]);
 
   return (
     <TicketsContainer>
@@ -132,13 +154,19 @@ const Tickets = () => {
       <div className="page-main">
         <TableComponent
           loading={loading}
-          currentPage={currentPage}
-          currentPageSize={currentPageSize}
-          columns={columns()}
+          currentPage={currentPaginationConfig.currentPage}
+          currentPageSize={currentPaginationConfig.currentPageSize}
+          columns={columns(currentPaginationConfig)}
           tableData={ticketsListData}
           tableDataTotal={ticketsListDataTotal}
           paginationChange={(page, pageSize) =>
-            dispatch(paginationChangeAction({ page, pageSize }))
+            history.push(
+              `${UserRoutes.tickets}?page=${
+                (pageSize === currentPaginationConfig.currentPageSize &&
+                  page) ||
+                defaultCurrentPage
+              }&pageSize=${pageSize}`,
+            )
           }
         />
       </div>

@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Row, Col, Select, Button, Spin, message } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import SVG from 'react-inlinesvg';
 
 import { FormatTimeKeys } from '../../constants/Keys';
-import { ticketStatus } from '../../constants/General';
+import {
+  ticketStatus,
+  priceUnit,
+  decimalPlaces,
+  defaultCurrentPage,
+  defaultPageSize,
+} from '../../constants/General';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserRoutes } from '../../navigation/Routes';
@@ -24,9 +30,17 @@ import {
 
 const { Option } = Select;
 
+interface RouteConfigType {
+  state: {
+    currentPage: number;
+    currentPageSize: number;
+  };
+}
+
 const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
   const { t } = useTranslation();
   const history = useHistory();
+  const location: RouteConfigType = useLocation();
   const { ticketId }: { ticketId: string } = useParams();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectLoading);
@@ -65,7 +79,17 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
         <PageHeaderComponent
           title={t('Tickets Details')}
           showBackArrow
-          clickBack={() => history.push(UserRoutes.tickets)}
+          clickBack={() =>
+            history.push(
+              `${UserRoutes.tickets}?page=${
+                (location.state && location.state.currentPage) ||
+                defaultCurrentPage
+              }&pageSize=${
+                (location.state && location.state.currentPageSize) ||
+                defaultPageSize
+              }`,
+            )
+          }
         />
       )}
       {(!loading && (
@@ -111,7 +135,9 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
               <Col span={8} className="item-key">
                 {t('Price')}
               </Col>
-              <Col span={16}>{ticketsDetailData.price}</Col>
+              <Col span={16}>{`${ticketsDetailData.price.toFixed(
+                decimalPlaces,
+              )} ${priceUnit}`}</Col>
             </Row>
             <Row className="item">
               <Col span={8} className="item-key">
