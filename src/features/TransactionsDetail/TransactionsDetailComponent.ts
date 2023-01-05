@@ -36,7 +36,7 @@ const TransactionsDetailContainer = styled.div`
       }
     }
     .main-container {
-      padding: 36px;
+      padding: 24px;
       margin-top: 24px;
       border-radius: 4px;
       background: ${Colors.white};

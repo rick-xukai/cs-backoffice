@@ -6,7 +6,7 @@ export const defaultCurrentPage = 1;
 export const defaultPageSize = 20;
 export const ticketStatus = [
   {
-    text: 'Uncoming',
+    text: 'Upcoming',
     key: 0,
   },
   {
