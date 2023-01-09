@@ -32,3 +32,17 @@ export const ticketStatus = [
 ];
 export const priceUnit = 'SGD';
 export const decimalPlaces = 2;
+export const activeStatus = {
+  all: {
+    text: 'All',
+    status: null,
+  },
+  active: {
+    text: 'Active',
+    status: true,
+  },
+  inActive: {
+    text: 'Inactive',
+    status: false,
+  },
+};

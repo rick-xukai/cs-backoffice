@@ -25,6 +25,15 @@ const API = {
     get: '/admin/withdraw/{transactionId}',
     post: '/admin/withdraw',
   },
+  getUsersList: {
+    get: '/admin/user',
+  },
+  getUserDetail: {
+    get: '/admin/user/{userId}',
+  },
+  getUserDetailTickets: {
+    get: '/admin/user/{userId}/ticket',
+  },
 };
 
 export default API;

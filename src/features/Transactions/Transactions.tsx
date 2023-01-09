@@ -170,10 +170,13 @@ const Transactions = () => {
         <div className="status-container">
           <span className="view-detail">
             <Link
-              to={UserRoutes.transactionsDetail.replace(
-                ':transactionsId',
-                record.id.toString(),
-              )}
+              to={{
+                pathname: UserRoutes.transactionsDetail.replace(
+                  ':transactionsId',
+                  record.id.toString(),
+                ),
+                state: currentPaginationConfig,
+              }}
             >
               {t('View')}
             </Link>

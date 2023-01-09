@@ -3,7 +3,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { verificationApi } from '../../utils/func';
 import { RootState } from '../../app/store';
 import TicketsService from '../../services/API/Tickets';
-import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -57,8 +56,6 @@ export const getTicketsListAction = createAsyncThunk<
 
 interface TicketsState {
   loading: boolean;
-  page: number;
-  pageSize: number;
   data: [];
   total: number;
   error:
@@ -71,8 +68,6 @@ interface TicketsState {
 
 const initialState: TicketsState = {
   loading: false,
-  page: defaultCurrentPage,
-  pageSize: defaultPageSize,
   data: [],
   total: 0,
   error: null,
@@ -83,14 +78,6 @@ export const ticketsSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
-    paginationChangeAction: (state, action) => {
-      if (action.payload.pageSize !== state.pageSize) {
-        state.page = 1;
-      } else {
-        state.page = action.payload.page;
-      }
-      state.pageSize = action.payload.pageSize;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -114,14 +101,11 @@ export const ticketsSlice = createSlice({
   },
 });
 
-export const { reset, paginationChangeAction } = ticketsSlice.actions;
+export const { reset } = ticketsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.tickets.loading;
 export const selectError = (state: RootState) => state.tickets.error;
 export const selectData = (state: RootState) => state.tickets.data;
 export const selectDataTotal = (state: RootState) => state.tickets.total;
-export const selectCurrentPage = (state: RootState) => state.tickets.page;
-export const selectCurrentPageSize = (state: RootState) =>
-  state.tickets.pageSize;
 
 export default ticketsSlice.reducer;

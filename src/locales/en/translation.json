@@ -208,5 +208,8 @@
   "Bank Account": "Bank Account",
   "Submitted At": "Submitted At",
   "Last Action At": "Last Action At",
-  "Change Completed": "Change Completed"
+  "Change Completed": "Change Completed",
+  "Users": "Users",
+  "Crypto Wallet": "Crypto Wallet",
+  "Last Action Time": "Last Action Time"
 }

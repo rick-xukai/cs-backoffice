@@ -20,12 +20,20 @@ import {
 } from '../Tickets/Tickets.slice';
 import { columns } from '../Tickets/Tickets';
 
+interface RouteConfigType {
+  search: string;
+  state: {
+    currentPage: number;
+    currentPageSize: number;
+  };
+}
+
 const EventTickets = () => {
   const { t } = useTranslation();
   const { id }: { id: string } = useParams();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const location = useLocation();
+  const location: RouteConfigType = useLocation();
 
   const loadingForTicketList = useAppSelector(selectLoading);
   const ticketListdata = useAppSelector(selectData);
@@ -62,7 +70,13 @@ const EventTickets = () => {
 
   const handleTabChange = (activeKey: string) => {
     if (activeKey === EventTabsKey.eventInfo) {
-      history.push(UserRoutes.eventInfo.replace(':id', id));
+      history.push({
+        pathname: UserRoutes.eventInfo.replace(':id', id),
+        state: {
+          eventTicketsPage: currentPaginationConfig.currentPage,
+          eventTicketsPageSize: currentPaginationConfig.currentPageSize,
+        },
+      });
     }
   };
 
@@ -71,7 +85,17 @@ const EventTickets = () => {
       <PageHeaderComponent
         title={t('Event Details')}
         showBackArrow
-        clickBack={() => history.push(UserRoutes.events)}
+        clickBack={() =>
+          history.push(
+            `${UserRoutes.events}?page=${
+              (location.state && location.state.currentPage) ||
+              defaultCurrentPage
+            }&pageSize=${
+              (location.state && location.state.currentPageSize) ||
+              defaultPageSize
+            }`,
+          )
+        }
       >
         <Tabs
           defaultActiveKey={EventTabsKey.ticketList}

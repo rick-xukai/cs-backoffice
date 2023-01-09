@@ -31,8 +31,10 @@ const { Option } = Select;
 
 interface RouteConfigType {
   state: {
+    id?: string;
     currentPage: number;
     currentPageSize: number;
+    previousPath?: string;
   };
 }
 
@@ -76,23 +78,37 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
     );
   };
 
+  const handleClickBack = () => {
+    if (location.state.previousPath) {
+      history.push(
+        `${location.state.previousPath.replace(
+          ':userId',
+          location.state.id || '',
+        )}?page=${
+          (location.state && location.state.currentPage) || defaultCurrentPage
+        }&pageSize=${
+          (location.state && location.state.currentPageSize) || defaultPageSize
+        }
+        `,
+      );
+    } else {
+      history.push(
+        `${UserRoutes.tickets}?page=${
+          (location.state && location.state.currentPage) || defaultCurrentPage
+        }&pageSize=${
+          (location.state && location.state.currentPageSize) || defaultPageSize
+        }`,
+      );
+    }
+  };
+
   return (
     <TicketDetailContainer>
       {showHeader && (
         <PageHeaderComponent
           title={t('Tickets Details')}
           showBackArrow
-          clickBack={() =>
-            history.push(
-              `${UserRoutes.tickets}?page=${
-                (location.state && location.state.currentPage) ||
-                defaultCurrentPage
-              }&pageSize=${
-                (location.state && location.state.currentPageSize) ||
-                defaultPageSize
-              }`,
-            )
-          }
+          clickBack={handleClickBack}
         />
       )}
       {(!loading && (
