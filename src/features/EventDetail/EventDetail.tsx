@@ -24,6 +24,8 @@ interface RouteConfigType {
   state: {
     currentPage: number;
     currentPageSize: number;
+    eventTicketsPage: number;
+    eventTicketsPageSize: number;
   };
 }
 
@@ -57,7 +59,19 @@ const EventDetail = () => {
 
   const handleTabChange = (activeKey: string) => {
     if (activeKey === EventTabsKey.ticketList) {
-      history.push(UserRoutes.eventTickets.replace(':id', id));
+      if (
+        location.state &&
+        location.state.eventTicketsPage &&
+        location.state.eventTicketsPageSize
+      ) {
+        history.push(
+          `${UserRoutes.eventTickets.replace(':id', id)}?page=${
+            location.state.eventTicketsPage
+          }&pageSize=${location.state.eventTicketsPageSize}`,
+        );
+      } else {
+        history.push(UserRoutes.eventTickets.replace(':id', id));
+      }
     }
   };
 

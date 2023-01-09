@@ -9,6 +9,8 @@ import EventDetail from '../features/EventDetail/Loadable';
 import TicketDetail from '../features/TicketDetail/Loadable';
 import Transactions from '../features/Transactions/Loadable';
 import TransactionsDetail from '../features/TransactionsDetail/Loadable';
+import UsersList from '../features/Users/Loadable';
+import UserDetail from '../features/UserDetail/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -81,12 +83,21 @@ export const UserScreens = {
   },
   Users: {
     title: 'Users - CrowdServe BO',
-    path: UserRoutes.dashboard,
-    component: Dashboard,
+    path: UserRoutes.users,
+    component: UsersList,
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+  },
+  UserDetail: {
+    title: 'User Detail - CrowdServe BO',
+    path: UserRoutes.userDetail,
+    component: UserDetail,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.users],
+    guard: true,
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
   Settings: {
     title: 'Settings - CrowdServe BO',

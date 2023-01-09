@@ -3,7 +3,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { verificationApi } from '../../utils/func';
 import { RootState } from '../../app/store';
 import EventsService from '../../services/API/Events';
-import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
@@ -52,8 +51,6 @@ export const getEventsListAction = createAsyncThunk<
 
 interface EventsState {
   loading: boolean;
-  page: number;
-  pageSize: number;
   data: [];
   total: number;
   error:
@@ -66,8 +63,6 @@ interface EventsState {
 
 const initialState: EventsState = {
   loading: false,
-  page: defaultCurrentPage,
-  pageSize: defaultPageSize,
   data: [],
   total: 0,
   error: null,
@@ -78,14 +73,6 @@ export const eventsSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
-    paginationChangeAction: (state, action) => {
-      if (action.payload.pageSize !== state.pageSize) {
-        state.page = 1;
-      } else {
-        state.page = action.payload.page;
-      }
-      state.pageSize = action.payload.pageSize;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -109,14 +96,11 @@ export const eventsSlice = createSlice({
   },
 });
 
-export const { reset, paginationChangeAction } = eventsSlice.actions;
+export const { reset } = eventsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.events.loading;
 export const selectError = (state: RootState) => state.events.error;
 export const selectData = (state: RootState) => state.events.data;
 export const selectDataTotal = (state: RootState) => state.events.total;
-export const selectCurrentPage = (state: RootState) => state.events.page;
-export const selectCurrentPageSize = (state: RootState) =>
-  state.events.pageSize;
 
 export default eventsSlice.reducer;

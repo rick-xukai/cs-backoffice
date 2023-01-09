@@ -1089,6 +1089,78 @@ const MockAPI = () => {
         }
       });
     });
+  mock.onGet(API.getUsersList.get).reply(() => {
+    const usersListData = [
+      {
+        id: 1,
+        email: 'rick.xu@imaginato.com',
+        name: 'BNP Paribas SA',
+        walletAddress: '1234 5678 9012 345',
+        isActivated: false,
+        lastLoginAt: '2022-12-14 18:30',
+        createdAt: '2022-12-14 18:30',
+      },
+      {
+        id: 2,
+        email: 'rick.xu@imaginato.com',
+        name: 'BNP Paribas SA',
+        walletAddress: '1234 5678 9012 345',
+        isActivated: true,
+        lastLoginAt: '2022-12-14 18:30',
+        createdAt: '2022-12-14 18:30',
+      },
+    ];
+
+    return new Promise((resolve, reject) => {
+      if (resolve) {
+        setTimeout(() => {
+          resolve([
+            200,
+            {
+              code: 200,
+              message: 'OK',
+              data: {
+                list: usersListData,
+                count: 2,
+              },
+            },
+          ]);
+        }, 2000);
+      } else {
+        reject(new Error('Something is wrong'));
+      }
+    });
+  });
+  mock
+    .onGet(new RegExp(`${API.getUserDetail.get}`.replace('{userId}', '(.*)')))
+    .reply(() => {
+      const userDetailData = {
+        id: 2,
+        email: 'rick.xu@imaginato.com',
+        name: 'BNP Paribas SA',
+        walletAddress: '1234 5678 9012 345',
+        isActivated: true,
+        lastLoginAt: '2022-12-14 18:30',
+        createdAt: '2022-12-14 18:30',
+      };
+
+      return new Promise((resolve, reject) => {
+        if (resolve) {
+          setTimeout(() => {
+            resolve([
+              200,
+              {
+                code: 200,
+                message: 'OK',
+                data: userDetailData,
+              },
+            ]);
+          }, 2000);
+        } else {
+          reject(new Error('Something is wrong'));
+        }
+      });
+    });
 };
 
 export default MockAPI;

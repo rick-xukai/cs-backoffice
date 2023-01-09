@@ -4,7 +4,6 @@ import { verificationApi } from '../../utils/func';
 import { SortKeys } from '../../constants/Keys';
 import { RootState } from '../../app/store';
 import TransactionsService from '../../services/API/Transactions';
-import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -112,8 +111,6 @@ interface TransactionsState {
   loading: boolean;
   changeStatusSuccess: boolean;
   data: TransactionsDataType[];
-  page: number;
-  pageSize: number;
   sort: { sortName: string; sortValue: string };
   filters: {
     status: number | null;
@@ -132,8 +129,6 @@ interface TransactionsState {
 const initialState: TransactionsState = {
   loading: false,
   changeStatusSuccess: false,
-  page: defaultCurrentPage,
-  pageSize: defaultPageSize,
   sort: {
     sortName: 'submitted_at',
     sortValue: SortKeys.descend,
@@ -153,21 +148,11 @@ export const transactionsListSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
-    paginationChangeAction: (state, action) => {
-      if (action.payload.pageSize !== state.pageSize) {
-        state.page = 1;
-      } else {
-        state.page = action.payload.page;
-      }
-      state.pageSize = action.payload.pageSize;
-    },
     sortChangeAction: (state, action) => {
       state.sort = action.payload;
-      state.page = 1;
     },
     filtersChangeAction: (state, action) => {
       state.filters = { ...state.filters, ...action.payload };
-      state.page = 1;
     },
   },
   extraReducers: (builder) => {
@@ -208,23 +193,15 @@ export const transactionsListSlice = createSlice({
   },
 });
 
-export const {
-  reset,
-  paginationChangeAction,
-  sortChangeAction,
-  filtersChangeAction,
-} = transactionsListSlice.actions;
+export const { reset, sortChangeAction, filtersChangeAction } =
+  transactionsListSlice.actions;
 
-export const selectCurrentPageSize = (state: RootState) =>
-  state.transactionsList.pageSize;
 export const selectchangeStatusSuccess = (state: RootState) =>
   state.transactionsList.changeStatusSuccess;
 export const selectLoading = (state: RootState) =>
   state.transactionsList.loading;
 export const selectDataTotal = (state: RootState) =>
   state.transactionsList.total;
-export const selectCurrentPage = (state: RootState) =>
-  state.transactionsList.page;
 export const selectFilters = (state: RootState) =>
   state.transactionsList.filters;
 export const selectData = (state: RootState) => state.transactionsList.data;

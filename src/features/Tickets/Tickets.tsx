@@ -25,7 +25,7 @@ import {
   TicketsListDataType,
 } from './Tickets.slice';
 
-export const columns = (routeConfig: any, ticketId?: string, type?: string) => {
+export const columns = (routeConfig: any, id?: string, type?: string) => {
   const columnType = type;
   return [
     {
@@ -38,15 +38,21 @@ export const columns = (routeConfig: any, ticketId?: string, type?: string) => {
           <Link
             to={{
               pathname:
-                (!columnType &&
+                ((!columnType || columnType === UserRoutes.userDetail) &&
                   UserRoutes.ticketDetail.replace(
                     ':ticketId',
                     record.id.toString(),
                   )) ||
                 UserRoutes.eventTicketsDetail
-                  .replace(':eventId', ticketId as string)
+                  .replace(':eventId', id as string)
                   .replace(':ticketId', record.id.toString()),
-              state: routeConfig,
+              state:
+                (columnType === UserRoutes.userDetail && {
+                  ...routeConfig,
+                  previousPath: columnType,
+                  id,
+                }) ||
+                routeConfig,
             }}
           >
             {text}

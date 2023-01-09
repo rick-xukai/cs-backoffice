@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Row, Col, Button, Select, Modal, Spin, message, Badge } from 'antd';
 import {
@@ -8,7 +8,11 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 
-import { decimalPlaces } from '../../constants/General';
+import {
+  decimalPlaces,
+  defaultCurrentPage,
+  defaultPageSize,
+} from '../../constants/General';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserRoutes } from '../../navigation/Routes';
@@ -28,11 +32,19 @@ import { TransactionsDetailContainer } from './TransactionsDetailComponent';
 const { Option } = Select;
 const { confirm } = Modal;
 
+interface RouteConfigType {
+  state: {
+    currentPage: number;
+    currentPageSize: number;
+  };
+}
+
 const TransactionsDetail = () => {
   const { t } = useTranslation();
   const { transactionsId }: { transactionsId: string } = useParams();
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const location: RouteConfigType = useLocation();
 
   const loading = useAppSelector(selectLoading);
   const data = useAppSelector(selectData);
@@ -91,7 +103,17 @@ const TransactionsDetail = () => {
       <PageHeaderComponent
         title={t('Transactions Details')}
         showBackArrow
-        clickBack={() => history.push(UserRoutes.transactions)}
+        clickBack={() =>
+          history.push(
+            `${UserRoutes.transactions}?page=${
+              (location.state && location.state.currentPage) ||
+              defaultCurrentPage
+            }&pageSize=${
+              (location.state && location.state.currentPageSize) ||
+              defaultPageSize
+            }`,
+          )
+        }
       />
       {(!loading && (
         <div className="page-main">

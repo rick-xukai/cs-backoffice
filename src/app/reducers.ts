@@ -11,6 +11,8 @@ import eventsDetailReducer from '../features/EventDetail/EventDetail.slice';
 import ticketsDetailReducer from '../features/TicketDetail/TicketDetail.slice';
 import transactionsListReducer from '../features/Transactions/Transactions.slice';
 import transactionsDetailReducer from '../features/TransactionsDetail/TransactionsDetail.slice';
+import usersListReducer from '../features/Users/Users.slice';
+import userDetailReducer from '../features/UserDetail/UserDetail.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -25,6 +27,8 @@ const createRootReducer = (history: any) =>
     ticketsDetail: ticketsDetailReducer,
     transactionsList: transactionsListReducer,
     transactionsDetail: transactionsDetailReducer,
+    usersList: usersListReducer,
+    userDetail: userDetailReducer,
   });
 
 export default createRootReducer;
