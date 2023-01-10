@@ -34,9 +34,12 @@ const { Option } = Select;
 
 interface RouteConfigType {
   search: string;
+  pathname: string;
   state: {
-    currentPage: number;
-    currentPageSize: number;
+    ticketListPage: number;
+    ticketListPageSize: number;
+    userListPage: number;
+    userListPageSize: number;
   };
 }
 
@@ -56,35 +59,35 @@ const UserDetail = () => {
 
   const [edit, setEdit] = useState(false);
   const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
-    currentPage: defaultCurrentPage,
-    currentPageSize: defaultPageSize,
+    ticketListPage: defaultCurrentPage,
+    ticketListPageSize: defaultPageSize,
   });
 
   useEffect(() => {
-    dispatch(getUserDetailAction(userId));
+    dispatch(getUserDetailAction(userId.split('?')[0]));
     return () => {
       dispatch(reset());
     };
   }, []);
 
   useEffect(() => {
-    const { page, pageSize } = qs.parse(location.search.slice(1));
+    const { page, pageSize } = qs.parse(location.pathname.split('?')[1]);
     if (page && pageSize) {
       setCurrentPaginationConfig({
-        currentPage: Number(page),
-        currentPageSize: Number(pageSize),
+        ticketListPage: Number(page),
+        ticketListPageSize: Number(pageSize),
       });
     }
     dispatch(
       getUserDetailTicketsAction({
-        userId,
+        userId: userId.split('?')[0],
         parameters: {
-          page: Number(page) || currentPaginationConfig.currentPage,
-          size: Number(pageSize) || currentPaginationConfig.currentPageSize,
+          page: Number(page) || currentPaginationConfig.ticketListPage,
+          size: Number(pageSize) || currentPaginationConfig.ticketListPageSize,
         },
       }),
     );
-  }, [location.search]);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (error) {
@@ -100,10 +103,10 @@ const UserDetail = () => {
         clickBack={() =>
           history.push(
             `${UserRoutes.users}?page=${
-              (location.state && location.state.currentPage) ||
+              (location.state && location.state.userListPage) ||
               defaultCurrentPage
             }&pageSize=${
-              (location.state && location.state.currentPageSize) ||
+              (location.state && location.state.userListPageSize) ||
               defaultPageSize
             }`,
           )
@@ -111,7 +114,7 @@ const UserDetail = () => {
       />
       {(!loadingForDetail && (
         <div className="page-main">
-          <Row>
+          <Row style={{ display: 'none' }}>
             <Col span={24} className="edit-status">
               {(!edit && (
                 <Button type="primary" danger onClick={() => setEdit(true)}>
@@ -203,11 +206,19 @@ const UserDetail = () => {
             <div className="ticket-table">
               <TableComponent
                 loading={loadingForTickets}
-                currentPage={currentPaginationConfig.currentPage}
-                currentPageSize={currentPaginationConfig.currentPageSize}
+                currentPage={currentPaginationConfig.ticketListPage}
+                currentPageSize={currentPaginationConfig.ticketListPageSize}
                 columns={columns(
-                  currentPaginationConfig,
-                  userId,
+                  {
+                    ...currentPaginationConfig,
+                    userListPage:
+                      (location.state && location.state.userListPage) ||
+                      defaultCurrentPage,
+                    useListPageSize:
+                      (location.state && location.state.userListPageSize) ||
+                      defaultPageSize,
+                  },
+                  userId.split('?')[0],
                   UserRoutes.userDetail,
                 ).filter(
                   (item) => item.key !== 'userName' && item.key !== 'userEmail',
@@ -215,13 +226,27 @@ const UserDetail = () => {
                 tableData={userDetailTicketsData}
                 tableDataTotal={total}
                 paginationChange={(page, pageSize) =>
-                  history.push(
-                    `${UserRoutes.userDetail.replace(':userId', userId)}?page=${
-                      (pageSize === currentPaginationConfig.currentPageSize &&
+                  history.push({
+                    pathname: `${UserRoutes.userDetail.replace(
+                      ':userId',
+                      userId.split('?')[0],
+                    )}?page=${
+                      (pageSize === currentPaginationConfig.ticketListPage &&
                         page) ||
                       defaultCurrentPage
                     }&pageSize=${pageSize}`,
-                  )
+                    state: {
+                      userListPage:
+                        (location.state && location.state.userListPage) ||
+                        defaultCurrentPage,
+                      userListPageSize:
+                        (location.state && location.state.userListPageSize) ||
+                        defaultPageSize,
+                      ticketListPage: currentPaginationConfig.ticketListPage,
+                      ticketListPageSize:
+                        currentPaginationConfig.ticketListPageSize,
+                    },
+                  })
                 }
               />
             </div>
