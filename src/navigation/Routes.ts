@@ -25,6 +25,7 @@ export const UserRoutes = {
   eventDetail: '/event-detail/:id',
   users: '/users',
   userDetail: '/user/:userId',
+  userTicketDetail: '/user-ticket-detail/:ticketId',
   tickets: '/tickets',
   settings: '/settings',
   ticketDetail: '/ticket-detail/:ticketId',

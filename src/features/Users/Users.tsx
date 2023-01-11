@@ -48,8 +48,8 @@ const Users = () => {
   const filters = useAppSelector(selectFilters);
 
   const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
-    currentPage: defaultCurrentPage,
-    currentPageSize: defaultPageSize,
+    userListPage: defaultCurrentPage,
+    userListPageSize: defaultPageSize,
   });
 
   const columns = [
@@ -109,7 +109,7 @@ const Users = () => {
       key: 'lastLoginAt',
       showSorterTooltip: false,
       width: 110,
-      sorter: true,
+      sorter: false,
       defaultSortOrder: SortKeys.descend as SortOrder,
       sortOrder: sort.sortValue as SortOrder,
       sortDirections: [SortKeys.descend, SortKeys.ascend] as SortOrder[],
@@ -185,14 +185,14 @@ const Users = () => {
     const { page, pageSize } = qs.parse(location.search.slice(1));
     if (page && pageSize) {
       setCurrentPaginationConfig({
-        currentPage: Number(page),
-        currentPageSize: Number(pageSize),
+        userListPage: Number(page),
+        userListPageSize: Number(pageSize),
       });
     }
     dispatch(
       getUsersListAction({
-        page: Number(page) || currentPaginationConfig.currentPage,
-        size: Number(pageSize) || currentPaginationConfig.currentPageSize,
+        page: Number(page) || currentPaginationConfig.userListPage,
+        size: Number(pageSize) || currentPaginationConfig.userListPageSize,
         filters,
         sort,
       }),
@@ -205,8 +205,8 @@ const Users = () => {
       <div className="page-main">
         <TableComponent
           loading={loading}
-          currentPage={currentPaginationConfig.currentPage}
-          currentPageSize={currentPaginationConfig.currentPageSize}
+          currentPage={currentPaginationConfig.userListPage}
+          currentPageSize={currentPaginationConfig.userListPageSize}
           columns={columns}
           tableData={data}
           tableDataTotal={total}
@@ -214,14 +214,14 @@ const Users = () => {
           paginationChange={(page, pageSize) =>
             history.push(
               `${UserRoutes.users}?page=${
-                (pageSize === currentPaginationConfig.currentPageSize &&
+                (pageSize === currentPaginationConfig.userListPageSize &&
                   page) ||
                 defaultCurrentPage
               }&pageSize=${pageSize}`,
             )
           }
         >
-          <TableFilterContainer>
+          <TableFilterContainer style={{ display: 'none' }}>
             <Col span={24}>
               <Row>
                 <Col span={6} className="filter-status">

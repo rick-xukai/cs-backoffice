@@ -26,7 +26,24 @@ import {
 } from './Tickets.slice';
 
 export const columns = (routeConfig: any, id?: string, type?: string) => {
-  const columnType = type;
+  const setRoutePath = (recordInfo: TicketsListDataType) => {
+    if (!type) {
+      return UserRoutes.ticketDetail.replace(
+        ':ticketId',
+        recordInfo.id.toString(),
+      );
+    }
+    if (type === UserRoutes.userDetail) {
+      return UserRoutes.userTicketDetail.replace(
+        ':ticketId',
+        recordInfo.id.toString(),
+      );
+    }
+    return UserRoutes.eventTicketsDetail
+      .replace(':eventId', id as string)
+      .replace(':ticketId', recordInfo.id.toString());
+  };
+
   return [
     {
       title: 'Ticket Number',
@@ -37,19 +54,11 @@ export const columns = (routeConfig: any, id?: string, type?: string) => {
         <Button className="name-btn">
           <Link
             to={{
-              pathname:
-                ((!columnType || columnType === UserRoutes.userDetail) &&
-                  UserRoutes.ticketDetail.replace(
-                    ':ticketId',
-                    record.id.toString(),
-                  )) ||
-                UserRoutes.eventTicketsDetail
-                  .replace(':eventId', id as string)
-                  .replace(':ticketId', record.id.toString()),
+              pathname: setRoutePath(record),
               state:
-                (columnType === UserRoutes.userDetail && {
+                (type === UserRoutes.userDetail && {
                   ...routeConfig,
-                  previousPath: columnType,
+                  previousPath: type,
                   id,
                 }) ||
                 routeConfig,
@@ -127,8 +136,8 @@ const Tickets = () => {
   const ticketsListDataTotal = useAppSelector(selectDataTotal);
 
   const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
-    currentPage: defaultCurrentPage,
-    currentPageSize: defaultPageSize,
+    ticketListPage: defaultCurrentPage,
+    ticketListPageSize: defaultPageSize,
   });
 
   // eslint-disable-next-line
@@ -142,14 +151,14 @@ const Tickets = () => {
     const { page, pageSize } = qs.parse(location.search.slice(1));
     if (page && pageSize) {
       setCurrentPaginationConfig({
-        currentPage: Number(page),
-        currentPageSize: Number(pageSize),
+        ticketListPage: Number(page),
+        ticketListPageSize: Number(pageSize),
       });
     }
     dispatch(
       getTicketsListAction({
-        page: Number(page) || currentPaginationConfig.currentPage,
-        size: Number(pageSize) || currentPaginationConfig.currentPageSize,
+        page: Number(page) || currentPaginationConfig.ticketListPage,
+        size: Number(pageSize) || currentPaginationConfig.ticketListPageSize,
       }),
     );
   }, [location.search]);
@@ -160,15 +169,15 @@ const Tickets = () => {
       <div className="page-main">
         <TableComponent
           loading={loading}
-          currentPage={currentPaginationConfig.currentPage}
-          currentPageSize={currentPaginationConfig.currentPageSize}
+          currentPage={currentPaginationConfig.ticketListPage}
+          currentPageSize={currentPaginationConfig.ticketListPageSize}
           columns={columns(currentPaginationConfig)}
           tableData={ticketsListData}
           tableDataTotal={ticketsListDataTotal}
           paginationChange={(page, pageSize) =>
             history.push(
               `${UserRoutes.tickets}?page=${
-                (pageSize === currentPaginationConfig.currentPageSize &&
+                (pageSize === currentPaginationConfig.ticketListPageSize &&
                   page) ||
                 defaultCurrentPage
               }&pageSize=${pageSize}`,

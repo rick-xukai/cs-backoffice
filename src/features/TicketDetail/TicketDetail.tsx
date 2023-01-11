@@ -32,8 +32,10 @@ const { Option } = Select;
 interface RouteConfigType {
   state: {
     id?: string;
-    currentPage: number;
-    currentPageSize: number;
+    ticketListPage: number;
+    ticketListPageSize: number;
+    userListPage: number;
+    userListPageSize: number;
     previousPath?: string;
   };
 }
@@ -80,23 +82,30 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
 
   const handleClickBack = () => {
     if (location.state.previousPath) {
-      history.push(
-        `${location.state.previousPath.replace(
+      history.push({
+        pathname: `${location.state.previousPath.replace(
           ':userId',
           location.state.id || '',
         )}?page=${
-          (location.state && location.state.currentPage) || defaultCurrentPage
+          (location.state && location.state.ticketListPage) ||
+          defaultCurrentPage
         }&pageSize=${
-          (location.state && location.state.currentPageSize) || defaultPageSize
-        }
-        `,
-      );
+          (location.state && location.state.ticketListPageSize) ||
+          defaultPageSize
+        }`,
+        state: {
+          userListPage: location.state.userListPage,
+          userListPageSize: location.state.userListPageSize,
+        },
+      });
     } else {
       history.push(
         `${UserRoutes.tickets}?page=${
-          (location.state && location.state.currentPage) || defaultCurrentPage
+          (location.state && location.state.ticketListPage) ||
+          defaultCurrentPage
         }&pageSize=${
-          (location.state && location.state.currentPageSize) || defaultPageSize
+          (location.state && location.state.ticketListPageSize) ||
+          defaultPageSize
         }`,
       );
     }

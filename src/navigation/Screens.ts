@@ -99,6 +99,15 @@ export const UserScreens = {
     guard: true,
     role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
+  UserTicketDetail: {
+    title: 'User Ticket Detail - CrowdServe BO',
+    path: UserRoutes.userTicketDetail,
+    component: TicketDetail,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.users],
+    guard: true,
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+  },
   Settings: {
     title: 'Settings - CrowdServe BO',
     path: UserRoutes.dashboard,
