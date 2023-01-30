@@ -107,11 +107,21 @@ const Transactions = () => {
       key: 'bankName',
       width: 240,
       render: (text: string, record: TransactionsDataType) => (
-        <p>
-          {text}
-          <br />
-          {record.cardNo}
-        </p>
+        <Tooltip
+          title={
+            <span>
+              {text}
+              <br />
+              {record.cardNo}
+            </span>
+          }
+        >
+          <p className="bank_account">
+            {text}
+            <br />
+            {record.cardNo}
+          </p>
+        </Tooltip>
       ),
     },
     {
