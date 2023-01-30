@@ -19,6 +19,11 @@ const TransactionsContainer = styled.div`
       }
     }
   }
+  .bank_account {
+    min-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const TableFilterContainer = styled(Row)`
