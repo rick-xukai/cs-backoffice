@@ -8,6 +8,10 @@
     padding-left: 16px;
     padding-right: 16px;
   }
+  .ant-menu-item-icon {
+    width: 17px;
+    height: 17px;
+  }
   .ant-menu-item:hover {
     background: $black900;
     border-radius: 4px;
@@ -48,6 +52,9 @@
   .ant-menu {
     background: $black !important;
   }
+}
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 2px !important;
 }
 .ant-layout-header {
   height: 60px;

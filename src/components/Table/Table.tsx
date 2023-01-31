@@ -69,8 +69,8 @@ const TableContainer = styled.div`
         background: ${Colors.white};
       }
     }
-    .email {
-      max-width: 165px;
+    .ellipsis {
+      max-width: 100%;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;

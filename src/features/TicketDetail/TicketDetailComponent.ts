@@ -86,7 +86,7 @@ const TicketDetailContainer = styled.div`
       white-space: nowrap;
       a {
         margin-left: 24px;
-        color: ${Colors.grey6};
+        color: ${Colors.branding};
         :hover {
           text-decoration: underline;
         }
