@@ -123,6 +123,7 @@ const EventTickets = () => {
           )}
           tableData={ticketListdata}
           tableDataTotal={ticketListdataTotal}
+          scrollY="calc(100vh - 300px)"
           paginationChange={(page, pageSize) =>
             history.push(
               `${UserRoutes.eventTickets.replace(':id', id)}?page=${

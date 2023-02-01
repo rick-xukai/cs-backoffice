@@ -127,6 +127,7 @@ const TableComponent = ({
   columns,
   tableData,
   tableDataTotal,
+  scrollY = 'calc(100vh - 254px)',
   paginationChange,
   onChange,
 }: {
@@ -140,6 +141,7 @@ const TableComponent = ({
   columns: ColumnsType<any>;
   tableData: object[];
   tableDataTotal: number;
+  scrollY?: string;
   paginationChange: (page: number, pageSize?: number) => void;
   onChange?: (
     pagination: TablePaginationConfig,
@@ -151,7 +153,7 @@ const TableComponent = ({
     <Spin spinning={loading} indicator={<LoadingOutlined spin />} size="large">
       {children && <div>{children}</div>}
       <Table
-        scroll={{ x: 950, y: 580 }}
+        scroll={{ x: 950, y: scrollY }}
         rowKey={rowKey}
         columns={columns}
         dataSource={tableData}
