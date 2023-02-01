@@ -91,7 +91,7 @@ const Transactions = () => {
       width: 165,
       render: (text: string) => (
         <Tooltip title={text}>
-          <p className="email">{text}</p>
+          <p className="ellipsis">{text}</p>
         </Tooltip>
       ),
     },

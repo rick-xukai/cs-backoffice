@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  DashboardOutlined,
-  UserOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { DashboardOutlined, SettingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import SVG from 'react-inlinesvg';
 import { MenuKeys } from './MenuKeys';
@@ -31,7 +27,7 @@ const MenuList = (): IMenu[] => {
     {
       key: MenuKeys.users,
       title: t('Users'),
-      icon: <UserOutlined />,
+      icon: <SVG src={Images.MenuUsersIcon} />,
       path: UserScreens.Users.path,
       role: UserScreens.Users.role,
     },

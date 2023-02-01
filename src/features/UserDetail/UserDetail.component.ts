@@ -78,16 +78,6 @@ const UserDetailContainer = styled.div`
         font-size: 15px;
       }
     }
-    .action-view {
-      white-space: nowrap;
-      a {
-        margin-left: 24px;
-        color: ${Colors.grey6};
-        :hover {
-          text-decoration: underline;
-        }
-      }
-    }
     .edit-status {
       display: flex;
       align-items: center;

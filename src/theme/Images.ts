@@ -20,6 +20,7 @@ import EditDisabled from '../assets/images/icons/edit-disabled.svg';
 import LoginBackground from '../assets/images/login-background.png';
 import PasswordHidden from '../assets/images/icons/password-hidden.svg';
 import Transactions from '../assets/images/icons/transactions.svg';
+import MenuUsersIcon from '../assets/images/icons/menu-user.svg';
 
 const Images = {
   Logo,
@@ -46,6 +47,7 @@ const Images = {
   LoginBackground,
   PasswordHidden,
   Transactions,
+  MenuUsersIcon,
 };
 
 export default Images;

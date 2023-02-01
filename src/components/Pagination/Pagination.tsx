@@ -30,13 +30,15 @@ const PaginationContainer = styled.div`
     .ant-pagination-prev,
     .ant-pagination-next,
     .ant-pagination-item {
-      min-width: 28px;
-      height: 30px;
-      line-height: 30px;
-      font-weight: 600;
+      min-width: 32px;
+      height: 32px;
+      line-height: 32px;
+      font-weight: 500;
       font-size: 15px;
       border: none;
       font-family: Heebo, sans-serif;
+      margin-right: 0;
+      border-radius: 2px;
     }
     .ant-pagination-options-size-changer,
     .ant-select-selection-search-input,

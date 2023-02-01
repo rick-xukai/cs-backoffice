@@ -60,7 +60,7 @@ const Users = () => {
       width: 110,
       render: (text: string, record: UsersListDataType) => (
         <Tooltip title={text}>
-          <Button className="name-btn email">
+          <Button className="name-btn ellipsis">
             <Link
               to={{
                 pathname: UserRoutes.userDetail.replace(

@@ -41,10 +41,12 @@ const Events = () => {
       title: 'Event Name',
       dataIndex: 'eventName',
       key: 'eventName',
-      width: 200,
       render: (text: string, record: EventsListDataType) => (
         <Tooltip title={text}>
-          <Button className="name-btn" disabled={record.status === 'Ended'}>
+          <Button
+            className="name-btn ellipsis"
+            disabled={record.status === 'Ended'}
+          >
             <Link
               to={{
                 pathname: UserRoutes.eventInfo.replace(
@@ -95,12 +97,6 @@ const Events = () => {
       key: 'organizer',
     },
     {
-      title: 'Partner',
-      dataIndex: 'partner',
-      key: 'partner',
-      render: (text: string) => <span>{text || '-'}</span>,
-    },
-    {
       title: 'Created at',
       dataIndex: 'createdAt',
       key: 'createdAt',
@@ -112,13 +108,6 @@ const Events = () => {
           </p>
         </div>
       ),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      width: 110,
-      render: (text: string) => <span>{text || '-'}</span>,
     },
   ];
 
