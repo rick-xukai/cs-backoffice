@@ -107,7 +107,10 @@ const EventInfo = ({ data }: { data: EventDetailDataType }) => {
                       {t('NFT Image')}
                     </Col>
                     <Col span={15}>
-                      <img className="nft-img" src={item.image} alt="" />
+                      {(item.image && (
+                        <img className="nft-img" src={item.image} alt="" />
+                      )) ||
+                        '-'}
                     </Col>
                   </Row>
                   <Row className="item">
