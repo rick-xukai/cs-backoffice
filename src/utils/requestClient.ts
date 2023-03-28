@@ -1,5 +1,9 @@
 /* eslint-disable */
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+
+import { AuthorizationType } from '../constants/API';
+import { CookieKeys } from '../constants/Keys';
 
 export const defaultHeaders = {
   'content-type': 'application/json',
@@ -36,6 +40,8 @@ export class RequestClientClass {
   uri: string;
   queryUrl: any;
   requireHeadersReturn: boolean;
+  authorizationStatus: boolean;
+  private readonly cookies: Cookies = new Cookies();
 
   constructor(baseUrl: string | undefined, fetch = axios) {
     this.baseUrl = baseUrl;
@@ -45,6 +51,7 @@ export class RequestClientClass {
     this.uri = '';
     this.queryUrl = {};
     this.requireHeadersReturn = false;
+    this.authorizationStatus = false;
   }
 
   /**
@@ -106,7 +113,20 @@ export class RequestClientClass {
     return this;
   }
 
+  setAuthorizationStatus() {
+    this.authorizationStatus = true;
+    return this;
+  }
+
   async doMethod(method = 'GET') {
+    if (this.authorizationStatus) {
+      const userToken = this.cookies.get(CookieKeys.authUser);
+      if (userToken) {
+        this.setHeaders({
+          authorization: `${AuthorizationType.bearer} ${userToken}`,
+        })
+      }
+    }
     const options: any = {
       baseURL: this.baseUrl,
       url: this.uri,

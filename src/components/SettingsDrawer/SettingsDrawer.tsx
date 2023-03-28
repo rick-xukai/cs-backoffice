@@ -103,7 +103,7 @@ const SettingsDrawer = ({
       placement="right"
       closable={false}
       onClose={toggleRightbar}
-      visible={visible}
+      open={visible}
       width={280}
     >
       <Row justify="start" align="middle" gutter={[0, 8]}>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Button, Tooltip } from 'antd';
+import { Button, Tooltip, Row, Col } from 'antd';
 import qs from 'qs';
 
 import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
@@ -138,6 +138,13 @@ const Events = () => {
     <EventsContainer>
       <PageHeaderComponent title={t('Events')} />
       <div className="page-main">
+        <Row>
+          <Col span={24} className="create-event">
+            <Link to={UserRoutes.createEvent}>
+              <Button>{t('Create New Event')}</Button>
+            </Link>
+          </Col>
+        </Row>
         <TableComponent
           loading={loading}
           currentPage={currentPaginationConfig.currentPage}

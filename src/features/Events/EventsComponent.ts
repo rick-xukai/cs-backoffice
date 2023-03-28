@@ -5,6 +5,20 @@ const EventsContainer = styled.div`
   .page-main {
     padding: calc(60px + 24px) 24px 24px;
     background: ${Colors.grey5};
+    .create-event {
+      text-align: right;
+      margin-bottom: 12px;
+      .ant-btn {
+        height: 32px;
+        background: ${Colors.branding};
+        border-radius: 2px;
+        border: none;
+        font-weight: 400;
+        font-size: 15px;
+        color: #fff;
+        padding: 5px 12px;
+      }
+    }
   }
   .name-btn {
     border: none;

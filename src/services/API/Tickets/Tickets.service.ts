@@ -9,6 +9,7 @@ const getTicketsList = async (payload: any) => {
   const response = await requestClient()
     .setUri(uri)
     .setQueryParameter(payload)
+    .setAuthorizationStatus()
     .doGet();
   return response;
 };
@@ -18,7 +19,10 @@ const getTicketsDetail = async (payload: { userTicketId: string }) => {
     '{userTicketId}',
     payload.userTicketId,
   );
-  const response = await requestClient().setUri(uri).doGet();
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
   return response;
 };
 
@@ -33,6 +37,7 @@ const updateTicketsDetail = async (payload: {
   const response = await requestClient()
     .setUri(uri)
     .setPayload(payload.data)
+    .setAuthorizationStatus()
     .doPut();
   return response;
 };

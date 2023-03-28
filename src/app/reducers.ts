@@ -13,6 +13,7 @@ import transactionsListReducer from '../features/Transactions/Transactions.slice
 import transactionsDetailReducer from '../features/TransactionsDetail/TransactionsDetail.slice';
 import usersListReducer from '../features/Users/Users.slice';
 import userDetailReducer from '../features/UserDetail/UserDetail.slice';
+import createEventReducer from '../features/CreateEvent/CreateEvent.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -29,6 +30,7 @@ const createRootReducer = (history: any) =>
     transactionsDetail: transactionsDetailReducer,
     usersList: usersListReducer,
     userDetail: userDetailReducer,
+    createEvent: createEventReducer,
   });
 
 export default createRootReducer;
