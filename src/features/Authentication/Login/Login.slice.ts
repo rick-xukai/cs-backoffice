@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { ACCESS_TOKEN, Users } from '../../../helpers/mock-api';
 import { RootState } from '../../../app/store';
-import AuthenticationService from '../../../services/API/Authentication';
+import { verificationApi } from '../../../utils/func';
+import UsersService from '../../../services/API/Users';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -15,41 +15,41 @@ export interface LoginPayload {
   password: string;
 }
 
+export interface LoginRequestType {
+  email: string;
+  password: string;
+}
+
+export interface UserLoginResponseType {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: number;
+    lastLoginAt: string;
+  };
+  token: string;
+}
+
 /**
- * Login
+ * login
  */
 export const loginAction = createAsyncThunk<
-  any,
-  LoginPayload,
+  UserLoginResponseType,
+  LoginRequestType,
   {
     rejectValue: ErrorType;
   }
->('login/loginAction', async (payload: LoginPayload, { rejectWithValue }) => {
+>('login/loginAction', async (payload, { rejectWithValue }) => {
   try {
-    const validUser = Users.filter(
-      (usr) =>
-        usr.username === payload.username && usr.password === payload.password,
-    );
-    if (validUser.length === 1) {
-      const token = ACCESS_TOKEN;
-      const tokenObj = { accessToken: token }; // Token Obj
-      const userObj = {
-        uid: validUser[0].uid,
-        username: validUser[0].username,
-        role: validUser[0].role,
-        email: validUser[0].email,
-      };
-      const validUserObj = { ...userObj, ...tokenObj };
-      return validUserObj;
+    const response = await UsersService.doLogin(payload);
+    if (verificationApi(response)) {
+      return response.data;
     }
     return rejectWithValue({
-      message: 'Username and password are invalid.',
+      message: response.message,
     } as ErrorType);
-    const response = await AuthenticationService.doLogin(payload);
-    if (response.success) {
-      return response.results;
-    }
-  } catch (err) {
+  } catch (err: any) {
     if (!err.response) {
       throw err;
     }
@@ -65,7 +65,7 @@ export const loginAction = createAsyncThunk<
 export const logoutAction = createAsyncThunk('login/loginAction', async () => {
   try {
     // Todo something
-  } catch (err) {
+  } catch (err: any) {
     if (!err.response) {
       throw err;
     }
@@ -74,6 +74,7 @@ export const logoutAction = createAsyncThunk('login/loginAction', async () => {
 
 export interface LoginState {
   loading: boolean;
+  data: UserLoginResponseType;
   error:
     | {
         message: string | undefined;
@@ -83,6 +84,16 @@ export interface LoginState {
 }
 
 const initialState: LoginState = {
+  data: {
+    user: {
+      id: '',
+      name: '',
+      email: '',
+      role: 0,
+      lastLoginAt: '',
+    },
+    token: '',
+  },
   loading: false,
   error: null,
 };
@@ -90,13 +101,18 @@ const initialState: LoginState = {
 export const loginSlice = createSlice({
   name: 'login',
   initialState,
-  reducers: {},
+  reducers: {
+    reset: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loginAction.pending, (state) => {
         state.loading = true;
       })
-      .addCase(loginAction.fulfilled, () => initialState)
+      .addCase(loginAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
       .addCase(loginAction.rejected, (state, action) => {
         state.loading = false;
         if (action.payload) {
@@ -108,6 +124,9 @@ export const loginSlice = createSlice({
   },
 });
 
+export const { reset } = loginSlice.actions;
+
+export const selectData = (state: RootState) => state.login.data;
 export const selectLoading = (state: RootState) => state.login.loading;
 export const selectError = (state: RootState) => state.login.error;
 

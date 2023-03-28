@@ -9,13 +9,17 @@ const getTransactionsList = async (payload: any) => {
   const response = await requestClient()
     .setUri(uri)
     .setQueryParameter(payload)
+    .setAuthorizationStatus()
     .doGet();
   return response;
 };
 
 const getTransactionDetail = async (payload: string) => {
   const uri = API.transactions.get.replace('{transactionId}', payload);
-  const response = await requestClient().setUri(uri).doGet();
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
   return response;
 };
 
@@ -24,6 +28,7 @@ const changeTransactionsStatus = async (payload: any) => {
   const response = await requestClient()
     .setUri(uri)
     .setPayload(payload)
+    .setAuthorizationStatus()
     .doPost();
   return response;
 };

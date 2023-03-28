@@ -4,6 +4,7 @@ export const LocalStorageKeys = {
 };
 export const CookieKeys = {
   authUser: 'authUser',
+  userLoginToken: 'userLoginToken',
 };
 export const EventTabsKey = {
   eventInfo: 'Event Info',
@@ -32,7 +33,7 @@ export const SortKeys = {
   ascend: 'ascend',
 };
 export const FormatTimeKeys = {
-  norm: 'MMM dd, yyyy HH:mm:ss',
+  norm: 'MMM dd yyyy, HH:mm',
   mdy: 'MMM dd, yyyy',
   hms: 'HH:mm:ss',
   hm: 'HH:mm',

@@ -21,29 +21,38 @@ import {
 } from '@ant-design/icons';
 
 import { dataEncryption } from '../../../utils/func';
+import { emailValidator } from '../../../utils/validator';
 import {
   CookieKeys,
   LocalStorageKeys,
   DataEncryptionKeys,
 } from '../../../constants/Keys';
+import { TokenExpire } from '../../../constants/General';
 import { UserRoutes } from '../../../navigation/Routes';
 import LoadingCover from '../../../components/LoadingCover';
 import Images from '../../../theme/Images';
 import Colors from '../../../theme/Colors';
 import { LoginContainer } from './LoginComponents';
 import { useAppSelector, useAppDispatch } from '../../../app/hooks';
-import { selectLoading, selectError, loginAction } from './Login.slice';
+import {
+  reset,
+  selectLoading,
+  selectError,
+  loginAction,
+  selectData,
+} from './Login.slice';
 import { useCookie, useLocalStorage } from '../../../hooks';
 
 const { Content } = Layout;
 
 const Login = () => {
   const { t } = useTranslation();
+  const localStorage = useLocalStorage();
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
+  const data = useAppSelector(selectData);
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const localStorage = useLocalStorage();
   const cookies = useCookie([CookieKeys.authUser]);
 
   const [rememberMeChecked, setRememberMeChecked] = useState<boolean>(true);
@@ -68,6 +77,24 @@ const Login = () => {
     }
   }
 
+  useEffect(() => {
+    if (data.token) {
+      const currentDate = new Date();
+      cookies.setCookie(CookieKeys.authUser, data.token, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+      });
+      history.replace(UserRoutes.events);
+    }
+  }, [data]);
+
+  // eslint-disable-next-line
+  useEffect(() => {
+    return () => {
+      dispatch(reset());
+    };
+  }, []);
+
   const onFinish = async (values: any) => {
     const result = await dispatch(loginAction(values));
     if (result.type === loginAction.fulfilled.toString()) {
@@ -85,8 +112,6 @@ const Login = () => {
       } else {
         localStorage.removeItem(LocalStorageKeys.rememberMe);
       }
-      cookies.setCookie(CookieKeys.authUser, JSON.stringify(result.payload));
-      history.replace(UserRoutes.dashboard);
     }
   };
 
@@ -119,18 +144,10 @@ const Login = () => {
                     onFinish={onFinish}
                   >
                     <Form.Item
-                      name="username"
-                      rules={[
-                        {
-                          required: true,
-                          message: `${t('Please input your username!')}`,
-                        },
-                      ]}
+                      name="email"
+                      rules={[{ validator: emailValidator }]}
                     >
-                      <Input
-                        placeholder="User Name"
-                        prefix={<UserOutlined />}
-                      />
+                      <Input placeholder="Email" prefix={<UserOutlined />} />
                     </Form.Item>
                     <Form.Item
                       name="password"
