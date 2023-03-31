@@ -11,19 +11,30 @@ export interface ErrorType {
 
 export interface TicketTypesItemType {
   id: number;
-  image: string;
   name: string;
-  description?: string;
+  description: string;
+  price: number;
+  stock: number;
+  ceilingPrice: number;
+  purchaseLimit: number;
+  image: string;
+  externalLink: string;
+  blockchainUrl: string;
+  royaltiesFee?: number;
 }
 export interface EventDetailDataType {
   id: number;
-  createdAt: string;
-  eventDesc: string;
-  eventEndTime: string;
-  eventName: string;
-  eventStartTime: string;
+  name: string;
+  description: string;
+  organizerName: string;
+  organizerId: number;
+  image: string;
   location: string;
-  organizer: string;
+  startTime: string;
+  endTime: string;
+  scannerLink: string;
+  uuid: string;
+  status: number;
   ticketTypes: TicketTypesItemType[];
 }
 
@@ -73,13 +84,17 @@ const initialState: EventDetailState = {
   loading: false,
   data: {
     id: 0,
-    createdAt: '',
-    eventDesc: '',
-    eventEndTime: '',
-    eventName: '',
-    eventStartTime: '',
+    name: '',
+    description: '',
+    organizerName: '',
+    organizerId: 0,
+    image: '',
     location: '',
-    organizer: '',
+    startTime: '',
+    endTime: '',
+    scannerLink: '',
+    uuid: '',
+    status: 1,
     ticketTypes: [],
   },
   error: null,

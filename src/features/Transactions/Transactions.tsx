@@ -91,7 +91,7 @@ const Transactions = () => {
       width: 165,
       render: (text: string) => (
         <Tooltip title={text}>
-          <p className="email">{text}</p>
+          <p className="ellipsis">{text}</p>
         </Tooltip>
       ),
     },
@@ -107,11 +107,21 @@ const Transactions = () => {
       key: 'bankName',
       width: 240,
       render: (text: string, record: TransactionsDataType) => (
-        <p>
-          {text}
-          <br />
-          {record.cardNo}
-        </p>
+        <Tooltip
+          title={
+            <span>
+              {text}
+              <br />
+              {record.cardNo}
+            </span>
+          }
+        >
+          <p className="bank_account">
+            {text}
+            <br />
+            {record.cardNo}
+          </p>
+        </Tooltip>
       ),
     },
     {

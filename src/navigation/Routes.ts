@@ -22,6 +22,7 @@ export const UserRoutes = {
     uiNotification: '/ui-notification',
   },
   events: '/events',
+  createEvent: '/create-event',
   eventDetail: '/event-detail/:id',
   users: '/users',
   userDetail: '/user/:userId',

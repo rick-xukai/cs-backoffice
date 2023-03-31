@@ -4,3 +4,13 @@ export const isEmail = (value: string) =>
   /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{1,1})+([^<>()\.,;:\s@\"]{2,}))$/.test(
     value,
   );
+
+export const emailValidator = (_: object, value: string) => {
+  if (!value) {
+    return Promise.reject(new Error('*Please input your email!'));
+  }
+  if (!isEmail(value)) {
+    return Promise.reject(new Error('*Please enter a valid email address.'));
+  }
+  return Promise.resolve();
+};

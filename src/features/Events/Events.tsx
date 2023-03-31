@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Button, Tooltip } from 'antd';
+import { Button, Tooltip, Row, Col } from 'antd';
 import qs from 'qs';
 
 import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
 import { FormatTimeKeys } from '../../constants/Keys';
-import { formatTimeStrByTimeString } from '../../utils/func';
+import { formatTimeStrByTimeString, checkEventStatus } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
@@ -39,12 +39,11 @@ const Events = () => {
   const columns = [
     {
       title: 'Event Name',
-      dataIndex: 'eventName',
-      key: 'eventName',
-      width: 200,
+      dataIndex: 'name',
+      key: 'name',
       render: (text: string, record: EventsListDataType) => (
         <Tooltip title={text}>
-          <Button className="name-btn" disabled={record.status === 'Ended'}>
+          <Button className="name-btn ellipsis">
             <Link
               to={{
                 pathname: UserRoutes.eventInfo.replace(
@@ -62,19 +61,13 @@ const Events = () => {
     },
     {
       title: 'Event Time',
-      dataIndex: 'eventStartTime',
-      key: 'eventStartTime',
+      dataIndex: 'startTime',
+      key: 'startTime',
       render: (text: string, record: EventsListDataType) => (
         <div>
-          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
-          <p style={{ fontSize: 13 }}>
-            {`${formatTimeStrByTimeString(
-              text,
-              FormatTimeKeys.hm,
-            )}~${formatTimeStrByTimeString(
-              record.eventEndTime,
-              FormatTimeKeys.hm,
-            )}`}
+          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.norm)} -</p>
+          <p>
+            {formatTimeStrByTimeString(record.endTime, FormatTimeKeys.norm)}
           </p>
         </div>
       ),
@@ -91,19 +84,23 @@ const Events = () => {
     },
     {
       title: 'Organizer',
-      dataIndex: 'organizer',
-      key: 'organizer',
+      dataIndex: 'organizerName',
+      key: 'organizerName',
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <p className="text-ellipsis">{text}</p>
+        </Tooltip>
+      ),
     },
     {
       title: 'Partner',
-      dataIndex: 'partner',
-      key: 'partner',
-      render: (text: string) => <span>{text || '-'}</span>,
+      dataIndex: 'partnerName',
+      key: 'partnerName',
     },
     {
-      title: 'Created at',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: 'Updated at',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
       render: (text: string) => (
         <div>
           <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
@@ -117,8 +114,7 @@ const Events = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: 110,
-      render: (text: string) => <span>{text || '-'}</span>,
+      render: (status: number) => <p>{checkEventStatus(status)}</p>,
     },
   ];
 
@@ -149,6 +145,13 @@ const Events = () => {
     <EventsContainer>
       <PageHeaderComponent title={t('Events')} />
       <div className="page-main">
+        <Row>
+          <Col span={24} className="create-event">
+            <Link to={UserRoutes.createEvent}>
+              <Button>{t('Create New Event')}</Button>
+            </Link>
+          </Col>
+        </Row>
         <TableComponent
           loading={loading}
           currentPage={currentPaginationConfig.currentPage}

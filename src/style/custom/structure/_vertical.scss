@@ -8,6 +8,10 @@
     padding-left: 16px;
     padding-right: 16px;
   }
+  .ant-menu-item-icon {
+    width: 17px;
+    height: 17px;
+  }
   .ant-menu-item:hover {
     background: $black900;
     border-radius: 4px;
@@ -49,6 +53,9 @@
     background: $black !important;
   }
 }
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 2px !important;
+}
 .ant-layout-header {
   height: 60px;
   .top-menu-btn {
@@ -78,6 +85,7 @@
   background: $white;
   width: 8px;
   height: 8px;
+  --antd-arrow-background-color: $white;
 }
 .ant-select-item {
   font-weight: 400;
@@ -106,7 +114,6 @@
   box-sizing: border-box;
   .logo {
     img {
-      width: 80px;
       height: 42px;
     }
   }

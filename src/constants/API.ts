@@ -1,15 +1,28 @@
+export enum AuthorizationType {
+  bearer = 'Bearer',
+}
+
 const API = {
   login: {
-    post: 'login',
+    post: '/admin/session',
   },
   register: {
     post: 'register',
   },
   getEventsList: {
-    get: '/admin/ticket',
+    get: '/admin/event',
+  },
+  createEvent: {
+    post: '/admin/event',
+  },
+  updateEvent: {
+    put: '/admin/event/{eventId}',
+  },
+  getOrganizer: {
+    get: '/admin/organizer',
   },
   getEventsDetail: {
-    get: '/admin/ticket/{ticketId}',
+    get: '/admin/event/{eventId}',
   },
   getTicketsList: {
     get: '/admin/user_ticket',
@@ -33,6 +46,9 @@ const API = {
   },
   getUserDetailTickets: {
     get: '/admin/user/{userId}/ticket',
+  },
+  uploadFile: {
+    post: '/admin/file',
   },
 };
 

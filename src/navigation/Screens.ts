@@ -11,6 +11,7 @@ import Transactions from '../features/Transactions/Loadable';
 import TransactionsDetail from '../features/TransactionsDetail/Loadable';
 import UsersList from '../features/Users/Loadable';
 import UserDetail from '../features/UserDetail/Loadable';
+import CreateEvent from '../features/CreateEvent/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -31,6 +32,15 @@ export const UserScreens = {
     title: 'Events - CrowdServe BO',
     path: UserRoutes.events,
     component: Events,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+  },
+  CreateEvent: {
+    title: 'Create Event - CrowdServe BO',
+    path: UserRoutes.createEvent,
+    component: CreateEvent,
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,

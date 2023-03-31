@@ -49,24 +49,25 @@ export const columns = (routeConfig: any, id?: string, type?: string) => {
       title: 'Ticket Number',
       dataIndex: 'ticketNo',
       key: 'ticketNo',
-      width: 160,
       render: (text: string, record: TicketsListDataType) => (
-        <Button className="name-btn">
-          <Link
-            to={{
-              pathname: setRoutePath(record),
-              state:
-                (type === UserRoutes.userDetail && {
-                  ...routeConfig,
-                  previousPath: type,
-                  id,
-                }) ||
-                routeConfig,
-            }}
-          >
-            {text}
-          </Link>
-        </Button>
+        <Tooltip title={text}>
+          <Button className="name-btn ellipsis">
+            <Link
+              to={{
+                pathname: setRoutePath(record),
+                state:
+                  (type === UserRoutes.userDetail && {
+                    ...routeConfig,
+                    previousPath: type,
+                    id,
+                  }) ||
+                  routeConfig,
+              }}
+            >
+              {text}
+            </Link>
+          </Button>
+        </Tooltip>
       ),
     },
     {
@@ -75,7 +76,7 @@ export const columns = (routeConfig: any, id?: string, type?: string) => {
       key: 'userName',
       render: (text: string) => (
         <Tooltip title={text}>
-          <p className="email">{text}</p>
+          <p className="ellipsis">{text}</p>
         </Tooltip>
       ),
     },
@@ -86,7 +87,7 @@ export const columns = (routeConfig: any, id?: string, type?: string) => {
       width: 200,
       render: (text: string) => (
         <Tooltip title={text}>
-          <p className="email">{text}</p>
+          <p className="ellipsis">{text}</p>
         </Tooltip>
       ),
     },

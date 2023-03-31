@@ -1,4 +1,3 @@
-import { Row } from 'antd';
 import styled from 'styled-components';
 import { Colors } from '../../theme';
 
@@ -14,7 +13,7 @@ const EventDetailContainer = styled.div`
     right: 0;
   }
   .page-main {
-    padding: calc(106px + 24px) 24px 24px;
+    padding: calc(60px + 24px) 24px 24px;
     background: ${Colors.grey5};
     .edit-status {
       text-align: right;
@@ -40,6 +39,24 @@ const EventDetailContainer = styled.div`
         border: none;
       }
     }
+    .edit-event {
+      text-align: right;
+      margin-bottom: 12px;
+      .ant-btn {
+        height: 32px;
+        background: ${Colors.branding};
+        border-radius: 2px;
+        border: none;
+        font-weight: 400;
+        font-size: 15px;
+        color: #fff;
+        padding: 5px 12px;
+      }
+      .ant-btn[disabled] {
+        background: ${Colors.grey9};
+        color: ${Colors.grey7};
+      }
+    }
   }
   .name-btn {
     border: none;
@@ -62,9 +79,29 @@ const EventDetailContainer = styled.div`
       }
     }
   }
+  .ant-tabs-nav {
+    margin: 0;
+  }
+  .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+    border-width: 1px 1px 0px 1px;
+    border-style: solid;
+    border-color: ${Colors.grey8};
+    background: ${Colors.grey9};
+    margin-right: 5px;
+  }
+  .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+    border: none;
+    background: ${Colors.white};
+  }
 `;
 
-const EventInfoContainer = styled(Row)`
+const EventInfoContainer = styled.div`
+  .ant-tabs-content-holder {
+    height: calc(
+      ${(props: TicketTypesContainerProps) => props.containerHight} - 38px
+    );
+    background: ${Colors.white};
+  }
   .main-box {
     background: ${Colors.white};
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
@@ -74,21 +111,52 @@ const EventInfoContainer = styled(Row)`
     .item {
       margin-bottom: 24px;
       font-weight: 400;
-      font-size: 15px;
+      font-size: 17px;
       color: ${Colors.black5};
       .item-key {
-        color: ${Colors.grey7};
+        color: ${Colors.grey6};
+        font-size: 15px;
       }
     }
+  }
+  .event-img,
+  .ticket-img {
+    margin-top: 6px;
+    width: 86px;
+    height: 86px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  .scanner-link,
+  .external-link {
+    color: ${Colors.black5};
+    text-decoration-line: underline;
   }
 `;
 
 const TicketTypesContainer = styled.div`
+  padding: 24px;
   background: ${Colors.white};
+  .ticket-item-row {
+    margin-bottom: 24px;
+    .ticket-item-key {
+      font-weight: 400;
+      font-size: 15px;
+      color: ${Colors.grey6};
+    }
+    .ticket-item-value {
+      font-weight: 400;
+      font-size: 17px;
+      color: ${Colors.black5};
+    }
+  }
+  /* background: ${Colors.white};
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
   border-radius: 4px;
   padding: 24px;
-  height: ${(props: TicketTypesContainerProps) => props.containerHight};
   .ticket-info {
     height: 100%;
     overflow: auto;
@@ -133,7 +201,7 @@ const TicketTypesContainer = styled.div`
     .item-key {
       color: ${Colors.grey7};
     }
-  }
+  } */
 `;
 
 export { EventDetailContainer, EventInfoContainer, TicketTypesContainer };

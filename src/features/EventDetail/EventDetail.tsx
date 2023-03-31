@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Tabs, Spin, message } from 'antd';
+import { Spin, message, Row, Col, Button } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { defaultCurrentPage, defaultPageSize } from '../../constants/General';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { EventTabsKey } from '../../constants/Keys';
 import { UserRoutes } from '../../navigation/Routes';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { EventDetailContainer } from './EventDetailComponent';
@@ -19,6 +18,7 @@ import {
   reset,
 } from './EventDetail.slice';
 import EventInfo from './Component/EventInfo';
+import CreateEvent from '../CreateEvent';
 
 interface RouteConfigType {
   state: {
@@ -40,6 +40,8 @@ const EventDetail = () => {
   const loadingForDetail = useAppSelector(selectDetailLoading);
   const detailData: EventDetailDataType = useAppSelector(selectDetailData);
 
+  const [editEvent, setEditEvent] = useState<boolean>(false);
+
   // eslint-disable-next-line
   useEffect(() => {
     return () => {
@@ -57,24 +59,6 @@ const EventDetail = () => {
     dispatch(getEventDetailAction(id));
   }, []);
 
-  const handleTabChange = (activeKey: string) => {
-    if (activeKey === EventTabsKey.ticketList) {
-      if (
-        location.state &&
-        location.state.eventTicketsPage &&
-        location.state.eventTicketsPageSize
-      ) {
-        history.push(
-          `${UserRoutes.eventTickets.replace(':id', id)}?page=${
-            location.state.eventTicketsPage
-          }&pageSize=${location.state.eventTicketsPageSize}`,
-        );
-      } else {
-        history.push(UserRoutes.eventTickets.replace(':id', id));
-      }
-    }
-  };
-
   return (
     <EventDetailContainer>
       <PageHeaderComponent
@@ -91,21 +75,7 @@ const EventDetail = () => {
             }`,
           )
         }
-      >
-        <Tabs
-          defaultActiveKey={EventTabsKey.eventInfo}
-          onChange={(activeKey) => handleTabChange(activeKey)}
-        >
-          <Tabs.TabPane
-            tab={t(EventTabsKey.eventInfo)}
-            key={EventTabsKey.eventInfo}
-          />
-          <Tabs.TabPane
-            tab={t(EventTabsKey.ticketList)}
-            key={EventTabsKey.ticketList}
-          />
-        </Tabs>
-      </PageHeaderComponent>
+      />
       <div className="page-main">
         {(loadingForDetail && (
           <Spin
@@ -113,7 +83,32 @@ const EventDetail = () => {
             indicator={<LoadingOutlined spin />}
             size="large"
           />
-        )) || <EventInfo data={detailData} />}
+        )) || (
+          <>
+            {(editEvent && (
+              <CreateEvent
+                isEdit
+                editEventID={id}
+                setEditEvent={setEditEvent}
+                eventData={detailData}
+              />
+            )) || (
+              <>
+                <Row>
+                  <Col span={24} className="edit-event">
+                    <Button
+                      disabled={detailData.status === 2}
+                      onClick={() => setEditEvent(true)}
+                    >
+                      {t('Edit')}
+                    </Button>
+                  </Col>
+                </Row>
+                <EventInfo data={detailData} />
+              </>
+            )}
+          </>
+        )}
       </div>
     </EventDetailContainer>
   );

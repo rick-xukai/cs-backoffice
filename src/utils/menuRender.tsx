@@ -12,12 +12,12 @@ export interface IMenu {
   role?: string[];
 }
 
-const MenuRender = (menus: IMenu[], menuRole?: string) =>
+const MenuRender = (menus: IMenu[]) =>
   menus &&
   menus.map((menu: IMenu) => {
-    if (menu.role && !menu.role.includes(menuRole as string)) {
-      return null;
-    }
+    // if (menu.role && !menu.role.includes(menuRole as string)) {
+    //   return null;
+    // }
     if (menu.isGroup) {
       return (
         <Menu.ItemGroup key={menu.key} title={menu.title}>
