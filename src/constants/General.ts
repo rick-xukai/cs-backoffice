@@ -48,3 +48,5 @@ export const activeStatus = {
   },
 };
 export const TokenExpire = 7 * 24 * 60 * 60 * 1000;
+export const WebAppScannerLinkDev =
+  'https://app-dev.ticket-crowdserve.com/scan-qr-code/';

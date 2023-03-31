@@ -125,3 +125,43 @@ export const dataEncryption = (data: any, type: string) => {
   } catch (_) {}
   return formatData;
 };
+
+export const checkEventStatus = (status: number) => {
+  let statusText = '';
+  switch (status) {
+    case 1:
+      statusText = 'Upcoming';
+      break;
+    case 2:
+      statusText = 'Ended';
+      break;
+    case 3:
+      statusText = 'Cancelled';
+      break;
+    default:
+      statusText = '';
+  }
+  return statusText;
+};
+
+export const mapEditEventTicket = (ticketsData: any) => {
+  const editTicketTypes: any = [];
+  ticketsData.forEach((item: any, index: number) => {
+    editTicketTypes.push({
+      id: item.id,
+      ticketTypeId: `Ticket ${(index + 1).toString()}`,
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      stock: item.stock,
+      ceilingPrice: item.ceilingPrice,
+      royaltiesFee: item.royaltiesFee,
+      purchaseLimit: item.purchaseLimit,
+      image: item.image,
+      imageType: `image/${
+        item.image.split('.')[item.image.split('.').length - 1]
+      }`,
+    });
+  });
+  return editTicketTypes;
+};

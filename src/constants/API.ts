@@ -10,16 +10,19 @@ const API = {
     post: 'register',
   },
   getEventsList: {
-    get: '/admin/ticket',
+    get: '/admin/event',
   },
   createEvent: {
     post: '/admin/event',
+  },
+  updateEvent: {
+    put: '/admin/event/{eventId}',
   },
   getOrganizer: {
     get: '/admin/organizer',
   },
   getEventsDetail: {
-    get: '/admin/ticket/{ticketId}',
+    get: '/admin/event/{eventId}',
   },
   getTicketsList: {
     get: '/admin/user_ticket',
