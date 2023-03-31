@@ -4,6 +4,7 @@ import Cookies from 'universal-cookie';
 
 import { AuthorizationType } from '../constants/API';
 import { CookieKeys } from '../constants/Keys';
+import { PREFIX } from '../constants/predicates';
 
 export const defaultHeaders = {
   'content-type': 'application/json',
@@ -120,7 +121,7 @@ export class RequestClientClass {
 
   async doMethod(method = 'GET') {
     if (this.authorizationStatus) {
-      const userToken = this.cookies.get(CookieKeys.authUser);
+      const userToken = this.cookies.get(`${PREFIX}${CookieKeys.authUser}`);
       if (userToken) {
         this.setHeaders({
           authorization: `${AuthorizationType.bearer} ${userToken}`,
