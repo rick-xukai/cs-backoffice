@@ -6,7 +6,7 @@ import qs from 'qs';
 
 import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
 import { FormatTimeKeys } from '../../constants/Keys';
-import { formatTimeStrByTimeString } from '../../utils/func';
+import { formatTimeStrByTimeString, checkEventStatus } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
@@ -39,14 +39,11 @@ const Events = () => {
   const columns = [
     {
       title: 'Event Name',
-      dataIndex: 'eventName',
-      key: 'eventName',
+      dataIndex: 'name',
+      key: 'name',
       render: (text: string, record: EventsListDataType) => (
         <Tooltip title={text}>
-          <Button
-            className="name-btn ellipsis"
-            disabled={record.status === 'Ended'}
-          >
+          <Button className="name-btn ellipsis">
             <Link
               to={{
                 pathname: UserRoutes.eventInfo.replace(
@@ -64,19 +61,13 @@ const Events = () => {
     },
     {
       title: 'Event Time',
-      dataIndex: 'eventStartTime',
-      key: 'eventStartTime',
+      dataIndex: 'startTime',
+      key: 'startTime',
       render: (text: string, record: EventsListDataType) => (
         <div>
-          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
-          <p style={{ fontSize: 13 }}>
-            {`${formatTimeStrByTimeString(
-              text,
-              FormatTimeKeys.hm,
-            )}~${formatTimeStrByTimeString(
-              record.eventEndTime,
-              FormatTimeKeys.hm,
-            )}`}
+          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.norm)} -</p>
+          <p>
+            {formatTimeStrByTimeString(record.endTime, FormatTimeKeys.norm)}
           </p>
         </div>
       ),
@@ -93,13 +84,23 @@ const Events = () => {
     },
     {
       title: 'Organizer',
-      dataIndex: 'organizer',
-      key: 'organizer',
+      dataIndex: 'organizerName',
+      key: 'organizerName',
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <p className="text-ellipsis">{text}</p>
+        </Tooltip>
+      ),
     },
     {
-      title: 'Created at',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: 'Partner',
+      dataIndex: 'partnerName',
+      key: 'partnerName',
+    },
+    {
+      title: 'Updated at',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
       render: (text: string) => (
         <div>
           <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
@@ -108,6 +109,12 @@ const Events = () => {
           </p>
         </div>
       ),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: number) => <p>{checkEventStatus(status)}</p>,
     },
   ];
 

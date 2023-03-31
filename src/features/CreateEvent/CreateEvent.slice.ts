@@ -14,17 +14,18 @@ export interface TicketTypes {
   ticketTypeId?: string;
   name: string;
   description: string;
-  price: number | string;
-  stock: number | string;
-  ceilingPrice: number | string;
-  purchaseLimit: number | string;
-  royaltiesFee: number;
+  price: number | undefined | string;
+  stock: number | undefined | string;
+  ceilingPrice: number | undefined | string;
+  purchaseLimit: number | undefined | string;
+  royaltiesFee?: number | undefined | string;
   image: string;
-  imageType: string;
+  imageType?: string;
+  delete?: boolean;
 }
 
 export interface CreateEventPayloadType {
-  organizerId: string;
+  organizerId: number | string;
   name: string;
   description: string;
   location: string;
@@ -32,7 +33,7 @@ export interface CreateEventPayloadType {
   endTime: string;
   image: string;
   ticketTypes?: TicketTypes[];
-  royaltiesFee?: number | string;
+  royaltiesFee?: number | undefined | string;
 }
 
 export interface OrganizerData {
@@ -52,6 +53,34 @@ export const createEventAction = createAsyncThunk<
 >('createEvent/createEventAction', async (payload, { rejectWithValue }) => {
   try {
     const response = await EventsService.createEvent(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
+/**
+ * Update event
+ */
+export const updateEventAction = createAsyncThunk<
+  { id: number },
+  { payload: CreateEventPayloadType; id: string },
+  {
+    rejectValue: ErrorType;
+  }
+>('updateEvent/updateEventAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await EventsService.updateEvent(payload);
     if (verificationApi(response)) {
       return response.data;
     }
@@ -160,6 +189,22 @@ export const createEventSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(createEventAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(updateEventAction.pending, (state) => {
+        state.data = { id: 0 };
+        state.loading = true;
+      })
+      .addCase(updateEventAction.fulfilled, (state, action: any) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(updateEventAction.rejected, (state, action) => {
         state.loading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;

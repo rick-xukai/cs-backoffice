@@ -11,14 +11,14 @@ export interface ErrorType {
 
 export interface EventsListDataType {
   id: string;
-  eventName: string;
-  eventStartTime: string;
-  eventEndTime: string;
-  createdAt: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  updatedAt: string;
   location: string;
-  organizer: string;
-  partner?: string;
-  status?: string;
+  organizerName: string;
+  partnerName: string;
+  status: number;
 }
 
 /**

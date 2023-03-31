@@ -1,64 +1,75 @@
 import styled from 'styled-components';
-import { Row } from 'antd';
 
 import { Colors } from '../../theme';
+
+interface TicketTypesContainerProps {
+  containerHight: string;
+}
 
 const CreateEventContainer = styled.div`
   .page-main {
     padding: calc(60px + 24px) 24px 24px;
     background: ${Colors.grey5};
-    .publish-event {
-      text-align: right;
-      margin-bottom: 12px;
-      .ant-btn {
-        height: 32px;
-        background: ${Colors.branding};
-        border-radius: 2px;
-        border: none;
-        font-weight: 400;
-        font-size: 15px;
-        color: #fff;
-        padding: 5px 12px;
-      }
-      .ant-btn[disabled] {
-        background: ${Colors.grey9};
-        color: ${Colors.grey7};
-      }
-    }
-    .ant-tabs-nav {
-      margin: 0;
-    }
-    .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
-      border-width: 1px 1px 0px 1px;
-      border-style: solid;
-      border-color: ${Colors.grey8};
-      background: ${Colors.grey9};
-      margin-right: 5px;
-    }
-    .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+  }
+  .edit-event-page-main {
+  }
+  .publish-event {
+    text-align: right;
+    margin-bottom: 12px;
+    .ant-btn {
+      height: 32px;
+      background: ${Colors.branding};
+      border-radius: 2px;
       border: none;
-      background: ${Colors.white};
-    }
-    .ant-tabs-nav-add {
-      background: ${Colors.grey9};
-      border-width: 1px 1px 0px 1px;
-      border-style: solid;
-      border-color: ${Colors.grey8};
-    }
-    .ant-tabs-tab-remove {
-      font-size: 15px;
-    }
-    .ant-tabs-tab-btn {
       font-weight: 400;
       font-size: 15px;
+      color: #fff;
+      padding: 5px 12px;
     }
-    .ant-select-selection-item {
-      line-height: 32px !important;
+    .ant-btn[disabled] {
+      background: ${Colors.grey9};
+      color: ${Colors.grey7};
     }
+    .cancel-btn {
+      border: 1px solid ${Colors.grey6};
+      background: transparent;
+      margin-right: 18px;
+      color: ${Colors.grey6};
+    }
+  }
+  .ant-tabs-nav {
+    margin: 0;
+  }
+  .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+    border-width: 1px 1px 0px 1px;
+    border-style: solid;
+    border-color: ${Colors.grey8};
+    background: ${Colors.grey9};
+    margin-right: 5px;
+  }
+  .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+    border: none;
+    background: ${Colors.white};
+  }
+  .ant-tabs-nav-add {
+    background: ${Colors.grey9};
+    border-width: 1px 1px 0px 1px;
+    border-style: solid;
+    border-color: ${Colors.grey8};
+  }
+  .ant-tabs-tab-remove {
+    font-size: 15px;
+  }
+  .ant-tabs-tab-btn {
+    font-weight: 400;
+    font-size: 15px;
+  }
+  .ant-select-selection-item {
+    line-height: 32px !important;
   }
 `;
 
-const CreateEventFormContainer = styled(Row)`
+const CreateEventFormContainer = styled.div`
   margin: 0 !important;
   .ant-input,
   .ant-select-selector,
@@ -75,8 +86,9 @@ const CreateEventFormContainer = styled(Row)`
     padding: 24px;
     min-height: calc(100vh - 154px);
     &.ticket-tab {
-      min-height: calc(100vh - 194px);
+      min-height: unset;
       border-top-left-radius: 0px;
+      box-shadow: unset;
     }
     .ant-form-item-row {
       display: block;
@@ -125,6 +137,12 @@ const CreateEventFormContainer = styled(Row)`
         display: none;
       }
     }
+  }
+  .ant-tabs-content-holder {
+    height: calc(
+      ${(props: TicketTypesContainerProps) => props.containerHight} - 40px
+    );
+    background: ${Colors.white};
   }
 `;
 

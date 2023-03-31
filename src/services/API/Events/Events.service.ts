@@ -17,7 +17,7 @@ const getEventsList = async (payload: any) => {
 };
 
 const getEventDetail = async (payload: string) => {
-  const uri = API.getEventsDetail.get.replace('{ticketId}', payload);
+  const uri = API.getEventsDetail.get.replace('{eventId}', payload);
   const response = await requestClient()
     .setUri(uri)
     .setAuthorizationStatus()
@@ -32,6 +32,16 @@ const createEvent = async (payload: CreateEventPayloadType) => {
     .setAuthorizationStatus()
     .setPayload(payload)
     .doPost();
+  return response;
+};
+
+const updateEvent = async ({ payload, id }: { payload: any; id: string }) => {
+  const uri = API.updateEvent.put.replace('{eventId}', id);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setPayload(payload)
+    .doPut();
   return response;
 };
 
@@ -61,4 +71,5 @@ export default {
   createEvent,
   getOrganizer,
   uploadFile,
+  updateEvent,
 };

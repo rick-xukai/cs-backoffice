@@ -29,6 +29,7 @@ const UploadFileComponent = ({
   limitFileSize,
   handleChange,
   customRequest,
+  handleFileRemove,
 }: {
   fileList: [];
   accept: string;
@@ -37,6 +38,7 @@ const UploadFileComponent = ({
   limitFileSize: number;
   handleChange: (event: any) => void;
   customRequest: (event: any) => void;
+  handleFileRemove: () => void;
 }) => {
   const { t } = useTranslation();
 
@@ -76,6 +78,7 @@ const UploadFileComponent = ({
         onPreview={handlePreview}
         customRequest={customRequest}
         beforeUpload={beforeUpload}
+        onRemove={handleFileRemove}
       >
         {fileList.length === 0 && (
           <div>
