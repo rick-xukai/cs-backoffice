@@ -97,7 +97,7 @@ const EventDetail = () => {
                 <Row>
                   <Col span={24} className="edit-event">
                     <Button
-                      disabled={detailData.status === 2}
+                      disabled={detailData.status !== 1}
                       onClick={() => setEditEvent(true)}
                     >
                       {t('Edit')}
