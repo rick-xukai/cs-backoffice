@@ -11,10 +11,11 @@ import {
   decimalPlaces,
   defaultCurrentPage,
   defaultPageSize,
+  TokenExpireResponseCode,
 } from '../../constants/General';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { TicketDetailContainer } from './TicketDetailComponent';
 import {
@@ -63,13 +64,21 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
 
   useEffect(() => {
     if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
       message.error(error.message);
     }
+  }, [error]);
+
+  useEffect(() => {
     if (changeStatusSuccess) {
       setEdit(false);
       message.success(t('Change Completed'));
     }
-  }, [error, changeStatusSuccess]);
+  }, [changeStatusSuccess]);
 
   const handleSave = () => {
     dispatch(

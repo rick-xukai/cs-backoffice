@@ -13,8 +13,9 @@ import {
   defaultCurrentPage,
   defaultPageSize,
   activeStatus,
+  TokenExpireResponseCode,
 } from '../../constants/General';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { columns } from '../Tickets/Tickets';
 import { UserDetailContainer } from './UserDetail.component';
@@ -91,6 +92,11 @@ const UserDetail = () => {
 
   useEffect(() => {
     if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
       message.error(error.message);
     }
   }, [error]);

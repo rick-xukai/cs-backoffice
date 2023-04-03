@@ -6,6 +6,7 @@ import EventsService from '../../services/API/Events';
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
+  code: number | undefined;
   message: string;
 }
 
@@ -37,6 +38,7 @@ export const getEventsListAction = createAsyncThunk<
       return response.data;
     }
     return rejectWithValue({
+      code: response.code,
       message: response.message,
     } as ErrorType);
   } catch (err: any) {
@@ -55,6 +57,7 @@ interface EventsState {
   total: number;
   error:
     | {
+        code: number | undefined;
         message: string | undefined;
       }
     | undefined

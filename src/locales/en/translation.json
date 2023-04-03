@@ -234,5 +234,6 @@
   "Ticket Purchase Limts": "Ticket Purchase Limts",
   "Ticket PDP Link": "Ticket PDP Link",
   "Save your event.": "Save your event.",
-  "Save successfully": "Save successfully"
+  "Save successfully": "Save successfully",
+  "User token is deprecated, please log in again.": "User token is deprecated, please log in again."
 }
