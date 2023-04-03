@@ -87,7 +87,7 @@ const CreateEvent = ({
     startTime: (eventData && eventData.startTime) || '',
     endTime: (eventData && eventData.endTime) || '',
     image: (eventData && eventData.image) || '',
-    royaltiesFee: undefined,
+    royaltiesFee: '',
   });
   const [eventTicketData, setEventTicketData] = useState<TicketTypes[]>(
     (eventData && mapEditEventTicket(eventData.ticketTypes)) || [],
@@ -126,7 +126,7 @@ const CreateEvent = ({
           royaltiesFee:
             ((eventFormData.royaltiesFee || eventFormData.royaltiesFee === 0) &&
               Number(eventFormData.royaltiesFee) / 100) ||
-            undefined,
+            0,
         };
       }),
     };
@@ -375,7 +375,10 @@ const CreateEvent = ({
       setNewTabIndex(editTicketNewTabIndex);
       setEventFormData({
         ...eventFormData,
-        royaltiesFee: (eventData.ticketTypes[0].royaltiesFee || 0) * 100,
+        royaltiesFee:
+          (eventData.ticketTypes[0].royaltiesFee &&
+            eventData.ticketTypes[0].royaltiesFee * 100) ||
+          '',
       });
     }
     return () => {
