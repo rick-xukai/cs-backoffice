@@ -221,8 +221,7 @@ const EventInfo = ({ data }: { data: EventDetailDataType }) => {
                 <Col span={24}>
                   {(data.ticketTypes &&
                     data.ticketTypes.length &&
-                    (data.ticketTypes[0].royaltiesFee ||
-                      data.ticketTypes[0].royaltiesFee === 0) &&
+                    data.ticketTypes[0].royaltiesFee &&
                     `${data.ticketTypes[0].royaltiesFee * 100}%`) ||
                     '-'}
                 </Col>
