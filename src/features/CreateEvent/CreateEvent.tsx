@@ -23,11 +23,12 @@ import { cloneDeep } from 'lodash';
 import moment from 'moment';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { mapEditEventTicket } from '../../utils/func';
 import {
   defaultCurrentPage,
   defaultOrganizerPageSize,
+  TokenExpireResponseCode,
 } from '../../constants/General';
 import {
   CreateEventContainer,
@@ -314,6 +315,11 @@ const CreateEvent = ({
 
   useEffect(() => {
     if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
       message.error(error.message);
     }
   }, [error]);

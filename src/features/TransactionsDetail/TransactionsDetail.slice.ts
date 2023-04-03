@@ -7,6 +7,7 @@ import TransactionsService from '../../services/API/Transactions';
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
+  code: number | undefined;
   message: string;
 }
 
@@ -47,6 +48,7 @@ export const getTransactionDetailAction = createAsyncThunk<
         return response.data;
       }
       return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -85,6 +87,7 @@ export const updateTransactionsStatusAction = createAsyncThunk<
         return response;
       }
       return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -105,6 +108,7 @@ interface TransactionsDetailState {
   transactionId: string;
   error:
     | {
+        code: number | undefined;
         message: string | undefined;
       }
     | undefined

@@ -24,9 +24,10 @@ import {
   defaultPageSize,
   defaultCurrentPage,
   decimalPlaces,
+  TokenExpireResponseCode,
 } from '../../constants/General';
 import { formatTimeStrByTimeString } from '../../utils/func';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { StatusKeys, SortKeys, FormatTimeKeys } from '../../constants/Keys';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
@@ -330,6 +331,11 @@ const Transactions = () => {
 
   useEffect(() => {
     if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
       message.error(error.message);
     }
   }, [error]);

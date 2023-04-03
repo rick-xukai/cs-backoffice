@@ -7,6 +7,7 @@ import TicketsService from '../../services/API/Tickets';
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
+  code: number | undefined;
   message: string;
 }
 
@@ -41,6 +42,7 @@ export const getTicketsListAction = createAsyncThunk<
         return response.data;
       }
       return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -60,6 +62,7 @@ interface TicketsState {
   total: number;
   error:
     | {
+        code: number | undefined;
         message: string | undefined;
       }
     | undefined
