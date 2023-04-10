@@ -196,7 +196,7 @@ const TicketTab = ({
       <Form.Item label="Ticket Type">
         <Input
           showCount
-          maxLength={200}
+          maxLength={100}
           defaultValue={ticketValue.name}
           onChange={(e) => handleSetTicketValue('name', e.target.value)}
         />

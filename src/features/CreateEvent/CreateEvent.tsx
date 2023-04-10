@@ -461,7 +461,7 @@ const CreateEvent = ({
                     <Form.Item label="Event Name" name="name">
                       <Input
                         showCount
-                        maxLength={200}
+                        maxLength={100}
                         onChange={(e) =>
                           setEventFormData({
                             ...eventFormData,
