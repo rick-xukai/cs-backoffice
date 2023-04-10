@@ -57,6 +57,7 @@ const UploadFileComponent = ({
 
   const [previewImageOpen, setPreviewImageOpen] = useState<boolean>(false);
   const [previewImageTitle, setPreviewImageTitle] = useState<string>('');
+  const [isUpoloadError, setIsUpoloadError] = useState<boolean>(false);
 
   const handlePreview = async (file: UploadFile) => {
     setPreviewImageOpen(true);
@@ -66,8 +67,10 @@ const UploadFileComponent = ({
   };
 
   const beforeUpload = (file: RcFile) => {
+    setIsUpoloadError(false);
     const isLimit = file.size / 1024 / 1024 < limitFileSize;
     if (!isLimit) {
+      setIsUpoloadError(true);
       message.error(
         t(
           'The file you are trying to upload is too large. Please select a file that is under [size] in size.',
@@ -85,7 +88,7 @@ const UploadFileComponent = ({
         listType="picture-card"
         maxCount={1}
         showUploadList
-        fileList={fileList}
+        fileList={(!isUpoloadError && fileList) || []}
         accept={accept}
         onChange={handleChange}
         onPreview={handlePreview}
@@ -93,7 +96,7 @@ const UploadFileComponent = ({
         beforeUpload={beforeUpload}
         onRemove={handleFileRemove}
       >
-        {fileList.length === 0 && (
+        {(fileList.length === 0 || isUpoloadError) && (
           <div>
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Upload</div>
