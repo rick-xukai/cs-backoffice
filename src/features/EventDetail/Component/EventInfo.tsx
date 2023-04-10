@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Row, Col, Tabs } from 'antd';
+import { Row, Col, Tabs, Upload, Modal } from 'antd';
 import { isEmpty } from 'lodash';
+import type { UploadFile } from 'antd/es/upload/interface';
 
 import { FormatTimeKeys } from '../../../constants/Keys';
 import { WebAppScannerLinkDev } from '../../../constants/General';
@@ -14,6 +15,30 @@ import {
 
 const TicketListTab = ({ ticketData }: { ticketData: TicketTypesItemType }) => {
   const { t } = useTranslation();
+
+  const [fileList, setFileList] = useState<any>([]);
+  const [previewImageOpen, setPreviewImageOpen] = useState<boolean>(false);
+  const [previewImageTitle, setPreviewImageTitle] = useState<string>('');
+
+  const handlePreview = async (file: UploadFile) => {
+    setPreviewImageOpen(true);
+    setPreviewImageTitle(
+      file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1),
+    );
+  };
+
+  useEffect(() => {
+    if (ticketData) {
+      setFileList([
+        {
+          uid: '1',
+          name: 'NFT Video',
+          status: 'done',
+          url: ticketData.image,
+        },
+      ]);
+    }
+  }, [ticketData]);
 
   return (
     <TicketTypesContainer>
@@ -69,16 +94,63 @@ const TicketListTab = ({ ticketData }: { ticketData: TicketTypesItemType }) => {
           </Row>
         </Col>
       </Row>
-      <Row className="ticket-item-row">
-        <Col span={24} className="ticket-item-key">
-          {t('NFT Image')}
-        </Col>
-        <Col span={24} className="ticket-item-value">
-          <div className="ticket-img">
-            <img src={ticketData.thumbnailUrl} alt="" />
-          </div>
-        </Col>
-      </Row>
+      {(ticketData.imageType.includes('video') && (
+        <>
+          <Row className="ticket-item-row" style={{ marginBottom: 34 }}>
+            <Col span={24} className="ticket-item-key">
+              {t('NFT Image')}
+            </Col>
+            <Col span={24} className="ticket-item-value">
+              <div className="ticket-img">
+                <Upload
+                  name="file"
+                  listType="picture-card"
+                  maxCount={1}
+                  fileList={fileList}
+                  onPreview={handlePreview}
+                  disabled
+                />
+                <Modal
+                  open={previewImageOpen}
+                  title={previewImageTitle}
+                  footer={null}
+                  onCancel={() => setPreviewImageOpen(false)}
+                >
+                  <video
+                    style={{ width: '100%' }}
+                    src={ticketData.image}
+                    playsInline
+                    muted
+                    autoPlay
+                    loop
+                  />
+                </Modal>
+              </div>
+            </Col>
+          </Row>
+          <Row className="ticket-item-row">
+            <Col span={24} className="ticket-item-key">
+              {t('Thumbnail image')}
+            </Col>
+            <Col span={24} className="ticket-item-value">
+              <div className="ticket-img">
+                <img src={ticketData.thumbnailUrl} alt="" />
+              </div>
+            </Col>
+          </Row>
+        </>
+      )) || (
+        <Row className="ticket-item-row">
+          <Col span={24} className="ticket-item-key">
+            {t('NFT image')}
+          </Col>
+          <Col span={24} className="ticket-item-value">
+            <div className="ticket-img">
+              <img src={ticketData.image} alt="" />
+            </div>
+          </Col>
+        </Row>
+      )}
       <Row className="ticket-item-row">
         <Col span={24} className="ticket-item-key">
           {t('NFT Description')}
