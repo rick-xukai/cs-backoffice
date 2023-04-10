@@ -158,9 +158,9 @@ export const mapEditEventTicket = (ticketsData: any) => {
       royaltiesFee: item.royaltiesFee,
       purchaseLimit: item.purchaseLimit,
       image: item.image,
-      imageType: `image/${
-        item.image.split('.')[item.image.split('.').length - 1]
-      }`,
+      imageType: item.imageType,
+      thumbnailUrl: item.thumbnailUrl,
+      thumbnailType: item.thumbnailType,
     });
   });
   return editTicketTypes;

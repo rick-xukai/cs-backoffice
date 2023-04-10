@@ -19,6 +19,9 @@ export interface TicketTypesItemType {
   ceilingPrice: number;
   purchaseLimit: number;
   image: string;
+  imageType: string;
+  thumbnailUrl: string;
+  thumbnailType: string;
   externalLink: string;
   blockchainUrl: string;
   royaltiesFee?: number;

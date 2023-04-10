@@ -21,7 +21,9 @@ export interface TicketTypes {
   purchaseLimit: number | undefined | string;
   royaltiesFee?: number | undefined | string;
   image: string;
-  imageType?: string;
+  imageType: string;
+  thumbnailType: string;
+  thumbnailUrl: string;
   delete?: boolean;
 }
 
