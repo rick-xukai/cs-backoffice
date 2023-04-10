@@ -9,7 +9,7 @@ import { Colors } from '../../theme';
 
 const Container = styled.div`
   display: flex;
-  align-items: center;
+  align-items: end;
   .ant-upload-picture-card-wrapper {
     width: unset;
   }
@@ -19,12 +19,24 @@ const Container = styled.div`
     font-size: 15px;
     color: ${Colors.grey7};
   }
+  .ant-upload-list-item-name {
+    color: ${Colors.grey6};
+  }
+  .thumbnail-image-required {
+    font-weight: 300;
+    font-size: 12px;
+    color: ${Colors.grey7};
+  }
+  .anticon-eye {
+    margin-top: 3px !important;
+  }
 `;
 
 const UploadFileComponent = ({
   fileList,
   accept,
   previewImageUrl,
+  previewType,
   description,
   limitFileSize,
   handleChange,
@@ -35,6 +47,7 @@ const UploadFileComponent = ({
   accept: string;
   description: { type: string; size: string };
   previewImageUrl: string;
+  previewType: string;
   limitFileSize: number;
   handleChange: (event: any) => void;
   customRequest: (event: any) => void;
@@ -57,7 +70,7 @@ const UploadFileComponent = ({
     if (!isLimit) {
       message.error(
         t(
-          'The file you are trying to upload is too large. Please select a file that is under 5MB in size.',
+          'The file you are trying to upload is too large. Please select a file that is under [size] in size.',
           { size: `${limitFileSize}M` },
         ),
       );
@@ -88,8 +101,14 @@ const UploadFileComponent = ({
         )}
       </Upload>
       <div className="info">
-        <p>{description.type}</p>
-        <p>{description.size}</p>
+        <p>{`${description.type} ${description.size}`}</p>
+        {limitFileSize === 30 && (
+          <p className="thumbnail-image-required">
+            {t(
+              '(Plz note that a thumbnail image is required when uploading an mp4 file)',
+            )}
+          </p>
+        )}
       </div>
       <Modal
         open={previewImageOpen}
@@ -97,7 +116,18 @@ const UploadFileComponent = ({
         footer={null}
         onCancel={() => setPreviewImageOpen(false)}
       >
-        <img alt="" style={{ width: '100%' }} src={previewImageUrl} />
+        {(previewType.includes('image') && (
+          <img alt="" style={{ width: '100%' }} src={previewImageUrl} />
+        )) || (
+          <video
+            style={{ width: '100%' }}
+            src={previewImageUrl}
+            playsInline
+            muted
+            autoPlay
+            loop
+          />
+        )}
       </Modal>
     </Container>
   );

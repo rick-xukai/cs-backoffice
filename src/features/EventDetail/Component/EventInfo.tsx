@@ -75,7 +75,7 @@ const TicketListTab = ({ ticketData }: { ticketData: TicketTypesItemType }) => {
         </Col>
         <Col span={24} className="ticket-item-value">
           <div className="ticket-img">
-            <img src={ticketData.image} alt="" />
+            <img src={ticketData.thumbnailUrl} alt="" />
           </div>
         </Col>
       </Row>

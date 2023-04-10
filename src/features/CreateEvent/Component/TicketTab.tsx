@@ -24,6 +24,8 @@ const TicketTab = ({
   const dispatch = useAppDispatch();
 
   const [fileList, setFileList] = useState<any>([]);
+  const [thumbnaiFileList, setThumbnaiFileList] = useState<any>([]);
+  const [showThumbnaiUpload, setShowThumbnaiUpload] = useState<boolean>(false);
   const [ticketValue, setTicketValue] = useState<TicketTypes>({
     ticketTypeId: formName,
     name: (editTicketData && editTicketData.name) || '',
@@ -35,6 +37,8 @@ const TicketTab = ({
     royaltiesFee: '',
     image: (editTicketData && editTicketData.image) || '',
     imageType: '',
+    thumbnailUrl: (editTicketData && editTicketData.thumbnailUrl) || '',
+    thumbnailType: '',
   });
 
   const handleSetTicketValue = (key: string, value: string) => {
@@ -46,20 +50,24 @@ const TicketTab = ({
     setFileList(info.fileList);
   };
 
-  const customRequest = async (e: any) => {
+  const handleThumbnaiUploadChange = (info: any) => {
+    setThumbnaiFileList(info.fileList);
+  };
+
+  const customThumbnaiUploadRequest = async (e: any) => {
     const formData = new FormData();
     formData.append('file', e.file);
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
       setTicketValue({
         ...ticketValue,
-        image: response.payload.url,
-        imageType: e.file.type,
+        thumbnailUrl: response.payload.url,
+        thumbnailType: e.file.type,
       });
       submitTicketData({
         ticketTypeId: formName,
-        image: response.payload.url,
-        imageType: e.file.type,
+        thumbnailUrl: response.payload.url,
+        thumbnailType: e.file.type,
       });
       e.onSuccess();
     } else {
@@ -67,16 +75,65 @@ const TicketTab = ({
     }
   };
 
+  const customRequest = async (e: any) => {
+    const formData = new FormData();
+    formData.append('file', e.file);
+    const response: any = await dispatch(uploadFileAction(formData));
+    if (response.type === uploadFileAction.fulfilled.toString()) {
+      if (e.file.type.includes('video')) {
+        setShowThumbnaiUpload(true);
+      }
+      setTicketValue({
+        ...ticketValue,
+        image: response.payload.url,
+        imageType: e.file.type,
+        thumbnailUrl:
+          (!e.file.type.includes('video') && response.payload.url) || '',
+        thumbnailType: e.file.type,
+      });
+      submitTicketData({
+        ticketTypeId: formName,
+        image: response.payload.url,
+        imageType: e.file.type,
+        thumbnailUrl:
+          (!e.file.type.includes('video') && response.payload.url) || '',
+        thumbnailType: e.file.type,
+      });
+      e.onSuccess();
+    } else {
+      e.onError();
+    }
+  };
+
+  const handleThumbnaiFileRemove = () => {
+    setTicketValue({
+      ...ticketValue,
+      thumbnailUrl: '',
+      thumbnailType: '',
+    });
+    submitTicketData({
+      ticketTypeId: formName,
+      thumbnailUrl: '',
+      thumbnailType: '',
+    });
+  };
+
   const handleFileRemove = () => {
+    setShowThumbnaiUpload(false);
+    setThumbnaiFileList([]);
     setTicketValue({
       ...ticketValue,
       image: '',
       imageType: '',
+      thumbnailUrl: '',
+      thumbnailType: '',
     });
     submitTicketData({
       ticketTypeId: formName,
       image: '',
       imageType: '',
+      thumbnailUrl: '',
+      thumbnailType: '',
     });
   };
 
@@ -86,7 +143,8 @@ const TicketTab = ({
       !ticketValue.description ||
       (!ticketValue.stock && ticketValue.stock !== 0) ||
       (!ticketValue.price && ticketValue.price !== 0) ||
-      !ticketValue.image
+      !ticketValue.image ||
+      !ticketValue.thumbnailUrl
     ) {
       setTicketRequiredFields(true);
     } else {
@@ -96,10 +154,27 @@ const TicketTab = ({
 
   useEffect(() => {
     if (editTicketData) {
+      let type = 'Image';
+      if (
+        editTicketData.imageType &&
+        editTicketData.imageType.includes('video')
+      ) {
+        const thumbnaiFile = [
+          {
+            uid: formName,
+            name: t('Thumbnai Image'),
+            status: 'done',
+            url: editTicketData.thumbnailUrl,
+          },
+        ];
+        type = 'Video';
+        setThumbnaiFileList(thumbnaiFile);
+        setShowThumbnaiUpload(true);
+      }
       const imageFile = [
         {
           uid: formName,
-          name: t('NFT Image'),
+          name: t('NFT [type]', { type }),
           status: 'done',
           url: editTicketData.image,
         },
@@ -193,28 +268,46 @@ const TicketTab = ({
       </Row>
       <Form.Item label="NFT Image">
         <UploadFileComponent
-          accept="image/png, image/jpeg, image/gif"
+          accept="image/png, image/jpeg, image/gif, video/mp4"
           fileList={fileList}
           previewImageUrl={ticketValue.image}
-          limitFileSize={5}
+          previewType={ticketValue.imageType}
+          limitFileSize={30}
           handleChange={handleUploadChange}
           handleFileRemove={handleFileRemove}
           customRequest={customRequest}
           description={{
-            type: t('PNG, JPEG or GIF files only'),
-            size: t('up to [size] MB in size', { size: '5' }),
+            type: t('PNG, JPEG, GIF or MP4 files only'),
+            size: t('up to [size] MB in size', { size: '30' }),
           }}
         />
       </Form.Item>
+      {showThumbnaiUpload && (
+        <Form.Item label="Thumbnail image">
+          <UploadFileComponent
+            accept="image/png, image/jpeg, image/gif"
+            fileList={thumbnaiFileList}
+            previewImageUrl={ticketValue.thumbnailUrl}
+            previewType={ticketValue.thumbnailType}
+            limitFileSize={15}
+            handleChange={handleThumbnaiUploadChange}
+            handleFileRemove={handleThumbnaiFileRemove}
+            customRequest={customThumbnaiUploadRequest}
+            description={{
+              type: t('PNG, JPEG or GIF files only'),
+              size: t('up to [size] MB in size', { size: '15' }),
+            }}
+          />
+        </Form.Item>
+      )}
       <Form.Item label="NFT Description">
         <TextArea
           showCount
-          maxLength={500}
+          maxLength={2000}
           defaultValue={ticketValue.description}
           onChange={(e) => handleSetTicketValue('description', e.target.value)}
         />
       </Form.Item>
-      <Form.Item></Form.Item>
     </div>
   );
 };
