@@ -75,7 +75,7 @@ const TicketListTab = ({ ticketData }: { ticketData: TicketTypesItemType }) => {
         </Col>
         <Col span={24} className="ticket-item-value">
           <div className="ticket-img">
-            <img src={ticketData.image} alt="" />
+            <img src={ticketData.thumbnailUrl} alt="" />
           </div>
         </Col>
       </Row>
@@ -110,7 +110,7 @@ const TicketListTab = ({ ticketData }: { ticketData: TicketTypesItemType }) => {
 
 const EventInfo = ({ data }: { data: EventDetailDataType }) => {
   const { t } = useTranslation();
-  const mainBoxLeft = useRef(null);
+  const mainBoxLeft: any = useRef(null);
 
   const [items, setItems] = useState<any>([]);
   const [activeKey, setActiveKey] = useState<string>('0');
@@ -125,7 +125,9 @@ const EventInfo = ({ data }: { data: EventDetailDataType }) => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    setTicketTypesContainerHeight(`${mainBoxLeft.current.clientHeight}px`);
+    if (mainBoxLeft && mainBoxLeft.current) {
+      setTicketTypesContainerHeight(`${mainBoxLeft.current.clientHeight}px`);
+    }
   }, []);
 
   useEffect(() => {

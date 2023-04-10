@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Button, Tooltip, Row, Col } from 'antd';
+import { Button, Tooltip, Row, Col, message } from 'antd';
 import qs from 'qs';
 
-import { defaultPageSize, defaultCurrentPage } from '../../constants/General';
+import {
+  defaultPageSize,
+  defaultCurrentPage,
+  TokenExpireResponseCode,
+} from '../../constants/General';
 import { FormatTimeKeys } from '../../constants/Keys';
 import { formatTimeStrByTimeString, checkEventStatus } from '../../utils/func';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { EventsContainer } from './EventsComponent';
 import {
   reset,
+  selectError,
   getEventsListAction,
   selectLoading,
   selectData,
@@ -28,6 +33,7 @@ const Events = () => {
   const location = useLocation();
 
   const loading = useAppSelector(selectLoading);
+  const error = useAppSelector(selectError);
   const eventsListData = useAppSelector(selectData);
   const eventsListDataTotal = useAppSelector(selectDataTotal);
 
@@ -124,6 +130,17 @@ const Events = () => {
       dispatch(reset());
     };
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
+      message.error(error.message);
+    }
+  }, [error]);
 
   useEffect(() => {
     const { page, pageSize } = qs.parse(location.search.slice(1));

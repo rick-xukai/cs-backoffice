@@ -177,7 +177,7 @@
   "Date": "Date",
   "Event Time": "Event Time",
   "Ticket Type": "Ticket Type",
-  "NFT Image": "NFT Image",
+  "NFT [type]": "NFT {{type}}",
   "NFT Description": " NFT Description",
   "User Name": "User Name",
   "User Email": "User Email",
@@ -227,6 +227,8 @@
   "The file you are trying to upload is too large. Please select a file that is under [size] in size.": "The file you are trying to upload is too large. Please select a file that is under {{size}} in size.",
   "PNG, JPEG or GIF files only": "PNG, JPEG or GIF files only",
   "up to [size] MB in size": "up to {{size}} MB in size",
+  "PNG, JPEG, GIF or MP4 files only": "PNG, JPEG, GIF or MP4 files only",
+  "(Plz note that a thumbnail image is required when uploading an mp4 file)": "(Plz note that a thumbnail image is required when uploading an mp4 file)",
   "Your event has been added. Time to start selling tickets!": "Your event has been added. Time to start selling tickets!",
   "Ticket Price": "Ticket Price",
   "Ticket Ceiling Price": "Ticket Ceiling Price",
@@ -234,5 +236,6 @@
   "Ticket Purchase Limts": "Ticket Purchase Limts",
   "Ticket PDP Link": "Ticket PDP Link",
   "Save your event.": "Save your event.",
-  "Save successfully": "Save successfully"
+  "Save successfully": "Save successfully",
+  "User token is deprecated, please log in again.": "User token is deprecated, please log in again."
 }

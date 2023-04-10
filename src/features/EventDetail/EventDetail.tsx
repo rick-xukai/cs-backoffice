@@ -4,9 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { Spin, message, Row, Col, Button } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import { defaultCurrentPage, defaultPageSize } from '../../constants/General';
+import {
+  defaultCurrentPage,
+  defaultPageSize,
+  TokenExpireResponseCode,
+} from '../../constants/General';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { EventDetailContainer } from './EventDetailComponent';
 import {
@@ -51,6 +55,11 @@ const EventDetail = () => {
 
   useEffect(() => {
     if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
       message.error(error.message);
     }
   }, [error]);
@@ -97,7 +106,7 @@ const EventDetail = () => {
                 <Row>
                   <Col span={24} className="edit-event">
                     <Button
-                      disabled={detailData.status !== 1}
+                      disabled={detailData && detailData.status !== 1}
                       onClick={() => setEditEvent(true)}
                     >
                       {t('Edit')}

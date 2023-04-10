@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Button, Tooltip } from 'antd';
+import { Button, Tooltip, message } from 'antd';
 import qs from 'qs';
 
 import { FormatTimeKeys } from '../../constants/Keys';
@@ -9,15 +9,17 @@ import {
   ticketStatus,
   defaultPageSize,
   defaultCurrentPage,
+  TokenExpireResponseCode,
 } from '../../constants/General';
 import { formatTimeStrByTimeString } from '../../utils/func';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { TicketsContainer } from './TicketsComponent';
 import {
   reset,
+  selectError,
   getTicketsListAction,
   selectLoading,
   selectData,
@@ -133,6 +135,7 @@ const Tickets = () => {
   const location = useLocation();
 
   const loading = useAppSelector(selectLoading);
+  const error = useAppSelector(selectError);
   const ticketsListData = useAppSelector(selectData);
   const ticketsListDataTotal = useAppSelector(selectDataTotal);
 
@@ -140,6 +143,17 @@ const Tickets = () => {
     ticketListPage: defaultCurrentPage,
     ticketListPageSize: defaultPageSize,
   });
+
+  useEffect(() => {
+    if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
+      message.error(error.message);
+    }
+  }, [error]);
 
   // eslint-disable-next-line
   useEffect(() => {

@@ -12,14 +12,16 @@ import {
   decimalPlaces,
   defaultCurrentPage,
   defaultPageSize,
+  TokenExpireResponseCode,
 } from '../../constants/General';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { StatusKeys, FormatTimeKeys } from '../../constants/Keys';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import {
   reset,
+  selectError,
   updateTransactionsStatusAction,
   getTransactionDetailAction,
   selectLoading,
@@ -47,6 +49,7 @@ const TransactionsDetail = () => {
   const location: RouteConfigType = useLocation();
 
   const loading = useAppSelector(selectLoading);
+  const error = useAppSelector(selectError);
   const data = useAppSelector(selectData);
   const changeStatusSuccess = useAppSelector(selectchangeStatusSuccess);
 
@@ -97,6 +100,17 @@ const TransactionsDetail = () => {
       dispatch(reset());
     };
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
+      message.error(error.message);
+    }
+  }, [error]);
 
   return (
     <TransactionsDetailContainer>

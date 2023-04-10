@@ -6,7 +6,7 @@ import type { TablePaginationConfig } from 'antd/es/table';
 import { SortOrder, FilterValue, SorterResult } from 'antd/es/table/interface';
 import qs from 'qs';
 
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { SortKeys, FormatTimeKeys } from '../../constants/Keys';
@@ -16,6 +16,7 @@ import {
   defaultPageSize,
   defaultCurrentPage,
   activeStatus,
+  TokenExpireResponseCode,
 } from '../../constants/General';
 import { UsersContainer, TableFilterContainer } from './Users.component';
 import {
@@ -177,6 +178,11 @@ const Users = () => {
 
   useEffect(() => {
     if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
       message.error(error.message);
     }
   }, [error]);

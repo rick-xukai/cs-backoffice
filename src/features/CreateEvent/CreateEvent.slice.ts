@@ -7,6 +7,7 @@ import EventsService from '../../services/API/Events';
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
+  code: number | undefined;
   message: string;
 }
 
@@ -20,7 +21,9 @@ export interface TicketTypes {
   purchaseLimit: number | undefined | string;
   royaltiesFee?: number | undefined | string;
   image: string;
-  imageType?: string;
+  imageType: string;
+  thumbnailType: string;
+  thumbnailUrl: string;
   delete?: boolean;
 }
 
@@ -57,6 +60,7 @@ export const createEventAction = createAsyncThunk<
       return response.data;
     }
     return rejectWithValue({
+      code: response.code,
       message: response.message,
     } as ErrorType);
   } catch (err: any) {
@@ -85,6 +89,7 @@ export const updateEventAction = createAsyncThunk<
       return response.data;
     }
     return rejectWithValue({
+      code: response.code,
       message: response.message,
     } as ErrorType);
   } catch (err: any) {
@@ -113,6 +118,7 @@ export const getOrganizerAction = createAsyncThunk<
       return response.data;
     }
     return rejectWithValue({
+      code: response.code,
       message: response.message,
     } as ErrorType);
   } catch (err: any) {
@@ -141,6 +147,7 @@ export const uploadFileAction = createAsyncThunk<
       return response.data;
     }
     return rejectWithValue({
+      code: response.code,
       message: response.message,
     } as ErrorType);
   } catch (err: any) {
@@ -159,6 +166,7 @@ interface CreateEventState {
   organizerData: [];
   error:
     | {
+        code: number | undefined;
         message: string | undefined;
       }
     | undefined

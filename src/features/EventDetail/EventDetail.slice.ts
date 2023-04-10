@@ -6,6 +6,7 @@ import EventsService from '../../services/API/Events';
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
+  code: number | undefined;
   message: string;
 }
 
@@ -18,6 +19,9 @@ export interface TicketTypesItemType {
   ceilingPrice: number;
   purchaseLimit: number;
   image: string;
+  imageType: string;
+  thumbnailUrl: string;
+  thumbnailType: string;
   externalLink: string;
   blockchainUrl: string;
   royaltiesFee?: number;
@@ -56,6 +60,7 @@ export const getEventDetailAction = createAsyncThunk<
         return response;
       }
       return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -74,6 +79,7 @@ interface EventDetailState {
   data: EventDetailDataType;
   error:
     | {
+        code: number | undefined;
         message: string | undefined;
       }
     | undefined

@@ -23,11 +23,12 @@ import { cloneDeep } from 'lodash';
 import moment from 'moment';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { mapEditEventTicket } from '../../utils/func';
 import {
   defaultCurrentPage,
   defaultOrganizerPageSize,
+  TokenExpireResponseCode,
 } from '../../constants/General';
 import {
   CreateEventContainer,
@@ -217,6 +218,8 @@ const CreateEvent = ({
         royaltiesFee: '',
         image: '',
         imageType: '',
+        thumbnailType: '',
+        thumbnailUrl: '',
       },
     ]);
   };
@@ -314,6 +317,11 @@ const CreateEvent = ({
 
   useEffect(() => {
     if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
       message.error(error.message);
     }
   }, [error]);
@@ -453,7 +461,7 @@ const CreateEvent = ({
                     <Form.Item label="Event Name" name="name">
                       <Input
                         showCount
-                        maxLength={100}
+                        maxLength={200}
                         onChange={(e) =>
                           setEventFormData({
                             ...eventFormData,
@@ -480,7 +488,7 @@ const CreateEvent = ({
                     <Form.Item label="Location" name="location">
                       <Input
                         showCount
-                        maxLength={100}
+                        maxLength={200}
                         onChange={(e) =>
                           setEventFormData({
                             ...eventFormData,
@@ -493,6 +501,11 @@ const CreateEvent = ({
                       <RangePicker
                         showTime={{ format: 'HH:mm' }}
                         format="MMM DD YYYY, HH:mm"
+                        disabledDate={(currentDate) =>
+                          currentDate &&
+                          currentDate <
+                            moment().subtract(1, 'days').endOf('day')
+                        }
                         onChange={(_, dateStrings) =>
                           setEventFormData({
                             ...eventFormData,
@@ -509,7 +522,7 @@ const CreateEvent = ({
                     <Form.Item label="Event Description" name="description">
                       <TextArea
                         showCount
-                        maxLength={500}
+                        maxLength={2000}
                         onChange={(e) =>
                           setEventFormData({
                             ...eventFormData,
@@ -523,13 +536,14 @@ const CreateEvent = ({
                         accept="image/png, image/jpeg, image/gif"
                         fileList={fileList}
                         previewImageUrl={eventFormData.image}
-                        limitFileSize={5}
+                        previewType="image"
+                        limitFileSize={15}
                         handleChange={handleUploadChange}
                         customRequest={customRequest}
                         handleFileRemove={handleFileRemove}
                         description={{
                           type: t('PNG, JPEG or GIF files only'),
-                          size: t('up to [size] MB in size', { size: '5' }),
+                          size: t('up to [size] MB in size', { size: '15' }),
                         }}
                       />
                     </Form.Item>
