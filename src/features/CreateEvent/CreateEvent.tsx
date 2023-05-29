@@ -522,7 +522,7 @@ const CreateEvent = ({
                     <Form.Item label="Event Description" name="description">
                       <TextArea
                         showCount
-                        maxLength={2000}
+                        maxLength={5000}
                         onChange={(e) =>
                           setEventFormData({
                             ...eventFormData,
