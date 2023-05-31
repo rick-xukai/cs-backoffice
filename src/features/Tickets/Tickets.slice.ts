@@ -60,6 +60,7 @@ interface TicketsState {
   loading: boolean;
   data: [];
   total: number;
+  keyword: string;
   error:
     | {
         code: number | undefined;
@@ -72,6 +73,7 @@ interface TicketsState {
 const initialState: TicketsState = {
   loading: false,
   data: [],
+  keyword: '',
   total: 0,
   error: null,
 };
@@ -80,7 +82,15 @@ export const ticketsSlice = createSlice({
   name: 'tickets',
   initialState,
   reducers: {
-    reset: () => initialState,
+    reset: (state) => {
+      state.loading = false;
+      state.data = [];
+      state.total = 0;
+      state.error = null;
+    },
+    setKeyword: (state, action) => {
+      state.keyword = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -104,11 +114,12 @@ export const ticketsSlice = createSlice({
   },
 });
 
-export const { reset } = ticketsSlice.actions;
+export const { reset, setKeyword } = ticketsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.tickets.loading;
 export const selectError = (state: RootState) => state.tickets.error;
 export const selectData = (state: RootState) => state.tickets.data;
+export const selectKeyword = (state: RootState) => state.tickets.keyword;
 export const selectDataTotal = (state: RootState) => state.tickets.total;
 
 export default ticketsSlice.reducer;

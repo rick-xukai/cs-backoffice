@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Button, Tooltip, message } from 'antd';
+import { Button, Tooltip, message, Input, Row, Col } from 'antd';
+import { SearchOutlined, CloseOutlined } from '@ant-design/icons';
 import qs from 'qs';
+import _ from 'lodash';
 
 import { FormatTimeKeys } from '../../constants/Keys';
 import {
@@ -25,6 +27,8 @@ import {
   selectData,
   selectDataTotal,
   TicketsListDataType,
+  selectKeyword,
+  setKeyword,
 } from './Tickets.slice';
 
 export const columns = (routeConfig: any, id?: string, type?: string) => {
@@ -99,6 +103,16 @@ export const columns = (routeConfig: any, id?: string, type?: string) => {
       key: 'ticketType',
     },
     {
+      title: 'Event',
+      dataIndex: 'eventName',
+      key: 'eventName',
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <p className="ellipsis">{text}</p>
+        </Tooltip>
+      ),
+    },
+    {
       title: 'Seat Number',
       dataIndex: 'seat',
       key: 'seat',
@@ -138,6 +152,7 @@ const Tickets = () => {
   const error = useAppSelector(selectError);
   const ticketsListData = useAppSelector(selectData);
   const ticketsListDataTotal = useAppSelector(selectDataTotal);
+  const searchKeywordStore = useAppSelector(selectKeyword);
 
   const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
     ticketListPage: defaultCurrentPage,
@@ -164,6 +179,13 @@ const Tickets = () => {
 
   useEffect(() => {
     const { page, pageSize } = qs.parse(location.search.slice(1));
+    if (!page && !pageSize) {
+      dispatch(setKeyword(''));
+      history.push(
+        `${UserRoutes.tickets}?page=${defaultCurrentPage}&pageSize=${defaultPageSize}`,
+      );
+      return;
+    }
     if (page && pageSize) {
       setCurrentPaginationConfig({
         ticketListPage: Number(page),
@@ -174,9 +196,26 @@ const Tickets = () => {
       getTicketsListAction({
         page: Number(page) || currentPaginationConfig.ticketListPage,
         size: Number(pageSize) || currentPaginationConfig.ticketListPageSize,
+        keyword: searchKeywordStore.replace(/\s+/g, '%'),
       }),
     );
   }, [location.search]);
+
+  const handleSearchTicket = (value: string) => {
+    history.push(
+      `${
+        UserRoutes.tickets
+      }?page=${defaultCurrentPage}&pageSize=${defaultPageSize}&keyword=${value.replace(
+        /\s*/g,
+        '',
+      )}`,
+    );
+  };
+
+  const searchInputChange = useCallback(
+    _.debounce((e) => handleSearchTicket(e.target.value), 300),
+    [],
+  );
 
   return (
     <TicketsContainer>
@@ -198,7 +237,22 @@ const Tickets = () => {
               }&pageSize=${pageSize}`,
             )
           }
-        />
+        >
+          <Row className="search-bar">
+            <Col span={12}>
+              <Input
+                value={searchKeywordStore}
+                placeholder={t('Search by email or event')}
+                onChange={(e) => {
+                  dispatch(setKeyword(e.target.value));
+                  searchInputChange(e);
+                }}
+                allowClear={{ clearIcon: <CloseOutlined /> }}
+                suffix={!searchKeywordStore && <SearchOutlined />}
+              />
+            </Col>
+          </Row>
+        </TableComponent>
       </div>
     </TicketsContainer>
   );

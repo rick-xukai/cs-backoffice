@@ -12,7 +12,7 @@ export const LoginContainer = styled(Row)`
     padding-top: 48px;
     padding-left: 48px;
     .logo {
-      width: 96px;
+      /* width: 96px; */
       height: 50px;
     }
   }

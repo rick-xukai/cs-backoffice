@@ -7,9 +7,9 @@ import { Colors } from '../../theme';
 import { useToggleMenu } from '../../hooks';
 
 const PageHeaderContainer = styled(Row)`
-  padding-left: 24px;
   padding-right: 24px;
   height: 60px;
+  z-index: 10;
   &.children-header {
     padding-top: 16px;
     height: unset;
@@ -18,7 +18,6 @@ const PageHeaderContainer = styled(Row)`
   align-items: center;
   position: fixed;
   width: 100%;
-  z-index: 1;
   box-shadow: 0px 1px 2px rgb(0 0 0 / 4%);
   .title,
   .top-menu-btn {
@@ -47,6 +46,28 @@ const PageHeaderContainer = styled(Row)`
     font-size: 15px;
     color: ${Colors.black5};
   }
+  .title-content {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding-left: 24px;
+  }
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  @media (max-width: 996px) {
+    .title-content {
+      height: unset;
+    }
+    .anticon-menu {
+      position: absolute;
+      left: 24px;
+      top: 5px;
+    }
+    .title-content {
+      margin-left: 48px;
+    }
+  }
 `;
 
 const PageHeaderComponent = ({
@@ -63,14 +84,29 @@ const PageHeaderComponent = ({
   const { toggleMenu } = useToggleMenu();
 
   return (
-    <PageHeaderContainer className={`${children && 'children-header'}`}>
-      <Col span={24} style={{ marginBottom: children && 16 }}>
+    <PageHeaderContainer className={`${(children && 'children-header') || ''}`}>
+      <Col
+        span={24}
+        style={{ marginBottom: children && 16 }}
+        onClick={clickBack}
+      >
         {React.createElement(MenuOutlined, {
           className: 'top-menu-btn',
-          onClick: toggleMenu,
+          onClick: (e) => {
+            e.stopPropagation();
+            toggleMenu();
+          },
         })}
-        {showBackArrow && <ArrowLeftOutlined onClick={clickBack} />}
-        <span className="title">{title}</span>
+        <div
+          className={
+            (showBackArrow && 'title-content cursor-pointer') || 'title-content'
+          }
+        >
+          <span>
+            {showBackArrow && <ArrowLeftOutlined />}
+            <span className="title">{title}</span>
+          </span>
+        </div>
       </Col>
       {children && <Col span={24}>{children}</Col>}
     </PageHeaderContainer>
