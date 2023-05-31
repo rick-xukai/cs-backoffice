@@ -18,6 +18,20 @@ const TicketsContainer = styled.div`
       }
     }
   }
+  .search-bar {
+    margin-bottom: 24px;
+    .ant-input-affix-wrapper {
+      height: 40px;
+    }
+    .ant-input-suffix {
+      cursor: pointer;
+    }
+    .anticon,
+    .ant-input-clear-icon {
+      font-size: 16px;
+      color: ${Colors.black5};
+    }
+  }
 `;
 
 export { TicketsContainer };
