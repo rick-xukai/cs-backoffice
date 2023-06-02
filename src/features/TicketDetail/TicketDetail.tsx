@@ -35,6 +35,7 @@ interface RouteConfigType {
     id?: string;
     ticketListPage: number;
     ticketListPageSize: number;
+    ticketSearchKeyword: string;
     userListPage: number;
     userListPageSize: number;
     previousPath?: string;
@@ -199,7 +200,9 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
               <Col span={12} className="item-key">
                 <p className="item-key-title">{t('NFT Ticket')}</p>
                 <p className="item-key-value action-view">
-                  <span>{ticketsDetailData.ticketType}</span>
+                  <span style={{ whiteSpace: 'pre-wrap' }}>
+                    {ticketsDetailData.ticketType}
+                  </span>
                   {ticketsDetailData.collectionAddress && (
                     <a
                       href={ticketsDetailData.collectionAddress}
