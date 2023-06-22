@@ -7,7 +7,7 @@ import qs from 'qs';
 
 import TableComponent from '../../components/Table/Table';
 import { FormatTimeKeys } from '../../constants/Keys';
-import { formatTimeStrByTimeString } from '../../utils/func';
+import { formatTimeStrByTimeString, formatLabelDate } from '../../utils/func';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   defaultCurrentPage,
@@ -138,10 +138,75 @@ const UserDetail = () => {
             </Col>
           </Row>
           <div className="detail-container">
-            <Row className="item">
-              <Col span={12} className="item-key">
-                <p className="item-key-title">{t('User Name')}</p>
-                <p className="item-key-value">{userDetailData.name}</p>
+            <Col md={24} span={0}>
+              <Row className="item">
+                <Col span={6} className="item-key">
+                  <p className="item-key-title">{t('User Name')}</p>
+                  <p className="item-key-value">{userDetailData.name}</p>
+                </Col>
+                <Col span={6} className="item-key">
+                  <p className="item-key-title">{t('User Email')}</p>
+                  <p className="item-key-value">{userDetailData.email}</p>
+                </Col>
+                <Col span={6} className="item-key">
+                  <p className="item-key-title">{t('Gender')}</p>
+                  <p className="item-key-value">
+                    {userDetailData.gender || '-'}
+                  </p>
+                </Col>
+                <Col span={6} className="item-key">
+                  <p className="item-key-title">{t('Date of Birthday')}</p>
+                  <p className="item-key-value">
+                    {(userDetailData.birthday &&
+                      formatTimeStrByTimeString(
+                        formatLabelDate(userDetailData.birthday),
+                        FormatTimeKeys.mdy,
+                      )) ||
+                      '-'}
+                  </p>
+                </Col>
+              </Row>
+            </Col>
+            <Col md={0} span={24}>
+              <Row className="item">
+                <Col span={12} className="item-key">
+                  <p className="item-key-title">{t('User Name')}</p>
+                  <p className="item-key-value">{userDetailData.name}</p>
+                </Col>
+                <Col span={12} className="item-key">
+                  <p className="item-key-title">{t('User Email')}</p>
+                  <p className="item-key-value">{userDetailData.email}</p>
+                </Col>
+              </Row>
+              <Row className="item">
+                <Col span={12} className="item-key">
+                  <p className="item-key-title">{t('Gender')}</p>
+                  <p className="item-key-value">
+                    {userDetailData.gender || '-'}
+                  </p>
+                </Col>
+                <Col span={12} className="item-key">
+                  <p className="item-key-title">{t('Date of Birthday')}</p>
+                  <p className="item-key-value">
+                    {(userDetailData.birthday &&
+                      formatTimeStrByTimeString(
+                        formatLabelDate(userDetailData.birthday),
+                        FormatTimeKeys.mdy,
+                      )) ||
+                      '-'}
+                  </p>
+                </Col>
+              </Row>
+            </Col>
+            <Row className="item" style={{ marginBottom: 0 }}>
+              <Col
+                span={24}
+                md={12}
+                className="item-key"
+                style={{ marginBottom: 24 }}
+              >
+                <p className="item-key-title">{t('Crypto Wallet')}</p>
+                <p className="item-key-value">{userDetailData.walletAddress}</p>
               </Col>
               <Col span={4} className="item-key">
                 <p className="item-key-title">{t('Status')}</p>
@@ -179,16 +244,6 @@ const UserDetail = () => {
                     />
                   )}
                 </div>
-              </Col>
-            </Row>
-            <Row className="item">
-              <Col span={12} className="item-key">
-                <p className="item-key-title">{t('User Email')}</p>
-                <p className="item-key-value">{userDetailData.email}</p>
-              </Col>
-              <Col span={12} className="item-key">
-                <p className="item-key-title">{t('Crypto Wallet')}</p>
-                <p className="item-key-value">{userDetailData.walletAddress}</p>
               </Col>
             </Row>
             <Row className="item">
