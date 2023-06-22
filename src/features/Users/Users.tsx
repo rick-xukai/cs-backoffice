@@ -8,7 +8,7 @@ import qs from 'qs';
 
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { formatTimeStrByTimeString } from '../../utils/func';
+import { formatTimeStrByTimeString, formatLabelDate } from '../../utils/func';
 import { SortKeys, FormatTimeKeys } from '../../constants/Keys';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -85,6 +85,44 @@ const Users = () => {
       render: (text: string) => (
         <Tooltip title={text}>
           <p className="email">{text || '-'}</p>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+      key: 'gender',
+      width: 100,
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <p className="email">{text || '-'}</p>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Date of Birthday',
+      dataIndex: 'birthday',
+      key: 'birthday',
+      width: 150,
+      render: (text: string) => (
+        <Tooltip
+          title={
+            (text &&
+              formatTimeStrByTimeString(
+                formatLabelDate(text),
+                FormatTimeKeys.mdy,
+              )) ||
+            ''
+          }
+        >
+          <p className="email">
+            {(text &&
+              formatTimeStrByTimeString(
+                formatLabelDate(text),
+                FormatTimeKeys.mdy,
+              )) ||
+              '-'}
+          </p>
         </Tooltip>
       ),
     },

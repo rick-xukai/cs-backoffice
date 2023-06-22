@@ -72,6 +72,8 @@ const UserDetailContainer = styled.div`
       .item-key-value {
         margin-bottom: 0;
         color: ${Colors.black5};
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .ant-badge-status-text {
         font-weight: 400;

@@ -19,6 +19,8 @@ export interface UserDetailDataType {
   lastLoginAt: string;
   name: string;
   walletAddress: string;
+  birthday: string;
+  gender: string;
 }
 
 export interface UserDetailTicketsDataType {
@@ -116,6 +118,8 @@ const initialState: UserDetailState = {
     lastLoginAt: '',
     name: '',
     walletAddress: '',
+    gender: '',
+    birthday: '',
   },
   userDetailTicketsData: [],
   error: null,

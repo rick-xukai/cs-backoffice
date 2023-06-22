@@ -20,6 +20,8 @@ export interface UsersListDataType {
   lastLoginAt: string;
   name: string;
   walletAddress: string;
+  birthday: string;
+  gender: string;
 }
 
 interface GetUsersListPayload {
