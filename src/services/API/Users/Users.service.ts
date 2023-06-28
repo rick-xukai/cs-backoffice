@@ -45,4 +45,20 @@ const getUserDetailTickets = async (payload: {
   return response;
 };
 
-export default { getUsersList, getUserDetail, getUserDetailTickets, doLogin };
+const doChangePassword = async (payload: any) => {
+  const uri = API.changePassword.put;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPut();
+  return response;
+};
+
+export default {
+  getUsersList,
+  getUserDetail,
+  getUserDetailTickets,
+  doLogin,
+  doChangePassword,
+};

@@ -43,4 +43,5 @@ export const AuthRoutes = {
   login: '/login',
   register: '/register',
   forgotPassword: '/forgot-password',
+  changePassword: '/change-password',
 };

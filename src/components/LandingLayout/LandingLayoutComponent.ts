@@ -26,6 +26,7 @@ export const Container = styled(Row)<{ hidebanner: string }>`
       color: ${Colors.black5};
       margin-bottom: 24px;
       text-align: center;
+      text-transform: uppercase;
     }
     .ant-form-item-control-input-content {
       font-weight: 400;

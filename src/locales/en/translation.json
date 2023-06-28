@@ -264,5 +264,9 @@
   "Forgot Password": "Forgot Password",
   "Continue": "Continue",
   "Password": "Password",
-  "User and permissions": "User and permissions"
+  "Please change the default password for your account security.": "Please change the default password for your account security.",
+  "Change password":"Change password",
+  "Confirm": "Confirm",
+  "User and permissions": "User and permissions",
+  "Password changed successfully": "Password changed successfully"
 }

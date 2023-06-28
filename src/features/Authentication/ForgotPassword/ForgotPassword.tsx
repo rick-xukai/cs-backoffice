@@ -4,7 +4,11 @@ import { useHistory } from 'react-router-dom';
 import { Form, Input, message, Button, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import { emailValidator, passwordValidator } from '../../../utils/validator';
+import {
+  emailValidator,
+  passwordValidator,
+  verificationCodeValidator,
+} from '../../../utils/validator';
 import { CookieKeys } from '../../../constants/Keys';
 import { TokenExpire } from '../../../constants/General';
 import { UserRoutes } from '../../../navigation/Routes';
@@ -120,6 +124,9 @@ const ForgotPassword = () => {
                 required: true,
                 message: t('Verification code is required'),
               },
+              {
+                validator: verificationCodeValidator,
+              },
             ]}
           >
             <Input placeholder={t('Enter Verification Code')} />
@@ -201,7 +208,7 @@ const ForgotPassword = () => {
                   size="default"
                 />
               )) ||
-                t('Sign In')}
+                t('Finish')}
             </Button>
           </Form.Item>
         </Form>
