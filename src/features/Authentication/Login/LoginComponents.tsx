@@ -1,21 +1,12 @@
-import { Row } from 'antd';
 import styled from 'styled-components';
-import { Images, Colors } from '../../../theme';
+import { Row } from 'antd';
+
+import { Colors } from '../../../theme';
 
 export const LoginContainer = styled(Row)`
-  .login-background {
-    background-image: url(${Images.LoginBackground});
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    min-height: 100vh;
-    padding-top: 48px;
-    padding-left: 48px;
-    .logo {
-      /* width: 96px; */
-      height: 50px;
-    }
-  }
+  display: flex;
+  overflow: hidden;
+  flex-wrap: wrap;
   .login-form {
     display: block;
     min-width: 350px;
@@ -26,6 +17,7 @@ export const LoginContainer = styled(Row)`
       font-size: 28px;
       color: ${Colors.black5};
       margin-bottom: 24px;
+      text-align: center;
     }
     .ant-form-item-control-input-content {
       font-weight: 400;
@@ -79,5 +71,45 @@ export const LoginContainer = styled(Row)`
       border-color: ${Colors.black5};
       box-shadow: unset;
     }
+  }
+`;
+
+export const LoginLeftWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+`;
+
+export const LogoContainer = styled.div`
+  width: 128px;
+  flex-shrink: 0;
+  margin-top: 40px;
+  margin-left: 40px;
+  .logo {
+    width: 100%;
+  }
+`;
+
+export const LoginBanner = styled.img`
+  height: calc(100vh + 2px);
+  margin-top: -1px;
+  position: relative;
+  left: 1px;
+  user-select: none;
+`;
+
+export const RememberMe = styled.div`
+  color: ${Colors.black4};
+  font-size: 15px;
+  font-family: Heebo;
+`;
+
+export const ForGotPassword = styled.div`
+  color: ${Colors.branding};
+  font-size: 15px;
+  font-family: Heebo;
+  cursor: pointer;
+  :hover {
+    text-decoration: underline;
   }
 `;

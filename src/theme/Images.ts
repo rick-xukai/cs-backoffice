@@ -1,4 +1,4 @@
-import Logo from '../assets/images/logo.png';
+import Logo from '../assets/images/logo.svg';
 import LogoSMLight from '../assets/images/logo-sm-light.png';
 import LogoDark from '../assets/images/logo-dark.png';
 import LogoLight from '../assets/images/logo-light.png';
@@ -17,7 +17,7 @@ import Tickets from '../assets/images/icons/tickets.svg';
 import TestImg from '../assets/images/test-nft-img.png';
 import Edit from '../assets/images/icons/edit.svg';
 import EditDisabled from '../assets/images/icons/edit-disabled.svg';
-import LoginBackground from '../assets/images/login-background.png';
+import LoginBackground from '../assets/images/login-bg.svg';
 import PasswordHidden from '../assets/images/icons/password-hidden.svg';
 import Transactions from '../assets/images/icons/transactions.svg';
 import MenuUsersIcon from '../assets/images/icons/menu-user.svg';

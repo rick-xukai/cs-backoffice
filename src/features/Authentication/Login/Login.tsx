@@ -32,7 +32,14 @@ import { UserRoutes } from '../../../navigation/Routes';
 import LoadingCover from '../../../components/LoadingCover';
 import Images from '../../../theme/Images';
 import Colors from '../../../theme/Colors';
-import { LoginContainer } from './LoginComponents';
+import {
+  ForGotPassword,
+  LoginBanner,
+  LoginContainer,
+  LoginLeftWrapper,
+  LogoContainer,
+  RememberMe,
+} from './LoginComponents';
 import { useAppSelector, useAppDispatch } from '../../../app/hooks';
 import {
   reset,
@@ -40,6 +47,7 @@ import {
   selectError,
   loginAction,
   selectData,
+  StatusCodes,
 } from './Login.slice';
 import { useCookie, useLocalStorage } from '../../../hooks';
 
@@ -56,10 +64,32 @@ const Login = () => {
   const cookies = useCookie([CookieKeys.authUser]);
 
   const [rememberMeChecked, setRememberMeChecked] = useState<boolean>(true);
+  const validatePasswordOrEmail = (isEmail?: boolean) => {
+    if (error?.code === StatusCodes.passwordWrong) {
+      return (
+        <div className="ant-form-item-explain-error">
+          {t('Wrong email or password')}
+        </div>
+      );
+    }
+    if (error?.code === StatusCodes.notFound && isEmail) {
+      return (
+        <div className="ant-form-item-explain-error">
+          {t('There is no account associated with the email.')}
+        </div>
+      );
+    }
+    return null;
+  };
 
   useEffect(() => {
     if (error) {
-      message.error(error.message);
+      if (
+        error.code !== StatusCodes.passwordWrong &&
+        error.code !== StatusCodes.notFound
+      ) {
+        message.error(error.message);
+      }
     }
   }, [error]);
 
@@ -124,15 +154,15 @@ const Login = () => {
         <Content
           style={{
             width: '100%',
-            background: `${Colors.grey5}`,
+            background: `${Colors.white2}`,
             margin: '0',
           }}
         >
-          <LoginContainer>
-            <Col span={10} className="login-background">
-              <img src={Images.Logo} alt="" className="logo" />
-            </Col>
-            <Col span={14} style={{ display: 'flex' }}>
+          <LoginContainer justify="space-between" wrap>
+            <LoginLeftWrapper>
+              <LogoContainer>
+                <img src={Images.Logo} alt="" className="logo" />
+              </LogoContainer>
               <Row className="login-form">
                 <Col span={24} className="login-title">
                   {t('WELCOME TO CROWDSERVE!')}
@@ -142,19 +172,22 @@ const Login = () => {
                     initialValues={initialVlue}
                     name="login"
                     onFinish={onFinish}
+                    validateTrigger={['submit']}
                   >
                     <Form.Item
+                      help={validatePasswordOrEmail(true)}
                       name="email"
                       rules={[{ validator: emailValidator }]}
                     >
                       <Input placeholder="Email" prefix={<UserOutlined />} />
                     </Form.Item>
                     <Form.Item
+                      help={validatePasswordOrEmail()}
                       name="password"
                       rules={[
                         {
                           required: true,
-                          message: `${t('Please input your password!')}`,
+                          message: `${t('Password is required')}`,
                         },
                       ]}
                     >
@@ -168,15 +201,24 @@ const Login = () => {
                         }
                       />
                     </Form.Item>
-                    <Form.Item name="remember" className="remember-me">
-                      <Checkbox
-                        name="remember"
-                        checked={rememberMeChecked}
-                        onChange={(e) => setRememberMeChecked(e.target.checked)}
-                      >
-                        {t('Remember me')}
-                      </Checkbox>
-                    </Form.Item>
+                    <Row justify="space-between">
+                      <Col>
+                        <Form.Item name="remember" className="remember-me">
+                          <Checkbox
+                            name="remember"
+                            checked={rememberMeChecked}
+                            onChange={(e) =>
+                              setRememberMeChecked(e.target.checked)
+                            }
+                          >
+                            <RememberMe>{t('Remember me')}</RememberMe>
+                          </Checkbox>
+                        </Form.Item>
+                      </Col>
+                      <Col>
+                        <ForGotPassword>{t('Forgot Password?')}</ForGotPassword>
+                      </Col>
+                    </Row>
                     <Form.Item>
                       <Button
                         disabled={loading}
@@ -200,6 +242,9 @@ const Login = () => {
                   </Form>
                 </Col>
               </Row>
+            </LoginLeftWrapper>
+            <Col>
+              <LoginBanner src={Images.LoginBackground} alt="login-banner" />
             </Col>
           </LoginContainer>
         </Content>

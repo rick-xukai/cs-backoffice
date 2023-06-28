@@ -7,10 +7,10 @@ export const isEmail = (value: string) =>
 
 export const emailValidator = (_: object, value: string) => {
   if (!value) {
-    return Promise.reject(new Error('*Please input your email!'));
+    return Promise.reject(new Error('Email is required'));
   }
   if (!isEmail(value)) {
-    return Promise.reject(new Error('*Please enter a valid email address.'));
+    return Promise.reject(new Error('Please enter a valid email address.'));
   }
   return Promise.resolve();
 };

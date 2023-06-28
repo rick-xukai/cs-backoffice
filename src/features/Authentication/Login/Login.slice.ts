@@ -5,9 +5,13 @@ import { verificationApi } from '../../../utils/func';
 import UsersService from '../../../services/API/Users';
 
 /* eslint-disable no-param-reassign, complexity */
-
+export enum StatusCodes {
+  passwordWrong = 1003,
+  notFound = 404,
+}
 export interface ErrorType {
   message: string;
+  code?: number;
 }
 
 export interface LoginPayload {
@@ -29,6 +33,7 @@ export interface UserLoginResponseType {
     lastLoginAt: string;
   };
   token: string;
+  code?: number;
 }
 
 /**
@@ -46,8 +51,10 @@ export const loginAction = createAsyncThunk<
     if (verificationApi(response)) {
       return response.data;
     }
+
     return rejectWithValue({
       message: response.message,
+      code: response.code,
     } as ErrorType);
   } catch (err: any) {
     if (!err.response) {
@@ -78,6 +85,7 @@ export interface LoginState {
   error:
     | {
         message: string | undefined;
+        code?: number;
       }
     | undefined
     | null;
