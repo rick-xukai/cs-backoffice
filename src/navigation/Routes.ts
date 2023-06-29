@@ -29,6 +29,8 @@ export const UserRoutes = {
   userTicketDetail: '/user-ticket-detail/:ticketId',
   tickets: '/tickets',
   settings: '/settings',
+  profile: '/settings/profile',
+  userAndPermissions: '/settings/user-permissions',
   ticketDetail: '/ticket-detail/:ticketId',
   eventInfo: '/event-info/:id',
   eventTickets: '/event-tickets/:id',

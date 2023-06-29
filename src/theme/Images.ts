@@ -21,6 +21,7 @@ import LoginBackground from '../assets/images/login-bg.svg';
 import PasswordHidden from '../assets/images/icons/password-hidden.svg';
 import Transactions from '../assets/images/icons/transactions.svg';
 import MenuUsersIcon from '../assets/images/icons/menu-user.svg';
+import ComingSoon from '../assets/images/coming-soon.svg';
 
 const Images = {
   Logo,
@@ -48,6 +49,7 @@ const Images = {
   PasswordHidden,
   Transactions,
   MenuUsersIcon,
+  ComingSoon,
 };
 
 export default Images;

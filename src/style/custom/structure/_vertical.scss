@@ -42,12 +42,51 @@
       }
     }
   }
+  .ant-menu-dark {
+    .ant-menu-submenu-active,
+    .ant-menu-submenu-selected {
+      .ant-menu-submenu-title {
+        background-color: $black900;
+        border-radius: 4px;
+      }
+      .ant-menu-item-icon {
+        color: $red;
+        path {
+          fill: $red;
+        }
+      }
+    }
+  }
   .ant-menu-dark.ant-menu-inline .ant-menu-item {
     padding-left: 10px !important;
     height: 42px;
     font-size: 15px;
     font-weight: 400;
     color: $gray-600;
+  }
+  .ant-menu-dark.ant-menu-inline .ant-menu-submenu {
+    padding-left: 0px !important;
+    padding-right: 10px !important;
+  }
+  .ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    padding-left: 8px;
+    border-left: 1px solid #404047;
+    margin-left: 18px;
+    margin-top: 15px;
+    padding-right: 15px;
+    .ant-menu-item {
+      padding-left: 0px !important;
+      .ant-menu-title-content {
+        margin-left: 10px;
+      }
+    }
+    > :last-child {
+      margin-bottom: 0 !important;
+    }
+  }
+  .ant-menu-dark.ant-menu-inline .ant-menu-submenu .ant-menu-submenu-title {
+    padding: 0px !important;
+    padding-left: 10px !important;
   }
   .ant-menu {
     background: $black !important;

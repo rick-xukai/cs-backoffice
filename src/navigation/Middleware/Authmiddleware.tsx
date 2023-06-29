@@ -59,7 +59,7 @@ const Authmiddleware = ({
           return (
             <Redirect
               to={{
-                pathname: UserRoutes.events,
+                pathname: UserRoutes.dashboard,
               }}
             />
           );
