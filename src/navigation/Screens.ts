@@ -12,6 +12,8 @@ import TransactionsDetail from '../features/TransactionsDetail/Loadable';
 import UsersList from '../features/Users/Loadable';
 import UserDetail from '../features/UserDetail/Loadable';
 import CreateEvent from '../features/CreateEvent/Loadable';
+import Profile from '../features/Profile/Loadable';
+import UserAndPermissions from '../features/UserAndPermissions/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -118,12 +120,21 @@ export const UserScreens = {
     guard: true,
     role: [UserRoleKeys.admin, UserRoleKeys.guest],
   },
-  Settings: {
-    title: 'Settings - CrowdServe BO',
-    path: UserRoutes.dashboard,
-    component: Dashboard,
-    subMenuKeys: [],
-    menuKeys: [vMenuKeys.settings],
+  Profile: {
+    title: 'Profile - CrowdServe BO',
+    path: UserRoutes.profile,
+    component: Profile,
+    subMenuKeys: [vMenuKeys.settings],
+    menuKeys: [vMenuKeys.profile],
+    guard: true,
+    role: [],
+  },
+  UserAndPermissions: {
+    title: 'UserAndPermissions - CrowdServe BO',
+    path: UserRoutes.userAndPermissions,
+    component: UserAndPermissions,
+    subMenuKeys: [vMenuKeys.settings],
+    menuKeys: [vMenuKeys.userAndPermissions],
     guard: true,
     role: [],
   },

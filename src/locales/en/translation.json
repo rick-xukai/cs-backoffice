@@ -246,5 +246,6 @@
   "Password is required": "Password is required",
   "Email is required": "Email is required",
   "There is no account associated with the email.": "There is no account associated with the email.",
-  "Wrong email or password": "Wrong email or password"
+  "Wrong email or password": "Wrong email or password",
+  "User and permissions": "User and permissions"
 }

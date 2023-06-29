@@ -6,8 +6,9 @@ import { MenuOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { Colors } from '../../theme';
 import { useToggleMenu } from '../../hooks';
 
-const PageHeaderContainer = styled(Row)`
+const PageHeaderContainer = styled.div`
   padding-right: 24px;
+  padding-left: 24px;
   height: 60px;
   z-index: 10;
   &.children-header {
@@ -17,7 +18,7 @@ const PageHeaderContainer = styled(Row)`
   background: ${Colors.white};
   align-items: center;
   position: fixed;
-  width: 100%;
+  width: calc(100% - 240px);
   box-shadow: 0px 1px 2px rgb(0 0 0 / 4%);
   .title,
   .top-menu-btn {
@@ -50,7 +51,17 @@ const PageHeaderContainer = styled(Row)`
     height: 60px;
     display: flex;
     align-items: center;
-    padding-left: 24px;
+  }
+  .content-text {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: end;
+    p {
+      margin: 0;
+      font-size: 17px;
+      color: ${Colors.black6};
+    }
   }
   .cursor-pointer {
     cursor: pointer;
@@ -75,8 +86,10 @@ const PageHeaderComponent = ({
   showBackArrow = false,
   clickBack,
   children,
+  showRightContent = null,
 }: {
   title: string;
+  showRightContent?: React.ReactChild | null;
   showBackArrow?: boolean;
   clickBack?: () => void;
   children?: React.ReactChild;
@@ -85,30 +98,38 @@ const PageHeaderComponent = ({
 
   return (
     <PageHeaderContainer className={`${(children && 'children-header') || ''}`}>
-      <Col
-        span={24}
-        style={{ marginBottom: children && 16 }}
-        onClick={clickBack}
-      >
-        {React.createElement(MenuOutlined, {
-          className: 'top-menu-btn',
-          onClick: (e) => {
-            e.stopPropagation();
-            toggleMenu();
-          },
-        })}
-        <div
-          className={
-            (showBackArrow && 'title-content cursor-pointer') || 'title-content'
-          }
+      <Row>
+        <Col
+          span={(!showRightContent && 24) || 12}
+          style={{ marginBottom: children && 16 }}
+          onClick={clickBack}
         >
-          <span>
-            {showBackArrow && <ArrowLeftOutlined />}
-            <span className="title">{title}</span>
-          </span>
-        </div>
-      </Col>
-      {children && <Col span={24}>{children}</Col>}
+          {React.createElement(MenuOutlined, {
+            className: 'top-menu-btn',
+            onClick: (e) => {
+              e.stopPropagation();
+              toggleMenu();
+            },
+          })}
+          <div
+            className={
+              (showBackArrow && 'title-content cursor-pointer') ||
+              'title-content'
+            }
+          >
+            <span>
+              {showBackArrow && <ArrowLeftOutlined />}
+              <span className="title">{title}</span>
+            </span>
+          </div>
+        </Col>
+        {showRightContent && (
+          <Col span={12}>
+            <div className="content-text">{showRightContent}</div>
+          </Col>
+        )}
+        {children && <Col span={24}>{children}</Col>}
+      </Row>
     </PageHeaderContainer>
   );
 };

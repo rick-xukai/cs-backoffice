@@ -114,7 +114,7 @@ const Login = () => {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
       });
-      history.replace(UserRoutes.events);
+      history.replace(UserRoutes.dashboard);
     }
   }, [data]);
 
