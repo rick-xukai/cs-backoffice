@@ -1,24 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Helmet } from 'react-helmet';
 import { useHistory } from 'react-router-dom';
-import {
-  Layout,
-  Col,
-  Form,
-  Input,
-  Checkbox,
-  message,
-  Row,
-  Button,
-  Spin,
-} from 'antd';
-import {
-  LockOutlined,
-  UserOutlined,
-  EyeOutlined,
-  LoadingOutlined,
-} from '@ant-design/icons';
+import { Col, Form, Input, Checkbox, message, Row, Button, Spin } from 'antd';
+import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import { dataEncryption } from '../../../utils/func';
 import { emailValidator } from '../../../utils/validator';
@@ -28,18 +12,9 @@ import {
   DataEncryptionKeys,
 } from '../../../constants/Keys';
 import { TokenExpire } from '../../../constants/General';
-import { UserRoutes } from '../../../navigation/Routes';
-import LoadingCover from '../../../components/LoadingCover';
-import Images from '../../../theme/Images';
+import { AuthRoutes, UserRoutes } from '../../../navigation/Routes';
 import Colors from '../../../theme/Colors';
-import {
-  ForGotPassword,
-  LoginBanner,
-  LoginContainer,
-  LoginLeftWrapper,
-  LogoContainer,
-  RememberMe,
-} from './LoginComponents';
+import { ForGotPassword, RememberMe } from './LoginComponents';
 import { useAppSelector, useAppDispatch } from '../../../app/hooks';
 import {
   reset,
@@ -50,8 +25,8 @@ import {
   StatusCodes,
 } from './Login.slice';
 import { useCookie, useLocalStorage } from '../../../hooks';
-
-const { Content } = Layout;
+import LandingLayout from '../../../components/LandingLayout/LandingLayout';
+import PasswordInput from '../../../components/PasswordInput/PasswordInput';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -145,112 +120,76 @@ const Login = () => {
     }
   };
 
+  const handleGoToForgotPassword = () => {
+    history.push(AuthRoutes.forgotPassword);
+  };
+
   return (
-    <>
-      <Helmet>
-        <title>{`${t('Login')} | CrowdServe BO`}</title>
-      </Helmet>
-      <Layout hasSider={false} style={{ minHeight: '100vh' }}>
-        <Content
-          style={{
-            width: '100%',
-            background: `${Colors.white2}`,
-            margin: '0',
-          }}
+    <LandingLayout
+      title={`${t('Login')} | CrowdServe BO`}
+      formTitle={t('WELCOME TO CROWDSERVE!')}
+    >
+      <Form
+        initialValues={initialVlue}
+        name="login"
+        onFinish={onFinish}
+        validateTrigger={['submit']}
+      >
+        <Form.Item
+          help={validatePasswordOrEmail(true)}
+          name="email"
+          rules={[{ validator: emailValidator }]}
         >
-          <LoginContainer justify="space-between" wrap>
-            <LoginLeftWrapper>
-              <LogoContainer>
-                <img src={Images.Logo} alt="" className="logo" />
-              </LogoContainer>
-              <Row className="login-form">
-                <Col span={24} className="login-title">
-                  {t('WELCOME TO CROWDSERVE!')}
-                </Col>
-                <Col span={24}>
-                  <Form
-                    initialValues={initialVlue}
-                    name="login"
-                    onFinish={onFinish}
-                    validateTrigger={['submit']}
-                  >
-                    <Form.Item
-                      help={validatePasswordOrEmail(true)}
-                      name="email"
-                      rules={[{ validator: emailValidator }]}
-                    >
-                      <Input placeholder="Email" prefix={<UserOutlined />} />
-                    </Form.Item>
-                    <Form.Item
-                      help={validatePasswordOrEmail()}
-                      name="password"
-                      rules={[
-                        {
-                          required: true,
-                          message: `${t('Password is required')}`,
-                        },
-                      ]}
-                    >
-                      <Input.Password
-                        placeholder="Password"
-                        prefix={<LockOutlined />}
-                        iconRender={(visible) =>
-                          (!visible && (
-                            <img src={Images.PasswordHidden} alt="" />
-                          )) || <EyeOutlined />
-                        }
-                      />
-                    </Form.Item>
-                    <Row justify="space-between">
-                      <Col>
-                        <Form.Item name="remember" className="remember-me">
-                          <Checkbox
-                            name="remember"
-                            checked={rememberMeChecked}
-                            onChange={(e) =>
-                              setRememberMeChecked(e.target.checked)
-                            }
-                          >
-                            <RememberMe>{t('Remember me')}</RememberMe>
-                          </Checkbox>
-                        </Form.Item>
-                      </Col>
-                      <Col>
-                        <ForGotPassword>{t('Forgot Password?')}</ForGotPassword>
-                      </Col>
-                    </Row>
-                    <Form.Item>
-                      <Button
-                        disabled={loading}
-                        type="primary"
-                        htmlType="submit"
-                      >
-                        {(loading && (
-                          <Spin
-                            indicator={
-                              <LoadingOutlined
-                                spin
-                                style={{ color: Colors.white }}
-                              />
-                            }
-                            size="default"
-                          />
-                        )) ||
-                          t('Sign In')}
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                </Col>
-              </Row>
-            </LoginLeftWrapper>
-            <Col>
-              <LoginBanner src={Images.LoginBackground} alt="login-banner" />
-            </Col>
-          </LoginContainer>
-        </Content>
-      </Layout>
-      <LoadingCover show={loading} />
-    </>
+          <Input placeholder={t('Email')} prefix={<UserOutlined />} />
+        </Form.Item>
+        <Form.Item
+          help={validatePasswordOrEmail()}
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: `${t('Password is required')}`,
+            },
+          ]}
+        >
+          <PasswordInput
+            placeholder={t('Password')}
+            prefix={<LockOutlined />}
+          />
+        </Form.Item>
+        <Row justify="space-between">
+          <Col>
+            <Form.Item name="remember" className="remember-me">
+              <Checkbox
+                name="remember"
+                checked={rememberMeChecked}
+                onChange={(e) => setRememberMeChecked(e.target.checked)}
+              >
+                <RememberMe>{t('Remember me')}</RememberMe>
+              </Checkbox>
+            </Form.Item>
+          </Col>
+          <Col>
+            <ForGotPassword onClick={handleGoToForgotPassword}>
+              {t('Forgot Password?')}
+            </ForGotPassword>
+          </Col>
+        </Row>
+        <Form.Item>
+          <Button disabled={loading} type="primary" htmlType="submit">
+            {(loading && (
+              <Spin
+                indicator={
+                  <LoadingOutlined spin style={{ color: Colors.white }} />
+                }
+                size="default"
+              />
+            )) ||
+              t('Sign In')}
+          </Button>
+        </Form.Item>
+      </Form>
+    </LandingLayout>
   );
 };
 

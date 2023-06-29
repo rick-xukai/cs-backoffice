@@ -14,3 +14,12 @@ export const emailValidator = (_: object, value: string) => {
   }
   return Promise.resolve();
 };
+
+export const passwordMinLength = 8;
+
+export const passwordValidator = (_: object, value: string) => {
+  if (value && value.length < passwordMinLength) {
+    return Promise.reject(new Error('Password must be at least 8 characters'));
+  }
+  return Promise.resolve();
+};

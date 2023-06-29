@@ -42,4 +42,5 @@ export const UserRoutes = {
 export const AuthRoutes = {
   login: '/login',
   register: '/register',
+  forgotPassword: '/forgot-password',
 };
