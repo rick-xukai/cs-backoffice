@@ -39,7 +39,7 @@ const Login = () => {
   const history = useHistory();
   const cookies = useCookie([CookieKeys.authUser]);
 
-  const [rememberMeChecked, setRememberMeChecked] = useState<boolean>(true);
+  const [rememberMeChecked, setRememberMeChecked] = useState<boolean>(false);
   const validatePasswordOrEmail = (isEmail?: boolean) => {
     if (error?.code === StatusCodes.passwordWrong) {
       return (
@@ -75,6 +75,7 @@ const Login = () => {
       localStorage.getItem(LocalStorageKeys.rememberMe),
       DataEncryptionKeys.decrypt,
     );
+
     if (rememberMe) {
       initialVlue = {
         ...JSON.parse(rememberMe),
@@ -109,6 +110,9 @@ const Login = () => {
 
   // eslint-disable-next-line
   useEffect(() => {
+    if (localStorage.getItem(LocalStorageKeys.rememberMe)) {
+      setRememberMeChecked(true);
+    }
     return () => {
       dispatch(reset());
     };
@@ -122,7 +126,7 @@ const Login = () => {
           LocalStorageKeys.rememberMe,
           dataEncryption(
             JSON.stringify({
-              username: values.username,
+              username: values.email,
               password: values.password,
             }),
             DataEncryptionKeys.encrypt,
