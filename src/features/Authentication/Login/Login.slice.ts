@@ -24,13 +24,27 @@ export interface LoginRequestType {
   password: string;
 }
 
+export enum ActiveStatus {
+  inactive = 0,
+  active = 1,
+}
+
+export enum RoleTypes {
+  superAdmin = 0,
+  partnerAdmin = 1,
+  organizerAdmin = 2,
+  organizerUser = 3,
+}
+
 export interface UserLoginResponseType {
   user: {
     id: string;
     name: string;
     email: string;
-    role: number;
+    role: RoleTypes;
     lastLoginAt: string;
+    status: ActiveStatus;
+    organizerId: number;
   };
   token: string;
   code?: number;
@@ -97,8 +111,10 @@ const initialState: LoginState = {
       id: '',
       name: '',
       email: '',
-      role: 0,
+      role: RoleTypes.superAdmin,
       lastLoginAt: '',
+      status: ActiveStatus.inactive,
+      organizerId: 0,
     },
     token: '',
   },

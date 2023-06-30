@@ -50,6 +50,9 @@ const API = {
   uploadFile: {
     post: '/admin/file',
   },
+  changePassword: {
+    put: '/admin/my/password',
+  },
 };
 
 export default API;

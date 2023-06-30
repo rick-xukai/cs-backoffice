@@ -15,6 +15,7 @@ import usersListReducer from '../features/Users/Users.slice';
 import userDetailReducer from '../features/UserDetail/UserDetail.slice';
 import createEventReducer from '../features/CreateEvent/CreateEvent.slice';
 import forgotPasswordReducer from '../features/Authentication/ForgotPassword/ForgotPassword.slice';
+import changePasswordReducer from '../features/Authentication/ChangePassword/ChangePassword.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -33,6 +34,7 @@ const createRootReducer = (history: any) =>
     userDetail: userDetailReducer,
     createEvent: createEventReducer,
     forgotPassword: forgotPasswordReducer,
+    changePassword: changePasswordReducer,
   });
 
 export default createRootReducer;

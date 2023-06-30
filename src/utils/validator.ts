@@ -23,3 +23,11 @@ export const passwordValidator = (_: object, value: string) => {
   }
   return Promise.resolve();
 };
+
+const verificationCodeRegex = /^[0-9]{6}$/;
+export const verificationCodeValidator = (_: object, value: string) => {
+  if (value && !verificationCodeRegex.test(value)) {
+    return Promise.reject(new Error('Invalid verification code'));
+  }
+  return Promise.resolve();
+};

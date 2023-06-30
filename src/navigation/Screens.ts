@@ -18,6 +18,7 @@ import UserAndPermissions from '../features/UserAndPermissions/Loadable';
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
 import ForgotPassword from '../features/Authentication/ForgotPassword/Loadable';
+import ChangePassword from '../features/Authentication/ChangePassword/Loadable';
 
 import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
 import { UserRoleKeys } from '../constants/Keys';
@@ -187,6 +188,13 @@ export const AuthScreens = {
     title: 'Forgot Password - CrowdServe BO',
     path: AuthRoutes.forgotPassword,
     component: ForgotPassword,
+    guard: false,
+    role: undefined,
+  },
+  ChangePassword: {
+    title: 'Change Password - CrowdServe BO',
+    path: AuthRoutes.changePassword,
+    component: ChangePassword,
     guard: false,
     role: undefined,
   },

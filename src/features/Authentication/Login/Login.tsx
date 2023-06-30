@@ -23,6 +23,7 @@ import {
   loginAction,
   selectData,
   StatusCodes,
+  ActiveStatus,
 } from './Login.slice';
 import { useCookie, useLocalStorage } from '../../../hooks';
 import LandingLayout from '../../../components/LandingLayout/LandingLayout';
@@ -89,7 +90,11 @@ const Login = () => {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
       });
-      history.replace(UserRoutes.dashboard);
+      if (data.user.status === ActiveStatus.active) {
+        history.replace(UserRoutes.dashboard);
+      } else {
+        history.replace(AuthRoutes.changePassword);
+      }
     }
   }, [data]);
 
