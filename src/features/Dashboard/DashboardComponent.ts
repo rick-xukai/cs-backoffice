@@ -20,6 +20,11 @@ const DashboardContainer = styled.div`
       }
     }
   }
+  @media (max-width: 996px) {
+    .page-main {
+      padding: calc(70px + 15px) 15px 15px;
+    }
+  }
 `;
 
 export { DashboardContainer };

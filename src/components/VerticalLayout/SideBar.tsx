@@ -38,6 +38,7 @@ const SideBar = ({
 
   const logout = () => {
     cookies.removeCookie(CookieKeys.authUser);
+    cookies.removeCookie(CookieKeys.authUserName);
     history.push(AuthRoutes.login);
   };
 
@@ -62,7 +63,7 @@ const SideBar = ({
       <div className="logo-box">
         <Link to="/" className="logo">
           <span>
-            <img src={Images.Logo} alt="" />
+            <img src={Images.LogoWhiteColor} alt="" />
           </span>
         </Link>
       </div>

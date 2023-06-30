@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Col, Form, Input, Checkbox, message, Row, Button, Spin } from 'antd';
 import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons';
 
-import { dataEncryption } from '../../../utils/func';
+import { dataEncryption, base64Encrypt } from '../../../utils/func';
 import { emailValidator } from '../../../utils/validator';
 import {
   CookieKeys,
@@ -86,10 +86,19 @@ const Login = () => {
   useEffect(() => {
     if (data.token) {
       const currentDate = new Date();
+      const { user } = data;
       cookies.setCookie(CookieKeys.authUser, data.token, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
       });
+      cookies.setCookie(
+        CookieKeys.authUserName,
+        base64Encrypt(user.name || ''),
+        {
+          expires: new Date(currentDate.getTime() + TokenExpire),
+          path: '/',
+        },
+      );
       if (data.user.status === ActiveStatus.active) {
         history.replace(UserRoutes.dashboard);
       } else {

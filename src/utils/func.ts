@@ -126,6 +126,17 @@ export const dataEncryption = (data: any, type: string) => {
   return formatData;
 };
 
+export const base64Decrypt = (code: string) => {
+  const parsedWordArray = CryptoJS.enc.Base64.parse(code);
+  const parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
+  return JSON.parse(parsedStr);
+};
+
+export const base64Encrypt = (parameters: {}) => {
+  const wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(parameters));
+  return CryptoJS.enc.Base64.stringify(wordArray);
+};
+
 export const checkEventStatus = (status: number) => {
   let statusText = '';
   switch (status) {

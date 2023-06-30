@@ -4,6 +4,7 @@ export const LocalStorageKeys = {
 };
 export const CookieKeys = {
   authUser: 'authUser',
+  authUserName: 'authUserName',
   userLoginToken: 'userLoginToken',
 };
 export const EventTabsKey = {

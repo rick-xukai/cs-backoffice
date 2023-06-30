@@ -39,6 +39,7 @@ const UploadFileComponent = ({
   previewType,
   description,
   limitFileSize,
+  customUploadButton = null,
   handleChange,
   customRequest,
   handleFileRemove,
@@ -49,6 +50,7 @@ const UploadFileComponent = ({
   previewImageUrl: string;
   previewType: string;
   limitFileSize: number;
+  customUploadButton?: React.ReactElement | null;
   handleChange: (event: any) => void;
   customRequest: (event: any) => void;
   handleFileRemove: () => void;
@@ -82,7 +84,7 @@ const UploadFileComponent = ({
   };
 
   return (
-    <Container>
+    <Container className="upload-content">
       <Upload
         name="file"
         listType="picture-card"
@@ -96,11 +98,15 @@ const UploadFileComponent = ({
         beforeUpload={beforeUpload}
         onRemove={handleFileRemove}
       >
-        {(fileList.length === 0 || isUpoloadError) && (
-          <div>
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
-          </div>
+        {(customUploadButton && customUploadButton) || (
+          <>
+            {(fileList.length === 0 || isUpoloadError) && (
+              <div>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </div>
+            )}
+          </>
         )}
       </Upload>
       <div className="info">

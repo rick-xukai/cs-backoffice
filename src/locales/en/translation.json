@@ -268,5 +268,15 @@
   "Change password":"Change password",
   "Confirm": "Confirm",
   "User and permissions": "User and permissions",
-  "Password changed successfully": "Password changed successfully"
+  "Password changed successfully": "Password changed successfully",
+  "Organizer Logo": "Organizer Logo",
+  "Organizer Name": "Organizer Name",
+  "Organizer Description": "Organizer Description",
+  "Banner Image": "Banner Image",
+  "Recommended image size 1440  x 260px": "Recommended image size: 1440  x 260px",
+  "Marketing Site": "Marketing Site",
+  "Drag or click to upload image": "Drag or click to upload image",
+  "Profile Tips Title": "Profile Tips",
+  "Profile Tips Value": "Enhance your organization's visibility by updating your profile with a captivating logo, an engaging description, and an eye-catching banner image. Providing comprehensive and up-to-date information allows users to better understand your organization and increases the chances of attracting attendees to your events.",
+  "Please login again": "Please login again"
 }
