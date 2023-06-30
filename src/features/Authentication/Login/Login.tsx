@@ -75,7 +75,6 @@ const Login = () => {
       localStorage.getItem(LocalStorageKeys.rememberMe),
       DataEncryptionKeys.decrypt,
     );
-
     if (rememberMe) {
       initialVlue = {
         ...JSON.parse(rememberMe),
@@ -103,7 +102,7 @@ const Login = () => {
       if (data.user.status === ActiveStatus.active) {
         history.replace(UserRoutes.dashboard);
       } else {
-        history.replace(AuthRoutes.changePassword);
+        history.push(AuthRoutes.changePassword);
       }
     }
   }, [data]);
@@ -112,6 +111,8 @@ const Login = () => {
   useEffect(() => {
     if (localStorage.getItem(LocalStorageKeys.rememberMe)) {
       setRememberMeChecked(true);
+    } else {
+      setRememberMeChecked(false);
     }
     return () => {
       dispatch(reset());
@@ -126,7 +127,7 @@ const Login = () => {
           LocalStorageKeys.rememberMe,
           dataEncryption(
             JSON.stringify({
-              username: values.email,
+              email: values.email,
               password: values.password,
             }),
             DataEncryptionKeys.encrypt,
