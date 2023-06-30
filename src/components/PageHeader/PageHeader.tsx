@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { Row, Col } from 'antd';
+import { Row, Col, message } from 'antd';
 import { MenuOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 
+import { AuthRoutes } from '../../navigation/Routes';
+import { base64Decrypt } from '../../utils/func';
+import { CookieKeys } from '../../constants/Keys';
 import { Colors } from '../../theme';
-import { useToggleMenu } from '../../hooks';
+import { useToggleMenu, useCookie } from '../../hooks';
 
 const PageHeaderContainer = styled.div`
   padding-right: 24px;
   padding-left: 24px;
   height: 60px;
-  z-index: 10;
+  z-index: 1;
   &.children-header {
     padding-top: 16px;
     height: unset;
@@ -23,7 +28,8 @@ const PageHeaderContainer = styled.div`
   .title,
   .top-menu-btn {
     font-weight: 700;
-    font-size: 20px;
+    font-size: 24px;
+    font-family: Oswald;
   }
   .top-menu-btn {
     display: none;
@@ -66,14 +72,30 @@ const PageHeaderContainer = styled.div`
   .cursor-pointer {
     cursor: pointer;
   }
+  @media (max-width: 576px) {
+    .content-text {
+      justify-content: start;
+      p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
   @media (max-width: 996px) {
+    width: 100%;
+    height: 70px;
+    .main-row {
+      height: 100%;
+      align-items: center;
+    }
     .title-content {
       height: unset;
     }
     .anticon-menu {
       position: absolute;
-      left: 24px;
-      top: 5px;
+      left: 0px;
+      top: 8px;
     }
     .title-content {
       margin-left: 48px;
@@ -86,21 +108,39 @@ const PageHeaderComponent = ({
   showBackArrow = false,
   clickBack,
   children,
-  showRightContent = null,
 }: {
   title: string;
-  showRightContent?: React.ReactChild | null;
   showBackArrow?: boolean;
   clickBack?: () => void;
   children?: React.ReactChild;
 }) => {
+  const { t } = useTranslation();
   const { toggleMenu } = useToggleMenu();
+  const history = useHistory();
+  const cookies = useCookie([CookieKeys.authUserName]);
+
+  const [userName, setUserName] = useState<string>('');
+
+  useEffect(() => {
+    if (cookies.getCookie(CookieKeys.authUserName)) {
+      setUserName(
+        base64Decrypt(
+          cookies.getCookie(CookieKeys.authUserName),
+        ).toLocaleUpperCase(),
+      );
+    } else {
+      message.error(t('Please login again'));
+      cookies.removeCookie(CookieKeys.authUser);
+      history.push(AuthRoutes.login);
+    }
+  }, [cookies.getCookie(CookieKeys.authUserName)]);
 
   return (
     <PageHeaderContainer className={`${(children && 'children-header') || ''}`}>
-      <Row>
+      <Row className="main-row">
         <Col
-          span={(!showRightContent && 24) || 12}
+          sm={12}
+          xs={24}
           style={{ marginBottom: children && 16 }}
           onClick={clickBack}
         >
@@ -123,11 +163,13 @@ const PageHeaderComponent = ({
             </span>
           </div>
         </Col>
-        {showRightContent && (
-          <Col span={12}>
-            <div className="content-text">{showRightContent}</div>
-          </Col>
-        )}
+        <Col sm={12} xs={24}>
+          <div className="content-text">
+            <p>
+              Welcome, <b>{userName}</b> user.
+            </p>
+          </div>
+        </Col>
         {children && <Col span={24}>{children}</Col>}
       </Row>
     </PageHeaderContainer>
