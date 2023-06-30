@@ -1,11 +1,10 @@
-import { Row } from 'antd';
+import { Row, Col } from 'antd';
 import styled from 'styled-components';
-import { Colors } from '../../theme';
+import { Colors, BreakPoints } from '../../theme';
 
 export const Container = styled(Row)<{ hidebanner: string }>`
-  display: flex;
   overflow: hidden;
-  flex-wrap: wrap;
+  height: 100vh;
   .landing-form {
     display: block;
     min-width: 350px;
@@ -27,6 +26,7 @@ export const Container = styled(Row)<{ hidebanner: string }>`
       margin-bottom: 24px;
       text-align: center;
       text-transform: uppercase;
+      white-space: nowrap;
     }
     .ant-form-item-control-input-content {
       font-weight: 400;
@@ -81,21 +81,45 @@ export const Container = styled(Row)<{ hidebanner: string }>`
       box-shadow: unset;
     }
   }
+  @media (max-width: ${BreakPoints.sm}px) {
+    .landing-form {
+      padding: 20px;
+      .landing-title {
+        font-size: 24px;
+      }
+    }
+  }
+  @media (max-width: ${BreakPoints.galaxFold}px) {
+    .landing-form {
+      min-width: 280px;
+      padding: 0px;
+      .landing-title {
+        font-size: 20px;
+      }
+    }
+  }
 `;
 
-export const LeftWrapper = styled.div`
+export const FormContainer = styled(Col)`
   display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
+  @media (max-width: ${BreakPoints.lg}px) {
+    position: relative;
+    left: 50%;
+    top: 10%;
+    transform: translate(-50%, -50%);
+  }
 `;
 
-export const LogoContainer = styled.div`
-  width: 128px;
+export const LogoContainer = styled(Col)`
+  max-width: 128px;
   flex-shrink: 0;
   margin-top: 40px;
   margin-left: 40px;
   .logo {
     width: 100%;
+  }
+  @media (max-width: ${BreakPoints.lg}px) {
+    margin: 32px auto 0px auto;
   }
 `;
 
