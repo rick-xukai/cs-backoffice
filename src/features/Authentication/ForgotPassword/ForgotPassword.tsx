@@ -29,6 +29,10 @@ import { useCookie } from '../../../hooks';
 import { CookieKeys } from '../../../constants/Keys';
 import { base64Encrypt } from '../../../utils/func';
 import { loginAction, selectData } from '../Login/Login.slice';
+import {
+  PASSWORD_MIN_LENGTH,
+  VERIFY_CODE_MAX_LENGTH,
+} from '../../../constants/constants';
 
 enum Steps {
   email = 1,
@@ -48,9 +52,14 @@ const ForgotPassword = () => {
   const history = useHistory();
   const cookies = useCookie([CookieKeys.authUser]);
   const data = useAppSelector(selectData);
+  const [finishFailed, setFinishFailed] = useState(false);
 
   const passwordNotMatchConfirmPassword =
-    password && confirmPassword && password !== confirmPassword;
+    password &&
+    confirmPassword &&
+    password.length >= PASSWORD_MIN_LENGTH &&
+    confirmPassword &&
+    password !== confirmPassword;
 
   const validateEmail = () => {
     if (error?.code === StatusCodes.notFound) {
@@ -98,6 +107,7 @@ const ForgotPassword = () => {
   }, []);
 
   const onForgotPasswordFinish = async (values: any) => {
+    setFinishFailed(false);
     const response = await dispatch(fotgotPasswordAction(values));
     if (response.type === fotgotPasswordAction.fulfilled.toString()) {
       setStep(Steps.verify);
@@ -106,6 +116,7 @@ const ForgotPassword = () => {
   };
 
   const onVerifyFinish = async (values: any) => {
+    setFinishFailed(false);
     const response = await dispatch(verifyCodeAction({ ...values, email }));
     if (response.type === verifyCodeAction.fulfilled.toString()) {
       setStep(Steps.password);
@@ -114,6 +125,7 @@ const ForgotPassword = () => {
   };
 
   const onResetPasswordFinish = async (values: any) => {
+    setFinishFailed(false);
     const response = await dispatch(
       resetPasswordAction({ password: values.password, email, code }),
     );
@@ -154,14 +166,15 @@ const ForgotPassword = () => {
           name="email"
           onFinish={onForgotPasswordFinish}
           validateTrigger={['submit']}
+          onFinishFailed={() => setFinishFailed(true)}
         >
           <Form.Item
             name="email"
             rules={[{ validator: emailValidator }]}
-            help={validateEmail()}
+            help={(!finishFailed && validateEmail()) || null}
           >
             <Input
-              status={validateEmail() ? 'error' : ''}
+              status={!finishFailed && validateEmail() ? 'error' : ''}
               placeholder={t('Email')}
             />
           </Form.Item>
@@ -185,12 +198,13 @@ const ForgotPassword = () => {
           name="verify"
           onFinish={onVerifyFinish}
           validateTrigger={['submit']}
+          onFinishFailed={() => setFinishFailed(true)}
         >
           <Tip>{t('Verification code has been sent to')}</Tip>
           <Email>{email}</Email>
           <Form.Item
             name="code"
-            help={validateCode()}
+            help={(!finishFailed && validateCode()) || null}
             rules={[
               {
                 required: true,
@@ -202,8 +216,9 @@ const ForgotPassword = () => {
             ]}
           >
             <Input
-              status={validateCode() ? 'error' : ''}
+              status={!finishFailed && validateCode() ? 'error' : ''}
               placeholder={t('Enter Verification Code')}
+              maxLength={VERIFY_CODE_MAX_LENGTH}
             />
           </Form.Item>
           <Form.Item>
@@ -226,6 +241,7 @@ const ForgotPassword = () => {
           name="password"
           onFinish={onResetPasswordFinish}
           validateTrigger={['submit']}
+          onFinishFailed={() => setFinishFailed(true)}
         >
           <Form.Item
             name="password"

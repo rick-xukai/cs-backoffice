@@ -18,6 +18,7 @@ import LandingLayout from '../../../components/LandingLayout/LandingLayout';
 import { Tip } from './ChangePasswordComponents';
 import PasswordInput from '../../../components/PasswordInput/PasswordInput';
 import { UserRoutes } from '../../../navigation/Routes';
+import { PASSWORD_MIN_LENGTH } from '../../../constants/constants';
 
 const ChangePassword = () => {
   const { t } = useTranslation();
@@ -29,7 +30,11 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const passwordNotMatchConfirmPassword =
-    password && confirmPassword && password !== confirmPassword;
+    password &&
+    confirmPassword &&
+    password.length >= PASSWORD_MIN_LENGTH &&
+    confirmPassword &&
+    password !== confirmPassword;
   const validatePasswordAndConfirmPassword = () => {
     if (passwordNotMatchConfirmPassword) {
       return Promise.reject(new Error(`Passwords don't match`));

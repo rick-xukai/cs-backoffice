@@ -4,12 +4,12 @@ import { PasswordProps } from 'antd/lib/input';
 import { EyeOutlined } from '@ant-design/icons';
 
 import { Images } from '../../theme';
-import { PasswordMaxLength } from '../../constants/constants';
+import { PASSWORD_MAX_LENGTH } from '../../constants/constants';
 
 const PasswordInput = (props: PasswordProps) => (
   <Input.Password
     {...props}
-    maxLength={PasswordMaxLength}
+    maxLength={PASSWORD_MAX_LENGTH}
     iconRender={(visible) =>
       (!visible && (
         <img src={Images.PasswordHidden} alt="" style={{ cursor: 'pointer' }} />
