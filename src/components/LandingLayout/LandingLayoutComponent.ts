@@ -102,11 +102,15 @@ export const Container = styled(Row)<{ hidebanner: string }>`
 
 export const FormContainer = styled(Col)`
   display: flex;
-  @media (max-width: ${BreakPoints.lg}px) {
-    position: relative;
+  min-width: 350px;
+  @media (max-width: ${BreakPoints.loginLayoutPoint}px) {
+    position: absolute;
     left: 50%;
-    top: 10%;
+    top: 50%;
     transform: translate(-50%, -50%);
+  }
+  @media (max-width: ${BreakPoints.galaxFold}px) {
+    min-width: 280px;
   }
 `;
 
@@ -118,7 +122,7 @@ export const LogoContainer = styled(Col)`
   .logo {
     width: 100%;
   }
-  @media (max-width: ${BreakPoints.lg}px) {
+  @media (max-width: ${BreakPoints.loginLayoutPoint}px) {
     margin: 32px auto 0px auto;
   }
 `;
@@ -129,6 +133,9 @@ export const Banner = styled.img`
   position: relative;
   left: 1px;
   user-select: none;
+  @media (max-width: ${BreakPoints.loginLayoutPoint}px) {
+    display: none;
+  }
 `;
 
 export const RememberMe = styled.div`

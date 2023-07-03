@@ -4,6 +4,7 @@ const BreakPoints = {
   sm: 576,
   md: 768,
   lg: 992,
+  loginLayoutPoint: 1120,
   xl: 1200,
   xxl: 1400,
 };
