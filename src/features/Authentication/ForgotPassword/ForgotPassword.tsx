@@ -23,7 +23,12 @@ import {
 import LandingLayout from '../../../components/LandingLayout/LandingLayout';
 import { Email, Tip } from './ForgotPasswordComponents';
 import PasswordInput from '../../../components/PasswordInput/PasswordInput';
-import { AuthRoutes } from '../../../navigation/Routes';
+import { UserRoutes } from '../../../navigation/Routes';
+import { TokenExpire } from '../../../constants/General';
+import { useCookie } from '../../../hooks';
+import { CookieKeys } from '../../../constants/Keys';
+import { base64Encrypt } from '../../../utils/func';
+import { loginAction, selectData } from '../Login/Login.slice';
 
 enum Steps {
   email = 1,
@@ -41,6 +46,8 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const history = useHistory();
+  const cookies = useCookie([CookieKeys.authUser]);
+  const data = useAppSelector(selectData);
 
   const passwordNotMatchConfirmPassword =
     password && confirmPassword && password !== confirmPassword;
@@ -112,12 +119,31 @@ const ForgotPassword = () => {
     );
     if (response.type === resetPasswordAction.fulfilled.toString()) {
       message.success(t('Password changed successfully'));
-      history.push(AuthRoutes.login);
+      await dispatch(loginAction({ email, password }));
     } else {
       message.error(response.payload?.message);
     }
   };
 
+  useEffect(() => {
+    if (data.token) {
+      const currentDate = new Date();
+      const { user } = data;
+      cookies.setCookie(CookieKeys.authUser, data.token, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+      });
+      cookies.setCookie(
+        CookieKeys.authUserName,
+        base64Encrypt(user.name || ''),
+        {
+          expires: new Date(currentDate.getTime() + TokenExpire),
+          path: '/',
+        },
+      );
+      history.replace(UserRoutes.dashboard);
+    }
+  }, [data]);
   return (
     <LandingLayout
       title={`${t('Forgot Password')} | CrowdServe BO`}
