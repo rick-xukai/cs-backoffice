@@ -55,10 +55,43 @@ const doChangePassword = async (payload: any) => {
   return response;
 };
 
+const doFotgotPassword = async (payload: any) => {
+  const uri = API.fogogtPassword.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
+
+const doVerificationCode = async (payload: any) => {
+  const uri = API.verificationCode.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
+
+const doResetPassword = async (payload: any) => {
+  const uri = API.resetPassword.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
+
 export default {
   getUsersList,
   getUserDetail,
   getUserDetailTickets,
   doLogin,
   doChangePassword,
+  doFotgotPassword,
+  doVerificationCode,
+  doResetPassword,
 };

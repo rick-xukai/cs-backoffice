@@ -37,6 +37,8 @@ const LandingLayout = ({
             width: '100%',
             background: `${Colors.white2}`,
             margin: '0',
+            height: '100vh',
+            overflow: 'hidden',
           }}
         >
           <Container

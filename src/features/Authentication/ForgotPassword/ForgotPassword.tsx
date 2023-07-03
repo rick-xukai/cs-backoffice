@@ -1,31 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import { Form, Input, message, Button, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 
 import {
   emailValidator,
   passwordValidator,
   verificationCodeValidator,
 } from '../../../utils/validator';
-import { CookieKeys } from '../../../constants/Keys';
-import { TokenExpire } from '../../../constants/General';
-import { UserRoutes } from '../../../navigation/Routes';
 import Colors from '../../../theme/Colors';
 import { useAppSelector, useAppDispatch } from '../../../app/hooks';
 import {
   reset,
   selectLoading,
   selectError,
-  resetPasswordAction,
-  selectData,
   StatusCodes,
+  fotgotPasswordAction,
+  verifyCodeAction,
+  resetPasswordAction,
 } from './ForgotPassword.slice';
-import { useCookie } from '../../../hooks';
 import LandingLayout from '../../../components/LandingLayout/LandingLayout';
 import { Email, Tip } from './ForgotPasswordComponents';
 import PasswordInput from '../../../components/PasswordInput/PasswordInput';
+import { AuthRoutes } from '../../../navigation/Routes';
+
 enum Steps {
   email = 1,
   verify = 2,
@@ -35,16 +34,38 @@ const ForgotPassword = () => {
   const { t } = useTranslation();
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
-  const data = useAppSelector(selectData);
   const dispatch = useAppDispatch();
-  const history = useHistory();
-  const cookies = useCookie([CookieKeys.authUser]);
   const [step, setStep] = useState(Steps.email);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const history = useHistory();
 
   const passwordNotMatchConfirmPassword =
     password && confirmPassword && password !== confirmPassword;
+
+  const validateEmail = () => {
+    if (error?.code === StatusCodes.notFound) {
+      return (
+        <div className="ant-form-item-explain-error">
+          {t('There is no account associated with the email.')}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const validateCode = () => {
+    if (error?.code === StatusCodes.codeWrong) {
+      return (
+        <div className="ant-form-item-explain-error">
+          {t('Invalid verification code')}
+        </div>
+      );
+    }
+    return null;
+  };
   const validatePasswordAndConfirmPassword = () => {
     if (passwordNotMatchConfirmPassword) {
       return Promise.reject(new Error(`Passwords don't match`));
@@ -54,28 +75,13 @@ const ForgotPassword = () => {
   useEffect(() => {
     if (error) {
       if (
-        error.code !== StatusCodes.passwordWrong &&
+        error.code !== StatusCodes.codeWrong &&
         error.code !== StatusCodes.notFound
       ) {
         message.error(error.message);
       }
     }
   }, [error]);
-
-  useEffect(() => {
-    if (data.token) {
-      const currentDate = new Date();
-      cookies.setCookie(CookieKeys.authUser, data.token, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-      });
-      history.replace(UserRoutes.events);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    setStep(Steps.email);
-  }, []);
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -84,8 +90,32 @@ const ForgotPassword = () => {
     };
   }, []);
 
-  const onFinish = async (values: any) => {
-    await dispatch(resetPasswordAction(values));
+  const onForgotPasswordFinish = async (values: any) => {
+    const response = await dispatch(fotgotPasswordAction(values));
+    if (response.type === fotgotPasswordAction.fulfilled.toString()) {
+      setStep(Steps.verify);
+      setEmail(values.email);
+    }
+  };
+
+  const onVerifyFinish = async (values: any) => {
+    const response = await dispatch(verifyCodeAction({ ...values, email }));
+    if (response.type === verifyCodeAction.fulfilled.toString()) {
+      setStep(Steps.password);
+      setCode(values.code);
+    }
+  };
+
+  const onResetPasswordFinish = async (values: any) => {
+    const response = await dispatch(
+      resetPasswordAction({ password: values.password, email, code }),
+    );
+    if (response.type === resetPasswordAction.fulfilled.toString()) {
+      message.success(t('Password changed successfully'));
+      history.push(AuthRoutes.login);
+    } else {
+      message.error(response.payload?.message);
+    }
   };
 
   return (
@@ -94,9 +124,20 @@ const ForgotPassword = () => {
       formTitle={t('Reset password')}
     >
       {step === Steps.email ? (
-        <Form name="email" onFinish={onFinish} validateTrigger={['submit']}>
-          <Form.Item name="email" rules={[{ validator: emailValidator }]}>
-            <Input placeholder={t('Email')} />
+        <Form
+          name="email"
+          onFinish={onForgotPasswordFinish}
+          validateTrigger={['submit']}
+        >
+          <Form.Item
+            name="email"
+            rules={[{ validator: emailValidator }]}
+            help={validateEmail()}
+          >
+            <Input
+              status={validateEmail() ? 'error' : ''}
+              placeholder={t('Email')}
+            />
           </Form.Item>
           <Form.Item>
             <Button disabled={loading} type="primary" htmlType="submit">
@@ -114,11 +155,16 @@ const ForgotPassword = () => {
         </Form>
       ) : null}
       {step === Steps.verify ? (
-        <Form name="verify" onFinish={onFinish} validateTrigger={['submit']}>
-          <Tip>Verification code has been sent to</Tip>
-          <Email>beauty@crowdserve.xyz</Email>
+        <Form
+          name="verify"
+          onFinish={onVerifyFinish}
+          validateTrigger={['submit']}
+        >
+          <Tip>{t('Verification code has been sent to')}</Tip>
+          <Email>{email}</Email>
           <Form.Item
             name="code"
+            help={validateCode()}
             rules={[
               {
                 required: true,
@@ -129,7 +175,10 @@ const ForgotPassword = () => {
               },
             ]}
           >
-            <Input placeholder={t('Enter Verification Code')} />
+            <Input
+              status={validateCode() ? 'error' : ''}
+              placeholder={t('Enter Verification Code')}
+            />
           </Form.Item>
           <Form.Item>
             <Button disabled={loading} type="primary" htmlType="submit">
@@ -147,7 +196,11 @@ const ForgotPassword = () => {
         </Form>
       ) : null}
       {step === Steps.password ? (
-        <Form name="password" onFinish={onFinish} validateTrigger={['submit']}>
+        <Form
+          name="password"
+          onFinish={onResetPasswordFinish}
+          validateTrigger={['submit']}
+        >
           <Form.Item
             name="password"
             rules={[
