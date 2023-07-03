@@ -61,22 +61,6 @@ export const changePasswordAction = createAsyncThunk<
   },
 );
 
-/**
- * Logout
- */
-export const logoutAction = createAsyncThunk(
-  'changePassword/changePasswordAction',
-  async () => {
-    try {
-      // Todo something
-    } catch (err: any) {
-      if (!err.response) {
-        throw err;
-      }
-    }
-  },
-);
-
 export interface ChangePasswordState {
   loading: boolean;
   error:

@@ -53,6 +53,15 @@ const API = {
   changePassword: {
     put: '/admin/my/password',
   },
+  fogogtPassword: {
+    post: '/admin/my/forget_password',
+  },
+  verificationCode: {
+    post: '/admin/my/verification',
+  },
+  resetPassword: {
+    post: '/admin/my/reset_password',
+  },
 };
 
 export default API;

@@ -159,7 +159,11 @@ const Login = () => {
           name="email"
           rules={[{ validator: emailValidator }]}
         >
-          <Input placeholder={t('Email')} prefix={<UserOutlined />} />
+          <Input
+            status={validatePasswordOrEmail(true) ? 'error' : ''}
+            placeholder={t('Email')}
+            prefix={<UserOutlined />}
+          />
         </Form.Item>
         <Form.Item
           help={validatePasswordOrEmail()}
@@ -172,6 +176,7 @@ const Login = () => {
           ]}
         >
           <PasswordInput
+            status={validatePasswordOrEmail() ? 'error' : ''}
             placeholder={t('Password')}
             prefix={<LockOutlined />}
           />

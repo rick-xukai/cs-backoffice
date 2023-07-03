@@ -8,48 +8,47 @@ import UsersService from '../../../services/API/Users';
 export enum StatusCodes {
   passwordWrong = 1003,
   notFound = 404,
+  codeWrong = 1004,
 }
 export interface ErrorType {
   message: string;
   code?: number;
 }
 
-export interface ForgotPasswordPayload {
-  username: string;
-  password: string;
-}
-
 export interface ForgotPasswordRequestType {
   email: string;
+}
+
+export interface VerifyCodeRequestType {
+  email: string;
+  code: string;
+}
+
+export interface ChangePasswordRequestType {
+  email: string;
+  code: string;
   password: string;
 }
 
 export interface UserForgotPasswordResponseType {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    role: number;
-    lastForgotPasswordAt: string;
-  };
-  token: string;
+  message?: string;
   code?: number;
 }
 
 /**
  * forgotPassword
  */
-export const resetPasswordAction = createAsyncThunk<
+export const fotgotPasswordAction = createAsyncThunk<
   UserForgotPasswordResponseType,
   ForgotPasswordRequestType,
   {
     rejectValue: ErrorType;
   }
 >(
-  'forgotPassword/resetPasswordAction',
+  'forgotPassword/fotgotPasswordAction',
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await UsersService.doLogin(payload);
+      const response = await UsersService.doFotgotPassword(payload);
       if (verificationApi(response)) {
         return response.data;
       }
@@ -69,18 +68,59 @@ export const resetPasswordAction = createAsyncThunk<
   },
 );
 
-/**
- * Logout
- */
-export const logoutAction = createAsyncThunk(
+export const verifyCodeAction = createAsyncThunk<
+  UserForgotPasswordResponseType,
+  VerifyCodeRequestType,
+  {
+    rejectValue: ErrorType;
+  }
+>('forgotPassword/verifyCodeAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await UsersService.doVerificationCode(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+
+    return rejectWithValue({
+      message: response.message,
+      code: response.code,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
+export const resetPasswordAction = createAsyncThunk<
+  UserForgotPasswordResponseType,
+  ChangePasswordRequestType,
+  {
+    rejectValue: ErrorType;
+  }
+>(
   'forgotPassword/resetPasswordAction',
-  async () => {
+  async (payload, { rejectWithValue }) => {
     try {
-      // Todo something
+      const response = await UsersService.doResetPassword(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+
+      return rejectWithValue({
+        message: response.message,
+        code: response.code,
+      } as ErrorType);
     } catch (err: any) {
       if (!err.response) {
         throw err;
       }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
     }
   },
 );
@@ -98,16 +138,7 @@ export interface ForgotPasswordState {
 }
 
 const initialState: ForgotPasswordState = {
-  data: {
-    user: {
-      id: '',
-      name: '',
-      email: '',
-      role: 0,
-      lastForgotPasswordAt: '',
-    },
-    token: '',
-  },
+  data: {},
   loading: false,
   error: null,
 };
@@ -120,6 +151,36 @@ export const forgotPasswordSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fotgotPasswordAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fotgotPasswordAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(fotgotPasswordAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(verifyCodeAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyCodeAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(verifyCodeAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
       .addCase(resetPasswordAction.pending, (state) => {
         state.loading = true;
       })
