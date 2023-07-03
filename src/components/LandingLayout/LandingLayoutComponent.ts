@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { Colors, BreakPoints } from '../../theme';
 
 export const Container = styled(Row)<{ hidebanner: string }>`
-  overflow: hidden;
-  height: 100vh;
   .landing-form {
     display: block;
     min-width: 350px;
@@ -124,6 +122,9 @@ export const LogoContainer = styled(Col)`
   }
   @media (max-width: ${BreakPoints.loginLayoutPoint}px) {
     margin: 32px auto 0px auto;
+  }
+  @media (max-height: ${BreakPoints.logoHidePoint}px) {
+    margin-top: -20px;
   }
 `;
 

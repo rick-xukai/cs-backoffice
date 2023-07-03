@@ -7,6 +7,7 @@ const BreakPoints = {
   loginLayoutPoint: 1120,
   xl: 1200,
   xxl: 1400,
+  logoHidePoint: 450,
 };
 
 export default BreakPoints;

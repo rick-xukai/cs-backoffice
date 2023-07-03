@@ -38,6 +38,7 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const cookies = useCookie([CookieKeys.authUser]);
+  const [finishFailed, setFinishFailed] = useState(false);
 
   const [rememberMeChecked, setRememberMeChecked] = useState<boolean>(false);
   const validatePasswordOrEmail = (isEmail?: boolean) => {
@@ -120,6 +121,7 @@ const Login = () => {
   }, []);
 
   const onFinish = async (values: any) => {
+    setFinishFailed(false);
     const result = await dispatch(loginAction(values));
     if (result.type === loginAction.fulfilled.toString()) {
       if (rememberMeChecked) {
@@ -153,20 +155,23 @@ const Login = () => {
         name="login"
         onFinish={onFinish}
         validateTrigger={['submit']}
+        onFinishFailed={() => setFinishFailed(true)}
       >
         <Form.Item
-          help={validatePasswordOrEmail(true)}
+          help={(!finishFailed && validatePasswordOrEmail(true)) || null}
           name="email"
           rules={[{ validator: emailValidator }]}
         >
           <Input
-            status={validatePasswordOrEmail(true) ? 'error' : ''}
+            status={
+              !finishFailed && validatePasswordOrEmail(true) ? 'error' : ''
+            }
             placeholder={t('Email')}
             prefix={<UserOutlined />}
           />
         </Form.Item>
         <Form.Item
-          help={validatePasswordOrEmail()}
+          help={(!finishFailed && validatePasswordOrEmail()) || null}
           name="password"
           rules={[
             {
@@ -176,7 +181,7 @@ const Login = () => {
           ]}
         >
           <PasswordInput
-            status={validatePasswordOrEmail() ? 'error' : ''}
+            status={!finishFailed && validatePasswordOrEmail() ? 'error' : ''}
             placeholder={t('Password')}
             prefix={<LockOutlined />}
           />
