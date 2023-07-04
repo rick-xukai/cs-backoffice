@@ -28,6 +28,7 @@ import {
 import { useCookie, useLocalStorage } from '../../../hooks';
 import LandingLayout from '../../../components/LandingLayout/LandingLayout';
 import PasswordInput from '../../../components/PasswordInput/PasswordInput';
+import { OLD_REMEMBER_ME_ENCRYPTED_LENGTH } from '../../../constants/constants';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -71,9 +72,13 @@ const Login = () => {
   }, [error]);
 
   useEffect(() => {
-    if (localStorage.getItem(LocalStorageKeys.rememberMe)) {
+    const rememberMeInfo = localStorage.getItem(LocalStorageKeys.rememberMe);
+    if (
+      rememberMeInfo &&
+      rememberMeInfo.length > OLD_REMEMBER_ME_ENCRYPTED_LENGTH
+    ) {
       const rememberMe = base64Format(
-        localStorage.getItem(LocalStorageKeys.rememberMe) || '',
+        rememberMeInfo || '',
         DataEncryptionKeys.decrypt,
       );
       if (rememberMe) {
