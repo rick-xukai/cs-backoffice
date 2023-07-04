@@ -149,6 +149,12 @@ const Events = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      role: [
+        UserRoleKeys.organizerAdmin,
+        UserRoleKeys.organizerUser,
+        UserRoleKeys.partnerAdmin,
+        UserRoleKeys.superAdmin,
+      ],
       render: (status: number) => <p>{checkEventStatus(status)}</p>,
     },
   ];

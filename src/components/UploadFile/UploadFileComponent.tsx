@@ -100,7 +100,9 @@ const UploadFileComponent = ({
         beforeUpload={beforeUpload}
         onRemove={handleFileRemove}
       >
-        {(customUploadButton && <div>{customUploadButton}</div>) || (
+        {(customUploadButton && (
+          <div className="customUploadButtonContent">{customUploadButton}</div>
+        )) || (
           <>
             {(fileList.length === 0 || isUpoloadError) && (
               <div>

@@ -52,8 +52,8 @@ const Profile = () => {
 
   const [logoFile, setLogoFile] = useState<string>('');
   const [bannerFile, setBannerFile] = useState<string>('');
+  const [isEditItem, setIsEditItem] = useState<boolean>(false);
   const [showPreviewBanner, setShowPreviewBanner] = useState<boolean>(false);
-  const [saveButtonDisabled, setSaveButtonDisabled] = useState<boolean>(true);
   const [profileValue, setProfileValue] = useState<UpdateProfilePayload>({
     description: '',
     banner: '',
@@ -66,6 +66,7 @@ const Profile = () => {
     formData.append('file', e.file);
     const response: any = await dispatch(uploadProfileFileAction(formData));
     if (response.type === uploadProfileFileAction.fulfilled.toString()) {
+      setIsEditItem(true);
       if (type === 'banner') {
         setBannerFile(response.payload.url);
         setProfileValue({ ...profileValue, banner: response.payload.url });
@@ -79,10 +80,6 @@ const Profile = () => {
       e.onError();
       message.error(t('Upload failed, please try again.'));
     }
-  };
-
-  const handleFileRemove = () => {
-    setProfileValue({ ...profileValue, logo: '' });
   };
 
   const bannerUploadProps: UploadProps = {
@@ -100,7 +97,7 @@ const Profile = () => {
     limitFileSize: 10,
     handleChange: () => {},
     customRequest,
-    handleFileRemove,
+    handleFileRemove: () => {},
     showPreviewIcon: false,
     description: {
       type: t('PNG, JPEG or GIF files only'),
@@ -114,17 +111,6 @@ const Profile = () => {
       message.success(t('Organizer profile has been updated.'));
     }
   };
-
-  useEffect(() => {
-    if (
-      profileValue.banner !== data.banner ||
-      profileValue.description !== data.description ||
-      profileValue.logo !== data.logo ||
-      profileValue.marketingSite !== data.marketingSite
-    ) {
-      setSaveButtonDisabled(false);
-    }
-  }, [profileValue]);
 
   useEffect(() => {
     if (data) {
@@ -259,12 +245,13 @@ const Profile = () => {
                         rows={4}
                         showCount
                         maxLength={2000}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          setIsEditItem(true);
                           setProfileValue({
                             ...profileValue,
                             description: e.target.value,
-                          })
-                        }
+                          });
+                        }}
                         value={profileValue.description}
                       />
                     </Col>
@@ -296,7 +283,14 @@ const Profile = () => {
                                   src={Images.DeleteIcon}
                                   alt=""
                                   preview={false}
-                                  onClick={() => setBannerFile('')}
+                                  onClick={() => {
+                                    setIsEditItem(true);
+                                    setBannerFile('');
+                                    setProfileValue({
+                                      ...profileValue,
+                                      banner: '',
+                                    });
+                                  }}
                                 />
                               </div>
                             </Col>
@@ -325,14 +319,15 @@ const Profile = () => {
                       <Input
                         className="website-input"
                         value={profileValue.marketingSite || WebSiteDomain}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          setIsEditItem(true);
                           setProfileValue({
                             ...profileValue,
                             marketingSite:
                               (profileValue.marketingSite && e.target.value) ||
                               `${WebSiteDomain}${e.target.value}`,
-                          })
-                        }
+                          });
+                        }}
                       />
                     </Col>
                   </Row>
@@ -357,10 +352,7 @@ const Profile = () => {
             <div className="page-bottom">
               <Row>
                 <Col span={24} className="item-title save-button">
-                  <Button
-                    disabled={saveButtonDisabled}
-                    onClick={hanldeUpdateProfile}
-                  >
+                  <Button disabled={!isEditItem} onClick={hanldeUpdateProfile}>
                     {t('Save')}
                   </Button>
                 </Col>
