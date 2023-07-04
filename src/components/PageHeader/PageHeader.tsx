@@ -159,7 +159,7 @@ const PageHeaderComponent = ({
           >
             <span>
               {showBackArrow && <ArrowLeftOutlined />}
-              <span className="title">{title}</span>
+              <span className="title">{title.toLocaleUpperCase()}</span>
             </span>
           </div>
         </Col>

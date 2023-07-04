@@ -11,7 +11,7 @@ const Dashboard = () => {
 
   return (
     <DashboardContainer>
-      <PageHeaderComponent title={t('Dashboard').toLocaleUpperCase()} />
+      <PageHeaderComponent title={t('Dashboard')} />
       <div className="page-main">
         <div className="coming-soon-content">
           <Col className="content-banner">

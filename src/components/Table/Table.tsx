@@ -128,6 +128,7 @@ const TableComponent = ({
   tableData,
   tableDataTotal,
   scrollY = 'calc(100vh - 254px)',
+  showCustomPagination = true,
   paginationChange,
   onChange,
 }: {
@@ -141,6 +142,7 @@ const TableComponent = ({
   columns: ColumnsType<any>;
   tableData: object[];
   tableDataTotal: number;
+  showCustomPagination?: boolean;
   scrollY?: string;
   paginationChange: (page: number, pageSize?: number) => void;
   onChange?: (
@@ -163,12 +165,14 @@ const TableComponent = ({
         showHeader={showHeader}
         onChange={onChange}
       />
-      <Pagination
-        current={currentPage}
-        pageSize={currentPageSize}
-        total={tableDataTotal}
-        onChange={paginationChange}
-      />
+      {showCustomPagination && (
+        <Pagination
+          current={currentPage}
+          pageSize={currentPageSize}
+          total={tableDataTotal}
+          onChange={paginationChange}
+        />
+      )}
     </Spin>
   </TableContainer>
 );

@@ -5,6 +5,12 @@ import { Colors } from '../../theme';
 const ProfileContainer = styled.div`
   padding: calc(60px + 24px) 24px 24px;
   background: ${Colors.grey5};
+  .ant-spin {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+  }
   .page-main {
     background: ${Colors.white};
     border-radius: 2px;
@@ -27,8 +33,39 @@ const ProfileContainer = styled.div`
       }
       .item-value {
         margin-bottom: 16px;
+        .org-logo {
+          width: 80px;
+          height: 80px;
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+          }
+        }
+        .logo-text {
+          background: linear-gradient(
+            179.81deg,
+            ${Colors.branding} 1.16%,
+            ${Colors.branding100} 99.83%
+          );
+          color: ${Colors.white};
+          border-radius: 50%;
+          width: 80px;
+          height: 80px;
+          font-weight: 700;
+          font-size: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: Oswald;
+        }
         .upload-content {
           align-items: center;
+          .logo-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+          }
           .info {
             max-width: 190px;
           }
@@ -73,13 +110,59 @@ const ProfileContainer = styled.div`
             margin-bottom: 0;
             .anticon {
               font-size: 18px;
-              color: ${Colors.grey6};
+              color: ${Colors.grey7};
             }
           }
           .ant-upload-text {
             font-size: 13px;
             font-weight: 400;
-            color: ${Colors.grey6};
+            color: ${Colors.grey7};
+          }
+        }
+        .ant-upload.ant-upload-drag:not(.ant-upload-disabled):hover {
+          border-color: ${Colors.grey4};
+        }
+        .dragger-banner {
+          position: relative;
+          .ant-upload {
+            padding: 0;
+          }
+          .banner-preview {
+            position: relative;
+            width: 100%;
+            height: 123px;
+            :hover {
+              .banner-action-icon {
+                display: flex;
+              }
+            }
+            .banner-action-icon {
+              display: none;
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              top: 0;
+              left: 0;
+              align-items: center;
+              justify-content: center;
+              background: rgba(0, 0, 0, 0.5);
+              > :last-child {
+                img {
+                  margin-right: 0;
+                }
+              }
+              img {
+                width: 36px;
+                height: 36px;
+                cursor: pointer;
+                margin-right: 20px;
+              }
+            }
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+            }
           }
         }
       }
@@ -130,7 +213,7 @@ const ProfileContainer = styled.div`
     }
   }
   .page-bottom {
-    height: 74px;
+    height: 76px;
     padding: 16px 64px 16px 20px;
     background: ${Colors.white};
     border-top: 1px solid ${Colors.grey9};
@@ -140,7 +223,7 @@ const ProfileContainer = styled.div`
     right: 0;
     text-align: right;
     .ant-btn {
-      height: 42px;
+      height: 44px;
       border-radius: 2px;
       background: ${Colors.branding};
       font-size: 15px;
@@ -155,6 +238,12 @@ const ProfileContainer = styled.div`
   }
   @media (max-width: 996px) {
     padding: calc(70px + 15px) 15px 73px;
+    .page-main {
+      .profile-tips {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
     .page-bottom {
       padding: 8px 15px;
       height: 58px;

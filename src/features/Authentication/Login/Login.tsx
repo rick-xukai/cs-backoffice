@@ -100,6 +100,10 @@ const Login = () => {
           path: '/',
         },
       );
+      cookies.setCookie(CookieKeys.authUserRole, user.role, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+      });
       if (data.user.status === ActiveStatus.active) {
         history.replace(UserRoutes.dashboard);
       } else {

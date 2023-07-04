@@ -31,3 +31,6 @@ export const verificationCodeValidator = (_: object, value: string) => {
   }
   return Promise.resolve();
 };
+
+export const isImageLink = (value: string) =>
+  /^https?:\/\/(.+\/)+.+(\.(gif|png|jpg|jpeg))$/i.test(value);

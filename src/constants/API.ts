@@ -62,6 +62,13 @@ const API = {
   resetPassword: {
     post: '/admin/my/reset_password',
   },
+  getProfileInfo: {
+    get: '/admin/my/organizer',
+    put: '/admin/my/organizer',
+  },
+  getUserPermissionsList: {
+    get: '/admin/my/user',
+  },
 };
 
 export default API;

@@ -25,6 +25,8 @@ import MenuUsersIcon from '../assets/images/icons/menu-user.svg';
 import ComingSoon from '../assets/images/coming-soon.svg';
 import CompanyIcon from '../assets/images/icons/company.svg';
 import ProfileTipsBg from '../assets/images/profile-tips-bg.png';
+import PreviewEye from '../assets/images/icons/preview-eye.svg';
+import DeleteIcon from '../assets/images/icons/delete-icon.svg';
 
 const Images = {
   Logo,
@@ -56,6 +58,8 @@ const Images = {
   LogoWhiteColor,
   CompanyIcon,
   ProfileTipsBg,
+  PreviewEye,
+  DeleteIcon,
 };
 
 export default Images;

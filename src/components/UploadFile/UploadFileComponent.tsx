@@ -33,23 +33,25 @@ const Container = styled.div`
 `;
 
 const UploadFileComponent = ({
-  fileList,
+  fileList = [],
   accept,
   previewImageUrl,
   previewType,
   description,
   limitFileSize,
+  showPreviewIcon = true,
   customUploadButton = null,
   handleChange,
   customRequest,
   handleFileRemove,
 }: {
-  fileList: [];
   accept: string;
   description: { type: string; size: string };
   previewImageUrl: string;
   previewType: string;
   limitFileSize: number;
+  fileList?: [];
+  showPreviewIcon?: boolean;
   customUploadButton?: React.ReactElement | null;
   handleChange: (event: any) => void;
   customRequest: (event: any) => void;
@@ -89,7 +91,7 @@ const UploadFileComponent = ({
         name="file"
         listType="picture-card"
         maxCount={1}
-        showUploadList
+        showUploadList={{ showPreviewIcon }}
         fileList={(!isUpoloadError && fileList) || []}
         accept={accept}
         onChange={handleChange}
@@ -98,7 +100,7 @@ const UploadFileComponent = ({
         beforeUpload={beforeUpload}
         onRemove={handleFileRemove}
       >
-        {(customUploadButton && customUploadButton) || (
+        {(customUploadButton && <div>{customUploadButton}</div>) || (
           <>
             {(fileList.length === 0 || isUpoloadError) && (
               <div>

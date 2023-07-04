@@ -25,6 +25,7 @@ const Colors = {
   subTitle: '#626671',
   success: '#34c38f',
   branding: '#FC0006',
+  branding100: '#880808',
   branding2: '#F11E51',
 };
 
