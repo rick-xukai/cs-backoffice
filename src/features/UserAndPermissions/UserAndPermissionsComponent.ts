@@ -8,6 +8,7 @@ const UserAndPermissionsContainer = styled.div`
   .page-main {
     background: ${Colors.white};
     border-radius: 2px;
+    /* height: calc(100vh - 108px); */
     .main-title {
       padding: 16px 20px;
       font-size: 20px;

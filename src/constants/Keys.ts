@@ -5,6 +5,7 @@ export const LocalStorageKeys = {
 export const CookieKeys = {
   authUser: 'authUser',
   authUserName: 'authUserName',
+  authUserRole: 'authUserRole',
   userLoginToken: 'userLoginToken',
 };
 export const EventTabsKey = {
@@ -12,8 +13,10 @@ export const EventTabsKey = {
   ticketList: 'Ticket List',
 };
 export const UserRoleKeys = {
-  admin: 'admin',
-  guest: 'guest',
+  superAdmin: '0',
+  partnerAdmin: '1',
+  organizerAdmin: '2',
+  organizerUser: '3',
 };
 export const StatusKeys = {
   all: {

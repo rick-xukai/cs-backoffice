@@ -40,7 +40,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   CreateEvent: {
     title: 'Create Event - CrowdServe BO',
@@ -49,7 +53,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   EventInfo: {
     title: 'Event Info - CrowdServe BO',
@@ -58,7 +66,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   EventTickets: {
     title: 'Event Tickets - CrowdServe BO',
@@ -67,7 +79,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   EventTicketsDetail: {
     title: 'Event Tickets Detail - CrowdServe BO',
@@ -76,7 +92,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   Tickets: {
     title: 'Tickets - CrowdServe BO',
@@ -85,7 +105,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   TicketDetail: {
     title: 'Tickets Details - CrowdServe BO',
@@ -94,7 +118,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   Users: {
     title: 'Users - CrowdServe BO',
@@ -103,7 +131,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   UserDetail: {
     title: 'User Detail - CrowdServe BO',
@@ -112,7 +144,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   UserTicketDetail: {
     title: 'User Ticket Detail - CrowdServe BO',
@@ -121,7 +157,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   Profile: {
     title: 'Profile - CrowdServe BO',
@@ -148,7 +188,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.transactions],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   TransactionsDetail: {
     title: 'Transactions Detail - CrowdServe BO',
@@ -157,7 +201,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.transactions],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
 };
 

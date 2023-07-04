@@ -278,5 +278,8 @@
   "Drag or click to upload image": "Drag or click to upload image",
   "Profile Tips Title": "Profile Tips",
   "Profile Tips Value": "Enhance your organization's visibility by updating your profile with a captivating logo, an engaging description, and an eye-catching banner image. Providing comprehensive and up-to-date information allows users to better understand your organization and increases the chances of attracting attendees to your events.",
-  "Please login again": "Please login again"
+  "Please login again": "Please login again",
+  "Upload successful": "Upload successful",
+  "Upload failed, please try again": "Upload failed, please try again",
+  "Organizer profile has been updated.": "Organizer profile has been updated."
 }

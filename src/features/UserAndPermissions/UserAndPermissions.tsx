@@ -1,24 +1,34 @@
-import React from 'react';
-import { Row, Col, Tooltip } from 'antd';
+import React, { useEffect } from 'react';
+import { Row, Col, Tooltip, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { UserRole, UserActiveStatus } from '../../constants/General';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserAndPermissionsContainer } from './UserAndPermissionsComponent';
+import {
+  getUserPermissionsListAction,
+  selectLoading,
+  selectData,
+  selectError,
+  reset,
+} from './UserAndPermissions.slice';
 
 const UserAndPermissions = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
+  const loading = useAppSelector(selectLoading);
+  const data = useAppSelector(selectData);
+  const error = useAppSelector(selectError);
 
   const columns = [
     {
       title: 'User Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <p className="email">{text || '-'}</p>
-        </Tooltip>
-      ),
+      render: (text: string) => <p className="email">{text || '-'}</p>,
     },
     {
       title: 'Email',
@@ -34,44 +44,38 @@ const UserAndPermissions = () => {
       title: 'Role',
       dataIndex: 'role',
       key: 'role',
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <p className="email">{text || '-'}</p>
-        </Tooltip>
-      ),
+      render: (status: number) => {
+        const text = UserRole.find((item) => item.key === status)?.text;
+        return <p className="email">{text || '-'}</p>;
+      },
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <p className="email">{text || '-'}</p>
-        </Tooltip>
-      ),
+      render: (status: number) => {
+        const text = UserActiveStatus.find((item) => item.key === status)?.text;
+        return <p className="email">{text || '-'}</p>;
+      },
     },
   ];
 
-  const data = [
-    {
-      id: 1,
-      name: 'Christine',
-      email: 'christine@crowdserve.xyz',
-      role: 'Admin',
-      status: 'Active',
-    },
-    {
-      id: 2,
-      name: 'Jennifer',
-      email: 'jennifer@crowdserve.xyz',
-      role: 'Admin',
-      status: 'Pending activation',
-    },
-  ];
+  useEffect(() => {
+    if (error) {
+      message.error(error.message);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    dispatch(getUserPermissionsListAction());
+    return () => {
+      dispatch(reset());
+    };
+  }, []);
 
   return (
     <>
-      <PageHeaderComponent title={t('Settings').toLocaleUpperCase()} />
+      <PageHeaderComponent title={t('Settings')} />
       <UserAndPermissionsContainer>
         <div className="page-main">
           <Row>
@@ -82,12 +86,13 @@ const UserAndPermissions = () => {
           <Row>
             <Col span={24}>
               <TableComponent
-                loading={false}
+                loading={loading}
                 currentPage={1}
                 currentPageSize={20}
                 columns={columns}
                 tableData={data}
                 tableDataTotal={data.length}
+                showCustomPagination={false}
                 paginationChange={() => {}}
               />
             </Col>
