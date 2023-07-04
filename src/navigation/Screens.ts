@@ -31,7 +31,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.dashboard],
     guard: true,
-    role: [],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   Events: {
     title: 'Events - CrowdServe BO',
@@ -170,7 +174,7 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.settings],
     menuKeys: [vMenuKeys.profile],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.organizerAdmin, UserRoleKeys.organizerUser],
   },
   UserAndPermissions: {
     title: 'UserAndPermissions - CrowdServe BO',
@@ -179,7 +183,11 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.settings],
     menuKeys: [vMenuKeys.userAndPermissions],
     guard: true,
-    role: [],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   Transactions: {
     title: 'Transactions - CrowdServe BO',
@@ -188,11 +196,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.transactions],
     guard: true,
-    role: [
-      UserRoleKeys.superAdmin,
-      UserRoleKeys.organizerAdmin,
-      UserRoleKeys.organizerUser,
-    ],
+    role: [UserRoleKeys.superAdmin],
   },
   TransactionsDetail: {
     title: 'Transactions Detail - CrowdServe BO',
@@ -201,11 +205,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.transactions],
     guard: true,
-    role: [
-      UserRoleKeys.superAdmin,
-      UserRoleKeys.organizerAdmin,
-      UserRoleKeys.organizerUser,
-    ],
+    role: [UserRoleKeys.superAdmin],
   },
 };
 
