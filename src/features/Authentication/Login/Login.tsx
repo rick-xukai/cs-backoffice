@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Col, Form, Input, Checkbox, message, Row, Button, Spin } from 'antd';
 import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons';
 
-import { dataEncryption, base64Encrypt } from '../../../utils/func';
+import { base64Format, base64Encrypt } from '../../../utils/func';
 import { emailValidator } from '../../../utils/validator';
 import {
   CookieKeys,
@@ -39,8 +39,8 @@ const Login = () => {
   const history = useHistory();
   const cookies = useCookie([CookieKeys.authUser]);
   const [finishFailed, setFinishFailed] = useState(false);
-
   const [rememberMeChecked, setRememberMeChecked] = useState<boolean>(false);
+  const [form] = Form.useForm();
   const validatePasswordOrEmail = (isEmail?: boolean) => {
     if (error?.code === StatusCodes.passwordWrong) {
       return (
@@ -70,19 +70,20 @@ const Login = () => {
     }
   }, [error]);
 
-  let initialVlue = {};
-  if (localStorage.getItem(LocalStorageKeys.rememberMe)) {
-    const rememberMe = dataEncryption(
-      localStorage.getItem(LocalStorageKeys.rememberMe),
-      DataEncryptionKeys.decrypt,
-    );
-    if (rememberMe) {
-      initialVlue = {
-        ...JSON.parse(rememberMe),
-        rememberMe: true,
-      };
+  useEffect(() => {
+    if (localStorage.getItem(LocalStorageKeys.rememberMe)) {
+      const rememberMe = base64Format(
+        localStorage.getItem(LocalStorageKeys.rememberMe) || '',
+        DataEncryptionKeys.decrypt,
+      );
+      if (rememberMe) {
+        form.setFieldsValue({
+          ...JSON.parse(rememberMe),
+          rememberMe: true,
+        });
+      }
     }
-  }
+  }, []);
 
   useEffect(() => {
     if (data.token) {
@@ -131,7 +132,7 @@ const Login = () => {
       if (rememberMeChecked) {
         localStorage.setItem(
           LocalStorageKeys.rememberMe,
-          dataEncryption(
+          base64Format(
             JSON.stringify({
               email: values.email,
               password: values.password,
@@ -155,11 +156,11 @@ const Login = () => {
       formTitle={t('WELCOME TO CROWDSERVE!')}
     >
       <Form
-        initialValues={initialVlue}
         name="login"
         onFinish={onFinish}
         validateTrigger={['submit']}
         onFinishFailed={() => setFinishFailed(true)}
+        form={form}
       >
         <Form.Item
           help={(!finishFailed && validatePasswordOrEmail(true)) || null}
