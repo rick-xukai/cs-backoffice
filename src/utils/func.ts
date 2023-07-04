@@ -1,6 +1,7 @@
 import { format, getUnixTime } from 'date-fns';
 import { utcToZonedTime, format as formatTZ } from 'date-fns-tz';
 import CryptoJS from 'crypto-js';
+import { Base64 } from 'js-base64';
 
 import { DataEncryptionKeys } from '../constants/Keys';
 import {
@@ -122,7 +123,9 @@ export const dataEncryption = (data: any, type: string) => {
       );
     }
     // eslint-disable-next-line no-empty
-  } catch (_) {}
+  } catch (_) {
+    console.error(_);
+  }
   return formatData;
 };
 
@@ -179,3 +182,10 @@ export const mapEditEventTicket = (ticketsData: any) => {
 
 export const formatLabelDate = (value: string) =>
   value.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
+
+export const base64Format = (value: string, type: string) => {
+  if (type === DataEncryptionKeys.encrypt) {
+    return Base64.encodeURI(value);
+  }
+  return Base64.decode(value);
+};
