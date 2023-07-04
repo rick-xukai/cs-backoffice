@@ -33,7 +33,6 @@ const Authmiddleware = ({
         ? (optProps as any).hMenuKeys
         : (optProps as any).menuKeys,
   };
-  // const { role } = cookies.getCookie(CookieKeys.authUser) || {};
 
   useEffect(() => {
     if (payload.selectedKeys) {
@@ -45,7 +44,11 @@ const Authmiddleware = ({
       path={path}
       {...optProps}
       render={(routeProps: any) => {
-        if (guard && !cookies.getCookie(CookieKeys.authUser)) {
+        if (
+          guard &&
+          (!cookies.getCookie(CookieKeys.authUser) ||
+            !cookies.getCookie(CookieKeys.authUserRole))
+        ) {
           return (
             <Redirect
               to={{
@@ -64,19 +67,6 @@ const Authmiddleware = ({
             />
           );
         }
-        // if (
-        //   (optProps as any).role &&
-        //   role &&
-        //   !(optProps as any).role.includes(role)
-        // ) {
-        //   return (
-        //     <Redirect
-        //       to={{
-        //         pathname: UserRoutes.transactions,
-        //       }}
-        //     />
-        //   );
-        // }
         return (
           Component && (
             <Layout {...optProps}>

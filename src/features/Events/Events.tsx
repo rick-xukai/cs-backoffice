@@ -9,9 +9,10 @@ import {
   defaultCurrentPage,
   TokenExpireResponseCode,
 } from '../../constants/General';
-import { FormatTimeKeys } from '../../constants/Keys';
+import { FormatTimeKeys, CookieKeys, UserRoleKeys } from '../../constants/Keys';
 import { formatTimeStrByTimeString, checkEventStatus } from '../../utils/func';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
+import { useCookie } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -31,12 +32,14 @@ const Events = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const location = useLocation();
+  const cookie = useCookie([CookieKeys.authUserRole]);
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
   const eventsListData = useAppSelector(selectData);
   const eventsListDataTotal = useAppSelector(selectDataTotal);
 
+  const [tableColumns, setTableColumns] = useState([]);
   const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
     currentPage: defaultCurrentPage,
     currentPageSize: defaultPageSize,
@@ -47,6 +50,12 @@ const Events = () => {
       title: 'Event Name',
       dataIndex: 'name',
       key: 'name',
+      role: [
+        UserRoleKeys.organizerAdmin,
+        UserRoleKeys.organizerUser,
+        UserRoleKeys.partnerAdmin,
+        UserRoleKeys.superAdmin,
+      ],
       render: (text: string, record: EventsListDataType) => (
         <Tooltip title={text}>
           <Button className="name-btn ellipsis">
@@ -69,6 +78,12 @@ const Events = () => {
       title: 'Event Time',
       dataIndex: 'startTime',
       key: 'startTime',
+      role: [
+        UserRoleKeys.organizerAdmin,
+        UserRoleKeys.organizerUser,
+        UserRoleKeys.partnerAdmin,
+        UserRoleKeys.superAdmin,
+      ],
       render: (text: string, record: EventsListDataType) => (
         <div>
           <p>{formatTimeStrByTimeString(text, FormatTimeKeys.norm)} -</p>
@@ -82,6 +97,12 @@ const Events = () => {
       title: 'Location',
       dataIndex: 'location',
       key: 'location',
+      role: [
+        UserRoleKeys.organizerAdmin,
+        UserRoleKeys.organizerUser,
+        UserRoleKeys.partnerAdmin,
+        UserRoleKeys.superAdmin,
+      ],
       render: (text: string) => (
         <Tooltip title={text}>
           <p className="text-ellipsis">{text}</p>
@@ -92,6 +113,7 @@ const Events = () => {
       title: 'Organizer',
       dataIndex: 'organizerName',
       key: 'organizerName',
+      role: [UserRoleKeys.superAdmin],
       render: (text: string) => (
         <Tooltip title={text}>
           <p className="text-ellipsis">{text}</p>
@@ -102,11 +124,18 @@ const Events = () => {
       title: 'Partner',
       dataIndex: 'partnerName',
       key: 'partnerName',
+      role: [UserRoleKeys.superAdmin],
     },
     {
       title: 'Updated at',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
+      role: [
+        UserRoleKeys.organizerAdmin,
+        UserRoleKeys.organizerUser,
+        UserRoleKeys.partnerAdmin,
+        UserRoleKeys.superAdmin,
+      ],
       render: (text: string) => (
         <div>
           <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
@@ -124,8 +153,14 @@ const Events = () => {
     },
   ];
 
-  // eslint-disable-next-line
   useEffect(() => {
+    const roleColumns: any = [];
+    columns.forEach((item) => {
+      if (item.role?.includes(cookie.getCookie(CookieKeys.authUserRole))) {
+        roleColumns.push(item);
+      }
+    });
+    setTableColumns(roleColumns);
     return () => {
       dispatch(reset());
     };
@@ -173,7 +208,7 @@ const Events = () => {
           loading={loading}
           currentPage={currentPaginationConfig.currentPage}
           currentPageSize={currentPaginationConfig.currentPageSize}
-          columns={columns}
+          columns={tableColumns}
           tableData={eventsListData}
           tableDataTotal={eventsListDataTotal}
           paginationChange={(page, pageSize) =>

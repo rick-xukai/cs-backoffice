@@ -142,7 +142,7 @@ const Profile = () => {
     if (error) {
       if (error.code === Messages.userDeprecated.code) {
         history.push(AuthRoutes.login);
-        message.error(t('User token is deprecated, please log in again.'));
+        message.error(t('User token is deprecated, please login again.'));
         return;
       }
       message.error(error.message);
