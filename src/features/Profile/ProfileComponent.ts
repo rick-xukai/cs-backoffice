@@ -4,6 +4,7 @@ import { Colors } from '../../theme';
 
 const ProfileContainer = styled.div`
   padding: calc(60px + 24px) 24px 24px;
+  padding-bottom: 100px;
   background: ${Colors.grey5};
   .ant-spin {
     position: absolute;
