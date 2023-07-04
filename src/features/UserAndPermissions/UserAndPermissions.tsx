@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
 import { Row, Col, Tooltip, message } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import Messages from '../../constants/Message';
+import { AuthRoutes } from '../../navigation/Routes';
 import { UserRole, UserActiveStatus } from '../../constants/General';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -17,6 +20,7 @@ import {
 
 const UserAndPermissions = () => {
   const { t } = useTranslation();
+  const history = useHistory();
   const dispatch = useAppDispatch();
 
   const loading = useAppSelector(selectLoading);
@@ -62,6 +66,11 @@ const UserAndPermissions = () => {
 
   useEffect(() => {
     if (error) {
+      if (error.code === Messages.userDeprecated.code) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
       message.error(error.message);
     }
   }, [error]);
