@@ -110,6 +110,10 @@ export const FormContainer = styled(Col)`
   @media (max-width: ${BreakPoints.galaxFold}px) {
     min-width: 280px;
   }
+  @media (max-height: ${BreakPoints.logoHidePoint}px) {
+    top: 250px;
+    transform: translate(-50%, 0%);
+  }
 `;
 
 export const LogoContainer = styled(Col)`
@@ -122,9 +126,6 @@ export const LogoContainer = styled(Col)`
   }
   @media (max-width: ${BreakPoints.loginLayoutPoint}px) {
     margin: 32px auto 0px auto;
-  }
-  @media (max-height: ${BreakPoints.logoHidePoint}px) {
-    margin-top: -20px;
   }
 `;
 
