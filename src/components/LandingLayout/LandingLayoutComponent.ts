@@ -111,7 +111,7 @@ export const FormContainer = styled(Col)`
     min-width: 280px;
   }
   @media (max-height: ${BreakPoints.logoHidePoint}px) {
-    top: 250px;
+    top: 80px;
     transform: translate(-50%, 0%);
   }
 `;
