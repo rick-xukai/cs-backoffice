@@ -17,7 +17,7 @@ const ProfileContainer = styled.div`
     border-radius: 2px;
     .main-title {
       padding: 16px 20px;
-      font-size: 20px;
+      font-size: 28px;
       line-height: 28px;
       font-weight: 700;
       color: ${Colors.black4};
@@ -67,8 +67,20 @@ const ProfileContainer = styled.div`
             height: 100%;
             border-radius: 50%;
           }
+          .customUploadButtonContent {
+            width: 100%;
+            height: 100%;
+            img {
+              object-fit: cover;
+            }
+          }
           .info {
+            font-size: 12px;
             max-width: 190px;
+            line-height: 16px;
+            p {
+              margin: 0;
+            }
           }
           .ant-upload.ant-upload-select-picture-card {
             border-radius: 50%;
