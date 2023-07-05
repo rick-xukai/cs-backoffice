@@ -29,6 +29,10 @@ import PreviewEye from '../assets/images/icons/preview-eye.svg';
 import DeleteIcon from '../assets/images/icons/delete-icon.svg';
 import CloseIcon from '../assets/images/icons/close-icon.svg';
 
+import ImageChangeSizeIcon from '../assets/images/icons/image-change-size.svg';
+import ImageDeleteIcon from '../assets/images/icons/image-delete.svg';
+import ImageUpwardIcon from '../assets/images/icons/image-upward.svg';
+
 const Images = {
   Logo,
   LogoSMLight,
@@ -62,6 +66,9 @@ const Images = {
   PreviewEye,
   DeleteIcon,
   CloseIcon,
+  ImageChangeSizeIcon,
+  ImageDeleteIcon,
+  ImageUpwardIcon,
 };
 
 export default Images;

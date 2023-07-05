@@ -18,6 +18,7 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined,
   LoadingOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import { cloneDeep } from 'lodash';
 import moment from 'moment';
@@ -33,6 +34,13 @@ import {
 import {
   CreateEventContainer,
   CreateEventFormContainer,
+  UploadIcon,
+  UploadText,
+  ImageDragger,
+  DraggetForm,
+  ImagesContainer,
+  ImageItem,
+  ImageHandlerContainer,
 } from './CreateEventComponent';
 import {
   reset,
@@ -52,11 +60,17 @@ import { EventDetailDataType } from '../EventDetail/EventDetail.slice';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import UploadFileComponent from '../../components/UploadFile/UploadFileComponent';
 import TicketTab from './Component/TicketTab';
+import { Colors, Images } from '../../theme';
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { confirm } = Modal;
 
+export enum ImageSizes {
+  small = 8,
+  middle = 12,
+  large = 24,
+}
 const CreateEvent = ({
   isEdit = false,
   editEventID,
@@ -100,7 +114,7 @@ const CreateEvent = ({
   const [newTabIndex, setNewTabIndex] = useState<number>(0);
   const [fileList, setFileList] = useState<any>([]);
   const [changeTicketField, setChangeTicketField] = useState<any>({});
-
+  const [imageList, setImageList] = useState<any>([]);
   const onFinish = (values: CreateEventPayloadType) => {
     const payload = {
       ...values,
@@ -299,6 +313,48 @@ const CreateEvent = ({
     setFileList(info.fileList);
   };
 
+  const handleUploadImagesChange = (info: any) => {
+    let newFileList = [...info.fileList];
+    newFileList = newFileList.map((file: any) => {
+      const newFile = { ...file };
+      if (file.response) {
+        newFile.column = newFile.column || ImageSizes.large;
+      }
+      if (!info.event) {
+        newFile.status = 'done';
+      }
+      return newFile;
+    });
+    setImageList(newFileList);
+  };
+
+  const handleRemoveImage = (index: number) => () => {
+    imageList.splice(index, 1);
+    setImageList([...imageList]);
+  };
+
+  const handleUpOrderImage = (index: number) => () => {
+    if (!index) return;
+    const newImageList = [...imageList];
+    newImageList.splice(index, 1);
+    newImageList.splice(index - 1, 0, imageList[index]);
+    setImageList(newImageList);
+  };
+
+  const handleChangeSize = (index: any, size: any) => () => {
+    let newSize = ImageSizes.large;
+    if (size === ImageSizes.large) {
+      newSize = ImageSizes.small;
+    } else if (size === ImageSizes.small) {
+      newSize = ImageSizes.middle;
+    } else {
+      newSize = ImageSizes.large;
+    }
+    const newImageList = [...imageList];
+    newImageList[index].column = newSize;
+    setImageList([...newImageList]);
+  };
+
   const handleFileRemove = () => {
     setEventFormData({ ...eventFormData, image: '' });
   };
@@ -310,6 +366,17 @@ const CreateEvent = ({
     if (response.type === uploadFileAction.fulfilled.toString()) {
       setEventFormData({ ...eventFormData, image: response.payload.url });
       e.onSuccess();
+    } else {
+      e.onError();
+    }
+  };
+
+  const uploadImageRequest = async (e: any) => {
+    const formData = new FormData();
+    formData.append('file', e.file);
+    const response: any = await dispatch(uploadFileAction(formData));
+    if (response.type === uploadFileAction.fulfilled.toString()) {
+      e.onSuccess(response.payload.url);
     } else {
       e.onError();
     }
@@ -393,7 +460,6 @@ const CreateEvent = ({
       dispatch(reset());
     };
   }, []);
-
   return (
     <CreateEventContainer>
       {!isEdit && (
@@ -562,6 +628,86 @@ const CreateEvent = ({
                         }
                       />
                     </Form.Item>
+                    <ImagesContainer gutter={[16, 16]}>
+                      {imageList.map((item: any, index: number) =>
+                        item.response ? (
+                          <ImageItem
+                            lg={item.column}
+                            sm={ImageSizes.large}
+                            xs={ImageSizes.large}
+                          >
+                            <div className="image-content">
+                              <img src={item.response} alt="img" />
+                              <div className="image-handler">
+                                <div className="handler-list">
+                                  {index ? (
+                                    <ImageHandlerContainer
+                                      onClick={handleUpOrderImage(index)}
+                                    >
+                                      <img
+                                        src={Images.ImageUpwardIcon}
+                                        alt="up"
+                                      />
+                                    </ImageHandlerContainer>
+                                  ) : null}
+
+                                  <ImageHandlerContainer
+                                    onClick={handleRemoveImage(index)}
+                                  >
+                                    <img
+                                      src={Images.ImageDeleteIcon}
+                                      alt="delete"
+                                    />
+                                  </ImageHandlerContainer>
+                                  <ImageHandlerContainer
+                                    onClick={handleChangeSize(
+                                      index,
+                                      item.column,
+                                    )}
+                                  >
+                                    <img
+                                      src={Images.ImageChangeSizeIcon}
+                                      alt="change"
+                                    />
+                                  </ImageHandlerContainer>
+                                </div>
+                              </div>
+                            </div>
+                          </ImageItem>
+                        ) : (
+                          <Spin
+                            spinning
+                            indicator={<LoadingOutlined spin />}
+                            size="large"
+                            style={{ margin: 'auto' }}
+                          />
+                        ),
+                      )}
+                    </ImagesContainer>
+                    <DraggetForm label="">
+                      <ImageDragger
+                        {...{
+                          accept: 'image/png, image/jpeg',
+                          name: 'banner',
+                          multiple: false,
+                          fileList: [],
+                        }}
+                        onChange={handleUploadImagesChange}
+                        customRequest={uploadImageRequest}
+                        fileList={imageList}
+                      >
+                        <>
+                          <UploadIcon>
+                            <PlusOutlined
+                              style={{ fontSize: 14, color: Colors.grey6 }}
+                            />
+                          </UploadIcon>
+                          <UploadText>
+                            {t('Drag or click to upload image')}
+                          </UploadText>
+                        </>
+                      </ImageDragger>
+                    </DraggetForm>
                   </div>
                 </Col>
                 <Col span={12} style={{ paddingRight: 0 }}>
