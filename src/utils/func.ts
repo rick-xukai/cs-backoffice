@@ -123,7 +123,7 @@ export const dataEncryption = (data: any, type: string) => {
       );
     }
   } catch (_) {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.error(_);
   }
   return formatData;

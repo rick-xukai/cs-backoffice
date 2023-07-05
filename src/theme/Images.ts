@@ -27,6 +27,7 @@ import CompanyIcon from '../assets/images/icons/company.svg';
 import ProfileTipsBg from '../assets/images/profile-tips-bg.png';
 import PreviewEye from '../assets/images/icons/preview-eye.svg';
 import DeleteIcon from '../assets/images/icons/delete-icon.svg';
+import CloseIcon from '../assets/images/icons/close-icon.svg';
 
 const Images = {
   Logo,
@@ -60,6 +61,7 @@ const Images = {
   ProfileTipsBg,
   PreviewEye,
   DeleteIcon,
+  CloseIcon,
 };
 
 export default Images;

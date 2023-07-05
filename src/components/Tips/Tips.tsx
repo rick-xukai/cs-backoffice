@@ -1,0 +1,78 @@
+import { Col, Row } from 'antd';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  CloseIcon,
+  Container,
+  MiniContainer,
+  MiniSize,
+} from './Tips.components';
+import { Images } from '../../theme';
+
+export enum Sizes {
+  normal = 'normal',
+  mini = 'mini',
+}
+
+export type TipsProps = {
+  title: React.ReactNode;
+  content: React.ReactNode;
+  image?: string;
+  hideClose?: boolean;
+  onSizeChange?: (size: Sizes) => void;
+};
+
+const Tips = ({
+  title,
+  content,
+  image,
+  hideClose,
+  onSizeChange,
+}: TipsProps) => {
+  const [size, setSize] = useState(Sizes.normal);
+  const { t } = useTranslation();
+
+  const handleChangeSize = (sizes: Sizes) => () => {
+    if (onSizeChange) {
+      onSizeChange(sizes);
+    }
+    setSize(sizes);
+  };
+  return size === Sizes.mini ? (
+    <MiniSize lg={3} xs={24} sm={24}>
+      <MiniContainer onClick={handleChangeSize(Sizes.normal)}>
+        <img src={image} alt="" />
+        <p>{t('Tips')}</p>
+      </MiniContainer>
+    </MiniSize>
+  ) : (
+    <Container lg={10} sm={24} xs={24} md={24}>
+      <div className="tips-content">
+        <Row>
+          <Col span={24} className="tips-content-title">
+            <Row justify="space-between">
+              <Col>{title}</Col>
+              {hideClose ? null : (
+                <Col>
+                  <CloseIcon
+                    src={Images.CloseIcon}
+                    onClick={handleChangeSize(Sizes.mini)}
+                  />
+                </Col>
+              )}
+            </Row>
+          </Col>
+          <Col span={24} className="tips-content-value">
+            {content}
+          </Col>
+          {image ? (
+            <Col span={24} className="tips-content-image">
+              <img src={image} alt="" />
+            </Col>
+          ) : null}
+        </Row>
+      </div>
+    </Container>
+  );
+};
+export default Tips;
