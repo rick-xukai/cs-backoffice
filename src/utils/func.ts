@@ -189,3 +189,8 @@ export const base64Format = (value: string, type: string) => {
   }
   return Base64.decode(value);
 };
+
+export const isBase64 = (value: string) => {
+  if (!value) return false;
+  return Base64.encodeURI(Base64.decode(value)) === value;
+};

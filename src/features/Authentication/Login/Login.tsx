@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Col, Form, Input, Checkbox, message, Row, Button, Spin } from 'antd';
 import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons';
 
-import { base64Format, base64Encrypt } from '../../../utils/func';
+import { base64Format, base64Encrypt, isBase64 } from '../../../utils/func';
 import { emailValidator } from '../../../utils/validator';
 import {
   CookieKeys,
@@ -28,7 +28,6 @@ import {
 import { useCookie, useLocalStorage } from '../../../hooks';
 import LandingLayout from '../../../components/LandingLayout/LandingLayout';
 import PasswordInput from '../../../components/PasswordInput/PasswordInput';
-import { OLD_REMEMBER_ME_ENCRYPTED_LENGTH } from '../../../constants/constants';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -73,10 +72,8 @@ const Login = () => {
 
   useEffect(() => {
     const rememberMeInfo = localStorage.getItem(LocalStorageKeys.rememberMe);
-    if (
-      rememberMeInfo &&
-      rememberMeInfo.length > OLD_REMEMBER_ME_ENCRYPTED_LENGTH
-    ) {
+
+    if (rememberMeInfo && isBase64(rememberMeInfo)) {
       const rememberMe = base64Format(
         rememberMeInfo || '',
         DataEncryptionKeys.decrypt,
