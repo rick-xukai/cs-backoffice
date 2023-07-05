@@ -122,8 +122,8 @@ export const dataEncryption = (data: any, type: string) => {
         CryptoJS.enc.Utf8,
       );
     }
-    // eslint-disable-next-line no-empty
   } catch (_) {
+    // eslint-disable-next-line
     console.error(_);
   }
   return formatData;

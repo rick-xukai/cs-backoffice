@@ -87,32 +87,41 @@ const UploadFileComponent = ({
 
   return (
     <Container className="upload-content">
-      <Upload
-        name="file"
-        listType="picture-card"
-        maxCount={1}
-        showUploadList={{ showPreviewIcon }}
-        fileList={(!isUpoloadError && fileList) || []}
-        accept={accept}
-        onChange={handleChange}
-        onPreview={handlePreview}
-        customRequest={customRequest}
-        beforeUpload={beforeUpload}
-        onRemove={handleFileRemove}
-      >
-        {(customUploadButton && (
+      {(customUploadButton && (
+        <Upload
+          name="file"
+          listType="picture-card"
+          maxCount={1}
+          showUploadList={{ showPreviewIcon }}
+          fileList={[]}
+          accept={accept}
+          customRequest={customRequest}
+          beforeUpload={beforeUpload}
+        >
           <div className="customUploadButtonContent">{customUploadButton}</div>
-        )) || (
-          <>
-            {(fileList.length === 0 || isUpoloadError) && (
-              <div>
-                <PlusOutlined />
-                <div style={{ marginTop: 8 }}>Upload</div>
-              </div>
-            )}
-          </>
-        )}
-      </Upload>
+        </Upload>
+      )) || (
+        <Upload
+          name="file"
+          listType="picture-card"
+          maxCount={1}
+          showUploadList={{ showPreviewIcon }}
+          fileList={(!isUpoloadError && fileList) || []}
+          accept={accept}
+          onChange={handleChange}
+          onPreview={handlePreview}
+          customRequest={customRequest}
+          beforeUpload={beforeUpload}
+          onRemove={handleFileRemove}
+        >
+          {(fileList.length === 0 || isUpoloadError) && (
+            <div>
+              <PlusOutlined />
+              <div style={{ marginTop: 8 }}>Upload</div>
+            </div>
+          )}
+        </Upload>
+      )}
       <div className="info">
         <p>{`${description.type} ${description.size}`}</p>
         {limitFileSize === 30 && (
