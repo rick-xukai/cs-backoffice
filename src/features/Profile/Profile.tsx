@@ -36,6 +36,7 @@ import {
   UpdateProfilePayload,
   uploadProfileFileAction,
 } from './Profile.slice';
+import Tips from '../../components/Tips/Tips';
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -167,7 +168,7 @@ const Profile = () => {
                 </Col>
               </Row>
               <Row>
-                <Col lg={14} span={24} className="profile-info-item">
+                <Col flex="auto" className="profile-info-item">
                   <Row>
                     <Col span={24} className="item-title">
                       {t('Organizer Logo')}
@@ -332,21 +333,11 @@ const Profile = () => {
                     </Col>
                   </Row>
                 </Col>
-                <Col lg={10} span={24} className="profile-tips">
-                  <div className="tips-content">
-                    <Row>
-                      <Col span={24} className="tips-content-title">
-                        {t('Profile Tips Title')}
-                      </Col>
-                      <Col span={24} className="tips-content-value">
-                        {t('Profile Tips Value')}
-                      </Col>
-                      <Col span={24} className="tips-content-image">
-                        <img src={Images.ProfileTipsBg} alt="" />
-                      </Col>
-                    </Row>
-                  </div>
-                </Col>
+                <Tips
+                  title={t('Profile Tips Title')}
+                  content={t('Profile Tips Value')}
+                  image={Images.ProfileTipsBg}
+                />
               </Row>
             </div>
             <div className="page-bottom">
