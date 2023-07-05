@@ -84,7 +84,6 @@ const Profile = () => {
   };
 
   const bannerUploadProps: UploadProps = {
-    accept: UploadFileAcceptType.toString(),
     name: 'banner',
     multiple: false,
     fileList: [],
