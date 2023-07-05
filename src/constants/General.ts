@@ -80,3 +80,4 @@ export const UserActiveStatus = [
     text: 'Active',
   },
 ];
+export const UploadFileAcceptType = ['image/png', 'image/jpeg', 'image/gif'];
