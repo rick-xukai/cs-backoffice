@@ -27,6 +27,8 @@ const Colors = {
   branding: '#FC0006',
   branding100: '#880808',
   branding2: '#F11E51',
+  fadingBlack: 'rgba(0, 0, 0, 0.5)',
+  fadingBlack2: 'rgba(0, 0, 0, 0.6)',
 };
 
 export default Colors;
