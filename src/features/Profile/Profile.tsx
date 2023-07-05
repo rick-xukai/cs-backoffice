@@ -22,7 +22,7 @@ import { CookieKeys, UserRoleKeys } from '../../constants/Keys';
 import { AuthRoutes } from '../../navigation/Routes';
 import Messages from '../../constants/Message';
 import { Images } from '../../theme';
-import { WebSiteDomain } from '../../constants/General';
+import { WebSiteDomain, UploadFileAcceptType } from '../../constants/General';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import UploadFileComponent from '../../components/UploadFile/UploadFileComponent';
 import { ProfileContainer } from './ProfileComponent';
@@ -84,15 +84,28 @@ const Profile = () => {
   };
 
   const bannerUploadProps: UploadProps = {
-    accept: 'image/png, image/jpeg',
+    accept: UploadFileAcceptType.toString(),
     name: 'banner',
     multiple: false,
     fileList: [],
     customRequest: (e) => customRequest(e, 'banner'),
+    beforeUpload: (file) => {
+      const { type, size } = file;
+      const isLimit =
+        size / 1024 / 1024 < 10 && UploadFileAcceptType.includes(type);
+      if (!isLimit) {
+        message.error(
+          t(
+            'Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to 10 MB in size.',
+          ),
+        );
+      }
+      return isLimit;
+    },
   };
 
   const logoUploadProps = {
-    accept: 'image/png, image/jpeg, image/gif',
+    accept: UploadFileAcceptType.toString(),
     previewImageUrl: '',
     previewType: 'image',
     limitFileSize: 10,
