@@ -272,13 +272,13 @@ const TicketTab = ({
           fileList={fileList}
           previewImageUrl={ticketValue.image}
           previewType={ticketValue.imageType}
-          limitFileSize={30}
+          limitFileSize={20}
           handleChange={handleUploadChange}
           handleFileRemove={handleFileRemove}
           customRequest={customRequest}
           description={{
             type: t('PNG, JPEG, GIF or MP4 files only'),
-            size: t('up to [size] MB in size', { size: '30' }),
+            size: t('up to [size] MB in size', { size: '20' }),
           }}
         />
       </Form.Item>

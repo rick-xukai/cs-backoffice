@@ -105,7 +105,7 @@ const UploadFileComponent = ({
       </Upload>
       <div className="info">
         <p>{`${description.type} ${description.size}`}</p>
-        {limitFileSize === 30 && (
+        {limitFileSize === 20 && (
           <p className="thumbnail-image-required">
             {t(
               '(Plz note that a thumbnail image is required when uploading an mp4 file)',
