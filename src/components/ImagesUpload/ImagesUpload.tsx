@@ -113,11 +113,7 @@ const ImagesUpload = ({
     <>
       <ImagesContainer gutter={[16, 16]}>
         {imageList.map((item: any, index: number) => (
-          <ImageItem
-            lg={item.column}
-            sm={ImageSizes.large}
-            xs={ImageSizes.large}
-          >
+          <ImageItem span={item.column}>
             <div className="image-content">
               {item.response ? (
                 <img src={item.response} alt="img" />
