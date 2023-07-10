@@ -444,6 +444,12 @@ const ImageHandlerContainer = styled.div`
   }
 `;
 
+const SpinContainer = styled.div`
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+`;
+
 export {
   CreateEventContainer,
   CreateEventFormContainer,
@@ -454,4 +460,5 @@ export {
   ImagesContainer,
   ImageItem,
   ImageHandlerContainer,
+  SpinContainer,
 };

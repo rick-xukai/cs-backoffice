@@ -265,4 +265,13 @@ const ProfileContainer = styled.div`
   }
 `;
 
+export const TipContent = styled.div`
+  p {
+    margin-bottom: 24px;
+    :last-child {
+      margin-bottom: 0;
+    }
+  }
+`;
+
 export { ProfileContainer };

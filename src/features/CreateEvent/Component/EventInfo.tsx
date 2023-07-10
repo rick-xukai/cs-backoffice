@@ -23,6 +23,7 @@ import { UploadFileAcceptType } from '../../../constants/General';
 import { OrganizerData, uploadFileAction } from '../CreateEvent.slice';
 import { CreateEventFormContainer } from '../CreateEventComponent';
 import TipsComponent from '../../../components/Tips';
+import ImagesUpload from '../../../components/ImagesUpload/ImagesUpload';
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -39,6 +40,7 @@ export interface EventInfoFormValueProps {
   eventShortDescription: string;
   description: string;
   detailImage: string;
+  images: any[];
 }
 
 const EventInfo = ({
@@ -248,6 +250,10 @@ const EventInfo = ({
                   />
                 </>
               </Form.Item>
+              <ImagesUpload
+                onChange={(e) => fieldEdit(e, 'images')}
+                value={formValue.images}
+              />
             </div>
           </Col>
           <Col span={(pageTipsShow && 10) || 3}>

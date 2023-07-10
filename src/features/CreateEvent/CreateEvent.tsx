@@ -58,6 +58,7 @@ const CreateEvent = () => {
     eventShortDescription: '',
     description: '',
     detailImage: '',
+    images: [],
   });
   const [progressItems, setProgressItems] = useState([
     {

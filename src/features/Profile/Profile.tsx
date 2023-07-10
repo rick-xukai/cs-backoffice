@@ -16,7 +16,7 @@ import { WebSiteDomain, UploadFileAcceptType } from '../../constants/General';
 import PageHeaderComponent from '../../components/PageHeader';
 import UploadFileComponent from '../../components/UploadFile';
 import DraggerUploadComponent from '../../components/DraggerUpload';
-import { ProfileContainer } from './ProfileComponent';
+import { ProfileContainer, TipContent } from './ProfileComponent';
 import {
   reset,
   getProfileInfoAction,
@@ -51,6 +51,7 @@ const Profile = () => {
     logo: '',
     marketingSite: '',
   });
+  const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
 
   const customRequest = async (e: any, type?: string) => {
     const formData = new FormData();
@@ -179,7 +180,11 @@ const Profile = () => {
                 </Col>
               </Row>
               <Row>
-                <Col flex="auto" className="profile-info-item">
+                <Col
+                  lg={(pageTipsShow && 14) || 21}
+                  span={24}
+                  className="profile-info-item"
+                >
                   <Row>
                     <Col span={24} className="item-title">
                       {t('Organizer Logo')}
@@ -305,11 +310,28 @@ const Profile = () => {
                     </Col>
                   </Row>
                 </Col>
-                <Tips
-                  title={t('Profile Tips Title')}
-                  content={t('Profile Tips Value')}
-                  image={Images.ProfileTipsBg}
-                />
+                <Col span={(pageTipsShow && 10) || 3}>
+                  <Tips
+                    title={t('Profile Tips Title')}
+                    content={
+                      <TipContent>
+                        <p>{t('Built an identity')}:</p>
+                        <p>
+                          {t(
+                            'Organizers with a captivating logo and an eye-catching banner generally have stronger credibility with attendees.',
+                          )}
+                        </p>
+                        <p>
+                          {t(
+                            'Use this to build a strong identity to help attendees understand you better and ultimately increase your ticket sales!',
+                          )}
+                        </p>
+                      </TipContent>
+                    }
+                    image={Images.ProfileTipsBg}
+                    onSizeChange={() => setPageTipsShow(!pageTipsShow)}
+                  />
+                </Col>
               </Row>
             </div>
             <div className="page-bottom">
