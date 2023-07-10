@@ -87,9 +87,9 @@ const ImagesUpload = ({
   const handleChangeSize = (index: any, size: any) => () => {
     let newSize = ImageSizes.large;
     if (size === ImageSizes.large) {
-      newSize = ImageSizes.small;
-    } else if (size === ImageSizes.small) {
       newSize = ImageSizes.middle;
+    } else if (size === ImageSizes.middle) {
+      newSize = ImageSizes.small;
     } else {
       newSize = ImageSizes.large;
     }
