@@ -159,7 +159,6 @@ const ImagesUpload = ({
         hidden={imageList.length >= IMAGE_UPLOAD_MAX_COUNT}
       >
         <ImageDragger
-          accept="image/png, image/jpeg, image/gif"
           name={name}
           multiple
           onChange={handleUploadImagesChange}
