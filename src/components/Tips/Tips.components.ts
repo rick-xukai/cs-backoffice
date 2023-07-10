@@ -55,7 +55,7 @@ export const MiniSize = styled(Col)`
   @media (max-width: ${BreakPoints.lg}px) {
     position: fixed;
     left: 50%;
-    bottom: 8px;
+    bottom: 15px;
     transform: translate(-50%, 0%);
   }
 `;

@@ -1,5 +1,5 @@
-import { Col, Row } from 'antd';
-import React, { useState } from 'react';
+import { Col, Row, Grid } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CloseIcon,
@@ -21,7 +21,7 @@ export type TipsProps = {
   hideClose?: boolean;
   onSizeChange?: (size: Sizes) => void;
 };
-
+const { useBreakpoint } = Grid;
 const Tips = ({
   title,
   content,
@@ -29,24 +29,53 @@ const Tips = ({
   hideClose,
   onSizeChange,
 }: TipsProps) => {
+  const { lg } = useBreakpoint();
   const [size, setSize] = useState(Sizes.normal);
   const { t } = useTranslation();
 
   const handleChangeSize = (sizes: Sizes) => () => {
+    setSize(sizes);
     if (onSizeChange) {
       onSizeChange(sizes);
     }
-    setSize(sizes);
   };
+  const clickHandle = (e: any) => {
+    e.stopPropagation();
+    setSize(Sizes.mini);
+  };
+
+  useEffect(() => {
+    if (!lg) {
+      document.addEventListener('click', clickHandle);
+      handleChangeSize(Sizes.mini);
+    } else {
+      handleChangeSize(Sizes.normal);
+      document.removeEventListener('click', clickHandle);
+    }
+    return () => {
+      document.removeEventListener('click', clickHandle);
+    };
+  }, [lg]);
+
   return size === Sizes.mini ? (
     <MiniSize lg={3} xs={24} sm={24}>
-      <MiniContainer onClick={handleChangeSize(Sizes.normal)}>
+      <MiniContainer
+        onClick={(e) => {
+          e.stopPropagation();
+          handleChangeSize(Sizes.normal)();
+        }}
+      >
         <img src={image} alt="" />
         <p>{t('Tips')}</p>
       </MiniContainer>
     </MiniSize>
   ) : (
-    <Container span={24}>
+    <Container
+      span={24}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       <div className="tips-content">
         <Row>
           <Col span={24} className="tips-content-title">
