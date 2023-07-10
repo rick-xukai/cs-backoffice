@@ -4,7 +4,7 @@ import { Layout, Row } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import { SiderTheme } from 'antd/lib/layout/Sider';
 import styled from 'styled-components';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { AuthRoutes } from '../../navigation/Routes';
 import { useCookie } from '../../hooks';
@@ -31,7 +31,6 @@ const SideBar = ({
   sidebarTheme: SiderTheme;
 }) => {
   const { t } = useTranslation();
-  const history = useHistory();
   const cookies = useCookie([CookieKeys.authUser]);
 
   const [collapsedWidth, setCollapsedWidth] = useState(CollapsedWidth);
@@ -39,7 +38,6 @@ const SideBar = ({
   const logout = () => {
     cookies.removeCookie(CookieKeys.authUser);
     cookies.removeCookie(CookieKeys.authUserName);
-    history.push(AuthRoutes.login);
   };
 
   return (
@@ -69,10 +67,12 @@ const SideBar = ({
       </div>
       <SidebarContent sidebarTheme={sidebarTheme} />
       <Row className="logout-container" onClick={logout}>
-        <div className="text">
-          <LogoutOutlined className="logout-icon" />
-          {t('Logout')}
-        </div>
+        <Link to={AuthRoutes.login} className="logo">
+          <div className="text">
+            <LogoutOutlined className="logout-icon" />
+            {t('Logout')}
+          </div>
+        </Link>
       </Row>
     </SidebarCmp>
   );

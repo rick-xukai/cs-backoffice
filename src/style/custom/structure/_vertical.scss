@@ -202,8 +202,9 @@
     color: $black900;
     font-weight: 400;
     .ant-modal-confirm-title {
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 18px;
+      font-weight: 700;
+      color: $black800;
     }
     .ant-modal-confirm-btns {
       .ant-btn {
@@ -258,6 +259,10 @@
   width: $sidebar-width;
   display: flex;
   align-items: center;
+  a {
+    color: $gray-600;
+    width: 100%;
+  }
   .logout-icon {
     margin-right: 12px;
   }
@@ -366,5 +371,11 @@ body[data-sidebar='dark'] {
   justify-content: space-between;
   .anticon {
     cursor: pointer;
+  }
+}
+
+.notSaveConfirmModal {
+  .ant-btn {
+    height: 32px;
   }
 }

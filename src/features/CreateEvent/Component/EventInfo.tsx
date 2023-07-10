@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Row,
   Col,
@@ -102,6 +102,22 @@ const EventInfo = ({
     setBannerFile('');
   };
 
+  const suggestDescriptionAI = () => {
+    if (!formValue.description) {
+      message.error(
+        t(
+          'Please enter content before using the AI tool to generate a suggested description.',
+        ),
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (formValue.banner) {
+      setBannerFile(formValue.banner);
+    }
+  }, [formValue]);
+
   return (
     <>
       <Row>
@@ -113,11 +129,11 @@ const EventInfo = ({
         <Row>
           <Col lg={(pageTipsShow && 14) || 21} span={24} className="left-form">
             <div className="main-box">
-              <Form.Item label="Event Name" name="name">
+              <Form.Item label="Event Name" name="eventName">
                 <Input
                   showCount
                   maxLength={100}
-                  onChange={(e) => fieldEdit(e, 'eventName')}
+                  onChange={(e) => fieldEdit(e.target.value, 'eventName')}
                 />
               </Form.Item>
               <Form.Item label="Organizer" name="organizerId">
@@ -129,12 +145,33 @@ const EventInfo = ({
                   onChange={(value) => fieldEdit(value, 'organizerId')}
                 />
               </Form.Item>
-              <Form.Item label="Location" name="location">
-                <Input
-                  placeholder={t('Search for a venue or address')}
-                  prefix={<img src={Images.LocationIcon} alt="" />}
-                  onChange={(e) => fieldEdit(e, 'location')}
-                />
+              <Form.Item
+                label="Location"
+                name="location"
+                style={{ position: 'relative' }}
+              >
+                <>
+                  <Input
+                    value={formValue.location}
+                    placeholder={t('Search for a venue or address')}
+                    prefix={<img src={Images.LocationIcon} alt="" />}
+                    onChange={(e) => fieldEdit(e.target.value, 'location')}
+                  />
+                  {/* {formValue.location && (
+                    <ul className="search-location-items">
+                      <li>
+                        <span>
+                          {t(
+                            `Venue doesn't apprear in the suggestions dropdown?`,
+                          )}
+                        </span>
+                        <span className="add-location">
+                          {t('Add as my location.')}
+                        </span>
+                      </li>
+                    </ul>
+                  )} */}
+                </>
               </Form.Item>
               {formValue.location && (
                 <>
@@ -146,11 +183,13 @@ const EventInfo = ({
                     name="address"
                     className="no-required"
                   >
-                    <Input onChange={(e) => fieldEdit(e, 'address')} />
+                    <Input
+                      onChange={(e) => fieldEdit(e.target.value, 'address')}
+                    />
                   </Form.Item>
                 </>
               )}
-              <Form.Item label="Event Time" name="startTime">
+              <Form.Item label="Event Time" name="eventTime">
                 <RangePicker
                   showTime={{ format: 'HH:mm' }}
                   format="MMM DD YYYY, HH:mm"
@@ -159,8 +198,7 @@ const EventInfo = ({
                     currentDate < moment().subtract(1, 'days').endOf('day')
                   }
                   onChange={(_, dateStrings) => {
-                    fieldEdit(dateStrings[0], 'startTime');
-                    fieldEdit(dateStrings[1], 'endTime');
+                    fieldEdit(dateStrings, 'eventTime');
                   }}
                   placeholder={[
                     t('Select event start time'),
@@ -174,7 +212,11 @@ const EventInfo = ({
                 className="banner-image-dragger"
               >
                 <>
-                  <ImgCrop rotationSlider>
+                  <ImgCrop
+                    rotationSlider
+                    modalTitle={t('Edit image ratio')}
+                    aspect={2 / 1}
+                  >
                     <Dragger {...bannerUploadProps} className="dragger-content">
                       {(bannerFile && (
                         <Col
@@ -226,7 +268,9 @@ const EventInfo = ({
                 <Input
                   showCount
                   maxLength={200}
-                  onChange={(e) => fieldEdit(e, 'eventShortDescription')}
+                  onChange={(e) =>
+                    fieldEdit(e.target.value, 'eventShortDescription')
+                  }
                 />
               </Form.Item>
               <Form.Item
@@ -238,7 +282,12 @@ const EventInfo = ({
                     <Col lg={12} span={10}>
                       {t('Event Detailed Description')}
                     </Col>
-                    <Col lg={12} span={14} style={{ cursor: 'pointer' }}>
+                    <Col
+                      lg={12}
+                      span={14}
+                      style={{ cursor: 'pointer' }}
+                      onClick={suggestDescriptionAI}
+                    >
                       <img src={Images.IntelligentIcon} alt="" />
                       <span>{t('Suggest Description')}</span>
                     </Col>
@@ -246,7 +295,7 @@ const EventInfo = ({
                   <TextArea
                     showCount
                     maxLength={5000}
-                    onChange={(e) => fieldEdit(e, 'description')}
+                    onChange={(e) => fieldEdit(e.target.value, 'description')}
                   />
                 </>
               </Form.Item>
