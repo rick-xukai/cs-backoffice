@@ -15,7 +15,11 @@ export const UploadText = styled.p`
   color: ${Colors.grey6};
 `;
 
-export const ImageDragger = styled(Dragger)``;
+export const ImageDragger = styled(Dragger)`
+  .ant-upload-btn {
+    background: ${Colors.white};
+  }
+`;
 
 export const DraggetForm = styled(Form.Item)`
   .ant-upload-list {
