@@ -34,6 +34,11 @@ const CreateEventContainer = styled.div`
     .main-form {
       margin-top: 20px;
     }
+    .banner-image-dragger {
+      .ant-upload-list {
+        display: none;
+      }
+    }
   }
   .page-bottom {
     padding: 16px 64px 16px 20px;
@@ -358,6 +363,33 @@ const CreateEventFormContainer = styled.div`
       margin-bottom: 0px;
       .dragger-content {
         min-height: 92px;
+      }
+    }
+  }
+  .search-location-items {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    list-style: none;
+    margin-top: 5px;
+    padding: 0;
+    border-radius: 4px;
+    background: ${Colors.white};
+    box-shadow: 0px 6px 20px 4px rgba(0, 0, 0, 0.05),
+      0px 3px 6px -2px rgba(0, 0, 0, 0.1);
+    li {
+      padding: 10px 12px;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 21px;
+      color: ${Colors.grey6};
+      :hover {
+        background: ${Colors.grey10};
+      }
+      .add-location {
+        color: ${Colors.branding};
+        margin-left: 5px;
+        cursor: pointer;
       }
     }
   }

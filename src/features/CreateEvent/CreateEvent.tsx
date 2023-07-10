@@ -3,7 +3,8 @@ import { useHistory, Prompt } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, message, Modal } from 'antd';
 import _ from 'lodash';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import { ExclamationCircleOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -42,11 +43,16 @@ const CreateEvent = () => {
   const organizerData = useAppSelector(selectOrganizerData);
 
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
+  const [previousStep, setPreviousStep] = useState<number>(
+    ComponentSteps.eventInfo,
+  );
   const [blockRouter, setBlockRouter] = useState<boolean>(true);
   const [showNotSaveConfirmModal, setShowNotSaveConfirmModal] =
     useState<boolean>(false);
-  const [formValueSaved, setFormValueSaved] = useState<boolean>(false);
+  const [formValueSaved, setFormValueSaved] = useState<boolean>(true);
   const [whichPathUrlWillTo, setWhichPathUrlWillTo] = useState<string>('');
+  const [clickConfirmModalCloseIcon, setClickConfirmModalCloseIcon] =
+    useState<boolean>(false);
   const [createEventFormValue, setCreateEventFormValue] = useState({
     eventName: '',
     location: '',
@@ -99,36 +105,54 @@ const CreateEvent = () => {
     setFormValueSaved(true);
   };
 
-  const saveAsDraft = () => {
+  const saveAsDraft = (type?: string) => {
     if (!createEventFormValue.eventName) {
       message.error(
         t('Please enter a name for your event before saving as a draft.'),
       );
     } else {
       message.success(t('Draft Saved Successfully!'));
+      if (type && type === 'blockRouter') {
+        setBlockRouter(false);
+      }
     }
   };
 
   const handleFieldChange = (value: any, field: string) => {
-    setCreateEventFormValue({
-      ...createEventFormValue,
-      [field]: value,
-    });
+    setFormValueSaved(false);
+    if (field === 'eventTime') {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        startTime: value[0],
+        endTime: value[1],
+      });
+    } else {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        [field]: value,
+      });
+    }
   };
 
   const notSaveConfirm = () => {
     confirm({
+      className: 'notSaveConfirmModal',
       open: showNotSaveConfirmModal,
       centered: true,
       closable: false,
       okText: t('Save as Draft'),
       cancelText: t('Leave'),
+      title: (
+        <div className="notSaveModalTitle">
+          {t('Unsaved Content')}
+          <CloseOutlined onClick={() => setClickConfirmModalCloseIcon(true)} />
+        </div>
+      ),
       icon: <ExclamationCircleOutlined />,
       content: t('Leaving this page will result in losing your content.'),
       onOk() {
-        saveAsDraft();
+        saveAsDraft('blockRouter');
         setShowNotSaveConfirmModal(false);
-        setBlockRouter(false);
       },
       onCancel() {
         setShowNotSaveConfirmModal(false);
@@ -154,8 +178,17 @@ const CreateEvent = () => {
   };
 
   useEffect(() => {
+    if (clickConfirmModalCloseIcon) {
+      setShowNotSaveConfirmModal(false);
+      Modal.destroyAll();
+    }
+  }, [clickConfirmModalCloseIcon]);
+
+  useEffect(() => {
     if (showNotSaveConfirmModal) {
       notSaveConfirm();
+    } else {
+      setClickConfirmModalCloseIcon(false);
     }
   }, [showNotSaveConfirmModal]);
 
@@ -173,7 +206,37 @@ const CreateEvent = () => {
         <img src={Images.EditingIcon} alt="" className="status-img" />
       </div>
     );
+    if (steps !== previousStep) {
+      let currentIcon = Images.NotStartedIcon;
+      if (previousStep === ComponentSteps.eventInfo) {
+        if (
+          createEventFormValue.eventName &&
+          createEventFormValue.organizerId &&
+          createEventFormValue.location &&
+          createEventFormValue.startTime &&
+          createEventFormValue.endTime &&
+          createEventFormValue.banner &&
+          createEventFormValue.eventShortDescription
+        ) {
+          currentIcon = Images.SuccessIcon;
+        } else {
+          currentIcon = Images.NotFinishedIcon;
+        }
+        items[ComponentSteps.eventInfo].icon = (
+          <div>
+            <img src={currentIcon} alt="" className="status-img" />
+          </div>
+        );
+      } else {
+        items[previousStep].icon = (
+          <div>
+            <img src={Images.NotStartedIcon} alt="" className="status-img" />
+          </div>
+        );
+      }
+    }
     setProgressItems(items);
+    setPreviousStep(steps);
   }, [steps]);
 
   useEffect(() => {
@@ -209,7 +272,20 @@ const CreateEvent = () => {
           })}
         />
         <div className="page-main">
-          <Form name="create_event" onFinish={onFinish}>
+          <Form
+            name="create_event"
+            onFinish={onFinish}
+            initialValues={{
+              ...createEventFormValue,
+              eventTime:
+                (createEventFormValue.startTime &&
+                  createEventFormValue.endTime && [
+                    moment(createEventFormValue.startTime),
+                    moment(createEventFormValue.endTime),
+                  ]) ||
+                null,
+            }}
+          >
             {steps === ComponentSteps.eventInfo && (
               <EventInfo
                 organizerData={organizerData}
@@ -224,15 +300,12 @@ const CreateEvent = () => {
         </div>
         <div className="page-bottom">
           <div className="bottom-btn">
-            <Button onClick={saveAsDraft}>{t('Save as Draft')}</Button>
+            <Button onClick={() => saveAsDraft()}>{t('Save as Draft')}</Button>
             <Button type="primary" onClick={() => setSteps(steps + 1)}>
               {t('Next')}
             </Button>
           </div>
         </div>
-        {/* <Modal okText={t('Save as Draft')} cancelText={t('Leave')} centered open={showNotSaveConfirmModal}>
-          {t('Leaving this page will result in losing your content.')}
-        </Modal> */}
       </CreateEventContainer>
     </>
   );
