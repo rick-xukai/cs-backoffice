@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { Row, Col, message } from 'antd';
-import { MenuOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { Row, Col, message, Image } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
 import { AuthRoutes } from '../../navigation/Routes';
 import { base64Decrypt } from '../../utils/func';
 import { CookieKeys } from '../../constants/Keys';
-import { Colors } from '../../theme';
+import { Colors, Images } from '../../theme';
 import { useToggleMenu, useCookie } from '../../hooks';
 
 const PageHeaderContainer = styled.div`
@@ -19,6 +19,21 @@ const PageHeaderContainer = styled.div`
   &.children-header {
     padding-top: 16px;
     height: unset;
+  }
+  .back-page {
+    cursor: pointer;
+    .anticon {
+      font-size: 15px;
+      color: ${Colors.branding};
+      margin-right: 5px;
+    }
+    .title {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 21px;
+      color: ${Colors.branding};
+      font-family: Heebo;
+    }
   }
   background: ${Colors.white};
   align-items: center;
@@ -57,6 +72,19 @@ const PageHeaderContainer = styled.div`
     height: 60px;
     display: flex;
     align-items: center;
+    &.mobile {
+      margin-left: 0;
+      margin-top: 10px;
+      padding-left: 15px;
+      padding-right: 15px;
+      height: 45px;
+      .title {
+        font-size: 15px;
+        font-family: Heebo;
+        font-weight: 400;
+        line-height: 21px;
+      }
+    }
   }
   .content-text {
     display: flex;
@@ -72,6 +100,19 @@ const PageHeaderContainer = styled.div`
   .cursor-pointer {
     cursor: pointer;
   }
+  .image-content {
+    text-align: center;
+    position: relative;
+    > :first-child {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .trigger-logo {
+      width: 92px;
+      height: 36px;
+    }
+  }
   @media (max-width: 576px) {
     .content-text {
       justify-content: start;
@@ -84,10 +125,16 @@ const PageHeaderContainer = styled.div`
   }
   @media (max-width: 996px) {
     width: 100%;
-    height: 70px;
+    height: auto;
+    padding-right: 0px;
+    padding-left: 0px;
+    box-shadow: unset;
     .main-row {
-      height: 100%;
+      height: 53px;
       align-items: center;
+      background: ${Colors.black};
+      padding-right: 15px;
+      padding-left: 15px;
     }
     .title-content {
       height: unset;
@@ -138,32 +185,40 @@ const PageHeaderComponent = ({
   return (
     <PageHeaderContainer className={`${(children && 'children-header') || ''}`}>
       <Row className="main-row">
-        <Col
-          sm={12}
-          xs={24}
-          style={{ marginBottom: children && 16 }}
-          onClick={clickBack}
-        >
-          {React.createElement(MenuOutlined, {
-            className: 'top-menu-btn',
-            onClick: (e) => {
-              e.stopPropagation();
-              toggleMenu();
-            },
-          })}
-          <div
-            className={
-              (showBackArrow && 'title-content cursor-pointer') ||
-              'title-content'
-            }
-          >
-            <span>
-              {showBackArrow && <ArrowLeftOutlined />}
-              <span className="title">{title.toLocaleUpperCase()}</span>
-            </span>
-          </div>
+        <Col lg={12} span={24} style={{ marginBottom: children && 16 }}>
+          <Col lg={0} span={24} className="image-content">
+            <Image
+              src={Images.MenuTrigger}
+              alt=""
+              preview={false}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleMenu();
+              }}
+            />
+            <Image
+              className="trigger-logo"
+              src={Images.LogoWhiteColor}
+              alt=""
+              preview={false}
+            />
+          </Col>
+          <Col lg={24} span={0}>
+            <div className="title-content">
+              <span>
+                {(showBackArrow && (
+                  <Col className="back-page" onClick={clickBack}>
+                    <LeftOutlined />
+                    <span className="title">{title}</span>
+                  </Col>
+                )) || (
+                  <span className="title">{title.toLocaleUpperCase()}</span>
+                )}
+              </span>
+            </div>
+          </Col>
         </Col>
-        <Col sm={12} xs={24}>
+        <Col lg={12} span={0}>
           <div className="content-text">
             <p>
               Welcome, <b>{userName}</b> user.
@@ -171,6 +226,20 @@ const PageHeaderComponent = ({
           </div>
         </Col>
         {children && <Col span={24}>{children}</Col>}
+      </Row>
+      <Row>
+        <Col lg={0} span={24} style={{ background: Colors.grey5 }}>
+          <div className="title-content mobile">
+            <span>
+              {(showBackArrow && (
+                <Col className="back-page" onClick={clickBack}>
+                  <LeftOutlined />
+                  <span className="title">{title}</span>
+                </Col>
+              )) || <span className="title">{title.toLocaleUpperCase()}</span>}
+            </span>
+          </div>
+        </Col>
       </Row>
     </PageHeaderContainer>
   );

@@ -3,17 +3,91 @@ import { Col, Form, Row, Upload } from 'antd';
 
 import { Colors } from '../../theme';
 
-interface TicketTypesContainerProps {
-  containerHight: string;
-}
+// interface TicketTypesContainerProps {
+//   containerHight: string;
+// }
 
 const { Dragger } = Upload;
 
 const CreateEventContainer = styled.div`
-  .page-main {
-    padding: calc(60px + 24px) 24px 24px;
-    background: ${Colors.grey5};
+  padding: calc(60px + 20px) 24px 24px;
+  padding-bottom: 100px;
+  background: ${Colors.grey5};
+  .ant-spin {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
   }
+  .page-main {
+    background: ${Colors.white};
+    border-radius: 2px;
+    margin-top: 20px;
+    .main-title {
+      padding: 16px 20px;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 700;
+      color: ${Colors.black4};
+      border-bottom: 0.6px solid ${Colors.grey8};
+    }
+    .main-form {
+      margin-top: 20px;
+    }
+  }
+  .page-bottom {
+    padding: 16px 64px 16px 20px;
+    background: ${Colors.white};
+    border-top: 1px solid ${Colors.grey9};
+    position: fixed;
+    bottom: 0;
+    width: calc(100% - 240px);
+    right: 0;
+    text-align: right;
+    .ant-btn {
+      height: 44px;
+      border-radius: 2px;
+      font-size: 15px;
+      font-weight: 500;
+      color: ${Colors.grey6};
+      border: 1px solid ${Colors.grey6};
+      &.ant-btn-primary {
+        background: ${Colors.branding};
+        border: none;
+        color: ${Colors.white};
+        margin-left: 20px;
+      }
+    }
+    .ant-btn[disabled] {
+      background: ${Colors.grey9};
+      color: ${Colors.grey7};
+    }
+  }
+  @media (max-width: 992px) {
+    padding: calc(98px + 15px) 15px 85px;
+    overflow-x: hidden;
+    .main-box {
+      .banner-image-dragger {
+        .dragger-content {
+          &.ant-upload-drag {
+            min-height: 153px;
+          }
+        }
+      }
+      .detail-image-dragger {
+        .dragger-content {
+          &.ant-upload-drag {
+            min-height: 68px;
+          }
+        }
+      }
+    }
+    .page-bottom {
+      width: 100%;
+      padding: 8px 20px;
+    }
+  }
+
   .edit-event-page-main {
   }
   .publish-event {
@@ -70,24 +144,100 @@ const CreateEventContainer = styled.div`
   .ant-select-selection-item {
     line-height: 32px !important;
   }
+  .ant-upload.ant-upload-drag:not(.ant-upload-disabled):hover {
+    border-color: ${Colors.grey4};
+  }
+  .dragger-content {
+    position: relative;
+    &.ant-upload-drag {
+      min-height: 123px;
+      display: flex;
+      align-items: center;
+      .ant-upload-drag-icon {
+        margin-bottom: 0;
+        .anticon {
+          font-size: 18px;
+          color: ${Colors.grey7};
+        }
+      }
+      .ant-upload-text {
+        font-size: 13px;
+        font-weight: 400;
+        color: ${Colors.grey7};
+      }
+    }
+    .ant-upload {
+      padding: 0;
+    }
+    .content-preview {
+      position: relative;
+      width: 100%;
+      height: 123px;
+      :hover {
+        .content-action-icon {
+          display: flex;
+        }
+      }
+      .content-action-icon {
+        display: none;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.5);
+        > :last-child {
+          img {
+            margin-right: 0;
+          }
+        }
+        img {
+          width: 36px;
+          height: 36px;
+          cursor: pointer;
+          margin-right: 20px;
+        }
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
 `;
 
 const CreateEventFormContainer = styled.div`
-  margin: 0 !important;
   .ant-input,
   .ant-select-selector,
   .ant-picker {
-    height: 32px !important;
+    height: 36px !important;
   }
   .ant-input-affix-wrapper {
     padding: 0 11px;
+  }
+  .left-form {
+    transition: all 0.3s ease-out;
   }
   .main-box {
     background: ${Colors.white};
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
     border-radius: 4px;
-    padding: 24px;
-    min-height: calc(100vh - 154px);
+    padding: 20px;
+    /* min-height: calc(100vh - 154px); */
+    .map-container {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .content-preview {
+      height: 340px;
+    }
     &.ticket-tab {
       min-height: unset;
       border-top-left-radius: 0px;
@@ -99,9 +249,11 @@ const CreateEventFormContainer = styled.div`
     .ant-form-item-label > label {
       height: unset;
       font-weight: 400;
-      font-size: 15px;
       color: ${Colors.grey6};
       margin-bottom: 5px;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
     }
     .ant-form-item-label > label::after {
       display: inline-block;
@@ -140,12 +292,74 @@ const CreateEventFormContainer = styled.div`
         display: none;
       }
     }
-  }
-  .ant-tabs-content-holder {
-    height: calc(
-      ${(props: TicketTypesContainerProps) => props.containerHight} - 40px
-    );
-    background: ${Colors.white};
+    .dragger-content {
+      background: ${Colors.white};
+      &.ant-upload-drag {
+        min-height: 340px;
+        max-height: 340px;
+        min-width: 100%;
+      }
+      .ant-upload-drag-icon {
+        .anticon {
+          color: ${Colors.grey6};
+        }
+      }
+      .ant-upload-text {
+        font-size: 13px;
+        font-weight: 400;
+        color: ${Colors.grey6};
+      }
+    }
+    .dragger-tips {
+      font-size: 12px;
+      font-weight: 400;
+      color: ${Colors.grey7};
+      margin-top: 10px;
+      margin-bottom: 0;
+      line-height: 10px;
+    }
+    .event-detailed-description {
+      justify-content: space-between;
+      margin-bottom: 8px;
+      > :first-child {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 19px;
+        color: ${Colors.grey6};
+      }
+      > :last-child {
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 21px;
+        color: ${Colors.branding};
+        text-align: right;
+        span {
+          margin-left: 8px;
+        }
+      }
+    }
+    .item-suggest-description {
+      .ant-form-item-label {
+        width: 100%;
+        > :first-child {
+          width: 100%;
+        }
+      }
+      .create_event_description,
+      .event-detailed-description {
+        width: 100%;
+      }
+      .ant-form-item-label > label::after {
+        display: none;
+      }
+    }
+    .detail-image-dragger {
+      margin-top: 40px;
+      margin-bottom: 0px;
+      .dragger-content {
+        min-height: 92px;
+      }
+    }
   }
 `;
 

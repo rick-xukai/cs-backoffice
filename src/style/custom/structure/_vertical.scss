@@ -1,6 +1,38 @@
 .ant-layout {
   background: $gray-100;
 }
+.ant-input:hover {
+  border-color: $black900;
+}
+.ant-input:focus, .ant-input-focused {
+  border-color: $black900;
+  box-shadow: none;
+}
+.ant-picker-range .ant-picker-active-bar {
+  background: $black900 !important;
+}
+.ant-upload.ant-upload-select-picture-card:hover {
+  border-color: $black900 !important;
+}
+.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+  border-color: $black900;
+}
+.ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
+  border-color: $black900;
+  box-shadow: none;
+}
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-color: $black900 !important;
+  box-shadow: none !important;
+}
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: $black900 !important;
+  box-shadow: none !important;
+}
+.ant-picker:hover, .ant-picker-focused {
+  border-color: $black900 !important;
+  box-shadow: none !important;
+}
 .ant-layout-sider {
   background: $black;
   height: 100%;
@@ -175,14 +207,13 @@
     }
     .ant-modal-confirm-btns {
       .ant-btn {
-        padding: 0;
-        width: 68px;
-        height: 32px;
+        padding: 0px 24px;
         border: 1px solid $black700;
         border-radius: 2px;
-        font-weight: 400;
-        font-size: 15px;
         color: $black700;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 21px;
       }
       .ant-btn-primary {
         border: none;
@@ -322,4 +353,18 @@ body[data-sidebar='dark'] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.no-required {
+  .ant-form-item-label > label::after {
+    display: none !important;
+  }
+}
+
+.notSaveModalTitle {
+  display: flex;
+  justify-content: space-between;
+  .anticon {
+    cursor: pointer;
+  }
 }
