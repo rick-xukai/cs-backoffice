@@ -4,6 +4,9 @@ import { BreakPoints, Colors } from '../../theme';
 
 export const Container = styled(Col)`
   padding: 16px 40px;
+  .content-text {
+    margin-bottom: 15px;
+  }
   @media (max-width: ${BreakPoints.lg}px) {
     position: fixed;
     bottom: 55px;

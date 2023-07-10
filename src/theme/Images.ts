@@ -28,10 +28,18 @@ import ProfileTipsBg from '../assets/images/profile-tips-bg.png';
 import PreviewEye from '../assets/images/icons/preview-eye.svg';
 import DeleteIcon from '../assets/images/icons/delete-icon.svg';
 import CloseIcon from '../assets/images/icons/close-icon.svg';
-
+import SuccessIcon from '../assets/images/icons/success-icon.svg';
+import EditingIcon from '../assets/images/icons/editing-icon.svg';
+import NotStartedIcon from '../assets/images/icons/notStarted-icon.svg';
+import NotFinishedIcon from '../assets/images/icons/notFinished-icon.svg';
+import ProgressBarLine from '../assets/images/icons/progress-bar-line.svg';
+import MenuTrigger from '../assets/images/icons/menu-trigger.svg';
 import ImageChangeSizeIcon from '../assets/images/icons/image-change-size.svg';
 import ImageDeleteIcon from '../assets/images/icons/image-delete.svg';
 import ImageUpwardIcon from '../assets/images/icons/image-upward.svg';
+import LocationIcon from '../assets/images/icons/location.svg';
+import IntelligentIcon from '../assets/images/icons/intelligent-icon.svg';
+import TestMap from '../assets/images/test-map.png';
 
 const Images = {
   Logo,
@@ -69,6 +77,15 @@ const Images = {
   ImageChangeSizeIcon,
   ImageDeleteIcon,
   ImageUpwardIcon,
+  SuccessIcon,
+  EditingIcon,
+  NotStartedIcon,
+  NotFinishedIcon,
+  ProgressBarLine,
+  MenuTrigger,
+  LocationIcon,
+  IntelligentIcon,
+  TestMap,
 };
 
 export default Images;

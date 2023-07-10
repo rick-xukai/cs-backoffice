@@ -46,7 +46,7 @@ const Tips = ({
       </MiniContainer>
     </MiniSize>
   ) : (
-    <Container lg={10} sm={24} xs={24} md={24}>
+    <Container span={24}>
       <div className="tips-content">
         <Row>
           <Col span={24} className="tips-content-title">

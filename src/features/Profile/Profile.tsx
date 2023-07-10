@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Row,
-  Col,
-  Input,
-  Upload,
-  message,
-  Button,
-  Spin,
-  Modal,
-  Image,
-} from 'antd';
+import { Row, Col, Input, message, Button, Spin, Modal } from 'antd';
 import type { UploadProps } from 'antd';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -23,8 +13,9 @@ import { AuthRoutes } from '../../navigation/Routes';
 import Messages from '../../constants/Message';
 import { Images } from '../../theme';
 import { WebSiteDomain, UploadFileAcceptType } from '../../constants/General';
-import PageHeaderComponent from '../../components/PageHeader/PageHeader';
-import UploadFileComponent from '../../components/UploadFile/UploadFileComponent';
+import PageHeaderComponent from '../../components/PageHeader';
+import UploadFileComponent from '../../components/UploadFile';
+import DraggerUploadComponent from '../../components/DraggerUpload';
 import { ProfileContainer } from './ProfileComponent';
 import {
   reset,
@@ -39,7 +30,6 @@ import {
 import Tips from '../../components/Tips/Tips';
 
 const { TextArea } = Input;
-const { Dragger } = Upload;
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -123,6 +113,15 @@ const Profile = () => {
     if (response.type === updateProfileInfoAction.fulfilled.toString()) {
       message.success(t('Organizer profile has been updated.'));
     }
+  };
+
+  const draggerUploadDeleteAction = () => {
+    setIsEditItem(true);
+    setBannerFile('');
+    setProfileValue({
+      ...profileValue,
+      banner: '',
+    });
   };
 
   useEffect(() => {
@@ -274,51 +273,12 @@ const Profile = () => {
                       {t('Banner Image')}
                     </Col>
                     <Col span={24} className="item-value">
-                      <div>
-                        <Dragger
-                          {...bannerUploadProps}
-                          className="dragger-banner"
-                        >
-                          {(bannerFile && (
-                            <Col
-                              className="banner-preview"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <img src={bannerFile} alt="" />
-                              <div className="banner-action-icon">
-                                <Image
-                                  src={Images.PreviewEye}
-                                  alt=""
-                                  preview={false}
-                                  onClick={() => setShowPreviewBanner(true)}
-                                />
-                                <Image
-                                  src={Images.DeleteIcon}
-                                  alt=""
-                                  preview={false}
-                                  onClick={() => {
-                                    setIsEditItem(true);
-                                    setBannerFile('');
-                                    setProfileValue({
-                                      ...profileValue,
-                                      banner: '',
-                                    });
-                                  }}
-                                />
-                              </div>
-                            </Col>
-                          )) || (
-                            <>
-                              <p className="ant-upload-drag-icon">
-                                <PlusOutlined />
-                              </p>
-                              <p className="ant-upload-text">
-                                {t('Drag or click to upload image')}
-                              </p>
-                            </>
-                          )}
-                        </Dragger>
-                      </div>
+                      <DraggerUploadComponent
+                        draggerUploadProps={bannerUploadProps}
+                        draggerUploadFile={bannerFile}
+                        previewAction={() => setShowPreviewBanner(true)}
+                        deleteAction={draggerUploadDeleteAction}
+                      />
                       <p className="dragger-tips">
                         {t('Recommended image size 1440  x 260px')}
                       </p>
