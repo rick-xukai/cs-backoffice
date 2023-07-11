@@ -44,10 +44,10 @@ const Tips = ({
   };
 
   useEffect(() => {
-    if (!lg && lg !== undefined) {
+    if (lg === false) {
       document.addEventListener('click', clickHandle);
       document.addEventListener('scroll', clickHandle);
-      clickHandle();
+      handleChangeSize(Sizes.mini);
     } else {
       handleChangeSize(Sizes.normal);
       document.removeEventListener('click', clickHandle);
@@ -55,7 +55,7 @@ const Tips = ({
     }
     return () => {
       document.removeEventListener('click', clickHandle);
-      document.addEventListener('scroll', clickHandle);
+      document.removeEventListener('scroll', clickHandle);
     };
   }, [lg]);
 
