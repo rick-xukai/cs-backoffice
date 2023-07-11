@@ -30,7 +30,7 @@ const Tips = ({
   onSizeChange,
 }: TipsProps) => {
   const { lg } = useBreakpoint();
-  const [size, setSize] = useState(Sizes.normal);
+  const [size, setSize] = useState<null | Sizes>(null);
   const { t } = useTranslation();
 
   const handleChangeSize = (sizes: Sizes) => () => {
@@ -50,7 +50,7 @@ const Tips = ({
         document.addEventListener('scroll', clickHandle);
         handleChangeSize(Sizes.mini)();
       } else {
-        handleChangeSize(Sizes.normal);
+        handleChangeSize(Sizes.normal)();
         document.removeEventListener('click', clickHandle);
         document.removeEventListener('scroll', clickHandle);
       }
@@ -61,6 +61,7 @@ const Tips = ({
     };
   }, [lg]);
 
+  if (!size) return null;
   return size === Sizes.mini ? (
     <MiniSize lg={3} xs={24} sm={24}>
       <MiniContainer
