@@ -24,6 +24,7 @@ import { OrganizerData, uploadFileAction } from '../CreateEvent.slice';
 import { CreateEventFormContainer } from '../CreateEventComponent';
 import TipsComponent from '../../../components/Tips';
 import ImagesUpload from '../../../components/ImagesUpload/ImagesUpload';
+import { Sizes } from '../../../components/Tips/Tips';
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -309,7 +310,7 @@ const EventInfo = ({
             <TipsComponent
               title={t('Event Tips')}
               image={Images.ProfileTipsBg}
-              onSizeChange={() => setPageTipsShow(!pageTipsShow)}
+              onSizeChange={(val) => setPageTipsShow(val === Sizes.normal)}
               content={
                 <Row>
                   <Col className="content-text" span={24}>

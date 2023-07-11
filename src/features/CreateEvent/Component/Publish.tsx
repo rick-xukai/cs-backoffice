@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col } from 'antd';
 import { useTranslation } from 'react-i18next';
-import Tips from '../../../components/Tips/Tips';
+import Tips, { Sizes } from '../../../components/Tips/Tips';
 import { Images } from '../../../theme';
 
 const Publish = () => {
@@ -20,7 +20,7 @@ const Publish = () => {
             <Tips
               title={t('Publish Tips')}
               image={Images.ProfileTipsBg}
-              onSizeChange={() => setPageTipsShow(!pageTipsShow)}
+              onSizeChange={(val) => setPageTipsShow(val === Sizes.normal)}
               content={
                 <Row>
                   <Col className="content-text" span={24}>
