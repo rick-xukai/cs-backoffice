@@ -44,14 +44,16 @@ const Tips = ({
   };
 
   useEffect(() => {
-    if (lg === false) {
-      document.addEventListener('click', clickHandle);
-      document.addEventListener('scroll', clickHandle);
-      handleChangeSize(Sizes.mini);
-    } else {
-      handleChangeSize(Sizes.normal);
-      document.removeEventListener('click', clickHandle);
-      document.removeEventListener('scroll', clickHandle);
+    if (typeof lg !== 'undefined') {
+      if (lg === false) {
+        document.addEventListener('click', clickHandle);
+        document.addEventListener('scroll', clickHandle);
+        handleChangeSize(Sizes.mini)();
+      } else {
+        handleChangeSize(Sizes.normal);
+        document.removeEventListener('click', clickHandle);
+        document.removeEventListener('scroll', clickHandle);
+      }
     }
     return () => {
       document.removeEventListener('click', clickHandle);
