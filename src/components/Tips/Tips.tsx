@@ -39,21 +39,22 @@ const Tips = ({
       onSizeChange(sizes);
     }
   };
-  const clickHandle = (e: any) => {
-    e.stopPropagation();
-    setSize(Sizes.mini);
+  const clickHandle = () => {
+    handleChangeSize(Sizes.mini)();
   };
 
   useEffect(() => {
     if (!lg) {
       document.addEventListener('click', clickHandle);
-      handleChangeSize(Sizes.mini);
+      document.addEventListener('scroll', clickHandle);
     } else {
       handleChangeSize(Sizes.normal);
       document.removeEventListener('click', clickHandle);
+      document.removeEventListener('scroll', clickHandle);
     }
     return () => {
       document.removeEventListener('click', clickHandle);
+      document.addEventListener('scroll', clickHandle);
     };
   }, [lg]);
 
