@@ -37,23 +37,30 @@ const ImagesUpload = ({
   const [imageList, setImageList] = useState<any>(value || []);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const imagesBeforeUpload = (file: any) => {
-    const { type, size } = file;
+  const fileLimit = (size: number, type: string) => {
     const isLimit =
       size / 1024 / 1024 <= 15 && UploadFileAcceptType.includes(type);
+    return isLimit;
+  };
+  const imagesBeforeUpload = (file: any) => {
+    const { type, size } = file;
+    const isLimit = fileLimit(size, type);
     if (!isLimit) {
-      message.error(
-        t(
+      message.error({
+        content: t(
           'Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to 15 MB in size.',
         ),
-      );
+        key: 'error',
+      });
     }
     return isLimit;
   };
 
   const handleUploadImagesChange = (info: any) => {
     if (imagesBeforeUpload(info.file)) {
-      let newFileList = [...info.fileList];
+      let newFileList = [...info.fileList].filter((item) =>
+        fileLimit(item.size, item.type),
+      );
       newFileList = newFileList.map((file: any) => {
         const newFile = { ...file };
         if (file.response) {
