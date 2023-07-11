@@ -44,7 +44,7 @@ const Tips = ({
   };
 
   useEffect(() => {
-    if (!lg) {
+    if (!lg && lg !== undefined) {
       document.addEventListener('click', clickHandle);
       document.addEventListener('scroll', clickHandle);
     } else {
