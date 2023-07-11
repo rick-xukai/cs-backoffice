@@ -47,6 +47,7 @@ const Tips = ({
     if (!lg && lg !== undefined) {
       document.addEventListener('click', clickHandle);
       document.addEventListener('scroll', clickHandle);
+      clickHandle();
     } else {
       handleChangeSize(Sizes.normal);
       document.removeEventListener('click', clickHandle);
