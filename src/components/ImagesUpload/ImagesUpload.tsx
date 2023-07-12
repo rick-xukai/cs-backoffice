@@ -89,6 +89,9 @@ const ImagesUpload = ({
     newImageList.splice(index, 1);
     newImageList.splice(index - 1, 0, imageList[index]);
     setImageList(newImageList);
+    if (onChange) {
+      onChange(newImageList);
+    }
   };
 
   const handleChangeSize = (index: any, size: any) => () => {
@@ -120,7 +123,7 @@ const ImagesUpload = ({
     <>
       <ImagesContainer gutter={[16, 16]}>
         {imageList.map((item: any, index: number) => (
-          <ImageItem span={item.column}>
+          <ImageItem span={item.column} key={index}>
             <div className="image-content">
               {item.response ? (
                 <img src={item.response} alt="img" />

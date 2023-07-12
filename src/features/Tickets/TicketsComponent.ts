@@ -32,6 +32,11 @@ const TicketsContainer = styled.div`
       color: ${Colors.black5};
     }
   }
+  @media (max-width: 992px) {
+    .page-main {
+      padding: calc(98px + 24px) 24px 24px;
+    }
+  }
 `;
 
 export { TicketsContainer };

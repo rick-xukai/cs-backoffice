@@ -7,12 +7,15 @@ const { Dragger } = Upload;
 
 export const UploadIcon = styled.div`
   margin-bottom: 0;
+  .anticon {
+    color: ${Colors.grey7} !important;
+  }
 `;
 
 export const UploadText = styled.p`
   font-size: 13px;
   font-weight: 400;
-  color: ${Colors.grey6};
+  color: ${Colors.grey7};
 `;
 
 export const ImageDragger = styled(Dragger)`
@@ -28,7 +31,7 @@ export const DraggetForm = styled(Form.Item)`
 `;
 
 export const ImagesContainer = styled(Row)`
-  margin-bottom: 16px;
+  /* margin-bottom: 16px; */
 `;
 
 export const ImageItem = styled(Col)`
