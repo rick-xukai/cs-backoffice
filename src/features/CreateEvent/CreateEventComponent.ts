@@ -23,6 +23,12 @@ const CreateEventContainer = styled.div`
     background: ${Colors.white};
     border-radius: 2px;
     margin-top: 20px;
+    .ant-input-show-count-suffix,
+    .ant-input-textarea-show-count::after {
+      color: ${Colors.grey7};
+      font-size: 12px;
+      font-weight: 300;
+    }
     .main-title {
       padding: 16px 20px;
       font-size: 20px;
@@ -72,6 +78,15 @@ const CreateEventContainer = styled.div`
     padding: calc(98px + 15px) 15px 85px;
     overflow-x: hidden;
     .main-box {
+      .event-detailed-description {
+        align-items: center;
+      }
+      .ant-form-item-label {
+        padding-bottom: 0;
+        label {
+          margin-bottom: 0;
+        }
+      }
       .banner-image-dragger {
         .dragger-content {
           &.ant-upload-drag {
@@ -215,23 +230,25 @@ const CreateEventContainer = styled.div`
 `;
 
 const CreateEventFormContainer = styled.div`
-  .ant-input,
+  .address,
   .ant-select-selector,
+  .ant-select-selection-search-input,
   .ant-picker {
     height: 36px !important;
   }
   .ant-input-affix-wrapper {
     padding: 0 11px;
+    .ant-input {
+      height: 36px !important;
+    }
   }
   .left-form {
     transition: all 0.3s ease-out;
   }
   .main-box {
     background: ${Colors.white};
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
     border-radius: 4px;
     padding: 20px;
-    /* min-height: calc(100vh - 154px); */
     .map-container {
       margin-top: 20px;
       margin-bottom: 20px;
@@ -276,9 +293,6 @@ const CreateEventFormContainer = styled.div`
     .ant-picker {
       width: 100%;
     }
-    textarea.ant-input {
-      min-height: 98px;
-    }
     .upload-component {
       display: flex;
       align-items: center;
@@ -306,13 +320,13 @@ const CreateEventFormContainer = styled.div`
       }
       .ant-upload-drag-icon {
         .anticon {
-          color: ${Colors.grey6};
+          color: ${Colors.grey7};
         }
       }
       .ant-upload-text {
         font-size: 13px;
         font-weight: 400;
-        color: ${Colors.grey6};
+        color: ${Colors.grey7};
       }
     }
     .dragger-tips {
@@ -344,6 +358,7 @@ const CreateEventFormContainer = styled.div`
       }
     }
     .item-suggest-description {
+      margin-bottom: 40px;
       .ant-form-item-label {
         width: 100%;
         > :first-child {
@@ -405,6 +420,11 @@ const CreateEventFormContainer = styled.div`
     font-weight: 400;
     line-height: 21px;
     color: ${Colors.grey6};
+  }
+  @media (max-width: 992px) {
+    .item-suggest-description {
+      margin-bottom: 40px;
+    }
   }
 `;
 

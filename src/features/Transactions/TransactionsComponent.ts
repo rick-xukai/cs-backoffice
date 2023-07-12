@@ -24,6 +24,11 @@ const TransactionsContainer = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  @media (max-width: 992px) {
+    .page-main {
+      padding: calc(98px + 24px) 24px 24px;
+    }
+  }
 `;
 
 const TableFilterContainer = styled(Row)`

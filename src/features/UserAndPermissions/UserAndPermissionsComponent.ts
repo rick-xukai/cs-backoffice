@@ -25,6 +25,11 @@ const UserAndPermissionsContainer = styled.div`
       color: ${Colors.black6};
     }
   }
+  @media (max-width: 992px) {
+    .page-main {
+      padding: calc(98px + 24px) 24px 24px;
+    }
+  }
 `;
 
 export { UserAndPermissionsContainer };

@@ -154,6 +154,7 @@ const EventInfo = ({
   };
 
   const onPlaceChanged = () => {
+    setNoSearchResult(false);
     if (autocomplete !== null) {
       if (autocomplete.getPlaces() && autocomplete.getPlaces()[0]) {
         const {
@@ -187,15 +188,14 @@ const EventInfo = ({
   }, []);
 
   const handleCheckResult = useCallback(
-    debounce(() => {
-      const searchResult = document.querySelector('.pac-container');
-      const resultItems = searchResult?.querySelectorAll('.pac-item');
-      if (!resultItems?.length) {
-        setNoSearchResult(true);
-      } else {
+    debounce((value) => {
+      const searchResultItems: any = document.querySelectorAll('.pac-item');
+      if (searchResultItems && searchResultItems.length) {
         setNoSearchResult(false);
+      } else if (value) {
+        setNoSearchResult(true);
       }
-    }, 500),
+    }, 700),
     [],
   );
 
@@ -229,6 +229,11 @@ const EventInfo = ({
     }
     if (formValue.currentLat !== 0 && formValue.currentLng !== 0) {
       setShowLocationMap(true);
+    }
+    if (!formValue.location) {
+      setShowLocationMap(false);
+      setShowAddMyLocationInput(false);
+      setNoSearchResult(false);
     }
   }, [formValue]);
 
@@ -276,7 +281,7 @@ const EventInfo = ({
                             onChange={(e) => {
                               setMapLatLng({ lat: 0, lng: 0 });
                               fieldEdit(e.target.value, 'location');
-                              handleCheckResult();
+                              handleCheckResult(e.target.value);
                             }}
                           />
                           {noSearchResult && (
@@ -321,20 +326,25 @@ const EventInfo = ({
                       className="no-required"
                     >
                       <Input
+                        className="address"
                         onChange={(e) => fieldEdit(e.target.value, 'address')}
                       />
                     </Form.Item>
                   )}
                 </>
               )) || (
-                <Form.Item label="Add as my location" name="addMyLocation">
+                <Form.Item label="Location">
                   <Input
-                    onChange={(e) => fieldEdit(e.target.value, 'addMyLocation')}
+                    className="addMyLocation"
+                    prefix={<img src={Images.LocationIcon} alt="" />}
+                    value={formValue.location}
+                    onChange={(e) => fieldEdit(e.target.value, 'location')}
                   />
                 </Form.Item>
               )}
               <Form.Item label="Event Time" name="eventTime">
                 <RangePicker
+                  inputReadOnly
                   showTime={{ format: 'HH:mm' }}
                   format="MMM DD YYYY, HH:mm"
                   disabledDate={(currentDate) =>
@@ -409,7 +419,9 @@ const EventInfo = ({
                 label="Event Short Description"
                 name="eventShortDescription"
               >
-                <Input
+                <TextArea
+                  className="short-description-text-area"
+                  autoSize={{ minRows: 1, maxRows: 5 }}
                   showCount
                   maxLength={200}
                   onChange={(e) =>
@@ -437,7 +449,10 @@ const EventInfo = ({
                     </Col>
                   </Row>
                   <TextArea
+                    value={formValue.description}
+                    className="description-text-area"
                     showCount
+                    autoSize={{ minRows: 4, maxRows: 10 }}
                     maxLength={5000}
                     onChange={(e) => fieldEdit(e.target.value, 'description')}
                   />

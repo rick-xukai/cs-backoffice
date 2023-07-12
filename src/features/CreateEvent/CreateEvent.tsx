@@ -254,8 +254,15 @@ const CreateEvent = () => {
     setPreviousStep(steps);
   }, [steps]);
 
+  const gesturestart = (event: any) => {
+    event.preventDefault();
+  };
+
   useEffect(() => {
     window.addEventListener('beforeunload', notSaveAlert);
+    window.onload = () => {
+      document.addEventListener('gesturestart', gesturestart);
+    };
     dispatch(
       getOrganizerAction({
         page: defaultCurrentPage,
@@ -264,6 +271,7 @@ const CreateEvent = () => {
     );
     return () => {
       window.removeEventListener('beforeunload', notSaveAlert);
+      document.removeEventListener('gesturestart', gesturestart);
       dispatch(reset());
     };
   }, []);

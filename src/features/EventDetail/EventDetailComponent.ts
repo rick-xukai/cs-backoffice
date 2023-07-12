@@ -93,6 +93,11 @@ const EventDetailContainer = styled.div`
     border: none;
     background: ${Colors.white};
   }
+  @media (max-width: 992px) {
+    .page-main {
+      padding: calc(98px + 24px) 24px 24px;
+    }
+  }
 `;
 
 const EventInfoContainer = styled.div`
