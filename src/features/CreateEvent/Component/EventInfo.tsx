@@ -29,7 +29,10 @@ import { CookieKeys, UserRoleKeys } from '../../../constants/Keys';
 import { Images } from '../../../theme';
 import { UploadFileAcceptType } from '../../../constants/General';
 import { OrganizerData, uploadFileAction } from '../CreateEvent.slice';
-import { CreateEventFormContainer } from '../CreateEventComponent';
+import {
+  CreateEventFormContainer,
+  NoSearchResultButton,
+} from '../CreateEventComponent';
 import TipsComponent from '../../../components/Tips';
 import ImagesUpload from '../../../components/ImagesUpload/ImagesUpload';
 import { Sizes } from '../../../components/Tips/Tips';
@@ -270,7 +273,6 @@ const EventInfo = ({
                             value={formValue.location}
                             placeholder={t('Search for a venue or address')}
                             prefix={<img src={Images.LocationIcon} alt="" />}
-                            onBlur={() => setNoSearchResult(false)}
                             onChange={(e) => {
                               setMapLatLng({ lat: 0, lng: 0 });
                               fieldEdit(e.target.value, 'location');
@@ -284,12 +286,11 @@ const EventInfo = ({
                                   `Venue doesn't apprear in the suggestions dropdown?`,
                                 )}
                               </span>
-                              <span
-                                aria-hidden
+                              <NoSearchResultButton
                                 onClick={() => setShowAddMyLocationInput(true)}
                               >
                                 {t('Add as my location.')}
-                              </span>
+                              </NoSearchResultButton>
                             </div>
                           )}
                         </>

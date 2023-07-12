@@ -405,11 +405,6 @@ const CreateEventFormContainer = styled.div`
     font-weight: 400;
     line-height: 21px;
     color: ${Colors.grey6};
-    > :last-child {
-      color: ${Colors.branding};
-      cursor: pointer;
-      margin-left: 5px;
-    }
   }
 `;
 
@@ -500,6 +495,12 @@ const SpinContainer = styled.div`
   justify-content: center;
 `;
 
+const NoSearchResultButton = styled.span`
+  color: ${Colors.branding};
+  cursor: pointer;
+  margin-left: 5px;
+`;
+
 export {
   CreateEventContainer,
   CreateEventFormContainer,
@@ -511,4 +512,5 @@ export {
   ImageItem,
   ImageHandlerContainer,
   SpinContainer,
+  NoSearchResultButton,
 };
