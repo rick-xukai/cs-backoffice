@@ -40,6 +40,13 @@ import ImageUpwardIcon from '../assets/images/icons/image-upward.svg';
 import LocationIcon from '../assets/images/icons/location.svg';
 import IntelligentIcon from '../assets/images/icons/intelligent-icon.svg';
 import TestMap from '../assets/images/test-map.png';
+import CreateNewTicketIcon from '../assets/images/icons/create-new-ticket.svg';
+import TicketTipsIcon from '../assets/images/icons/ticket-tips-icon.svg';
+import EventTipsIcon from '../assets/images/icons/event-tips-icon.svg';
+import PromoTipsIcon from '../assets/images/icons/promo-tips-icon.svg';
+import PublishTupsIcon from '../assets/images/icons/publish-tips-icon.svg';
+import QuestionCircleIcon from '../assets/images/icons/question-circle-icon.svg';
+import DeleteOutlinedIcon from '../assets/images/icons/delete.svg';
 
 const Images = {
   Logo,
@@ -86,6 +93,13 @@ const Images = {
   LocationIcon,
   IntelligentIcon,
   TestMap,
+  CreateNewTicketIcon,
+  TicketTipsIcon,
+  EventTipsIcon,
+  PromoTipsIcon,
+  PublishTupsIcon,
+  QuestionCircleIcon,
+  DeleteOutlinedIcon,
 };
 
 export default Images;

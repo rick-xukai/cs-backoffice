@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Col, Form, Row, Upload } from 'antd';
+import { Button, Col, Collapse, Form, Row, Upload } from 'antd';
 
 import { Colors } from '../../theme';
 
@@ -278,6 +278,9 @@ const CreateEventFormContainer = styled.div`
       line-height: 19px;
     }
     .ant-form-item-label > label::after {
+      display: none;
+    }
+    .ant-form-item-label > .ant-form-item-required::after {
       display: inline-block;
       margin-right: 4px;
       color: ${Colors.branding};
@@ -408,6 +411,30 @@ const CreateEventFormContainer = styled.div`
       }
     }
   }
+  .ant-input-number {
+    height: 36px;
+    .ant-input-number-input {
+      height: 36px;
+    }
+    .ant-input-number-handler-wrap {
+      opacity: 1;
+    }
+    .ant-input-number-handler-down,
+    .ant-input-number-handler-up {
+      height: 50%;
+    }
+    .ant-input-number-handler-wrap:hover .ant-input-number-handler {
+      height: 50%;
+    }
+    .ant-input-number-handler-down:hover,
+    .ant-input-number-handler-up:hover {
+      height: 50% !important;
+      background: ${Colors.grey8};
+      .anticon {
+        color: ${Colors.grey11};
+      }
+    }
+  }
   .noSearchResult {
     width: 100%;
     padding: 10px 12px;
@@ -515,11 +542,159 @@ const SpinContainer = styled.div`
   justify-content: center;
 `;
 
+const FoldingPanel = styled(Collapse)`
+  &.ant-collapse {
+    background: unset;
+    border: none;
+  }
+  .ant-collapse-item:not(.ant-collapse-item-active) > .ant-collapse-header {
+    border-bottom: 1px solid ${Colors.grey8};
+  }
+  &.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding: 0 0 18px 0;
+    font-size: 15px;
+    color: ${Colors.black5};
+    display: flex;
+    flex-direction: row-reverse;
+    border-radius: 0;
+    transition: none;
+  }
+  &.ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header {
+    border-radius: 0;
+  }
+  .ant-collapse > .ant-collapse-item:last-child {
+    border-radius: 0;
+  }
+  .ant-collapse-content {
+    border: none;
+    .ant-collapse-content-box {
+      padding: 0;
+    }
+  }
+  &.ant-collapse > .ant-collapse-item {
+    border: none;
+  }
+  &.ant-collapse
+    > .ant-collapse-item
+    > .ant-collapse-header
+    .ant-collapse-arrow {
+    transform: rotate(90deg);
+    color: ${Colors.grey7};
+    font-size: 17px;
+    position: relative;
+    left: 10px;
+    top: 2px;
+  }
+  &.ant-collapse
+    > .ant-collapse-item-active
+    > .ant-collapse-header
+    .ant-collapse-arrow {
+    transform: rotate(180deg);
+  }
+`;
+
+const ConnectTicketsTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  .title {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 22px;
+    color: ${Colors.black5};
+    margin-bottom: 0;
+  }
+  .action {
+    color: ${Colors.branding};
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 21px;
+    cursor: pointer;
+    margin-bottom: 0;
+  }
+`;
+
+export const ConnectTicketsList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 10px;
+`;
+export const ConnectTicketItem = styled.li`
+  min-height: 57px;
+  border: 1px solid ${Colors.grey8};
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 20px;
+  align-items: center;
+  margin-bottom: 10px;
+  .title {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 21px;
+    color: ${Colors.black4};
+    margin-bottom: 0;
+  }
+  .sub-title {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19px;
+    color: ${Colors.grey6};
+    margin-bottom: 0;
+  }
+  img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+`;
+
+export const SelectEventsTable = styled(Row)`
+  .header {
+    background: ${Colors.white2};
+    padding: 8px 16px;
+    color: ${Colors.black6};
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 23px;
+  }
+  .item {
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 400;
+  }
+`;
+
 const NoSearchResultButton = styled.span`
   color: ${Colors.branding};
   cursor: pointer;
   margin-left: 5px;
 `;
+
+export const ModalFooterButton = styled(Button)`
+  height: 32px;
+  min-width: 83px;
+  line-height: 11px;
+`;
+
+export const EventList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 20px;
+  padding: 0 20px 20px 20px;
+`;
+export const EventListItemDesktop = styled.li`
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  padding: 20px;
+  img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+  }
+`;
+
+export const EventListItemMobile = styled.li``;
 
 export {
   CreateEventContainer,
@@ -532,5 +707,7 @@ export {
   ImageItem,
   ImageHandlerContainer,
   SpinContainer,
+  FoldingPanel,
+  ConnectTicketsTitle,
   NoSearchResultButton,
 };

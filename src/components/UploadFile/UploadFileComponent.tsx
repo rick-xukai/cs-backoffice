@@ -12,23 +12,43 @@ const Container = styled.div`
   align-items: end;
   .ant-upload-picture-card-wrapper {
     width: unset;
+    .ant-upload.ant-upload-select-picture-card {
+      width: 150px;
+      height: 150px;
+    }
+  }
+  .ant-upload-list-picture-card-container {
+    width: 150px;
+    height: 150px;
   }
   .info {
     margin-left: 12px;
     font-weight: 400;
-    font-size: 15px;
+    font-size: 11px;
     color: ${Colors.grey7};
   }
   .ant-upload-list-item-name {
     color: ${Colors.grey6};
   }
   .thumbnail-image-required {
-    font-weight: 300;
-    font-size: 12px;
+    font-weight: 400;
+    font-size: 11px;
     color: ${Colors.grey7};
   }
   .anticon-eye {
     margin-top: 3px !important;
+  }
+  .upload-button-content {
+    padding: 24px;
+    .upload-button-text {
+      margin-top: 6px;
+    }
+    .upload-button-text,
+    .upload-button-icon {
+      color: ${Colors.grey6};
+      font-size: 13px;
+      font-weight: 400;
+    }
   }
 `;
 
@@ -44,6 +64,7 @@ const UploadFileComponent = ({
   handleChange,
   customRequest,
   handleFileRemove,
+  uploadButtonText,
 }: {
   accept: string;
   description: { type: string; size: string };
@@ -56,6 +77,7 @@ const UploadFileComponent = ({
   handleChange: (event: any) => void;
   customRequest: (event: any) => void;
   handleFileRemove: () => void;
+  uploadButtonText?: string;
 }) => {
   const { t } = useTranslation();
 
@@ -115,9 +137,11 @@ const UploadFileComponent = ({
           onRemove={handleFileRemove}
         >
           {(fileList.length === 0 || isUpoloadError) && (
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
+            <div className="upload-button-content">
+              <PlusOutlined className="upload-button-icon" />
+              <div className="upload-button-text">
+                {uploadButtonText || 'Upload'}
+              </div>
             </div>
           )}
         </Upload>
