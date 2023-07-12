@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, Prompt } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Form, message, Modal } from 'antd';
+import { Button, Form, message, Modal, Spin } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
-import { ExclamationCircleOutlined, CloseOutlined } from '@ant-design/icons';
+import {
+  ExclamationCircleOutlined,
+  CloseOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -24,6 +28,7 @@ import {
   reset,
   selectOrganizerData,
   getOrganizerAction,
+  selectLoading,
 } from './CreateEvent.slice';
 
 const { confirm } = Modal;
@@ -40,6 +45,7 @@ const CreateEvent = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
 
+  const loading = useAppSelector(selectLoading);
   const organizerData = useAppSelector(selectOrganizerData);
 
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
@@ -56,6 +62,9 @@ const CreateEvent = () => {
   const [createEventFormValue, setCreateEventFormValue] = useState({
     eventName: '',
     location: '',
+    addMyLocation: '',
+    currentLat: 0,
+    currentLng: 0,
     organizerId: '',
     address: '',
     startTime: '',
@@ -125,6 +134,12 @@ const CreateEvent = () => {
         ...createEventFormValue,
         startTime: value[0],
         endTime: value[1],
+      });
+    } else if (field === 'locationLatLng') {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        currentLat: value.lat(),
+        currentLng: value.lng(),
       });
     } else {
       setCreateEventFormValue({
@@ -262,50 +277,62 @@ const CreateEvent = () => {
         clickBack={() => history.push(UserRoutes.events)}
       />
       <CreateEventContainer>
-        <ProgressBarComponent
-          currentStep={steps}
-          setSteps={setSteps}
-          items={progressItems}
-          mobileItems={progressItems.map((item) => {
-            const mobileItems = { ...item, title: '' };
-            return mobileItems;
-          })}
-        />
-        <div className="page-main">
-          <Form
-            name="create_event"
-            onFinish={onFinish}
-            initialValues={{
-              ...createEventFormValue,
-              eventTime:
-                (createEventFormValue.startTime &&
-                  createEventFormValue.endTime && [
-                    moment(createEventFormValue.startTime),
-                    moment(createEventFormValue.endTime),
-                  ]) ||
-                null,
-            }}
-          >
-            {steps === ComponentSteps.eventInfo && (
-              <EventInfo
-                organizerData={organizerData}
-                formValue={createEventFormValue}
-                fieldEdit={handleFieldChange}
-              />
-            )}
-            {steps === ComponentSteps.createTicket && <CreateTicket />}
-            {steps === ComponentSteps.settings && <Settings />}
-            {steps === ComponentSteps.publish && <Publish />}
-          </Form>
-        </div>
-        <div className="page-bottom">
-          <div className="bottom-btn">
-            <Button onClick={() => saveAsDraft()}>{t('Save as Draft')}</Button>
-            <Button type="primary" onClick={() => setSteps(steps + 1)}>
-              {t('Next')}
-            </Button>
-          </div>
-        </div>
+        {(loading && (
+          <Spin
+            spinning={loading}
+            indicator={<LoadingOutlined spin />}
+            size="large"
+          />
+        )) || (
+          <>
+            <ProgressBarComponent
+              currentStep={steps}
+              setSteps={setSteps}
+              items={progressItems}
+              mobileItems={progressItems.map((item) => {
+                const mobileItems = { ...item, title: '' };
+                return mobileItems;
+              })}
+            />
+            <div className="page-main">
+              <Form
+                name="create_event"
+                onFinish={onFinish}
+                initialValues={{
+                  ...createEventFormValue,
+                  eventTime:
+                    (createEventFormValue.startTime &&
+                      createEventFormValue.endTime && [
+                        moment(createEventFormValue.startTime),
+                        moment(createEventFormValue.endTime),
+                      ]) ||
+                    null,
+                }}
+              >
+                {steps === ComponentSteps.eventInfo && (
+                  <EventInfo
+                    organizerData={organizerData}
+                    formValue={createEventFormValue}
+                    fieldEdit={handleFieldChange}
+                  />
+                )}
+                {steps === ComponentSteps.createTicket && <CreateTicket />}
+                {steps === ComponentSteps.settings && <Settings />}
+                {steps === ComponentSteps.publish && <Publish />}
+              </Form>
+            </div>
+            <div className="page-bottom">
+              <div className="bottom-btn">
+                <Button onClick={() => saveAsDraft()}>
+                  {t('Save as Draft')}
+                </Button>
+                <Button type="primary" onClick={() => setSteps(steps + 1)}>
+                  {t('Next')}
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
       </CreateEventContainer>
     </>
   );

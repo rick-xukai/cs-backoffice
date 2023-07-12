@@ -163,7 +163,7 @@ export const uploadFileAction = createAsyncThunk<
 interface CreateEventState {
   loading: boolean;
   data: { id: number | string };
-  organizerData: [];
+  organizerData: OrganizerData[];
   error:
     | {
         code: number | undefined;
@@ -221,12 +221,15 @@ export const createEventSlice = createSlice({
         }
       })
       .addCase(getOrganizerAction.pending, (state) => {
+        state.loading = true;
         state.organizerData = [];
       })
       .addCase(getOrganizerAction.fulfilled, (state, action: any) => {
+        state.loading = false;
         state.organizerData = action.payload;
       })
       .addCase(getOrganizerAction.rejected, (state, action) => {
+        state.loading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
