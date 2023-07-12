@@ -393,6 +393,24 @@ const CreateEventFormContainer = styled.div`
       }
     }
   }
+  .noSearchResult {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 2px;
+    background: ${Colors.white};
+    margin-top: 4px;
+    box-shadow: 0px 6px 20px 4px rgba(0, 0, 0, 0.05),
+      0px 3px 6px -2px rgba(0, 0, 0, 0.1);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 21px;
+    color: ${Colors.grey6};
+    > :last-child {
+      color: ${Colors.branding};
+      cursor: pointer;
+      margin-left: 5px;
+    }
+  }
 `;
 
 const UploadIcon = styled.div`
