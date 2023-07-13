@@ -160,6 +160,27 @@ export const uploadFileAction = createAsyncThunk<
   }
 });
 
+/**
+ * fetch open ai
+ */
+export const openAiGeneratorAction = createAsyncThunk<
+  any,
+  {},
+  {
+    rejectValue: ErrorType;
+  }
+>('uploadFile/uploadFileAction', async (payload) => {
+  try {
+    const response = await EventsService.openAiGenerator(payload);
+    return response;
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return err.response;
+  }
+});
+
 interface CreateEventState {
   loading: boolean;
   data: { id: number | string };

@@ -65,6 +65,16 @@ const uploadFile = async (payload: any) => {
   return response;
 };
 
+const openAiGenerator = async (payload: any) => {
+  const uri = API.fetchOpenAi.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setPayload(payload)
+    .doPost();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -72,4 +82,5 @@ export default {
   getOrganizer,
   uploadFile,
   updateEvent,
+  openAiGenerator,
 };

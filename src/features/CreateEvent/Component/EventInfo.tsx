@@ -28,13 +28,18 @@ import { useCookie } from '../../../hooks';
 import { CookieKeys, UserRoleKeys } from '../../../constants/Keys';
 import { Images } from '../../../theme';
 import { UploadFileAcceptType } from '../../../constants/General';
-import { OrganizerData, uploadFileAction } from '../CreateEvent.slice';
+import {
+  OrganizerData,
+  openAiGeneratorAction,
+  uploadFileAction,
+} from '../CreateEvent.slice';
 import {
   CreateEventFormContainer,
   NoSearchResultButton,
 } from '../CreateEventComponent';
 import TipsComponent from '../../../components/Tips';
 import ImagesUpload from '../../../components/ImagesUpload/ImagesUpload';
+import { OPEN_AI_TEMPLATE } from '../../../constants/constants';
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -109,6 +114,7 @@ const EventInfo = ({
     lat: formValue.currentLat,
     lng: formValue.currentLng,
   });
+  const [openAiLoading, setOpenAiLoading] = useState(false);
 
   const customRequest = async (e: any, type: string) => {
     const formData = new FormData();
@@ -153,14 +159,26 @@ const EventInfo = ({
     setBannerFile('');
   };
 
-  const suggestDescriptionAI = () => {
+  const suggestDescriptionAI = async () => {
     if (!formValue.description) {
-      message.error(
+      return message.error(
         t(
           'Please enter content before using the AI tool to generate a suggested description.',
         ),
       );
     }
+    setOpenAiLoading(true);
+    const response: any = await dispatch(
+      openAiGeneratorAction({
+        content: `${OPEN_AI_TEMPLATE} ${formValue.description}`,
+      }),
+    );
+    if (response.type === openAiGeneratorAction.fulfilled.toString()) {
+      fieldEdit(response?.payload?.data?.content, 'description');
+    } else {
+      message.error(response?.payload?.message);
+    }
+    return setOpenAiLoading(false);
   };
 
   const onSearchBoxLoad = (autocompleteEvent: any) => {
@@ -459,14 +477,19 @@ const EventInfo = ({
                     <Col lg={12} span={10}>
                       {t('Event Detailed Description')}
                     </Col>
-                    <Col
-                      lg={12}
-                      span={14}
-                      style={{ cursor: 'pointer' }}
-                      onClick={suggestDescriptionAI}
-                    >
-                      <img src={Images.IntelligentIcon} alt="" />
-                      <span>{t('Suggest Description')}</span>
+                    <Col lg={12} span={14} style={{ cursor: 'pointer' }}>
+                      <div
+                        onClick={
+                          openAiLoading ? undefined : suggestDescriptionAI
+                        }
+                      >
+                        <img
+                          className={openAiLoading ? 'loading' : ''}
+                          src={Images.IntelligentIcon}
+                          alt=""
+                        />
+                        <span>{t('Suggest Description')}</span>
+                      </div>
                     </Col>
                   </Row>
                   <TextArea
