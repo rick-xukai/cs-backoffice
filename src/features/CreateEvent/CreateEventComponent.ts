@@ -460,6 +460,14 @@ const CreateEventFormContainer = styled.div`
     .item-suggest-description {
       margin-bottom: 40px;
     }
+    .main-box {
+      .ant-form-item {
+        margin-bottom: 15px;
+      }
+      .eventShortDescription {
+        margin-bottom: 30px;
+      }
+    }
   }
   .loading {
     animation: spin 2s linear infinite;

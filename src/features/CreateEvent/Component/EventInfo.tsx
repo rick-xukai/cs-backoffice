@@ -13,7 +13,6 @@ import {
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
-import ImgCrop from 'antd-img-crop';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import {
@@ -22,11 +21,13 @@ import {
   StandaloneSearchBox,
 } from '@react-google-maps/api';
 import { debounce, head } from 'lodash';
+import Cropper from 'react-easy-crop';
 
 import { useAppDispatch } from '../../../app/hooks';
 import { useCookie } from '../../../hooks';
 import { CookieKeys, UserRoleKeys } from '../../../constants/Keys';
 import { Images } from '../../../theme';
+import { getCroppedImg, dataURLtoFile } from '../../../utils/func';
 import { UploadFileAcceptType } from '../../../constants/General';
 import {
   OrganizerData,
@@ -102,6 +103,14 @@ const EventInfo = ({
     libraries,
   });
 
+  const [crop, setCrop] = useState({ x: 2, y: 2 });
+  const [zoom, setZoom] = useState(1);
+  const [rotation, setRotation] = useState(0);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [bannerImageBase64, setBannerImageBase64] = useState<string>('');
+  const [bannerImageEvent, setBannerImageEvent] = useState<any>({});
+  const [showCropImageModal, setShowCropImageModal] = useState<boolean>(false);
+  const [showAddressInput, setShowAddressInput] = useState<boolean>(false);
   const [showLocationMap, setShowLocationMap] = useState<boolean>(false);
   const [autocomplete, setAutocomplete] = useState<any>(null);
   const [bannerFile, setBannerFile] = useState<string>('');
@@ -118,7 +127,7 @@ const EventInfo = ({
 
   const customRequest = async (e: any, type: string) => {
     const formData = new FormData();
-    formData.append('file', e.file);
+    formData.append('file', e);
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
       if (type === 'banner') {
@@ -127,11 +136,31 @@ const EventInfo = ({
       } else {
         fieldEdit(response.payload.url, 'detailImage');
       }
-      e.onSuccess();
       message.success(t('Upload successful.'));
     } else {
-      e.onError();
       message.error(t('Upload failed, please try again.'));
+    }
+  };
+
+  const onCropComplete = useCallback((_, areaPixels) => {
+    setCroppedAreaPixels(areaPixels);
+  }, []);
+
+  const showCroppedImage = async () => {
+    setShowCropImageModal(false);
+    try {
+      const { name, type } = bannerImageEvent;
+      const croppedImage: any = await getCroppedImg(
+        bannerImageBase64,
+        type,
+        croppedAreaPixels,
+        rotation,
+      );
+      const file = dataURLtoFile(croppedImage, name.split('.')[0]);
+      customRequest(file, 'banner');
+    } catch (error) {
+      // eslint-disable-next-line
+      console.log(error);
     }
   };
 
@@ -139,7 +168,11 @@ const EventInfo = ({
     name: 'banner',
     multiple: false,
     fileList: [],
-    customRequest: (e) => customRequest(e, 'banner'),
+    customRequest: (e: any) => {
+      if (e.file.type === 'image/gif') {
+        customRequest(e.file, 'banner');
+      }
+    },
     beforeUpload: (file) => {
       const { type, size } = file;
       const isLimit =
@@ -147,9 +180,19 @@ const EventInfo = ({
       if (!isLimit) {
         message.error(
           t(
-            'Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to 10 MB in size.',
+            'Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to [size] MB in size.',
+            { size: 5 },
           ),
         );
+      } else if (type !== 'image/gif') {
+        const reader = new FileReader();
+        reader.onloadend = (e: any) => {
+          const base64 = e.target.result;
+          setBannerImageBase64(base64);
+          setBannerImageEvent(file);
+          setShowCropImageModal(true);
+        };
+        reader.readAsDataURL(file);
       }
       return isLimit;
     },
@@ -187,6 +230,7 @@ const EventInfo = ({
 
   const onPlaceChanged = () => {
     setNoSearchResult(false);
+    setShowAddressInput(true);
     if (autocomplete !== null) {
       if (autocomplete.getPlaces() && autocomplete.getPlaces()[0]) {
         const {
@@ -194,14 +238,20 @@ const EventInfo = ({
           formatted_address: formattedAddress,
           name,
         } = autocomplete.getPlaces()[0];
-        const location = `${formattedAddress.split(' ')[0]} ${name}`;
-        fieldEdit(location, 'location');
+        const location = `${name} ${formattedAddress}`;
         setShowLocationMap(true);
         setMapLatLng({
           lat: geometry.location.lat(),
           lng: geometry.location.lng(),
         });
-        fieldEdit(geometry.location, 'locationLatLng');
+        fieldEdit(
+          {
+            location,
+            lat: geometry.location.lat(),
+            lng: geometry.location.lng(),
+          },
+          'locationLatLng',
+        );
       }
     } else {
       message.error(t('Failed to get location, please try again'));
@@ -227,7 +277,7 @@ const EventInfo = ({
       } else if (value) {
         setNoSearchResult(true);
       }
-    }, 700),
+    }, 300),
     [],
   );
 
@@ -256,18 +306,22 @@ const EventInfo = ({
     if (formValue.banner) {
       setBannerFile(formValue.banner);
     }
-    if (!formValue.location) {
-      setShowLocationMap(false);
-    }
     if (formValue.currentLat !== 0 && formValue.currentLng !== 0) {
       setShowLocationMap(true);
     }
     if (!formValue.location) {
       setShowLocationMap(false);
+      setShowAddressInput(false);
       setShowAddMyLocationInput(false);
       setNoSearchResult(false);
     }
   }, [formValue]);
+
+  useEffect(() => {
+    if (formValue.location) {
+      setShowAddressInput(true);
+    }
+  }, []);
 
   return (
     <>
@@ -277,6 +331,7 @@ const EventInfo = ({
         </Col>
       </Row>
       <CreateEventFormContainer>
+        <div id="map" />
         <Row>
           <Col lg={(pageTipsShow && 14) || 21} span={24} className="left-form">
             <div className="main-box">
@@ -328,7 +383,10 @@ const EventInfo = ({
                                 )}
                               </span>
                               <NoSearchResultButton
-                                onClick={() => setShowAddMyLocationInput(true)}
+                                onClick={() => {
+                                  setShowAddMyLocationInput(true);
+                                  setShowAddressInput(true);
+                                }}
                               >
                                 {t('Add as my location.')}
                               </NoSearchResultButton>
@@ -355,18 +413,6 @@ const EventInfo = ({
                         />
                       )}
                   </Form.Item>
-                  {showLocationMap && (
-                    <Form.Item
-                      label="Address"
-                      name="address"
-                      className="no-required"
-                    >
-                      <Input
-                        className="address"
-                        onChange={(e) => fieldEdit(e.target.value, 'address')}
-                      />
-                    </Form.Item>
-                  )}
                 </>
               )) || (
                 <Form.Item label="Location">
@@ -375,6 +421,18 @@ const EventInfo = ({
                     prefix={<img src={Images.LocationIcon} alt="" />}
                     value={formValue.location}
                     onChange={(e) => fieldEdit(e.target.value, 'location')}
+                  />
+                </Form.Item>
+              )}
+              {showAddressInput && (
+                <Form.Item
+                  label="Address"
+                  name="address"
+                  className="no-required"
+                >
+                  <Input
+                    className="address"
+                    onChange={(e) => fieldEdit(e.target.value, 'address')}
                   />
                 </Form.Item>
               )}
@@ -403,45 +461,39 @@ const EventInfo = ({
                 className="banner-image-dragger"
               >
                 <>
-                  <ImgCrop
-                    rotationSlider
-                    modalTitle={t('Edit image ratio')}
-                    aspect={2 / 1}
-                  >
-                    <Dragger {...bannerUploadProps} className="dragger-content">
-                      {(bannerFile && (
-                        <Col
-                          className="content-preview"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <img src={bannerFile} alt="" />
-                          <div className="content-action-icon">
-                            <Image
-                              src={Images.PreviewEye}
-                              alt=""
-                              preview={false}
-                              onClick={() => setShowPreviewBanner(true)}
-                            />
-                            <Image
-                              src={Images.DeleteIcon}
-                              alt=""
-                              preview={false}
-                              onClick={draggerUploadDeleteAction}
-                            />
-                          </div>
-                        </Col>
-                      )) || (
-                        <>
-                          <p className="ant-upload-drag-icon">
-                            <PlusOutlined />
-                          </p>
-                          <p className="ant-upload-text">
-                            {t('Drag or click to upload image')}
-                          </p>
-                        </>
-                      )}
-                    </Dragger>
-                  </ImgCrop>
+                  <Dragger {...bannerUploadProps} className="dragger-content">
+                    {(bannerFile && (
+                      <Col
+                        className="content-preview"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <img src={bannerFile} alt="" />
+                        <div className="content-action-icon">
+                          <Image
+                            src={Images.PreviewEye}
+                            alt=""
+                            preview={false}
+                            onClick={() => setShowPreviewBanner(true)}
+                          />
+                          <Image
+                            src={Images.DeleteIcon}
+                            alt=""
+                            preview={false}
+                            onClick={draggerUploadDeleteAction}
+                          />
+                        </div>
+                      </Col>
+                    )) || (
+                      <>
+                        <p className="ant-upload-drag-icon">
+                          <PlusOutlined />
+                        </p>
+                        <p className="ant-upload-text">
+                          {t('Drag or click to upload image')}
+                        </p>
+                      </>
+                    )}
+                  </Dragger>
                   <p className="dragger-tips">
                     {t('PNG, JPEG or GIF files only up to [size] MB in size', {
                       size: 5,
@@ -456,6 +508,7 @@ const EventInfo = ({
                 required
                 label="Event Short Description"
                 name="eventShortDescription"
+                className="eventShortDescription"
               >
                 <TextArea
                   className="short-description-text-area"
@@ -506,6 +559,28 @@ const EventInfo = ({
                 onChange={(e) => fieldEdit(e, 'images')}
                 value={formValue.images}
               />
+              <Modal
+                open={showCropImageModal}
+                centered
+                destroyOnClose
+                closable={false}
+                cancelText={t('Cancel')}
+                okText={t('Save')}
+                className="cropper-image-modal"
+                onCancel={() => setShowCropImageModal(false)}
+                onOk={showCroppedImage}
+              >
+                <Cropper
+                  image={bannerImageBase64}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={2 / 1}
+                  onCropChange={setCrop}
+                  onCropComplete={onCropComplete}
+                  onZoomChange={setZoom}
+                  onRotationChange={setRotation}
+                />
+              </Modal>
             </div>
           </Col>
           <Col span={(pageTipsShow && 10) || 3}>

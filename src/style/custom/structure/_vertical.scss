@@ -397,3 +397,25 @@ body[data-sidebar='dark'] {
 .pac-logo:after {
   display: none;
 }
+
+.cropper-image-modal {
+  .ant-modal-content {
+    height: 520px;
+    width: 520px;
+    border-radius: 4px 4px 0 0;
+  }
+  .ant-modal-body {
+    height: 100%;
+    .reactEasyCrop_Container {
+      border-radius: 4px;
+      width: calc(100% - 48px);
+      margin: auto;
+      height: calc(100% - 48px);
+    }
+  }
+  .ant-modal-footer {
+    padding: 24px;
+    background: $white;
+    border: none;
+  }
+}
