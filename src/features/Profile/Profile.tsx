@@ -86,7 +86,8 @@ const Profile = () => {
       if (!isLimit) {
         message.error(
           t(
-            'Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to 10 MB in size.',
+            'Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to [size] MB in size.',
+            { size: 10 },
           ),
         );
       }

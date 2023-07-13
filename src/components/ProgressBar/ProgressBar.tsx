@@ -97,11 +97,13 @@ const ProgressBar = ({
   items,
   mobileItems,
   currentStep,
+  currentStepName,
   setSteps,
 }: {
   items: StepsProps['items'];
   mobileItems: StepsProps['items'];
   currentStep: number;
+  currentStepName: string;
   setSteps: (step: number) => void;
 }) => (
   <ProgressBarContainer>
@@ -124,7 +126,7 @@ const ProgressBar = ({
             responsive={false}
           />
         </div>
-        <div className="step-name">Create Event</div>
+        <div className="step-name">{currentStepName}</div>
       </Col>
     </Row>
   </ProgressBarContainer>

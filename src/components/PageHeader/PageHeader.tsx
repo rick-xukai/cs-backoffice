@@ -15,7 +15,7 @@ const PageHeaderContainer = styled.div`
   padding-right: 24px;
   padding-left: 24px;
   height: 60px;
-  z-index: 1;
+  z-index: 2;
   &.children-header {
     padding-top: 16px;
     height: unset;

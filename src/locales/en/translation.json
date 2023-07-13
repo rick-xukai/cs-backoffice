@@ -282,7 +282,7 @@
   "Upload failed, please try again": "Upload failed, please try again",
   "Organizer profile has been updated.": "Organizer profile has been updated.",
   "Tips": "Tips",
-  "Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to 10 MB in size.": "Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to 10 MB in size.",
+  "Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to [size] MB in size.": "Invalid file format or size. Please upload a PNG, JPEG, or GIF image that is up to {{size}} MB in size.",
   "Create Event": "Create Event",
   "Create Ticket": "Create Ticket",
   "Save as Draft": "Save as Draft",

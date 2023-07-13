@@ -156,8 +156,9 @@ const CreateEvent = () => {
     } else if (field === 'locationLatLng') {
       setCreateEventFormValue({
         ...createEventFormValue,
-        currentLat: value.lat(),
-        currentLng: value.lng(),
+        currentLat: value.lat,
+        currentLng: value.lng,
+        location: value.location,
       });
     } else {
       if (!field) {
@@ -323,6 +324,7 @@ const CreateEvent = () => {
           <>
             <ProgressBarComponent
               currentStep={steps}
+              currentStepName={progressItems[steps].title}
               setSteps={setSteps}
               items={progressItems}
               mobileItems={progressItems.map((item) => {
