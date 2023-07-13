@@ -68,7 +68,7 @@ export interface EventInfoFormValueProps {
   images: any[];
   ticketName: string;
   ticketImage: string;
-  stock: string;
+  totalAvailableQuantity: string;
   ticketPrice: string;
   absorbFees: boolean;
   sellingStartTime: string;

@@ -8,46 +8,33 @@ import {
   Checkbox,
   DatePicker,
   Select,
-  Modal,
-  Grid,
-  Space,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
 import Tips from '../../../components/Tips/Tips';
 import { Images } from '../../../theme';
-import ListEmpty from '../../../components/ListEmpty/ListEmpty';
 import {
   ConnectTicketItem,
   ConnectTicketsList,
   ConnectTicketsTitle,
   CreateEventFormContainer,
   EventList,
-  EventListItemDesktop,
-  EventListItemMobile,
   FoldingPanel,
-  ModalFooterButton,
-  SelectEventsTable,
 } from '../CreateEventComponent';
 import { EventInfoFormValueProps } from './EventInfo';
-import UploadFileComponent from '../../../components/UploadFile/UploadFileComponent';
 import { MMM_DD_YYYY_HH_MM, SGD_UNIT } from '../../../constants/constants';
 import QuestionTooltip from '../../../components/QuestionTooltip';
-import { uploadFileAction } from '../CreateEvent.slice';
-import { useAppDispatch } from '../../../app/hooks';
-import StatusBadge from '../../../components/StatusBadge';
-import MoreIcon from '../../../components/MoreIcon';
-
-export enum CreateTicketStatus {
-  empty = 1,
-  list = 2,
-  add = 3,
-  edit = 4,
-}
+// eslint-disable-next-line import/no-cycle
+import {
+  CreateTicketStatus,
+  EmptyState,
+  EventListItem,
+  SelectEventsModal,
+  TickImageUpload,
+} from './CreateTicketComponents';
 
 const { RangePicker } = DatePicker;
-const { useBreakpoint } = Grid;
 
 const CreateTicket = ({
   createTicketStatus,
@@ -63,10 +50,8 @@ const CreateTicket = ({
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
   const [fileList, setFileList] = useState<any>([]);
   const [thumbnaiFileList, setThumbnaiFileList] = useState<any>([]);
-  const { md } = useBreakpoint();
 
   const handleUploadChange = (info: any) => {
     setFileList(info.fileList);
@@ -106,51 +91,6 @@ const CreateTicket = ({
     );
   }, [formValue.ticketThumbnailUrl]);
 
-  const customRequest = async (e: any) => {
-    const formData = new FormData();
-    formData.append('file', e.file);
-    const response: any = await dispatch(uploadFileAction(formData));
-    if (response.type === uploadFileAction.fulfilled.toString()) {
-      fieldEdit({
-        ticketImage: response.payload.url,
-        ticketImageType: e.file.type,
-        ticketThumbnailUrl:
-          (!e.file.type.includes('video') && response.payload.url) || '',
-        ticketThumbnailType: e.file.type,
-      });
-      e.onSuccess();
-    } else {
-      e.onError();
-    }
-  };
-  const customThumbnaiUploadRequest = async (e: any) => {
-    const formData = new FormData();
-    formData.append('file', e.file);
-    const response: any = await dispatch(uploadFileAction(formData));
-    if (response.type === uploadFileAction.fulfilled.toString()) {
-      fieldEdit({
-        ticketThumbnailUrl: response.payload.url,
-        ticketThumbnailType: e.file.type,
-      });
-      e.onSuccess();
-    } else {
-      e.onError();
-    }
-  };
-  const handleFileRemove = () => {
-    fieldEdit({
-      ticketImage: '',
-      ticketImageType: '',
-      ticketThumbnailUrl: '',
-      ticketThumbnailType: '',
-    });
-  };
-  const handleThumbnaiFileRemove = () => {
-    fieldEdit({
-      ticketThumbnailUrl: '',
-      ticketThumbnailType: '',
-    });
-  };
   const TipsCmp = (
     <Tips
       title={t('Ticket Tips')}
@@ -230,36 +170,7 @@ const CreateTicket = ({
   };
   const renderContent = () => {
     if (createTicketStatus === CreateTicketStatus.empty) {
-      return (
-        <>
-          <Row>
-            <Col span={24} className="main-title">
-              {t('Create Ticket')}
-            </Col>
-          </Row>
-          <Row style={{ height: '100%' }}>
-            <Col span={24}>
-              <ListEmpty
-                image={Images.CreateNewTicketIcon}
-                title={t('Create New Ticket')}
-                description={t(
-                  'Create an unforgettable experience that sets your event apart. Let your creativity soar – start creating tickets.',
-                )}
-                actions={
-                  <Button
-                    type="primary"
-                    onClick={() =>
-                      setCreateTicketStatus(CreateTicketStatus.add)
-                    }
-                  >
-                    {t('Add Ticket')}
-                  </Button>
-                }
-              />
-            </Col>
-          </Row>
-        </>
-      );
+      return <EmptyState setCreateTicketStatus={setCreateTicketStatus} />;
     }
     if (createTicketStatus === CreateTicketStatus.list) {
       return (
@@ -282,48 +193,32 @@ const CreateTicket = ({
             </Col>
           </Row>
           <EventList>
-            {md ? (
-              <EventListItemDesktop>
-                <Row gutter={20}>
-                  <Col>
-                    <img
-                      src="https://i1.sndcdn.com/artworks-6Y4BSPNiLENV-0-t500x500.jpg"
-                      alt=""
-                    />
-                  </Col>
-                  <Col flex="auto">
-                    <Row justify="space-between">
-                      <Col className="title">SVIP</Col>
-                      <Col>
-                        <Space>
-                          <StatusBadge status="warning" text="Ended" />
-                          <MoreIcon
-                            trigger={['click']}
-                            menu={{
-                              items: [
-                                {
-                                  label: 'Edit',
-                                  key: 'edit',
-                                },
-                                {
-                                  label: 'Delete',
-                                  key: 'delete',
-                                },
-                              ],
-                            }}
-                          />
-                        </Space>
-                      </Col>
-                    </Row>
-                    <Row justify="start">
-                      <Col></Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </EventListItemDesktop>
-            ) : (
-              <EventListItemMobile></EventListItemMobile>
-            )}
+            <EventListItem
+              image="https://i1.sndcdn.com/artworks-6Y4BSPNiLENV-0-t500x500.jpg"
+              title="SVIP"
+              totalAvailableQuantity="200"
+              ticketPrice="100"
+              sellingTime="Jun 28 2023, 10:00 - Jun 28 2023, 12:00"
+              statusText="Ended"
+            />
+            <EventListItem
+              image="https://i1.sndcdn.com/artworks-6Y4BSPNiLENV-0-t500x500.jpg"
+              title="SVIP"
+              totalAvailableQuantity="200"
+              ticketPrice="100"
+              sellingTime="Jun 28 2023, 10:00 - Jun 28 2023, 12:00"
+              statusText="On Sale"
+              status="success"
+            />
+            <EventListItem
+              image="https://i1.sndcdn.com/artworks-6Y4BSPNiLENV-0-t500x500.jpg"
+              title="SVIP"
+              totalAvailableQuantity="200"
+              ticketPrice="100"
+              sellingTime="Jun 28 2023, 10:00 - Jun 28 2023, 12:00"
+              statusText="Scheduled"
+              status="warning"
+            />
           </EventList>
         </>
       );
@@ -352,39 +247,14 @@ const CreateTicket = ({
                     />
                   </Form.Item>
                   <Form.Item label="Ticket Image" name="ticketImage" required>
-                    <UploadFileComponent
-                      accept="image/png, image/jpeg, image/gif, video/mp4"
-                      limitFileSize={30}
-                      description={{
-                        type: t('PNG, JPEG, GIF or MP4 files only'),
-                        size: t('up to [size] MB in size', { size: '20' }),
-                      }}
-                      previewImageUrl={formValue.ticketImage}
-                      previewType={formValue.ticketImageType}
-                      handleChange={handleUploadChange}
-                      customRequest={customRequest}
-                      handleFileRemove={handleFileRemove}
-                      uploadButtonText="Drag or click to upload image"
+                    <TickImageUpload
+                      formValue={formValue}
+                      handleUploadChange={handleUploadChange}
                       fileList={fileList}
+                      thumbnaiFileList={thumbnaiFileList}
+                      handleThumbnaiUploadChange={handleThumbnaiUploadChange}
+                      fieldEdit={fieldEdit}
                     />
-                    {formValue.ticketImageType.includes('video') && (
-                      <Form.Item label="Thumbnail image">
-                        <UploadFileComponent
-                          accept="image/png, image/jpeg, image/gif"
-                          fileList={thumbnaiFileList}
-                          previewImageUrl={formValue.ticketThumbnailUrl}
-                          previewType={formValue.ticketThumbnailType}
-                          limitFileSize={15}
-                          handleChange={handleThumbnaiUploadChange}
-                          handleFileRemove={handleThumbnaiFileRemove}
-                          customRequest={customThumbnaiUploadRequest}
-                          description={{
-                            type: t('PNG, JPEG or GIF files only'),
-                            size: t('up to [size] MB in size', { size: '15' }),
-                          }}
-                        />
-                      </Form.Item>
-                    )}
                   </Form.Item>
                   <Form.Item
                     style={{
@@ -392,13 +262,15 @@ const CreateTicket = ({
                       width: 'calc(50% - 8px)',
                       marginRight: 16,
                     }}
-                    label="Stock"
+                    label="Total Available Quantity"
                     required
                   >
                     <Input
                       style={{ height: 38 }}
-                      onChange={(e) => fieldEdit(e.target.value, 'stock')}
-                      value={formValue.stock}
+                      onChange={(e) =>
+                        fieldEdit(e.target.value, 'totalAvailableQuantity')
+                      }
+                      value={formValue.totalAvailableQuantity}
                     />
                   </Form.Item>
                   <Form.Item
@@ -546,55 +418,14 @@ const CreateTicket = ({
               </Col>
               <Col span={(pageTipsShow && 10) || 3}>{TipsCmp}</Col>
             </Row>
-            <Modal
-              title="Select Events"
-              footer={[
-                <ModalFooterButton
-                  key="done"
-                  type="primary"
-                  onClick={doneHandle}
-                >
-                  Done
-                </ModalFooterButton>,
-              ]}
-              centered
-              onCancel={() => setOpen(false)}
+            <SelectEventsModal
               open={open}
-            >
-              <SelectEventsTable>
-                <Col className="header" span={24}>
-                  <Row>
-                    <Col span={2}>
-                      <Checkbox
-                        checked={
-                          eventsListData.length ===
-                          eventsListData.filter((item) => item.checked).length
-                        }
-                        onChange={(e) => hanldleCheckAll(e.target.checked)}
-                      />
-                    </Col>
-                    <Col span={15}>Event Name</Col>
-                    <Col span={7}>Ticket Name</Col>
-                  </Row>
-                </Col>
-                {eventsListData.map((item, index) => (
-                  <Col className="item" span={24} key={item.id}>
-                    <Row>
-                      <Col span={2}>
-                        <Checkbox
-                          onChange={(e) =>
-                            handleSelectEvents(e.target.checked, index)
-                          }
-                          checked={item.checked}
-                        />
-                      </Col>
-                      <Col span={15}>{item.eventName}</Col>
-                      <Col span={7}>{item.ticketName}</Col>
-                    </Row>
-                  </Col>
-                ))}
-              </SelectEventsTable>
-            </Modal>
+              setOpen={setOpen}
+              doneHandle={doneHandle}
+              eventsListData={eventsListData}
+              handleSelectEvents={handleSelectEvents}
+              hanldleCheckAll={hanldleCheckAll}
+            />
           </CreateEventFormContainer>
         </>
       );
@@ -602,7 +433,7 @@ const CreateTicket = ({
     return null;
   };
   useEffect(() => {
-    setCreateTicketStatus(CreateTicketStatus.empty);
+    setCreateTicketStatus(CreateTicketStatus.list);
   }, []);
   return renderContent();
 };

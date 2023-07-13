@@ -23,7 +23,7 @@ import ProgressBarComponent from '../../components/ProgressBar';
 import PageHeaderComponent from '../../components/PageHeader';
 import { CreateEventContainer } from './CreateEventComponent';
 import EventInfo from './Component/EventInfo';
-import CreateTicket, { CreateTicketStatus } from './Component/CreateTicket';
+import CreateTicket from './Component/CreateTicket';
 import Settings from './Component/Settings';
 import Publish from './Component/Publish';
 import {
@@ -32,6 +32,7 @@ import {
   getOrganizerAction,
   selectLoading,
 } from './CreateEvent.slice';
+import { CreateTicketStatus } from './Component/CreateTicketComponents';
 
 const { confirm } = Modal;
 
@@ -51,7 +52,7 @@ const CreateEvent = () => {
   const loading = useAppSelector(selectLoading);
   const organizerData = useAppSelector(selectOrganizerData);
 
-  const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
+  const [steps, setSteps] = useState<number>(ComponentSteps.createTicket);
   const [previousStep, setPreviousStep] = useState<number>(
     ComponentSteps.eventInfo,
   );
@@ -79,7 +80,7 @@ const CreateEvent = () => {
     images: [],
     ticketName: '',
     ticketImage: '',
-    stock: '',
+    totalAvailableQuantity: '',
     ticketPrice: '',
     absorbFees: false,
     sellingStartTime: '',
