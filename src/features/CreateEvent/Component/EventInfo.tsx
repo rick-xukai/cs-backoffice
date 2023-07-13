@@ -20,12 +20,10 @@ import {
   useJsApiLoader,
   StandaloneSearchBox,
 } from '@react-google-maps/api';
-import { debounce, head } from 'lodash';
+import { debounce } from 'lodash';
 import Cropper from 'react-easy-crop';
 
 import { useAppDispatch } from '../../../app/hooks';
-import { useCookie } from '../../../hooks';
-import { CookieKeys, UserRoleKeys } from '../../../constants/Keys';
 import { Images } from '../../../theme';
 import { getCroppedImg, dataURLtoFile } from '../../../utils/func';
 import { UploadFileAcceptType } from '../../../constants/General';
@@ -95,7 +93,6 @@ const EventInfo = ({
   fieldEdit: (value: any, field: string) => void;
 }) => {
   const { t } = useTranslation();
-  const cookies = useCookie([CookieKeys.authUserRole]);
   const dispatch = useAppDispatch();
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -281,27 +278,6 @@ const EventInfo = ({
     [],
   );
 
-  const checkOrganizerDefaultValue = () => {
-    let defaultValue = '';
-    if (organizerData.length) {
-      if (formValue.organizerId) {
-        defaultValue =
-          organizerData.find(
-            (item) => item.id.toString() === formValue.organizerId,
-          )?.name || '';
-      } else {
-        const userRole = cookies.getCookie(CookieKeys.authUserRole);
-        if (
-          userRole === UserRoleKeys.organizerAdmin ||
-          userRole === UserRoleKeys.organizerUser
-        ) {
-          defaultValue = head(organizerData)?.name || '';
-        }
-      }
-    }
-    return defaultValue;
-  };
-
   useEffect(() => {
     if (formValue.banner) {
       setBannerFile(formValue.banner);
@@ -344,7 +320,6 @@ const EventInfo = ({
               </Form.Item>
               <Form.Item required label="Organizer" name="organizerId">
                 <Select
-                  defaultValue={checkOrganizerDefaultValue}
                   options={organizerData.map((item: OrganizerData) => ({
                     label: item.name,
                     value: item.id,

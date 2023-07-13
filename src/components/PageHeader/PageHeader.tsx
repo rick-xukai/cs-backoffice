@@ -5,6 +5,8 @@ import { Row, Col, message, Image } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
+import { selectSidebarType } from '../../app/layout.slice';
+import { useAppSelector } from '../../app/hooks';
 import { AuthRoutes } from '../../navigation/Routes';
 import { base64Decrypt } from '../../utils/func';
 import { CookieKeys } from '../../constants/Keys';
@@ -15,7 +17,7 @@ const PageHeaderContainer = styled.div`
   padding-right: 24px;
   padding-left: 24px;
   height: 60px;
-  z-index: 2;
+  z-index: 11;
   &.children-header {
     padding-top: 16px;
     height: unset;
@@ -123,9 +125,10 @@ const PageHeaderContainer = styled.div`
       }
     }
   }
-  @media (max-width: 996px) {
+  @media (max-width: 992px) {
     width: 100%;
     height: auto;
+    left: 0;
     padding-right: 0px;
     padding-left: 0px;
     box-shadow: unset;
@@ -165,6 +168,8 @@ const PageHeaderComponent = ({
   const { toggleMenu } = useToggleMenu();
   const history = useHistory();
   const cookies = useCookie([CookieKeys.authUserName]);
+
+  const sidebarType = useAppSelector(selectSidebarType);
 
   const [userName, setUserName] = useState<string>('');
 
@@ -227,20 +232,24 @@ const PageHeaderComponent = ({
         </Col>
         {children && <Col span={24}>{children}</Col>}
       </Row>
-      <Row>
-        <Col lg={0} span={24} style={{ background: Colors.grey5 }}>
-          <div className="title-content mobile">
-            <span>
-              {(showBackArrow && (
-                <Col className="back-page" onClick={clickBack}>
-                  <LeftOutlined />
-                  <span className="title">{title}</span>
-                </Col>
-              )) || <span className="title">{title.toLocaleUpperCase()}</span>}
-            </span>
-          </div>
-        </Col>
-      </Row>
+      {sidebarType !== 'default' && (
+        <Row>
+          <Col lg={0} span={24} style={{ background: Colors.grey5 }}>
+            <div className="title-content mobile">
+              <span>
+                {(showBackArrow && (
+                  <Col className="back-page" onClick={clickBack}>
+                    <LeftOutlined />
+                    <span className="title">{title}</span>
+                  </Col>
+                )) || (
+                  <span className="title">{title.toLocaleUpperCase()}</span>
+                )}
+              </span>
+            </div>
+          </Col>
+        </Row>
+      )}
     </PageHeaderContainer>
   );
 };

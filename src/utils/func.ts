@@ -287,3 +287,12 @@ export const dataURLtoFile = (dataurl: any, filename: string) => {
   }
   return new File([u8arr], filename, { type: mime });
 };
+
+export const bodyOverflow = (status: string) => {
+  try {
+    document.body.style.overflow = status;
+  } catch (error) {
+    // eslint-disable-next-line
+    console.log(error);
+  }
+};

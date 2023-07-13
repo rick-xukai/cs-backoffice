@@ -15,7 +15,9 @@ import {
   defaultCurrentPage,
   defaultOrganizerPageSize,
 } from '../../constants/General';
+import { useCookie } from '../../hooks';
 import { Images } from '../../theme';
+import { CookieKeys, UserRoleKeys } from '../../constants/Keys';
 import { UserRoutes } from '../../navigation/Routes';
 import ProgressBarComponent from '../../components/ProgressBar';
 import PageHeaderComponent from '../../components/PageHeader';
@@ -44,6 +46,7 @@ const CreateEvent = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useAppDispatch();
+  const cookies = useCookie([CookieKeys.authUserRole]);
 
   const loading = useAppSelector(selectLoading);
   const organizerData = useAppSelector(selectOrganizerData);
@@ -160,22 +163,17 @@ const CreateEvent = () => {
         currentLng: value.lng,
         location: value.location,
       });
-    } else {
-      if (!field) {
-        return setCreateEventFormValue({
-          ...createEventFormValue,
-          ...value,
-        });
-      }
+    } else if (field) {
       setCreateEventFormValue({
         ...createEventFormValue,
         [field]: value,
       });
+    } else {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        ...value,
+      });
     }
-    return setCreateEventFormValue({
-      ...createEventFormValue,
-      [field]: value,
-    });
   };
 
   const notSaveConfirm = () => {
@@ -287,6 +285,27 @@ const CreateEvent = () => {
     event.preventDefault();
   };
 
+  const checkOrganizerDefaultValue = () => {
+    let defaultValue = '';
+    if (organizerData.length) {
+      if (createEventFormValue.organizerId) {
+        defaultValue =
+          organizerData.find(
+            (item) => item.id.toString() === createEventFormValue.organizerId,
+          )?.name || '';
+      } else {
+        const userRole = cookies.getCookie(CookieKeys.authUserRole);
+        if (
+          userRole === UserRoleKeys.organizerAdmin ||
+          userRole === UserRoleKeys.organizerUser
+        ) {
+          defaultValue = _.head(organizerData)?.name || '';
+        }
+      }
+    }
+    return defaultValue;
+  };
+
   useEffect(() => {
     window.addEventListener('beforeunload', notSaveAlert);
     window.onload = () => {
@@ -338,6 +357,7 @@ const CreateEvent = () => {
                 onFinish={onFinish}
                 initialValues={{
                   ...createEventFormValue,
+                  organizerId: checkOrganizerDefaultValue(),
                   eventTime:
                     (createEventFormValue.startTime &&
                       createEventFormValue.endTime && [

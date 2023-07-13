@@ -1,8 +1,9 @@
 import React, { useEffect, useCallback, memo } from 'react';
-import { Layout } from 'antd';
+import { Layout, Col } from 'antd';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { SidebarTypes } from '../../constants/Layout';
+import { bodyOverflow } from '../../utils/func';
 import SettingDrawer from '../SettingsDrawer';
 import {
   selectLayoutType,
@@ -47,6 +48,15 @@ const LayoutCmp = ({ children }: { children: React.ReactChildren }) => {
   const toggleRightbar = useCallback(() => {
     dispatch(toggloRightbarAction(!rightbar));
   }, [rightbar]);
+
+  useEffect(() => {
+    if (sidebarType === SidebarTypes.default && window.screen.width <= 992) {
+      bodyOverflow('hidden');
+    } else {
+      bodyOverflow('scroll');
+    }
+  }, [sidebarType]);
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <SideBar
@@ -58,7 +68,12 @@ const LayoutCmp = ({ children }: { children: React.ReactChildren }) => {
         handleBroken={handleBroken}
       />
       <Layout className="content-layout">
-        <Content className="page-content">{children}</Content>
+        <Content className="page-content">
+          {sidebarType === SidebarTypes.default && (
+            <Col lg={0} span={24} className="page-content-mask" />
+          )}
+          {children}
+        </Content>
       </Layout>
       <SettingDrawer visible={rightbar} toggleRightbar={toggleRightbar} />
     </Layout>
