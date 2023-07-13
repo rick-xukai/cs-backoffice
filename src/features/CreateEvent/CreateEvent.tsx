@@ -48,7 +48,7 @@ const CreateEvent = () => {
   const loading = useAppSelector(selectLoading);
   const organizerData = useAppSelector(selectOrganizerData);
 
-  const [steps, setSteps] = useState<number>(ComponentSteps.createTicket);
+  const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
     ComponentSteps.eventInfo,
   );
