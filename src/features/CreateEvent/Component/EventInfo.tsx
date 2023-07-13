@@ -73,7 +73,6 @@ export interface EventInfoFormValueProps {
   royaltyFee: string;
   ticketCeilingPrice: string;
   visibility: boolean;
-  ticketsPerPurchase: number[];
   connectedTickets: { id: number; eventName: string; ticketName: string }[];
   ticketImageType: string;
   ticketThumbnailUrl: string;

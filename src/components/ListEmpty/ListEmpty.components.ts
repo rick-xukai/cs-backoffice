@@ -1,9 +1,12 @@
 import styled from 'styled-components';
-import { Colors } from '../../theme';
+import { BreakPoints, Colors } from '../../theme';
 
 export const Warapper = styled.div`
   max-width: 422px;
-  margin: 100px auto;
+  position: relative;
+  @media (max-width: ${BreakPoints.lg}px) {
+    margin-top: 48px;
+  }
 `;
 
 export const Image = styled.img`
@@ -35,4 +38,12 @@ export const Actions = styled.div`
   display: flex;
   justify-content: center;
   gap: 12px;
+`;
+
+export const Container = styled.div`
+  width: 100%;
+  height: 88%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

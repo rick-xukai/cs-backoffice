@@ -8,9 +8,9 @@ import {
   Checkbox,
   DatePicker,
   Select,
-  InputNumber,
   Modal,
   Grid,
+  Space,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +36,8 @@ import { MMM_DD_YYYY_HH_MM, SGD_UNIT } from '../../../constants/constants';
 import QuestionTooltip from '../../../components/QuestionTooltip';
 import { uploadFileAction } from '../CreateEvent.slice';
 import { useAppDispatch } from '../../../app/hooks';
-import StatusBadge from '../../../components/StatusBadge/StatusBadge';
+import StatusBadge from '../../../components/StatusBadge';
+import MoreIcon from '../../../components/MoreIcon';
 
 export enum CreateTicketStatus {
   empty = 1,
@@ -236,7 +237,7 @@ const CreateTicket = ({
               {t('Create Ticket')}
             </Col>
           </Row>
-          <Row>
+          <Row style={{ height: '100%' }}>
             <Col span={24}>
               <ListEmpty
                 image={Images.CreateNewTicketIcon}
@@ -283,19 +284,39 @@ const CreateTicket = ({
           <EventList>
             {md ? (
               <EventListItemDesktop>
-                <Row>
+                <Row gutter={20}>
                   <Col>
                     <img
                       src="https://i1.sndcdn.com/artworks-6Y4BSPNiLENV-0-t500x500.jpg"
                       alt=""
                     />
                   </Col>
-                  <Col>
+                  <Col flex="auto">
                     <Row justify="space-between">
-                      <Col>SVIP</Col>
+                      <Col className="title">SVIP</Col>
                       <Col>
-                        <StatusBadge status="warning" text="Ended" />
+                        <Space>
+                          <StatusBadge status="warning" text="Ended" />
+                          <MoreIcon
+                            trigger={['click']}
+                            menu={{
+                              items: [
+                                {
+                                  label: 'Edit',
+                                  key: 'edit',
+                                },
+                                {
+                                  label: 'Delete',
+                                  key: 'delete',
+                                },
+                              ],
+                            }}
+                          />
+                        </Space>
                       </Col>
+                    </Row>
+                    <Row justify="start">
+                      <Col></Col>
                     </Row>
                   </Col>
                 </Row>
@@ -375,6 +396,7 @@ const CreateTicket = ({
                     required
                   >
                     <Input
+                      style={{ height: 38 }}
                       onChange={(e) => fieldEdit(e.target.value, 'stock')}
                       value={formValue.stock}
                     />
@@ -431,10 +453,7 @@ const CreateTicket = ({
                       formValue.royaltyFee ||
                       formValue.ticketCeilingPrice
                         ? [1]
-                        : [] ||
-                          formValue.ticketsPerPurchase[0] ||
-                          formValue.ticketsPerPurchase[1] ||
-                          formValue.connectedTickets.length
+                        : [] || formValue.connectedTickets.length
                     }
                   >
                     <FoldingPanel.Panel header="Advanced Settings" key={1}>
@@ -495,41 +514,6 @@ const CreateTicket = ({
                           ]}
                           onChange={(e) => fieldEdit(e, 'visibility')}
                           value={formValue.visibility}
-                        />
-                      </Form.Item>
-                      <Form.Item label="Tickets Per Purchase" required>
-                        <InputNumber
-                          onChange={(e) =>
-                            fieldEdit(
-                              [e, formValue.ticketsPerPurchase[1]],
-                              'ticketsPerPurchase',
-                            )
-                          }
-                          value={formValue.ticketsPerPurchase[0]}
-                          style={{
-                            display: 'inline-block',
-                            width: 'calc(50% - 10px)',
-                            marginRight: 8,
-                          }}
-                          min={1}
-                          max={formValue.ticketsPerPurchase[1]}
-                        />
-                        -
-                        <InputNumber
-                          onChange={(e) =>
-                            fieldEdit(
-                              [formValue.ticketsPerPurchase[0], e],
-                              'ticketsPerPurchase',
-                            )
-                          }
-                          value={formValue.ticketsPerPurchase[1]}
-                          style={{
-                            display: 'inline-block',
-                            width: 'calc(50% - 10px)',
-                            marginLeft: 8,
-                          }}
-                          max={10}
-                          min={formValue.ticketsPerPurchase[0]}
                         />
                       </Form.Item>
                       <ConnectTicketsTitle>

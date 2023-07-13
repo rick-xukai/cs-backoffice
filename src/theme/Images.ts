@@ -47,6 +47,7 @@ import PromoTipsIcon from '../assets/images/icons/promo-tips-icon.svg';
 import PublishTupsIcon from '../assets/images/icons/publish-tips-icon.svg';
 import QuestionCircleIcon from '../assets/images/icons/question-circle-icon.svg';
 import DeleteOutlinedIcon from '../assets/images/icons/delete.svg';
+import MoreOutlinedIcon from '../assets/images/icons/more-icon.svg';
 
 const Images = {
   Logo,
@@ -100,6 +101,7 @@ const Images = {
   PublishTupsIcon,
   QuestionCircleIcon,
   DeleteOutlinedIcon,
+  MoreOutlinedIcon,
 };
 
 export default Images;
