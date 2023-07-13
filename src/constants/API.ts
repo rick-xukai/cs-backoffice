@@ -69,6 +69,9 @@ const API = {
   getUserPermissionsList: {
     get: '/admin/my/user',
   },
+  fetchOpenAi: {
+    post: '/admin/openai',
+  },
 };
 
 export default API;

@@ -461,6 +461,17 @@ const CreateEventFormContainer = styled.div`
       margin-bottom: 40px;
     }
   }
+  .loading {
+    animation: spin 2s linear infinite;
+  }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 const UploadIcon = styled.div`
