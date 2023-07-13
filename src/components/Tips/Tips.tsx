@@ -32,7 +32,6 @@ const Tips = ({
   const { lg } = useBreakpoint();
   const [size, setSize] = useState<null | Sizes>(null);
   const { t } = useTranslation();
-
   const handleChangeSize = (sizes: Sizes) => () => {
     setSize(sizes);
     if (onSizeChange) {

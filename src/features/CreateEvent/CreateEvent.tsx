@@ -85,7 +85,6 @@ const CreateEvent = () => {
     royaltyFee: '',
     ticketCeilingPrice: '',
     visibility: true,
-    ticketsPerPurchase: [1, 10],
     connectedTickets: [],
     ticketImageType: '',
     ticketThumbnailUrl: '',

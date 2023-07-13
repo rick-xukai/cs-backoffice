@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Button, Col, Collapse, Form, Row, Upload } from 'antd';
 
-import { Colors } from '../../theme';
+import { BreakPoints, Colors } from '../../theme';
 
 // interface TicketTypesContainerProps {
 //   containerHight: string;
@@ -13,6 +13,10 @@ const CreateEventContainer = styled.div`
   padding: calc(60px + 20px) 24px 24px;
   padding-bottom: 100px;
   background: ${Colors.grey5};
+  position: relative;
+  @media (min-width: ${BreakPoints.lg}px) {
+    height: calc(100% - 120px);
+  }
   .ant-spin {
     position: absolute;
     top: 50%;
@@ -23,6 +27,10 @@ const CreateEventContainer = styled.div`
     background: ${Colors.white};
     border-radius: 2px;
     margin-top: 20px;
+    height: 100%;
+    form {
+      height: 100%;
+    }
     .ant-input-show-count-suffix,
     .ant-input-textarea-show-count::after {
       color: ${Colors.grey7};
@@ -691,6 +699,11 @@ export const EventListItemDesktop = styled.li`
     width: 100px;
     height: 100px;
     object-fit: cover;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    color: ${Colors.black4};
   }
 `;
 

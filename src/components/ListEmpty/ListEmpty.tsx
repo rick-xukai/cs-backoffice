@@ -6,6 +6,7 @@ import {
   Image,
   Title,
   Warapper,
+  Container,
 } from './ListEmpty.components';
 
 const ListEmpty = ({
@@ -19,11 +20,13 @@ const ListEmpty = ({
   description: string;
   actions: React.ReactNode;
 }) => (
-  <Warapper>
-    <Image src={image} />
-    <Title>{title}</Title>
-    <Desctiption>{description}</Desctiption>
-    <Actions>{actions}</Actions>
-  </Warapper>
+  <Container>
+    <Warapper>
+      <Image src={image} />
+      <Title>{title}</Title>
+      <Desctiption>{description}</Desctiption>
+      <Actions>{actions}</Actions>
+    </Warapper>
+  </Container>
 );
 export default ListEmpty;

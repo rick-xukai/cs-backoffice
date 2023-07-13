@@ -4,6 +4,10 @@ import { BreakPoints, Colors } from '../../theme';
 
 export const Container = styled(Col)`
   padding: 16px 40px;
+  @media (min-width: ${BreakPoints.lg}px) {
+    position: sticky;
+    top: 50px;
+  }
   .content-text {
     margin-bottom: 15px;
   }
@@ -53,6 +57,10 @@ export const CloseIcon = styled.img`
 
 export const MiniSize = styled(Col)`
   margin-bottom: 16px;
+  @media (min-width: ${BreakPoints.lg}px) {
+    position: sticky;
+    top: 65px;
+  }
   @media (max-width: ${BreakPoints.lg}px) {
     position: fixed;
     left: 50%;
