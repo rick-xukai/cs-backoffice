@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Layout, Row } from 'antd';
+import { Layout, Row, Col } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import { SiderTheme } from 'antd/lib/layout/Sider';
 import styled from 'styled-components';
@@ -58,13 +58,13 @@ const SideBar = ({
         handleBroken(broken);
       }}
     >
-      <div className="logo-box">
+      <Col lg={24} span={0} className="logo-box">
         <Link to="/" className="logo">
           <span>
             <img src={Images.LogoWhiteColor} alt="" />
           </span>
         </Link>
-      </div>
+      </Col>
       <SidebarContent sidebarTheme={sidebarTheme} />
       <Row className="logout-container" onClick={logout}>
         <Link to={AuthRoutes.login} className="logo">
