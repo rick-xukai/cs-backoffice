@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col } from 'antd';
 import { useTranslation } from 'react-i18next';
-import Tips, { Sizes } from '../../../components/Tips/Tips';
+import Tips from '../../../components/Tips/Tips';
 import { Images } from '../../../theme';
 
 const Publish = () => {
@@ -19,8 +19,8 @@ const Publish = () => {
           <Col span={(pageTipsShow && 10) || 3}>
             <Tips
               title={t('Publish Tips')}
-              image={Images.ProfileTipsBg}
-              onSizeChange={(val) => setPageTipsShow(val === Sizes.normal)}
+              image={Images.PublishTupsIcon}
+              onSizeChange={setPageTipsShow}
               content={
                 <Row>
                   <Col className="content-text" span={24}>

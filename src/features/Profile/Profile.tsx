@@ -27,7 +27,7 @@ import {
   UpdateProfilePayload,
   uploadProfileFileAction,
 } from './Profile.slice';
-import Tips, { Sizes } from '../../components/Tips/Tips';
+import Tips from '../../components/Tips/Tips';
 
 const { TextArea } = Input;
 
@@ -329,9 +329,7 @@ const Profile = () => {
                       </TipContent>
                     }
                     image={Images.ProfileTipsBg}
-                    onSizeChange={(val) =>
-                      setPageTipsShow(val === Sizes.normal)
-                    }
+                    onSizeChange={setPageTipsShow}
                   />
                 </Col>
               </Row>

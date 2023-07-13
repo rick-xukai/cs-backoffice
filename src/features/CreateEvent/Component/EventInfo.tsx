@@ -35,7 +35,6 @@ import {
 } from '../CreateEventComponent';
 import TipsComponent from '../../../components/Tips';
 import ImagesUpload from '../../../components/ImagesUpload/ImagesUpload';
-import { Sizes } from '../../../components/Tips/Tips';
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -63,6 +62,22 @@ export interface EventInfoFormValueProps {
   currentLat: number;
   currentLng: number;
   images: any[];
+  ticketName: string;
+  ticketImage: string;
+  stock: string;
+  ticketPrice: string;
+  absorbFees: boolean;
+  sellingStartTime: string;
+  sellingEndTime: string;
+  ticketDescription: string;
+  royaltyFee: string;
+  ticketCeilingPrice: string;
+  visibility: boolean;
+  ticketsPerPurchase: number[];
+  connectedTickets: { id: number; eventName: string; ticketName: string }[];
+  ticketImageType: string;
+  ticketThumbnailUrl: string;
+  ticketThumbnailType: string;
 }
 
 const EventInfo = ({
@@ -248,14 +263,14 @@ const EventInfo = ({
         <Row>
           <Col lg={(pageTipsShow && 14) || 21} span={24} className="left-form">
             <div className="main-box">
-              <Form.Item label="Event Name" name="eventName">
+              <Form.Item required label="Event Name" name="eventName">
                 <Input
                   showCount
                   maxLength={100}
                   onChange={(e) => fieldEdit(e.target.value, 'eventName')}
                 />
               </Form.Item>
-              <Form.Item label="Organizer">
+              <Form.Item required label="Organizer" name="organizerId">
                 <Select
                   defaultValue={checkOrganizerDefaultValue}
                   options={organizerData.map((item: OrganizerData) => ({
@@ -267,7 +282,11 @@ const EventInfo = ({
               </Form.Item>
               {(!showAddMyLocationInput && (
                 <>
-                  <Form.Item label="Location" style={{ position: 'relative' }}>
+                  <Form.Item
+                    required
+                    label="Location"
+                    style={{ position: 'relative' }}
+                  >
                     {isLoaded && (
                       <StandaloneSearchBox
                         onLoad={onSearchBoxLoad}
@@ -342,7 +361,7 @@ const EventInfo = ({
                   />
                 </Form.Item>
               )}
-              <Form.Item label="Event Time" name="eventTime">
+              <Form.Item required label="Event Time" name="eventTime">
                 <RangePicker
                   inputReadOnly
                   showTime={{ format: 'HH:mm' }}
@@ -361,6 +380,7 @@ const EventInfo = ({
                 />
               </Form.Item>
               <Form.Item
+                required
                 label="Event Banner Image"
                 name="banner"
                 className="banner-image-dragger"
@@ -416,6 +436,7 @@ const EventInfo = ({
                 </>
               </Form.Item>
               <Form.Item
+                required
                 label="Event Short Description"
                 name="eventShortDescription"
               >
@@ -430,6 +451,7 @@ const EventInfo = ({
                 />
               </Form.Item>
               <Form.Item
+                required
                 className="item-suggest-description"
                 name="description"
               >
@@ -467,8 +489,8 @@ const EventInfo = ({
           <Col span={(pageTipsShow && 10) || 3}>
             <TipsComponent
               title={t('Event Tips')}
-              image={Images.ProfileTipsBg}
-              onSizeChange={(val) => setPageTipsShow(val === Sizes.normal)}
+              image={Images.EventTipsIcon}
+              onSizeChange={setPageTipsShow}
               content={
                 <Row>
                   <Col className="content-text" span={24}>

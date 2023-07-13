@@ -19,7 +19,7 @@ export type TipsProps = {
   content: React.ReactNode;
   image?: string;
   hideClose?: boolean;
-  onSizeChange?: (size: Sizes) => void;
+  onSizeChange?: (size: boolean) => void;
 };
 const { useBreakpoint } = Grid;
 const Tips = ({
@@ -36,7 +36,7 @@ const Tips = ({
   const handleChangeSize = (sizes: Sizes) => () => {
     setSize(sizes);
     if (onSizeChange) {
-      onSizeChange(sizes);
+      onSizeChange(sizes === Sizes.normal);
     }
   };
   const clickHandle = () => {

@@ -52,10 +52,11 @@ export const CloseIcon = styled.img`
 `;
 
 export const MiniSize = styled(Col)`
+  margin-bottom: 16px;
   @media (max-width: ${BreakPoints.lg}px) {
     position: fixed;
     left: 50%;
-    bottom: 15px;
+    bottom: 0px;
     transform: translate(-50%, 0%);
   }
 `;

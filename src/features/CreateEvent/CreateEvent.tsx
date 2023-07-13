@@ -21,7 +21,7 @@ import ProgressBarComponent from '../../components/ProgressBar';
 import PageHeaderComponent from '../../components/PageHeader';
 import { CreateEventContainer } from './CreateEventComponent';
 import EventInfo from './Component/EventInfo';
-import CreateTicket from './Component/CreateTicket';
+import CreateTicket, { CreateTicketStatus } from './Component/CreateTicket';
 import Settings from './Component/Settings';
 import Publish from './Component/Publish';
 import {
@@ -48,7 +48,7 @@ const CreateEvent = () => {
   const loading = useAppSelector(selectLoading);
   const organizerData = useAppSelector(selectOrganizerData);
 
-  const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
+  const [steps, setSteps] = useState<number>(ComponentSteps.createTicket);
   const [previousStep, setPreviousStep] = useState<number>(
     ComponentSteps.eventInfo,
   );
@@ -74,6 +74,22 @@ const CreateEvent = () => {
     description: '',
     detailImage: '',
     images: [],
+    ticketName: '',
+    ticketImage: '',
+    stock: '',
+    ticketPrice: '',
+    absorbFees: false,
+    sellingStartTime: '',
+    sellingEndTime: '',
+    ticketDescription: '',
+    royaltyFee: '',
+    ticketCeilingPrice: '',
+    visibility: true,
+    ticketsPerPurchase: [1, 10],
+    connectedTickets: [],
+    ticketImageType: '',
+    ticketThumbnailUrl: '',
+    ticketThumbnailType: '',
   });
   const [progressItems, setProgressItems] = useState([
     {
@@ -109,6 +125,9 @@ const CreateEvent = () => {
       ),
     },
   ]);
+  const [createTicketStatus, setCreateTicketStatus] = useState(
+    CreateTicketStatus.empty,
+  );
 
   const onFinish = () => {
     setFormValueSaved(true);
@@ -127,7 +146,7 @@ const CreateEvent = () => {
     }
   };
 
-  const handleFieldChange = (value: any, field: string) => {
+  const handleFieldChange = (value: any, field?: string) => {
     setFormValueSaved(false);
     if (field === 'eventTime') {
       setCreateEventFormValue({
@@ -142,11 +161,21 @@ const CreateEvent = () => {
         currentLng: value.lng(),
       });
     } else {
+      if (!field) {
+        return setCreateEventFormValue({
+          ...createEventFormValue,
+          ...value,
+        });
+      }
       setCreateEventFormValue({
         ...createEventFormValue,
         [field]: value,
       });
     }
+    return setCreateEventFormValue({
+      ...createEventFormValue,
+      [field]: value,
+    });
   };
 
   const notSaveConfirm = () => {
@@ -324,7 +353,14 @@ const CreateEvent = () => {
                     fieldEdit={handleFieldChange}
                   />
                 )}
-                {steps === ComponentSteps.createTicket && <CreateTicket />}
+                {steps === ComponentSteps.createTicket && (
+                  <CreateTicket
+                    createTicketStatus={createTicketStatus}
+                    setCreateTicketStatus={setCreateTicketStatus}
+                    formValue={createEventFormValue}
+                    fieldEdit={handleFieldChange}
+                  />
+                )}
                 {steps === ComponentSteps.settings && <Settings />}
                 {steps === ComponentSteps.publish && <Publish />}
               </Form>

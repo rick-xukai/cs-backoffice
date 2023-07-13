@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col } from 'antd';
 import { useTranslation } from 'react-i18next';
-import Tips, { Sizes } from '../../../components/Tips/Tips';
+import Tips from '../../../components/Tips/Tips';
 import { Images } from '../../../theme';
 
 const Settings = () => {
@@ -22,8 +22,8 @@ const Settings = () => {
 (3) Ticket bundle promotions are highly effective for social events. Nobody likes going to events alone. Using bundle promotions effectively will help to drive ticket sales! */}
             <Tips
               title={t('Promocode Tips')}
-              image={Images.ProfileTipsBg}
-              onSizeChange={(val) => setPageTipsShow(val === Sizes.normal)}
+              image={Images.PromoTipsIcon}
+              onSizeChange={setPageTipsShow}
               content={
                 <Row>
                   <Col span={24} className="content-text">
