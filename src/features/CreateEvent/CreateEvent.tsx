@@ -78,21 +78,7 @@ const CreateEvent = () => {
     description: '',
     detailImage: '',
     images: [],
-    ticketName: '',
-    ticketImage: '',
-    totalAvailableQuantity: '',
-    ticketPrice: '',
-    absorbFees: false,
-    sellingStartTime: '',
-    sellingEndTime: '',
-    ticketDescription: '',
-    royaltyFee: '',
-    ticketCeilingPrice: '',
-    visibility: true,
-    connectedTickets: [],
-    ticketImageType: '',
-    ticketThumbnailUrl: '',
-    ticketThumbnailType: '',
+    ticketList: [],
   });
   const [progressItems, setProgressItems] = useState([
     {
@@ -325,6 +311,16 @@ const CreateEvent = () => {
     };
   }, []);
 
+  const handleCancelCreateTicket = () => {
+    if (createEventFormValue.ticketList.length) {
+      setCreateTicketStatus(CreateTicketStatus.list);
+    } else {
+      setCreateTicketStatus(CreateTicketStatus.empty);
+    }
+  };
+  const handleSave = () => {
+    setCreateTicketStatus(CreateTicketStatus.list);
+  };
   return (
     <>
       <Prompt when={blockRouter} message={handleRouterHoldUp} />
@@ -388,14 +384,27 @@ const CreateEvent = () => {
               </Form>
             </div>
             <div className="page-bottom">
-              <div className="bottom-btn">
-                <Button onClick={() => saveAsDraft()}>
-                  {t('Save as Draft')}
-                </Button>
-                <Button type="primary" onClick={() => setSteps(steps + 1)}>
-                  {t('Next')}
-                </Button>
-              </div>
+              {steps === ComponentSteps.createTicket &&
+              (createTicketStatus === CreateTicketStatus.add ||
+                createTicketStatus === CreateTicketStatus.edit) ? (
+                <div className="bottom-btn">
+                  <Button onClick={handleCancelCreateTicket}>
+                    {t('Cancel')}
+                  </Button>
+                  <Button type="primary" onClick={handleSave}>
+                    {t('Save')}
+                  </Button>
+                </div>
+              ) : (
+                <div className="bottom-btn">
+                  <Button onClick={() => saveAsDraft()}>
+                    {t('Save as Draft')}
+                  </Button>
+                  <Button type="primary" onClick={() => setSteps(steps + 1)}>
+                    {t('Next')}
+                  </Button>
+                </div>
+              )}
             </div>
           </>
         )}

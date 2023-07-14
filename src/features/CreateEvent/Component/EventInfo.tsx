@@ -51,21 +51,7 @@ const libraries: (
   | 'visualization'
 )[] = ['places'];
 
-export interface EventInfoFormValueProps {
-  eventName: string;
-  location: string;
-  addMyLocation: string;
-  organizerId: string;
-  address: string;
-  startTime: string;
-  endTime: string;
-  banner: string;
-  eventShortDescription: string;
-  description: string;
-  detailImage: string;
-  currentLat: number;
-  currentLng: number;
-  images: any[];
+export interface TicketListProps {
   ticketName: string;
   ticketImage: string;
   totalAvailableQuantity: string;
@@ -81,6 +67,25 @@ export interface EventInfoFormValueProps {
   ticketImageType: string;
   ticketThumbnailUrl: string;
   ticketThumbnailType: string;
+  id: string;
+}
+
+export interface EventInfoFormValueProps {
+  eventName: string;
+  location: string;
+  addMyLocation: string;
+  organizerId: string;
+  address: string;
+  startTime: string;
+  endTime: string;
+  banner: string;
+  eventShortDescription: string;
+  description: string;
+  detailImage: string;
+  currentLat: number;
+  currentLng: number;
+  images: any[];
+  ticketList: TicketListProps[];
 }
 
 const EventInfo = ({

@@ -14,9 +14,10 @@ import StatusBadge from '../../../components/StatusBadge';
 import MoreIcon from '../../../components/MoreIcon';
 import { StatusBadgeType } from '../../../components/StatusBadge/StatusBadge.component';
 import UploadFileComponent from '../../../components/UploadFile/UploadFileComponent';
-import { EventInfoFormValueProps } from './EventInfo';
+import { TicketListProps } from './EventInfo';
 import { useAppDispatch } from '../../../app/hooks';
 import { uploadFileAction } from '../CreateEvent.slice';
+import Tips from '../../../components/Tips';
 
 export enum CreateTicketStatus {
   empty = 1,
@@ -25,11 +26,7 @@ export enum CreateTicketStatus {
   edit = 4,
 }
 const { useBreakpoint } = Grid;
-export const EmptyState = ({
-  setCreateTicketStatus,
-}: {
-  setCreateTicketStatus: any;
-}) => {
+export const EmptyState = ({ handleAddTicket }: { handleAddTicket: any }) => {
   const { t } = useTranslation();
   return (
     <>
@@ -47,10 +44,7 @@ export const EmptyState = ({
               'Create an unforgettable experience that sets your event apart. Let your creativity soar – start creating tickets.',
             )}
             actions={
-              <Button
-                type="primary"
-                onClick={() => setCreateTicketStatus(CreateTicketStatus.add)}
-              >
+              <Button type="primary" onClick={handleAddTicket}>
                 {t('Add Ticket')}
               </Button>
             }
@@ -242,7 +236,7 @@ export const TickImageUpload = ({
   handleThumbnaiUploadChange,
   fieldEdit,
 }: {
-  formValue: EventInfoFormValueProps;
+  formValue: TicketListProps;
   handleUploadChange: any;
   fileList: any;
   thumbnaiFileList: any;
@@ -334,5 +328,35 @@ export const TickImageUpload = ({
         </Form.Item>
       )}
     </>
+  );
+};
+
+export const TipsCmp = ({ setPageTipsShow }: { setPageTipsShow: any }) => {
+  const { t } = useTranslation();
+  return (
+    <Tips
+      title={t('Ticket Tips')}
+      image={Images.TicketTipsIcon}
+      onSizeChange={setPageTipsShow}
+      content={
+        <Row>
+          <Col span={24} className="content-text">
+            {t(
+              `(1) Don't give your ticket fancy names. If it's general admission, it's general admission. If it's VIP, it's VIP. Don't give names like bronze, silver or gold. Ain't nobody got time to get your colours.`,
+            )}
+          </Col>
+          <Col span={24} className="content-text">
+            {t(
+              `(2) Your image is where you stand out. Remember our tickets are digital collectibles. So make them look like they mean something. The experience begins the moment the attendee receives the ticket. So make that moment count. Contact us if you need design help.`,
+            )}
+          </Col>
+          <Col span={24} className="content-text">
+            {t(
+              `(3) Proof read your ticket description. You don't want angry Karens asking why they didn't receive another drink coupon.scribes a unique organizer and shows all of their events on one page. Having a complete profile can encourage attendees to follow you.`,
+            )}
+          </Col>
+        </Row>
+      }
+    />
   );
 };
