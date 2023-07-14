@@ -31,7 +31,7 @@ export const DraggetForm = styled(Form.Item)`
 `;
 
 export const ImagesContainer = styled(Row)`
-  /* margin-bottom: 16px; */
+  margin-bottom: 16px;
 `;
 
 export const ImageItem = styled(Col)`

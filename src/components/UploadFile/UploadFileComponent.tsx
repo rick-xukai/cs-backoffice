@@ -65,6 +65,7 @@ const UploadFileComponent = ({
   customRequest,
   handleFileRemove,
   uploadButtonText,
+  showVideoTip,
 }: {
   accept: string;
   description: { type: string; size: string };
@@ -78,6 +79,7 @@ const UploadFileComponent = ({
   customRequest: (event: any) => void;
   handleFileRemove: () => void;
   uploadButtonText?: string;
+  showVideoTip?: boolean;
 }) => {
   const { t } = useTranslation();
 
@@ -148,13 +150,14 @@ const UploadFileComponent = ({
       )}
       <div className="info">
         <p>{`${description.type} ${description.size}`}</p>
-        {limitFileSize === 30 && (
-          <p className="thumbnail-image-required">
-            {t(
-              '(Plz note that a thumbnail image is required when uploading an mp4 file)',
-            )}
-          </p>
-        )}
+        {limitFileSize === 30 ||
+          (showVideoTip && (
+            <p className="thumbnail-image-required">
+              {t(
+                '(Plz note that a thumbnail image is required when uploading an mp4 file)',
+              )}
+            </p>
+          ))}
       </div>
       <Modal
         open={previewImageOpen}

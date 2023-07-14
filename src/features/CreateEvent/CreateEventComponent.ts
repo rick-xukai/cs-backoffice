@@ -709,24 +709,71 @@ export const EventList = styled.ul`
   margin: 0;
   margin-top: 20px;
   padding: 0 20px 20px 20px;
+  gap: 16px;
+  display: flex;
+  flex: 1 0 0;
+  flex-wrap: wrap;
 `;
 export const EventListItemDesktop = styled.li`
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
   border-radius: 2px;
   padding: 20px;
-  img {
+  width: 100%;
+  .banner {
     width: 100px;
     height: 100px;
     object-fit: cover;
+    border-radius: 2px;
   }
   .title {
     font-size: 18px;
     font-weight: 700;
     color: ${Colors.black4};
   }
+  .label {
+    color: ${Colors.grey6};
+    font-size: 13px;
+    font-weight: 400;
+    margin-bottom: 4px;
+    margin-top: 20px;
+  }
+  .value {
+    color: ${Colors.black4};
+    font-size: 15px;
+    font-weight: 500;
+  }
 `;
 
-export const EventListItemMobile = styled.li``;
+export const EventListItemMobile = styled.li`
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  padding: 20px;
+  .banner {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    color: ${Colors.black4};
+  }
+  .label {
+    color: ${Colors.grey6};
+    font-size: 13px;
+    font-weight: 400;
+    margin-bottom: 4px;
+    margin-top: 20px;
+    margin-top: 12px;
+  }
+  .value {
+    color: ${Colors.black4};
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0;
+  }
+`;
 
 export {
   CreateEventContainer,
