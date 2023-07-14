@@ -71,7 +71,7 @@ const CreateEvent = () => {
     currentLng: 0,
     organizerId: '',
     address: '',
-    startTime: 'Jul 14, 2023, 14:21',
+    startTime: '',
     endTime: '',
     banner: '',
     eventShortDescription: '',
@@ -80,6 +80,15 @@ const CreateEvent = () => {
     images: [],
     ticketList: [],
   });
+  const eventInfoFinish =
+    createEventFormValue.eventName &&
+    createEventFormValue.organizerId &&
+    (createEventFormValue.location || createEventFormValue.addMyLocation) &&
+    createEventFormValue.startTime &&
+    createEventFormValue.endTime &&
+    createEventFormValue.banner &&
+    createEventFormValue.eventShortDescription;
+
   const [progressItems, setProgressItems] = useState([
     {
       title: 'Create Event',
@@ -312,7 +321,7 @@ const CreateEvent = () => {
     }
     return { defaultValue, defaultId };
   };
-  console.log(createEventFormValue.ticketList);
+
   useEffect(() => {
     setCreateEventFormValue({
       ...createEventFormValue,
@@ -355,6 +364,18 @@ const CreateEvent = () => {
       dispatch(reset());
     };
   }, []);
+
+  useEffect(() => {
+    if (eventInfoFinish) {
+      const items = _.cloneDeep(progressItems);
+      progressItems[0].icon = (
+        <div>
+          <img src={Images.SuccessIcon} alt="" className="status-img" />
+        </div>
+      );
+      setProgressItems(items);
+    }
+  }, [eventInfoFinish]);
 
   return (
     <>
