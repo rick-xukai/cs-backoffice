@@ -296,3 +296,34 @@ export const bodyOverflow = (status: string) => {
     console.log(error);
   }
 };
+
+export const requiredValidateForm: any = (
+  value: any,
+  label: string,
+  isSave: boolean,
+) => {
+  if (!value && isSave)
+    return {
+      help: `${label} is required`,
+      validateStatus: 'error',
+    };
+  return {
+    help: undefined,
+    validateStatus: undefined,
+  };
+};
+
+export const calculatePrice = (price: number, type: boolean) => {
+  let fee = price * 0.05 - 0.5;
+  if (type)
+    return {
+      userPay: price,
+      takeHome: price - fee,
+    };
+
+  fee = price * 0.05 + 0.5;
+  return {
+    userPay: price + fee,
+    takeHome: price,
+  };
+};

@@ -71,7 +71,7 @@ const CreateEvent = () => {
     currentLng: 0,
     organizerId: '',
     address: '',
-    startTime: '',
+    startTime: 'Jul 14, 2023, 14:21',
     endTime: '',
     banner: '',
     eventShortDescription: '',
@@ -115,7 +115,7 @@ const CreateEvent = () => {
     },
   ]);
   const [createTicketStatus, setCreateTicketStatus] = useState(
-    CreateTicketStatus.empty,
+    CreateTicketStatus.list,
   );
 
   const onFinish = () => {
@@ -163,29 +163,45 @@ const CreateEvent = () => {
     }
   };
 
-  const notSaveConfirm = () => {
+  const notSaveConfirm = (
+    onOk?: any,
+    onCancel?: any,
+    okText?: string,
+    cancelText?: string,
+    title?: string,
+    content?: string,
+  ) => {
     confirm({
       className: 'notSaveConfirmModal',
       open: showNotSaveConfirmModal,
       centered: true,
       closable: false,
-      okText: t('Save as Draft'),
-      cancelText: t('Leave'),
-      title: (
+      okText: okText || t('Save as Draft'),
+      cancelText: cancelText || t('Leave'),
+      title: title || (
         <div className="notSaveModalTitle">
-          {t('Unsaved Content')}
+          {title || t('Unsaved Content')}
           <CloseOutlined onClick={() => setClickConfirmModalCloseIcon(true)} />
         </div>
       ),
       icon: <ExclamationCircleOutlined />,
-      content: t('Leaving this page will result in losing your content.'),
+      content:
+        content || t('Leaving this page will result in losing your content.'),
       onOk() {
-        saveAsDraft('blockRouter');
+        if (onOk) {
+          onOk();
+        } else {
+          saveAsDraft('blockRouter');
+        }
         setShowNotSaveConfirmModal(false);
       },
       onCancel() {
+        if (onCancel) {
+          onCancel();
+        } else {
+          setBlockRouter(false);
+        }
         setShowNotSaveConfirmModal(false);
-        setBlockRouter(false);
       },
     });
   };
@@ -296,7 +312,7 @@ const CreateEvent = () => {
     }
     return { defaultValue, defaultId };
   };
-
+  console.log(createEventFormValue.ticketList);
   useEffect(() => {
     setCreateEventFormValue({
       ...createEventFormValue,
@@ -340,16 +356,6 @@ const CreateEvent = () => {
     };
   }, []);
 
-  const handleCancelCreateTicket = () => {
-    if (createEventFormValue.ticketList.length) {
-      setCreateTicketStatus(CreateTicketStatus.list);
-    } else {
-      setCreateTicketStatus(CreateTicketStatus.empty);
-    }
-  };
-  const handleSave = () => {
-    setCreateTicketStatus(CreateTicketStatus.list);
-  };
   return (
     <>
       <Prompt when={blockRouter} message={handleRouterHoldUp} />
@@ -406,25 +412,17 @@ const CreateEvent = () => {
                     setCreateTicketStatus={setCreateTicketStatus}
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
+                    notSaveConfirm={notSaveConfirm}
                   />
                 )}
                 {steps === ComponentSteps.settings && <Settings />}
                 {steps === ComponentSteps.publish && <Publish />}
               </Form>
             </div>
-            <div className="page-bottom">
-              {steps === ComponentSteps.createTicket &&
-              (createTicketStatus === CreateTicketStatus.add ||
-                createTicketStatus === CreateTicketStatus.edit) ? (
-                <div className="bottom-btn">
-                  <Button onClick={handleCancelCreateTicket}>
-                    {t('Cancel')}
-                  </Button>
-                  <Button type="primary" onClick={handleSave}>
-                    {t('Save')}
-                  </Button>
-                </div>
-              ) : (
+            {steps === ComponentSteps.createTicket &&
+            (createTicketStatus === CreateTicketStatus.add ||
+              createTicketStatus === CreateTicketStatus.edit) ? null : (
+              <div className="page-bottom">
                 <div className="bottom-btn">
                   <Button onClick={() => saveAsDraft()}>
                     {t('Save as Draft')}
@@ -433,8 +431,8 @@ const CreateEvent = () => {
                     {t('Next')}
                   </Button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </>
         )}
       </CreateEventContainer>

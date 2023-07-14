@@ -781,6 +781,13 @@ export const EventListItemMobile = styled.li`
   }
 `;
 
+export const TotalAvailableQuantitySold = styled.div`
+  color: ${Colors.black};
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 30px;
+`;
+
 export {
   CreateEventContainer,
   CreateEventFormContainer,

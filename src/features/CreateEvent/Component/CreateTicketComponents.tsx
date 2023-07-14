@@ -20,10 +20,9 @@ import { uploadFileAction } from '../CreateEvent.slice';
 import Tips from '../../../components/Tips';
 
 export enum CreateTicketStatus {
-  empty = 1,
-  list = 2,
-  add = 3,
-  edit = 4,
+  list = 1,
+  add = 2,
+  edit = 3,
 }
 const { useBreakpoint } = Grid;
 export const EmptyState = ({ handleAddTicket }: { handleAddTicket: any }) => {
@@ -65,16 +64,20 @@ export const EventListItem = ({
   sellingTime,
   status,
   statusText,
+  index,
+  item,
 }: {
   onEdit?: any;
   onDelete?: any;
   image: string;
   title: string;
-  totalAvailableQuantity: string;
+  totalAvailableQuantity: any;
   ticketPrice: string;
   sellingTime: string;
   status?: StatusBadgeType;
   statusText: string;
+  index: number;
+  item: any;
 }) => {
   const { md } = useBreakpoint();
   const more = (
@@ -85,12 +88,12 @@ export const EventListItem = ({
           {
             label: 'Edit',
             key: 'edit',
-            onClick: onEdit,
+            onClick: () => onEdit(index, item),
           },
           {
             label: 'Delete',
             key: 'delete',
-            onClick: onDelete,
+            onClick: () => onDelete(index, item),
           },
         ],
       }}
@@ -119,7 +122,7 @@ export const EventListItem = ({
             </Col>
             <Col span={6}>
               <p className="label">Ticket Price (SDG)</p>
-              <p className="value">{ticketPrice}</p>
+              <p className="value">{Number(ticketPrice).toLocaleString()}</p>
             </Col>
             <Col span={12}>
               <p className="label">Selling Time</p>
@@ -234,14 +237,14 @@ export const TickImageUpload = ({
   fileList,
   thumbnaiFileList,
   handleThumbnaiUploadChange,
-  fieldEdit,
+  changeTicketValues,
 }: {
   formValue: TicketListProps;
   handleUploadChange: any;
   fileList: any;
   thumbnaiFileList: any;
   handleThumbnaiUploadChange: any;
-  fieldEdit: any;
+  changeTicketValues: any;
 }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -251,7 +254,7 @@ export const TickImageUpload = ({
     formData.append('file', e.file);
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
-      fieldEdit({
+      changeTicketValues({
         ticketImage: response.payload.url,
         ticketImageType: e.file.type,
         ticketThumbnailUrl:
@@ -268,7 +271,7 @@ export const TickImageUpload = ({
     formData.append('file', e.file);
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
-      fieldEdit({
+      changeTicketValues({
         ticketThumbnailUrl: response.payload.url,
         ticketThumbnailType: e.file.type,
       });
@@ -278,7 +281,7 @@ export const TickImageUpload = ({
     }
   };
   const handleFileRemove = () => {
-    fieldEdit({
+    changeTicketValues({
       ticketImage: '',
       ticketImageType: '',
       ticketThumbnailUrl: '',
@@ -286,7 +289,7 @@ export const TickImageUpload = ({
     });
   };
   const handleThumbnaiFileRemove = () => {
-    fieldEdit({
+    changeTicketValues({
       ticketThumbnailUrl: '',
       ticketThumbnailType: '',
     });
