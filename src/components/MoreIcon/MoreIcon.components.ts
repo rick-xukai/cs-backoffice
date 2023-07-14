@@ -8,6 +8,7 @@ export const Container = styled.div`
   border-radius: 50%;
   background: ${Colors.white};
   cursor: pointer;
+  transition: 0.2s;
   :hover {
     background: ${Colors.grey9};
   }

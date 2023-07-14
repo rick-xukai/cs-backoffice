@@ -8,46 +8,33 @@ import {
   Checkbox,
   DatePicker,
   Select,
-  Modal,
-  Grid,
-  Space,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
-import Tips from '../../../components/Tips/Tips';
 import { Images } from '../../../theme';
-import ListEmpty from '../../../components/ListEmpty/ListEmpty';
 import {
   ConnectTicketItem,
   ConnectTicketsList,
   ConnectTicketsTitle,
   CreateEventFormContainer,
   EventList,
-  EventListItemDesktop,
-  EventListItemMobile,
   FoldingPanel,
-  ModalFooterButton,
-  SelectEventsTable,
 } from '../CreateEventComponent';
 import { EventInfoFormValueProps } from './EventInfo';
-import UploadFileComponent from '../../../components/UploadFile/UploadFileComponent';
 import { MMM_DD_YYYY_HH_MM, SGD_UNIT } from '../../../constants/constants';
 import QuestionTooltip from '../../../components/QuestionTooltip';
-import { uploadFileAction } from '../CreateEvent.slice';
-import { useAppDispatch } from '../../../app/hooks';
-import StatusBadge from '../../../components/StatusBadge';
-import MoreIcon from '../../../components/MoreIcon';
-
-export enum CreateTicketStatus {
-  empty = 1,
-  list = 2,
-  add = 3,
-  edit = 4,
-}
+// eslint-disable-next-line import/no-cycle
+import {
+  CreateTicketStatus,
+  EmptyState,
+  EventListItem,
+  SelectEventsModal,
+  TickImageUpload,
+  TipsCmp,
+} from './CreateTicketComponents';
 
 const { RangePicker } = DatePicker;
-const { useBreakpoint } = Grid;
 
 const CreateTicket = ({
   createTicketStatus,
@@ -63,11 +50,25 @@ const CreateTicket = ({
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
   const [fileList, setFileList] = useState<any>([]);
   const [thumbnaiFileList, setThumbnaiFileList] = useState<any>([]);
-  const { md } = useBreakpoint();
-
+  const formValues = formValue.ticketList[formValue.ticketList.length - 1] || {
+    ticketName: '',
+    ticketImage: '',
+    totalAvailableQuantity: '',
+    ticketPrice: '',
+    absorbFees: false,
+    sellingStartTime: '',
+    sellingEndTime: '',
+    ticketDescription: '',
+    royaltyFee: '',
+    ticketCeilingPrice: '',
+    visibility: false,
+    connectedTickets: [],
+    ticketImageType: '',
+    ticketThumbnailUrl: '',
+    ticketThumbnailType: '',
+  };
   const handleUploadChange = (info: any) => {
     setFileList(info.fileList);
   };
@@ -77,106 +78,35 @@ const CreateTicket = ({
 
   useEffect(() => {
     setFileList(
-      formValue.ticketImage
+      formValues.ticketImage
         ? [
             {
-              url: formValue.ticketImage,
-              type: formValue.ticketImageType,
-              thumbUrl: formValue.ticketImage,
-              uid: formValue.ticketImage,
-              name: formValue.ticketImage,
+              url: formValues.ticketImage,
+              type: formValues.ticketImageType,
+              thumbUrl: formValues.ticketImage,
+              uid: formValues.ticketImage,
+              name: formValues.ticketImage,
             },
           ]
         : [],
     );
-  }, [formValue.ticketImage]);
+  }, [formValues.ticketImage]);
   useEffect(() => {
     setThumbnaiFileList(
-      formValue.ticketThumbnailUrl
+      formValues.ticketThumbnailUrl
         ? [
             {
-              url: formValue.ticketThumbnailUrl,
-              type: formValue.ticketThumbnailType,
-              thumbUrl: formValue.ticketThumbnailUrl,
-              uid: formValue.ticketThumbnailUrl,
-              name: formValue.ticketThumbnailUrl,
+              url: formValues.ticketThumbnailUrl,
+              type: formValues.ticketThumbnailType,
+              thumbUrl: formValues.ticketThumbnailUrl,
+              uid: formValues.ticketThumbnailUrl,
+              name: formValues.ticketThumbnailUrl,
             },
           ]
         : [],
     );
-  }, [formValue.ticketThumbnailUrl]);
+  }, [formValues.ticketThumbnailUrl]);
 
-  const customRequest = async (e: any) => {
-    const formData = new FormData();
-    formData.append('file', e.file);
-    const response: any = await dispatch(uploadFileAction(formData));
-    if (response.type === uploadFileAction.fulfilled.toString()) {
-      fieldEdit({
-        ticketImage: response.payload.url,
-        ticketImageType: e.file.type,
-        ticketThumbnailUrl:
-          (!e.file.type.includes('video') && response.payload.url) || '',
-        ticketThumbnailType: e.file.type,
-      });
-      e.onSuccess();
-    } else {
-      e.onError();
-    }
-  };
-  const customThumbnaiUploadRequest = async (e: any) => {
-    const formData = new FormData();
-    formData.append('file', e.file);
-    const response: any = await dispatch(uploadFileAction(formData));
-    if (response.type === uploadFileAction.fulfilled.toString()) {
-      fieldEdit({
-        ticketThumbnailUrl: response.payload.url,
-        ticketThumbnailType: e.file.type,
-      });
-      e.onSuccess();
-    } else {
-      e.onError();
-    }
-  };
-  const handleFileRemove = () => {
-    fieldEdit({
-      ticketImage: '',
-      ticketImageType: '',
-      ticketThumbnailUrl: '',
-      ticketThumbnailType: '',
-    });
-  };
-  const handleThumbnaiFileRemove = () => {
-    fieldEdit({
-      ticketThumbnailUrl: '',
-      ticketThumbnailType: '',
-    });
-  };
-  const TipsCmp = (
-    <Tips
-      title={t('Ticket Tips')}
-      image={Images.TicketTipsIcon}
-      onSizeChange={setPageTipsShow}
-      content={
-        <Row>
-          <Col span={24} className="content-text">
-            {t(
-              `(1) Don't give your ticket fancy names. If it's general admission, it's general admission. If it's VIP, it's VIP. Don't give names like bronze, silver or gold. Ain't nobody got time to get your colours.`,
-            )}
-          </Col>
-          <Col span={24} className="content-text">
-            {t(
-              `(2) Your image is where you stand out. Remember our tickets are digital collectibles. So make them look like they mean something. The experience begins the moment the attendee receives the ticket. So make that moment count. Contact us if you need design help.`,
-            )}
-          </Col>
-          <Col span={24} className="content-text">
-            {t(
-              `(3) Proof read your ticket description. You don't want angry Karens asking why they didn't receive another drink coupon.scribes a unique organizer and shows all of their events on one page. Having a complete profile can encourage attendees to follow you.`,
-            )}
-          </Col>
-        </Row>
-      }
-    />
-  );
   const [eventsListData, setEventsListData] = useState([
     {
       eventName: 'Legacy Glowhard 2023: A New Realm',
@@ -207,16 +137,16 @@ const CreateTicket = ({
     setEventsListData(
       eventsListData.map((item) => ({
         ...item,
-        checked: !!formValue.connectedTickets.find(
+        checked: !!formValues.connectedTickets.find(
           (ticket) => item.id === ticket.id,
         ),
       })),
     );
-  }, [formValue.connectedTickets]);
+  }, [formValue]);
   const handleDeleteEvent = (index: number) => {
-    formValue.connectedTickets.splice(index, 1);
+    formValues.connectedTickets.splice(index, 1);
     fieldEdit({
-      connectedTickets: [...formValue.connectedTickets],
+      connectedTickets: [...formValues.connectedTickets],
     });
   };
 
@@ -228,38 +158,39 @@ const CreateTicket = ({
       })),
     );
   };
+
+  const handleAddTicket = () => {
+    setCreateTicketStatus(CreateTicketStatus.add);
+    fieldEdit({
+      ticketList: [
+        {
+          ticketName: '',
+          ticketImage: '',
+          totalAvailableQuantity: '',
+          ticketPrice: '',
+          absorbFees: true,
+          sellingStartTime: '',
+          sellingEndTime: '',
+          ticketDescription: '',
+          royaltyFee: '',
+          ticketCeilingPrice: '',
+          visibility: true,
+          connectedTickets: [],
+          ticketImageType: '',
+          ticketThumbnailUrl: '',
+          ticketThumbnailType: '',
+          id: `add_${new Date().getTime()}`,
+        },
+        ...formValue.ticketList,
+      ],
+    });
+  };
+  useEffect(() => {
+    setCreateTicketStatus(CreateTicketStatus.list);
+  }, []);
   const renderContent = () => {
     if (createTicketStatus === CreateTicketStatus.empty) {
-      return (
-        <>
-          <Row>
-            <Col span={24} className="main-title">
-              {t('Create Ticket')}
-            </Col>
-          </Row>
-          <Row style={{ height: '100%' }}>
-            <Col span={24}>
-              <ListEmpty
-                image={Images.CreateNewTicketIcon}
-                title={t('Create New Ticket')}
-                description={t(
-                  'Create an unforgettable experience that sets your event apart. Let your creativity soar – start creating tickets.',
-                )}
-                actions={
-                  <Button
-                    type="primary"
-                    onClick={() =>
-                      setCreateTicketStatus(CreateTicketStatus.add)
-                    }
-                  >
-                    {t('Add Ticket')}
-                  </Button>
-                }
-              />
-            </Col>
-          </Row>
-        </>
-      );
+      return <EmptyState handleAddTicket={handleAddTicket} />;
     }
     if (createTicketStatus === CreateTicketStatus.list) {
       return (
@@ -268,7 +199,7 @@ const CreateTicket = ({
             <Col>{t('Create Ticket')}</Col>
             <Col>
               <Button
-                onClick={() => setCreateTicketStatus(CreateTicketStatus.add)}
+                onClick={handleAddTicket}
                 style={{
                   width: 121,
                   height: 40,
@@ -282,48 +213,32 @@ const CreateTicket = ({
             </Col>
           </Row>
           <EventList>
-            {md ? (
-              <EventListItemDesktop>
-                <Row gutter={20}>
-                  <Col>
-                    <img
-                      src="https://i1.sndcdn.com/artworks-6Y4BSPNiLENV-0-t500x500.jpg"
-                      alt=""
-                    />
-                  </Col>
-                  <Col flex="auto">
-                    <Row justify="space-between">
-                      <Col className="title">SVIP</Col>
-                      <Col>
-                        <Space>
-                          <StatusBadge status="warning" text="Ended" />
-                          <MoreIcon
-                            trigger={['click']}
-                            menu={{
-                              items: [
-                                {
-                                  label: 'Edit',
-                                  key: 'edit',
-                                },
-                                {
-                                  label: 'Delete',
-                                  key: 'delete',
-                                },
-                              ],
-                            }}
-                          />
-                        </Space>
-                      </Col>
-                    </Row>
-                    <Row justify="start">
-                      <Col></Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </EventListItemDesktop>
-            ) : (
-              <EventListItemMobile></EventListItemMobile>
-            )}
+            <EventListItem
+              image="https://i1.sndcdn.com/artworks-6Y4BSPNiLENV-0-t500x500.jpg"
+              title="SVIP"
+              totalAvailableQuantity="200"
+              ticketPrice="100"
+              sellingTime="Jun 28 2023, 10:00 - Jun 28 2023, 12:00"
+              statusText="Ended"
+            />
+            <EventListItem
+              image="https://i1.sndcdn.com/artworks-6Y4BSPNiLENV-0-t500x500.jpg"
+              title="SVIP"
+              totalAvailableQuantity="200"
+              ticketPrice="100"
+              sellingTime="Jun 28 2023, 10:00 - Jun 28 2023, 12:00"
+              statusText="On Sale"
+              status="success"
+            />
+            <EventListItem
+              image="https://i1.sndcdn.com/artworks-6Y4BSPNiLENV-0-t500x500.jpg"
+              title="SVIP"
+              totalAvailableQuantity="200"
+              ticketPrice="100"
+              sellingTime="Jun 28 2023, 10:00 - Jun 28 2023, 12:00"
+              statusText="Scheduled"
+              status="warning"
+            />
           </EventList>
         </>
       );
@@ -348,43 +263,18 @@ const CreateTicket = ({
                       showCount
                       maxLength={100}
                       onChange={(e) => fieldEdit(e.target.value, 'ticketName')}
-                      value={formValue.ticketName}
+                      value={formValues.ticketName}
                     />
                   </Form.Item>
                   <Form.Item label="Ticket Image" name="ticketImage" required>
-                    <UploadFileComponent
-                      accept="image/png, image/jpeg, image/gif, video/mp4"
-                      limitFileSize={30}
-                      description={{
-                        type: t('PNG, JPEG, GIF or MP4 files only'),
-                        size: t('up to [size] MB in size', { size: '20' }),
-                      }}
-                      previewImageUrl={formValue.ticketImage}
-                      previewType={formValue.ticketImageType}
-                      handleChange={handleUploadChange}
-                      customRequest={customRequest}
-                      handleFileRemove={handleFileRemove}
-                      uploadButtonText="Drag or click to upload image"
+                    <TickImageUpload
+                      formValue={formValues}
+                      handleUploadChange={handleUploadChange}
                       fileList={fileList}
+                      thumbnaiFileList={thumbnaiFileList}
+                      handleThumbnaiUploadChange={handleThumbnaiUploadChange}
+                      fieldEdit={fieldEdit}
                     />
-                    {formValue.ticketImageType.includes('video') && (
-                      <Form.Item label="Thumbnail image">
-                        <UploadFileComponent
-                          accept="image/png, image/jpeg, image/gif"
-                          fileList={thumbnaiFileList}
-                          previewImageUrl={formValue.ticketThumbnailUrl}
-                          previewType={formValue.ticketThumbnailType}
-                          limitFileSize={15}
-                          handleChange={handleThumbnaiUploadChange}
-                          handleFileRemove={handleThumbnaiFileRemove}
-                          customRequest={customThumbnaiUploadRequest}
-                          description={{
-                            type: t('PNG, JPEG or GIF files only'),
-                            size: t('up to [size] MB in size', { size: '15' }),
-                          }}
-                        />
-                      </Form.Item>
-                    )}
                   </Form.Item>
                   <Form.Item
                     style={{
@@ -392,13 +282,15 @@ const CreateTicket = ({
                       width: 'calc(50% - 8px)',
                       marginRight: 16,
                     }}
-                    label="Stock"
+                    label="Total Available Quantity"
                     required
                   >
                     <Input
                       style={{ height: 38 }}
-                      onChange={(e) => fieldEdit(e.target.value, 'stock')}
-                      value={formValue.stock}
+                      onChange={(e) =>
+                        fieldEdit(e.target.value, 'totalAvailableQuantity')
+                      }
+                      value={formValues.totalAvailableQuantity}
                     />
                   </Form.Item>
                   <Form.Item
@@ -411,7 +303,7 @@ const CreateTicket = ({
                   >
                     <Input
                       onChange={(e) => fieldEdit(e.target.value, 'ticketPrice')}
-                      value={formValue.ticketPrice}
+                      value={formValues.ticketPrice}
                       suffix={SGD_UNIT}
                     />
                   </Form.Item>
@@ -420,7 +312,7 @@ const CreateTicket = ({
                       onChange={(e) =>
                         fieldEdit(e.target.checked, 'absorbFees')
                       }
-                      checked={formValue.absorbFees}
+                      checked={formValues.absorbFees}
                     >
                       {t('Absorb fees')}:{' '}
                       {t(
@@ -438,10 +330,10 @@ const CreateTicket = ({
                         })
                       }
                       value={
-                        formValue.sellingStartTime
+                        formValues.sellingStartTime
                           ? [
-                              moment(formValue.sellingStartTime),
-                              moment(formValue.sellingEndTime),
+                              moment(formValues.sellingStartTime),
+                              moment(formValues.sellingEndTime),
                             ]
                           : undefined
                       }
@@ -449,11 +341,11 @@ const CreateTicket = ({
                   </Form.Item>
                   <FoldingPanel
                     defaultActiveKey={
-                      formValue.ticketDescription ||
-                      formValue.royaltyFee ||
-                      formValue.ticketCeilingPrice
+                      formValues.ticketDescription ||
+                      formValues.royaltyFee ||
+                      formValues.ticketCeilingPrice
                         ? [1]
-                        : [] || formValue.connectedTickets.length
+                        : [] || formValues.connectedTickets.length
                     }
                   >
                     <FoldingPanel.Panel header="Advanced Settings" key={1}>
@@ -462,7 +354,7 @@ const CreateTicket = ({
                           onChange={(e) =>
                             fieldEdit(e.target.value, 'ticketDescription')
                           }
-                          value={formValue.ticketDescription}
+                          value={formValues.ticketDescription}
                         />
                       </Form.Item>
                       <Form.Item
@@ -482,7 +374,7 @@ const CreateTicket = ({
                           onChange={(e) =>
                             fieldEdit(e.target.value, 'royaltyFee')
                           }
-                          value={formValue.royaltyFee}
+                          value={formValues.royaltyFee}
                           suffix="%"
                         />
                       </Form.Item>
@@ -502,7 +394,7 @@ const CreateTicket = ({
                           onChange={(e) =>
                             fieldEdit(e.target.value, 'ticketCeilingPrice')
                           }
-                          value={formValue.ticketCeilingPrice}
+                          value={formValues.ticketCeilingPrice}
                           suffix={SGD_UNIT}
                         />
                       </Form.Item>
@@ -510,10 +402,10 @@ const CreateTicket = ({
                         <Select
                           options={[
                             { label: 'Visible', value: 1 },
-                            { label: 'Invisible', value: 2 },
+                            { label: 'Hidden when not on sale', value: 2 },
                           ]}
                           onChange={(e) => fieldEdit(e, 'visibility')}
-                          value={formValue.visibility}
+                          value={formValues.visibility}
                         />
                       </Form.Item>
                       <ConnectTicketsTitle>
@@ -526,7 +418,7 @@ const CreateTicket = ({
                         </span>
                       </ConnectTicketsTitle>
                       <ConnectTicketsList>
-                        {formValue.connectedTickets.map((item, index) => (
+                        {formValues.connectedTickets.map((item, index) => (
                           <ConnectTicketItem key={item.id}>
                             <div>
                               <p className="title">{item.eventName}</p>
@@ -544,66 +436,24 @@ const CreateTicket = ({
                   </FoldingPanel>
                 </div>
               </Col>
-              <Col span={(pageTipsShow && 10) || 3}>{TipsCmp}</Col>
+              <Col span={(pageTipsShow && 10) || 3}>
+                <TipsCmp setPageTipsShow={setPageTipsShow} />
+              </Col>
             </Row>
-            <Modal
-              title="Select Events"
-              footer={[
-                <ModalFooterButton
-                  key="done"
-                  type="primary"
-                  onClick={doneHandle}
-                >
-                  Done
-                </ModalFooterButton>,
-              ]}
-              centered
-              onCancel={() => setOpen(false)}
+            <SelectEventsModal
               open={open}
-            >
-              <SelectEventsTable>
-                <Col className="header" span={24}>
-                  <Row>
-                    <Col span={2}>
-                      <Checkbox
-                        checked={
-                          eventsListData.length ===
-                          eventsListData.filter((item) => item.checked).length
-                        }
-                        onChange={(e) => hanldleCheckAll(e.target.checked)}
-                      />
-                    </Col>
-                    <Col span={15}>Event Name</Col>
-                    <Col span={7}>Ticket Name</Col>
-                  </Row>
-                </Col>
-                {eventsListData.map((item, index) => (
-                  <Col className="item" span={24} key={item.id}>
-                    <Row>
-                      <Col span={2}>
-                        <Checkbox
-                          onChange={(e) =>
-                            handleSelectEvents(e.target.checked, index)
-                          }
-                          checked={item.checked}
-                        />
-                      </Col>
-                      <Col span={15}>{item.eventName}</Col>
-                      <Col span={7}>{item.ticketName}</Col>
-                    </Row>
-                  </Col>
-                ))}
-              </SelectEventsTable>
-            </Modal>
+              setOpen={setOpen}
+              doneHandle={doneHandle}
+              eventsListData={eventsListData}
+              handleSelectEvents={handleSelectEvents}
+              hanldleCheckAll={hanldleCheckAll}
+            />
           </CreateEventFormContainer>
         </>
       );
     }
     return null;
   };
-  useEffect(() => {
-    setCreateTicketStatus(CreateTicketStatus.empty);
-  }, []);
   return renderContent();
 };
 

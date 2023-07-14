@@ -23,7 +23,7 @@ import ProgressBarComponent from '../../components/ProgressBar';
 import PageHeaderComponent from '../../components/PageHeader';
 import { CreateEventContainer } from './CreateEventComponent';
 import EventInfo from './Component/EventInfo';
-import CreateTicket, { CreateTicketStatus } from './Component/CreateTicket';
+import CreateTicket from './Component/CreateTicket';
 import Settings from './Component/Settings';
 import Publish from './Component/Publish';
 import {
@@ -32,6 +32,7 @@ import {
   getOrganizerAction,
   selectLoading,
 } from './CreateEvent.slice';
+import { CreateTicketStatus } from './Component/CreateTicketComponents';
 
 const { confirm } = Modal;
 
@@ -51,7 +52,7 @@ const CreateEvent = () => {
   const loading = useAppSelector(selectLoading);
   const organizerData = useAppSelector(selectOrganizerData);
 
-  const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
+  const [steps, setSteps] = useState<number>(ComponentSteps.createTicket);
   const [previousStep, setPreviousStep] = useState<number>(
     ComponentSteps.eventInfo,
   );
@@ -77,21 +78,7 @@ const CreateEvent = () => {
     description: '',
     detailImage: '',
     images: [],
-    ticketName: '',
-    ticketImage: '',
-    stock: '',
-    ticketPrice: '',
-    absorbFees: false,
-    sellingStartTime: '',
-    sellingEndTime: '',
-    ticketDescription: '',
-    royaltyFee: '',
-    ticketCeilingPrice: '',
-    visibility: true,
-    connectedTickets: [],
-    ticketImageType: '',
-    ticketThumbnailUrl: '',
-    ticketThumbnailType: '',
+    ticketList: [],
   });
   const [progressItems, setProgressItems] = useState([
     {
@@ -324,6 +311,16 @@ const CreateEvent = () => {
     };
   }, []);
 
+  const handleCancelCreateTicket = () => {
+    if (createEventFormValue.ticketList.length) {
+      setCreateTicketStatus(CreateTicketStatus.list);
+    } else {
+      setCreateTicketStatus(CreateTicketStatus.empty);
+    }
+  };
+  const handleSave = () => {
+    setCreateTicketStatus(CreateTicketStatus.list);
+  };
   return (
     <>
       <Prompt when={blockRouter} message={handleRouterHoldUp} />
@@ -387,14 +384,27 @@ const CreateEvent = () => {
               </Form>
             </div>
             <div className="page-bottom">
-              <div className="bottom-btn">
-                <Button onClick={() => saveAsDraft()}>
-                  {t('Save as Draft')}
-                </Button>
-                <Button type="primary" onClick={() => setSteps(steps + 1)}>
-                  {t('Next')}
-                </Button>
-              </div>
+              {steps === ComponentSteps.createTicket &&
+              (createTicketStatus === CreateTicketStatus.add ||
+                createTicketStatus === CreateTicketStatus.edit) ? (
+                <div className="bottom-btn">
+                  <Button onClick={handleCancelCreateTicket}>
+                    {t('Cancel')}
+                  </Button>
+                  <Button type="primary" onClick={handleSave}>
+                    {t('Save')}
+                  </Button>
+                </div>
+              ) : (
+                <div className="bottom-btn">
+                  <Button onClick={() => saveAsDraft()}>
+                    {t('Save as Draft')}
+                  </Button>
+                  <Button type="primary" onClick={() => setSteps(steps + 1)}>
+                    {t('Next')}
+                  </Button>
+                </div>
+              )}
             </div>
           </>
         )}

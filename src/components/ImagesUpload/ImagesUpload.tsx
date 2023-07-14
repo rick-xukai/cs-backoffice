@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Spin, message } from 'antd';
+import { Col, Spin, message } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
@@ -123,7 +123,7 @@ const ImagesUpload = ({
     <>
       <ImagesContainer gutter={[16, 16]}>
         {imageList.map((item: any, index: number) => (
-          <ImageItem span={item.column} key={index}>
+          <ImageItem span={item.response ? item.column : 24} key={index}>
             <div className="image-content">
               {item.response ? (
                 <img src={item.response} alt="img" />
@@ -158,28 +158,30 @@ const ImagesUpload = ({
             </div>
           </ImageItem>
         ))}
+        <Col span={24}>
+          <DraggetForm
+            label=""
+            name={name}
+            hidden={imageList.length >= IMAGE_UPLOAD_MAX_COUNT}
+          >
+            <ImageDragger
+              name={name}
+              multiple
+              onChange={handleUploadImagesChange}
+              customRequest={uploadImageRequest}
+              fileList={imageList}
+              maxCount={IMAGE_UPLOAD_MAX_COUNT}
+            >
+              <>
+                <UploadIcon>
+                  <PlusOutlined style={{ fontSize: 14, color: Colors.grey6 }} />
+                </UploadIcon>
+                <UploadText>{t('Drag or click to upload image')}</UploadText>
+              </>
+            </ImageDragger>
+          </DraggetForm>
+        </Col>
       </ImagesContainer>
-      <DraggetForm
-        label=""
-        name={name}
-        hidden={imageList.length >= IMAGE_UPLOAD_MAX_COUNT}
-      >
-        <ImageDragger
-          name={name}
-          multiple
-          onChange={handleUploadImagesChange}
-          customRequest={uploadImageRequest}
-          fileList={imageList}
-          maxCount={IMAGE_UPLOAD_MAX_COUNT}
-        >
-          <>
-            <UploadIcon>
-              <PlusOutlined style={{ fontSize: 14, color: Colors.grey6 }} />
-            </UploadIcon>
-            <UploadText>{t('Drag or click to upload image')}</UploadText>
-          </>
-        </ImageDragger>
-      </DraggetForm>
     </>
   );
 };
