@@ -10,7 +10,7 @@ const StatusBadge = ({
   text: string;
 }) => (
   <Wrapper status={status}>
-    <div className="circle" />
+    {/* <div className="circle" /> */}
     <p>{text}</p>
   </Wrapper>
 );
