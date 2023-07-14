@@ -427,6 +427,14 @@ body[data-sidebar='dark'] {
       top: 52px;
     }
   }
+  .cropper-image-modal {
+    .ant-modal-content {
+      height: 335px;
+      width: 335px;
+      border-radius: 4px 4px 0 0;
+      margin: auto;
+    }
+  }
 }
 .page-content-mask {
   position: absolute;
