@@ -101,6 +101,9 @@ const CreateEventContainer = styled.div`
             min-height: 153px;
           }
         }
+        label {
+          margin-bottom: 10px;
+        }
       }
       .detail-image-dragger {
         .dragger-content {
@@ -456,9 +459,12 @@ const CreateEventFormContainer = styled.div`
     line-height: 21px;
     color: ${Colors.grey6};
   }
+  .eventShortDescription {
+    margin-bottom: 40px;
+  }
   @media (max-width: 992px) {
     .item-suggest-description {
-      margin-bottom: 40px;
+      margin-bottom: 30px !important;
     }
     .main-box {
       .ant-form-item {
