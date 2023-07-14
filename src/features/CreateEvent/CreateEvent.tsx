@@ -268,18 +268,21 @@ const CreateEvent = () => {
     setPreviousStep(steps);
   }, [steps]);
 
-  const gesturestart = (event: any) => {
-    event.preventDefault();
-  };
-
   const checkOrganizerDefaultValue = () => {
     let defaultValue = '';
+    let defaultId = '';
     if (organizerData.length) {
       if (createEventFormValue.organizerId) {
         defaultValue =
           organizerData.find(
             (item) => item.id.toString() === createEventFormValue.organizerId,
           )?.name || '';
+        defaultId =
+          organizerData
+            .find(
+              (item) => item.id.toString() === createEventFormValue.organizerId,
+            )
+            ?.id.toString() || '';
       } else {
         const userRole = cookies.getCookie(CookieKeys.authUserRole);
         if (
@@ -287,16 +290,43 @@ const CreateEvent = () => {
           userRole === UserRoleKeys.organizerUser
         ) {
           defaultValue = _.head(organizerData)?.name || '';
+          defaultId = _.head(organizerData)?.id.toString() || '';
         }
       }
     }
-    return defaultValue;
+    return { defaultValue, defaultId };
   };
+
+  useEffect(() => {
+    setCreateEventFormValue({
+      ...createEventFormValue,
+      organizerId: checkOrganizerDefaultValue().defaultId,
+    });
+  }, [organizerData]);
 
   useEffect(() => {
     window.addEventListener('beforeunload', notSaveAlert);
     window.onload = () => {
-      document.addEventListener('gesturestart', gesturestart);
+      document.addEventListener('touchstart', (event) => {
+        if (event.touches.length > 1) {
+          event.preventDefault();
+        }
+      });
+      let lastTouchEnd = 0;
+      document.addEventListener(
+        'touchend',
+        (event) => {
+          const now = new Date().getTime();
+          if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+          }
+          lastTouchEnd = now;
+        },
+        false,
+      );
+      document.addEventListener('gesturestart', (event) => {
+        event.preventDefault();
+      });
     };
     dispatch(
       getOrganizerAction({
@@ -306,7 +336,6 @@ const CreateEvent = () => {
     );
     return () => {
       window.removeEventListener('beforeunload', notSaveAlert);
-      document.removeEventListener('gesturestart', gesturestart);
       dispatch(reset());
     };
   }, []);
@@ -354,7 +383,7 @@ const CreateEvent = () => {
                 onFinish={onFinish}
                 initialValues={{
                   ...createEventFormValue,
-                  organizerId: checkOrganizerDefaultValue(),
+                  organizerId: checkOrganizerDefaultValue().defaultValue,
                   eventTime:
                     (createEventFormValue.startTime &&
                       createEventFormValue.endTime && [

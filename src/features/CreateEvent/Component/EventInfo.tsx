@@ -510,18 +510,21 @@ const EventInfo = ({
                     <Col lg={12} span={10}>
                       {t('Event Detailed Description')}
                     </Col>
-                    <Col lg={12} span={14} style={{ cursor: 'pointer' }}>
-                      <div
-                        onClick={
-                          openAiLoading ? undefined : suggestDescriptionAI
-                        }
-                      >
-                        <img
-                          className={openAiLoading ? 'loading' : ''}
-                          src={Images.IntelligentIcon}
-                          alt=""
-                        />
-                        <span>{t('Suggest Description')}</span>
+                    <Col lg={12} span={14}>
+                      <div>
+                        <span
+                          style={{ cursor: 'pointer' }}
+                          onClick={
+                            openAiLoading ? undefined : suggestDescriptionAI
+                          }
+                        >
+                          <img
+                            className={openAiLoading ? 'loading' : ''}
+                            src={Images.IntelligentIcon}
+                            alt=""
+                          />
+                          <span>{t('Suggest Description')}</span>
+                        </span>
                       </div>
                     </Col>
                   </Row>
