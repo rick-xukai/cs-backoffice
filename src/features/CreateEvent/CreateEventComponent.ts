@@ -236,6 +236,9 @@ const CreateEventContainer = styled.div`
       }
     }
   }
+  .form-item {
+    margin-bottom: 20;
+  }
 `;
 
 const CreateEventFormContainer = styled.div`
@@ -484,6 +487,12 @@ const CreateEventFormContainer = styled.div`
       transform: rotate(360deg);
     }
   }
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    padding: 0 8px;
+    .ant-select-selection-item {
+      margin-top: 1px;
+    }
+  }
 `;
 
 const UploadIcon = styled.div`
@@ -577,6 +586,7 @@ const FoldingPanel = styled(Collapse)`
   &.ant-collapse {
     background: unset;
     border: none;
+    margin-top: 22px;
   }
   .ant-collapse-item:not(.ant-collapse-item-active) > .ant-collapse-header {
     border-bottom: 1px solid ${Colors.grey8};
@@ -621,6 +631,9 @@ const FoldingPanel = styled(Collapse)`
     > .ant-collapse-header
     .ant-collapse-arrow {
     transform: rotate(180deg);
+  }
+  .form-item {
+    margin-bottom: 25;
   }
 `;
 

@@ -13,7 +13,7 @@ export interface ErrorType {
 export interface TicketListProps {
   ticketName: string;
   ticketImage: string;
-  totalAvailableQuantity: null;
+  totalAvailableQuantity: string;
   ticketPrice: string;
   absorbFees: boolean;
   sellingStartTime: string;

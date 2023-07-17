@@ -15,7 +15,12 @@ const Container = styled.div`
     .ant-upload.ant-upload-select-picture-card {
       width: 150px;
       height: 150px;
+      background-color: ${Colors.white};
     }
+  }
+  .ant-upload-list-picture-card
+    .ant-upload-list-item-uploading.ant-upload-list-item {
+    background-color: ${Colors.white};
   }
   .ant-upload-list-picture-card-container {
     width: 150px;
@@ -26,6 +31,7 @@ const Container = styled.div`
     font-weight: 400;
     font-size: 11px;
     color: ${Colors.grey7};
+    margin-bottom: 4px;
   }
   .ant-upload-list-item-name {
     color: ${Colors.grey6};
@@ -40,15 +46,25 @@ const Container = styled.div`
   }
   .upload-button-content {
     padding: 24px;
+    aligin-items: center;
     .upload-button-text {
       margin-top: 6px;
     }
     .upload-button-text,
     .upload-button-icon {
-      color: ${Colors.grey6};
+      color: ${Colors.grey7};
       font-size: 13px;
       font-weight: 400;
     }
+  }
+  .ant-upload-list-item-thumbnail {
+    position: relative;
+    margin-top: 50%;
+    transform: translateY(-50%);
+    color: ${Colors.grey7};
+  }
+  .ant-progress-outer {
+    display: none !important;
   }
 `;
 
@@ -67,7 +83,7 @@ const UploadFileComponent = ({
   uploadButtonText,
   showVideoTip,
 }: {
-  accept: string;
+  accept?: string;
   description: { type: string; size: string };
   previewImageUrl: string;
   previewType: string;
@@ -89,9 +105,7 @@ const UploadFileComponent = ({
 
   const handlePreview = async (file: UploadFile) => {
     setPreviewImageOpen(true);
-    setPreviewImageTitle(
-      file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1),
-    );
+    setPreviewImageTitle(file.name || '');
   };
 
   const beforeUpload = (file: RcFile) => {

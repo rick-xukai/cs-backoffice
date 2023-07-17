@@ -2,6 +2,7 @@ import { format, getUnixTime } from 'date-fns';
 import { utcToZonedTime, format as formatTZ } from 'date-fns-tz';
 import CryptoJS from 'crypto-js';
 import { Base64 } from 'js-base64';
+import numeral from 'numeral';
 
 import { DataEncryptionKeys } from '../constants/Keys';
 import {
@@ -314,18 +315,23 @@ export const requiredValidateForm: any = (
   };
 };
 
-export const calculatePrice = (price: number, type: boolean) => {
-  let fee = price * 0.05 - 0.5;
+export const thousandsSeparator = (n: string) =>
+  numeral(Number(n)).format('0,0.00');
+
+export const calculatePrice = (price: any, type: boolean) => {
   if (type)
     return {
-      userPay: price,
-      takeHome: price - fee,
+      userPay: thousandsSeparator(`${price}`),
+      takeHome: thousandsSeparator(
+        `${Number(price) - Number(price) * 0.05 - 0.5}`,
+      ),
     };
 
-  fee = price * 0.05 + 0.5;
   return {
-    userPay: price + fee,
-    takeHome: price,
+    userPay: thousandsSeparator(
+      `${Number(price) + Number(price) * 0.05 + 0.5}`,
+    ),
+    takeHome: thousandsSeparator(`${price}`),
   };
 };
 
