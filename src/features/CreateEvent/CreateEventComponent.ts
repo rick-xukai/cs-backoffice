@@ -119,8 +119,6 @@ const CreateEventContainer = styled.div`
     }
   }
 
-  .edit-event-page-main {
-  }
   .publish-event {
     text-align: right;
     margin-bottom: 12px;
@@ -788,6 +786,140 @@ export const TotalAvailableQuantitySold = styled.div`
   line-height: 30px;
 `;
 
+const PublishComponentContainer = styled(Row)`
+  .main-box {
+    background: ${Colors.white};
+    padding: 20px;
+    .preview-event {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 21px;
+      color: ${Colors.branding};
+      margin-bottom: 14px;
+      > :first-child {
+        cursor: pointer;
+      }
+      > :last-child {
+        margin-left: 5px;
+      }
+    }
+    .set-refund-title {
+      margin-top: 24px;
+      margin-bottom: 16px;
+      > :first-child {
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 24px;
+        color: ${Colors.black4};
+        ::after {
+          display: inline-block;
+          margin-left: 5px;
+          color: rgb(252, 0, 6);
+          font-weight: 400;
+          font-size: 15px;
+          line-height: 1;
+          content: '*';
+        }
+      }
+      > :last-child {
+        cursor: pointer;
+        margin-left: 10px;
+        color: ${Colors.grey6};
+      }
+    }
+  }
+  @media (max-width: 992px) {
+    .main-box {
+      .set-refund-title {
+        > :first-child {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+`;
+
+const EventInfoCard = styled(Col)`
+  padding: 20px;
+  border-radius: 2px;
+  border: 1px solid ${Colors.grey9};
+  background: ${Colors.white};
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+  .event-image {
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 2px;
+    }
+  }
+  .info-detail {
+    padding-left: 20px;
+    .info-detail-name {
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 24px;
+      color: ${Colors.black4};
+      margin-bottom: 10px;
+    }
+    .info-detail-items {
+      margin-bottom: 5px;
+      display: flex;
+      > :first-child {
+        margin-right: 5px;
+        img {
+          margin-top: -4px;
+        }
+      }
+      > :last-child {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 19px;
+        color: ${Colors.black4};
+      }
+    }
+  }
+  .event-ticket {
+    margin-top: 20px;
+    .table-container {
+      box-shadow: unset;
+      padding: 0;
+      .ant-table-body {
+        table {
+          max-width: 100%;
+        }
+      }
+      .ant-table-ping-right:not(.ant-table-has-fix-right)
+        > .ant-table-container::after {
+        box-shadow: unset;
+      }
+      .ant-table-thead {
+        th {
+          background: ${Colors.white2};
+          font-size: 12px;
+          font-weight: 700;
+          line-height: 18px;
+          color: ${Colors.black6};
+        }
+      }
+      .ant-table-tbody {
+        > :last-child {
+          td {
+            border-bottom: 0;
+          }
+        }
+        td {
+          font-size: 15px;
+          font-weight: 400;
+          line-height: 21px;
+          color: ${Colors.black6};
+          border-bottom: 0.6px solid ${Colors.grey8};
+        }
+      }
+    }
+  }
+`;
+
 export {
   CreateEventContainer,
   CreateEventFormContainer,
@@ -802,4 +934,6 @@ export {
   FoldingPanel,
   ConnectTicketsTitle,
   NoSearchResultButton,
+  PublishComponentContainer,
+  EventInfoCard,
 };

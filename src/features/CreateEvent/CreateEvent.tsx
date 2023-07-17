@@ -231,6 +231,52 @@ const CreateEvent = () => {
     return false;
   };
 
+  const checkOrganizerDefaultValue = () => {
+    let defaultValue = '';
+    let defaultId = '';
+    if (organizerData.length) {
+      if (createEventFormValue.organizerId) {
+        defaultValue =
+          organizerData.find(
+            (item) => item.id.toString() === createEventFormValue.organizerId,
+          )?.name || '';
+        defaultId =
+          organizerData
+            .find(
+              (item) => item.id.toString() === createEventFormValue.organizerId,
+            )
+            ?.id.toString() || '';
+      } else {
+        const userRole = cookies.getCookie(CookieKeys.authUserRole);
+        if (
+          userRole === UserRoleKeys.organizerAdmin ||
+          userRole === UserRoleKeys.organizerUser
+        ) {
+          defaultValue = _.head(organizerData)?.name || '';
+          defaultId = _.head(organizerData)?.id.toString() || '';
+        }
+      }
+    }
+    return { defaultValue, defaultId };
+  };
+
+  const createEventPublish = () => {
+    setBlockRouter(false);
+    setShowNotSaveConfirmModal(false);
+    const currentTime = new Date().getTime();
+    const endTime = new Date(createEventFormValue.endTime).getTime();
+    if (currentTime > endTime) {
+      message.error(t('Event end time can not be in the past.'));
+    } else {
+      message.success(
+        t(
+          `Congrats! You have successfully published your event. Let's rock n rol!`,
+        ),
+      );
+      history.push(UserRoutes.events);
+    }
+  };
+
   useEffect(() => {
     if (clickConfirmModalCloseIcon) {
       setShowNotSaveConfirmModal(false);
@@ -293,35 +339,6 @@ const CreateEvent = () => {
     setPreviousStep(steps);
   }, [steps]);
 
-  const checkOrganizerDefaultValue = () => {
-    let defaultValue = '';
-    let defaultId = '';
-    if (organizerData.length) {
-      if (createEventFormValue.organizerId) {
-        defaultValue =
-          organizerData.find(
-            (item) => item.id.toString() === createEventFormValue.organizerId,
-          )?.name || '';
-        defaultId =
-          organizerData
-            .find(
-              (item) => item.id.toString() === createEventFormValue.organizerId,
-            )
-            ?.id.toString() || '';
-      } else {
-        const userRole = cookies.getCookie(CookieKeys.authUserRole);
-        if (
-          userRole === UserRoleKeys.organizerAdmin ||
-          userRole === UserRoleKeys.organizerUser
-        ) {
-          defaultValue = _.head(organizerData)?.name || '';
-          defaultId = _.head(organizerData)?.id.toString() || '';
-        }
-      }
-    }
-    return { defaultValue, defaultId };
-  };
-
   useEffect(() => {
     setCreateEventFormValue({
       ...createEventFormValue,
@@ -332,26 +349,7 @@ const CreateEvent = () => {
   useEffect(() => {
     window.addEventListener('beforeunload', notSaveAlert);
     window.onload = () => {
-      document.addEventListener('touchstart', (event) => {
-        if (event.touches.length > 1) {
-          event.preventDefault();
-        }
-      });
-      let lastTouchEnd = 0;
-      document.addEventListener(
-        'touchend',
-        (event) => {
-          const now = new Date().getTime();
-          if (now - lastTouchEnd <= 300) {
-            event.preventDefault();
-          }
-          lastTouchEnd = now;
-        },
-        false,
-      );
-      document.addEventListener('gesturestart', (event) => {
-        event.preventDefault();
-      });
+      document.addEventListener('gesturestart', notSaveAlert);
     };
     dispatch(
       getOrganizerAction({
@@ -361,6 +359,7 @@ const CreateEvent = () => {
     );
     return () => {
       window.removeEventListener('beforeunload', notSaveAlert);
+      document.removeEventListener('gesturestart', notSaveAlert);
       dispatch(reset());
     };
   }, []);
@@ -437,19 +436,39 @@ const CreateEvent = () => {
                   />
                 )}
                 {steps === ComponentSteps.settings && <Settings />}
-                {steps === ComponentSteps.publish && <Publish />}
+                {steps === ComponentSteps.publish && (
+                  <Publish formValue={createEventFormValue} />
+                )}
               </Form>
             </div>
-            {steps === ComponentSteps.createTicket &&
-            (createTicketStatus === CreateTicketStatus.add ||
-              createTicketStatus === CreateTicketStatus.edit) ? null : (
+            {(steps !== ComponentSteps.publish && (
+              <>
+                {steps === ComponentSteps.createTicket &&
+                (createTicketStatus === CreateTicketStatus.add ||
+                  createTicketStatus === CreateTicketStatus.edit) ? null : (
+                  <div className="page-bottom">
+                    <div className="bottom-btn">
+                      <Button onClick={() => saveAsDraft()}>
+                        {t('Save as Draft')}
+                      </Button>
+                      <Button
+                        type="primary"
+                        onClick={() => setSteps(steps + 1)}
+                      >
+                        {t('Next')}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )) || (
               <div className="page-bottom">
                 <div className="bottom-btn">
                   <Button onClick={() => saveAsDraft()}>
                     {t('Save as Draft')}
                   </Button>
-                  <Button type="primary" onClick={() => setSteps(steps + 1)}>
-                    {t('Next')}
+                  <Button type="primary" onClick={createEventPublish}>
+                    {t('Publish')}
                   </Button>
                 </div>
               </div>

@@ -31,6 +31,7 @@ import {
   OrganizerData,
   openAiGeneratorAction,
   uploadFileAction,
+  CreateEventFormValueProps,
 } from '../CreateEvent.slice';
 import {
   CreateEventFormContainer,
@@ -51,50 +52,13 @@ const libraries: (
   | 'visualization'
 )[] = ['places'];
 
-export interface TicketListProps {
-  ticketName: string;
-  ticketImage: string;
-  totalAvailableQuantity: null;
-  ticketPrice: string;
-  absorbFees: boolean;
-  sellingStartTime: string;
-  sellingEndTime: string;
-  ticketDescription: string;
-  royaltyFee: string;
-  ticketCeilingPrice: string;
-  visibility: boolean;
-  connectedTickets: { id: number; eventName: string; ticketName: string }[];
-  ticketImageType: string;
-  ticketThumbnailUrl: string;
-  ticketThumbnailType: string;
-  id: string;
-}
-
-export interface EventInfoFormValueProps {
-  eventName: string;
-  location: string;
-  addMyLocation: string;
-  organizerId: string;
-  address: string;
-  startTime: string;
-  endTime: string;
-  banner: string;
-  eventShortDescription: string;
-  description: string;
-  detailImage: string;
-  currentLat: number;
-  currentLng: number;
-  images: any[];
-  ticketList: TicketListProps[];
-}
-
 const EventInfo = ({
   organizerData,
   formValue,
   fieldEdit,
 }: {
   organizerData: OrganizerData[];
-  formValue: EventInfoFormValueProps;
+  formValue: CreateEventFormValueProps;
   fieldEdit: (value: any, field: string) => void;
 }) => {
   const { t } = useTranslation();

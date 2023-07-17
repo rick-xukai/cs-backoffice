@@ -1,12 +1,64 @@
-import React, { useState } from 'react';
-import { Row, Col } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Radio, Tooltip, Space } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import Tips from '../../../components/Tips/Tips';
-import { Images } from '../../../theme';
 
-const Publish = () => {
+import Tips from '../../../components/Tips/Tips';
+import TableComponent from '../../../components/Table/Table';
+import { Images } from '../../../theme';
+import { CreateEventFormValueProps } from '../CreateEvent.slice';
+import {
+  PublishComponentContainer,
+  EventInfoCard,
+} from '../CreateEventComponent';
+
+enum SetRefund {
+  refundable = 'Refundable',
+  nonRefund = 'Non-refund',
+}
+
+const Publish = ({ formValue }: { formValue: CreateEventFormValueProps }) => {
   const { t } = useTranslation();
+
+  const [refundValue, setRefundValue] = useState(SetRefund.nonRefund);
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
+
+  const columns = [
+    {
+      title: 'Ticket Type Name',
+      dataIndex: 'ticketTypeName',
+      key: 'ticketTypeName',
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+  ];
+
+  const testData = [
+    {
+      id: 'SVIP',
+      ticketTypeName: 'SVIP',
+      price: 200,
+      quantity: '0 / 80',
+    },
+    {
+      id: 'VIP',
+      ticketTypeName: 'VIP',
+      price: 200,
+      quantity: '0 / 80',
+    },
+  ];
+
+  useEffect(() => {
+    console.log(formValue);
+  }, []);
 
   return (
     <Row>
@@ -14,8 +66,74 @@ const Publish = () => {
         {t('Publish')}
       </Col>
       <Col span={24}>
-        <Row>
-          <Col lg={(pageTipsShow && 14) || 21} span={24}></Col>
+        <PublishComponentContainer>
+          <Col lg={(pageTipsShow && 14) || 21} span={24}>
+            <div className="main-box">
+              <Col span={24} className="preview-event">
+                <span>{t('Preview your event')}</span>
+                <span>
+                  <img src={Images.ExportIcon} alt="" />
+                </span>
+              </Col>
+              <EventInfoCard>
+                <Row>
+                  <Col span={10} className="event-image">
+                    <img src={Images.TestCardImg} alt="" />
+                  </Col>
+                  <Col span={14} className="info-detail">
+                    <Col className="info-detail-name">Ladies First</Col>
+                    <Col className="info-detail-items">
+                      <span>
+                        <img src={Images.ClockIcon} alt="" />
+                      </span>
+                      <span>Feb 23 2023, 19:30 - Feb 23 2023, 22:30</span>
+                    </Col>
+                    <Col className="info-detail-items">
+                      <span>
+                        <img src={Images.LocationRedIcon} alt="" />
+                      </span>
+                      <span>3 Singapore Indoor Stadium</span>
+                    </Col>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="event-ticket">
+                    <TableComponent
+                      columns={columns}
+                      tableData={testData}
+                      loading={false}
+                      showCustomPagination={false}
+                    />
+                  </Col>
+                </Row>
+              </EventInfoCard>
+              <Col className="set-refund-title">
+                <span>{t('Set the refund and cancellation policy')}</span>
+                <span>
+                  <Tooltip
+                    title={t(
+                      'CrowdServe is not liable to issue refunds via our platform. Attendees seeking refunds will be redirected to contact you to request a refund directly',
+                    )}
+                  >
+                    <QuestionCircleOutlined />
+                  </Tooltip>
+                </span>
+              </Col>
+              <Col>
+                <Radio.Group
+                  onChange={(e) => setRefundValue(e.target.value)}
+                  value={refundValue}
+                >
+                  <Space direction="vertical">
+                    <Radio value={SetRefund.refundable}>
+                      {t('Refundable')}
+                    </Radio>
+                    <Radio value={SetRefund.nonRefund}>{t('NonRefund')}</Radio>
+                  </Space>
+                </Radio.Group>
+              </Col>
+            </div>
+          </Col>
           <Col span={(pageTipsShow && 10) || 3}>
             <Tips
               title={t('Publish Tips')}
@@ -40,7 +158,7 @@ const Publish = () => {
               }
             />
           </Col>
-        </Row>
+        </PublishComponentContainer>
       </Col>
     </Row>
   );

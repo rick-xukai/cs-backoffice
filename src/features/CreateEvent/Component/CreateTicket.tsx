@@ -24,7 +24,10 @@ import {
   EventList,
   FoldingPanel,
 } from '../CreateEventComponent';
-import { EventInfoFormValueProps, TicketListProps } from './EventInfo';
+import {
+  CreateEventFormValueProps,
+  TicketListProps,
+} from '../CreateEvent.slice';
 import { MMM_DD_YYYY_HH_MM, SGD_UNIT } from '../../../constants/constants';
 import QuestionTooltip from '../../../components/QuestionTooltip';
 // eslint-disable-next-line import/no-cycle
@@ -90,7 +93,7 @@ const CreateTicket = ({
 }: {
   createTicketStatus: CreateTicketStatus;
   setCreateTicketStatus: any;
-  formValue: EventInfoFormValueProps;
+  formValue: CreateEventFormValueProps;
   fieldEdit: (value: any, field?: string) => void;
   notSaveConfirm: any;
 }) => {
