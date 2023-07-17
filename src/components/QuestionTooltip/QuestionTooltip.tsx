@@ -5,7 +5,7 @@ import { Images } from '../../theme';
 import { Image } from './QuestionTooltip.component';
 
 const QuestionTooltip = ({ title }: { title: React.ReactNode }) => (
-  <Tooltip title={title}>
+  <Tooltip title={title} overlayInnerStyle={{ width: 290 }} placement="right">
     <Image src={Images.QuestionCircleIcon} alt="" />
   </Tooltip>
 );
