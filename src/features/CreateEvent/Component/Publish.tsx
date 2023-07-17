@@ -75,7 +75,9 @@ const Publish = ({
                     />
                   </Col>
                   <Col span={14} className="info-detail">
-                    <Col className="info-detail-name">Ladies First</Col>
+                    <Col className="info-detail-name">
+                      {formValue.eventName || '-'}
+                    </Col>
                     <Col className="info-detail-items">
                       <span>
                         <img src={Images.ClockIcon} alt="" />
