@@ -1,5 +1,15 @@
 import React from 'react';
-import { Button, Col, Row, Space, Grid, Checkbox, Modal, Form } from 'antd';
+import {
+  Button,
+  Col,
+  Row,
+  Space,
+  Grid,
+  Checkbox,
+  Modal,
+  Form,
+  message,
+} from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import ListEmpty from '../../../components/ListEmpty';
@@ -17,6 +27,7 @@ import UploadFileComponent from '../../../components/UploadFile/UploadFileCompon
 import { useAppDispatch } from '../../../app/hooks';
 import { uploadFileAction, TicketListProps } from '../CreateEvent.slice';
 import Tips from '../../../components/Tips';
+import { UploadFileAcceptType } from '../../../constants/General';
 
 export enum CreateTicketStatus {
   list = 1,
@@ -33,7 +44,7 @@ export const EmptyState = ({ handleAddTicket }: { handleAddTicket: any }) => {
           {t('Create Ticket')}
         </Col>
       </Row>
-      <Row style={{ height: '100%' }}>
+      <Row style={{ height: '100%', padding: 20 }}>
         <Col span={24}>
           <ListEmpty
             image={Images.CreateNewTicketIcon}
@@ -121,7 +132,7 @@ export const EventListItem = ({
             </Col>
             <Col span={6}>
               <p className="label">Ticket Price (SDG)</p>
-              <p className="value">{Number(ticketPrice).toLocaleString()}</p>
+              <p className="value">{ticketPrice}</p>
             </Col>
             <Col span={12}>
               <p className="label">Selling Time</p>
@@ -230,13 +241,14 @@ export const SelectEventsModal = ({
   </Modal>
 );
 
-export const TickImageUpload = ({
+export const TicketImageUpload = ({
   formValue,
   handleUploadChange,
   fileList,
   thumbnaiFileList,
   handleThumbnaiUploadChange,
   changeTicketValues,
+  thumbnaiVerify,
 }: {
   formValue: TicketListProps;
   handleUploadChange: any;
@@ -244,13 +256,54 @@ export const TickImageUpload = ({
   thumbnaiFileList: any;
   handleThumbnaiUploadChange: any;
   changeTicketValues: any;
+  thumbnaiVerify: any;
 }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const fileLimit = (size: number, type: string) => {
+    const isLimit =
+      size / 1024 / 1024 <= 20 &&
+      [...UploadFileAcceptType, 'video/mp4'].includes(type);
+    return isLimit;
+  };
 
+  const imageFileLimit = (size: number, type: string) => {
+    const isLimit =
+      size / 1024 / 1024 <= 15 && [...UploadFileAcceptType].includes(type);
+    return isLimit;
+  };
+  const imageBeforeUpload = (file: any) => {
+    const { type, size } = file;
+    const isLimit = imageFileLimit(size, type);
+    if (!isLimit) {
+      message.error({
+        content: t(
+          'Invalid file format or size. Please upload a PNG, JPEG or GIF that is up to 15 MB in size.',
+        ),
+        key: 'error',
+      });
+    }
+    return isLimit;
+  };
+  const beforeUpload = (file: any) => {
+    const { type, size } = file;
+    const isLimit = fileLimit(size, type);
+    if (!isLimit) {
+      message.error({
+        content: t(
+          'Invalid file format or size. Please upload a PNG, JPEG, GIF or MP4 that is up to 20 MB in size.',
+        ),
+        key: 'error',
+      });
+    }
+    return isLimit;
+  };
   const customRequest = async (e: any) => {
     const formData = new FormData();
     formData.append('file', e.file);
+    if (!beforeUpload(e.file)) {
+      return e.onError();
+    }
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
       changeTicketValues({
@@ -260,24 +313,25 @@ export const TickImageUpload = ({
           (!e.file.type.includes('video') && response.payload.url) || '',
         ticketThumbnailType: e.file.type,
       });
-      e.onSuccess();
-    } else {
-      e.onError();
+      return e.onSuccess();
     }
+    return e.onError();
   };
   const customThumbnaiUploadRequest = async (e: any) => {
     const formData = new FormData();
     formData.append('file', e.file);
+    if (!imageBeforeUpload(e.file)) {
+      return e.onError();
+    }
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
       changeTicketValues({
         ticketThumbnailUrl: response.payload.url,
         ticketThumbnailType: e.file.type,
       });
-      e.onSuccess();
-    } else {
-      e.onError();
+      return e.onSuccess();
     }
+    return e.onError();
   };
   const handleFileRemove = () => {
     changeTicketValues({
@@ -296,7 +350,6 @@ export const TickImageUpload = ({
   return (
     <>
       <UploadFileComponent
-        accept="image/png, image/jpeg, image/gif, video/mp4"
         limitFileSize={20}
         description={{
           type: t('PNG, JPEG, GIF or MP4 files only'),
@@ -312,9 +365,8 @@ export const TickImageUpload = ({
         showVideoTip
       />
       {formValue.ticketImageType.includes('video') && (
-        <Form.Item label="Thumbnail image">
+        <Form.Item label="Thumbnail image" required {...thumbnaiVerify}>
           <UploadFileComponent
-            accept="image/png, image/jpeg, image/gif"
             fileList={thumbnaiFileList}
             previewImageUrl={formValue.ticketThumbnailUrl}
             previewType={formValue.ticketThumbnailType}

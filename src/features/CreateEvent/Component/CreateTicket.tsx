@@ -9,8 +9,8 @@ import {
   DatePicker,
   Select,
   Modal,
-  InputNumber,
 } from 'antd';
+
 import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
@@ -36,17 +36,22 @@ import {
   EmptyState,
   EventListItem,
   SelectEventsModal,
-  TickImageUpload,
+  TicketImageUpload,
   TipsCmp,
 } from './CreateTicketComponents';
-import { calculatePrice, requiredValidateForm } from '../../../utils/func';
+import {
+  calculatePrice,
+  requiredValidateForm,
+  thousandsSeparator,
+} from '../../../utils/func';
+import { UploadFileAcceptType } from '../../../constants/General';
 
 const { RangePicker } = DatePicker;
 
 const initialValues = {
   ticketName: '',
   ticketImage: '',
-  totalAvailableQuantity: null,
+  totalAvailableQuantity: '',
   ticketPrice: '',
   absorbFees: false,
   sellingStartTime: '',
@@ -128,11 +133,35 @@ const CreateTicket = ({
     }
   };
 
+  const fileLimit = (size: number, type: string) => {
+    const isLimit =
+      size / 1024 / 1024 <= 20 &&
+      [...UploadFileAcceptType, 'video/mp4'].includes(type);
+    return isLimit;
+  };
+
+  const imageFileLimit = (size: number, type: string) => {
+    const isLimit =
+      size / 1024 / 1024 <= 15 && [...UploadFileAcceptType].includes(type);
+    return isLimit;
+  };
+
+  const beforeUpload = (file: any) => {
+    const { type, size } = file;
+    const isLimit = fileLimit(size, type);
+    return isLimit;
+  };
+
+  const imageBeforeUpload = (file: any) => {
+    const { type, size } = file;
+    const isLimit = imageFileLimit(size, type);
+    return isLimit;
+  };
   const handleUploadChange = (info: any) => {
-    setFileList(info.fileList);
+    if (beforeUpload(info.file)) setFileList(info.fileList);
   };
   const handleThumbnaiUploadChange = (info: any) => {
-    setThumbnaiFileList(info.fileList);
+    if (imageBeforeUpload(info.file)) setThumbnaiFileList(info.fileList);
   };
 
   useEffect(() => {
@@ -236,8 +265,8 @@ const CreateTicket = ({
     if (
       !ticketValue.ticketName ||
       !ticketValue.ticketImage ||
-      !ticketValue.ticketPrice ||
-      !ticketValue.totalAvailableQuantity ||
+      !`${ticketValue.ticketPrice}` ||
+      !`${ticketValue.totalAvailableQuantity}` ||
       !ticketValue.sellingStartTime ||
       !ticketValue.sellingEndTime
     ) {
@@ -254,8 +283,8 @@ const CreateTicket = ({
     } else {
       fieldEdit(
         [
-          { ...ticketValue, id: `add_${new Date().getTime()}` },
           ...formValue.ticketList,
+          { ...ticketValue, id: `add_${new Date().getTime()}` },
         ],
         'ticketList',
       );
@@ -297,7 +326,7 @@ const CreateTicket = ({
     setCreateTicketStatus(CreateTicketStatus.edit);
   };
   const calculatedPrice = calculatePrice(
-    Number(ticketValue.ticketPrice),
+    Number(ticketValue.ticketPrice.replace(/,/g, '')),
     ticketValue.absorbFees,
   );
 
@@ -389,13 +418,18 @@ const CreateTicket = ({
                       onSave,
                     )}
                   >
-                    <TickImageUpload
+                    <TicketImageUpload
                       formValue={ticketValue}
                       handleUploadChange={handleUploadChange}
                       fileList={fileList}
                       thumbnaiFileList={thumbnaiFileList}
                       handleThumbnaiUploadChange={handleThumbnaiUploadChange}
                       changeTicketValues={changeTicketValues}
+                      thumbnaiVerify={requiredValidateForm(
+                        ticketValue.ticketThumbnailUrl,
+                        'Thumbnail image',
+                        onSave,
+                      )}
                     />
                   </Form.Item>
                   <Form.Item
@@ -413,19 +447,29 @@ const CreateTicket = ({
                     )}
                   >
                     <Row gutter={6} align="middle" wrap={false}>
-                      <Col style={{ flexShrink: 0 }}>0 Sold /</Col>
+                      <Col style={{ flexShrink: 0 }}>
+                        <b>0</b> Sold /
+                      </Col>
                       <Col flex="auto">
-                        <InputNumber
-                          min={0}
+                        <Input
                           style={{
                             height: 38,
                             display: 'block',
                             width: '100%',
                           }}
-                          controls={false}
-                          onChange={(e) =>
-                            changeTicketValues(e, 'totalAvailableQuantity')
-                          }
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (
+                              !val.includes('.') &&
+                              !Number.isNaN(Number(val)) &&
+                              Number(val) >= 0
+                            ) {
+                              changeTicketValues(
+                                `${val ? Number(val) : ''}`,
+                                'totalAvailableQuantity',
+                              );
+                            }
+                          }}
                           value={ticketValue.totalAvailableQuantity}
                         />
                       </Col>
@@ -454,11 +498,36 @@ const CreateTicket = ({
                     }
                   >
                     <Input
-                      onChange={(e) =>
-                        changeTicketValues(e.target.value, 'ticketPrice')
-                      }
+                      style={{
+                        height: 38,
+                        display: 'block',
+                        width: '100%',
+                      }}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val && Number.isNaN(Number(val))) return false;
+                        return changeTicketValues(
+                          e.target.value,
+                          'ticketPrice',
+                        );
+                      }}
+                      onBlur={(e) => {
+                        const val = e.target.value;
+                        if (Number(val) <= 0)
+                          return changeTicketValues('', 'ticketPrice');
+                        return changeTicketValues(
+                          thousandsSeparator(val),
+                          'ticketPrice',
+                        );
+                      }}
+                      onFocus={(e) => {
+                        const val = e.target.value;
+                        return changeTicketValues(
+                          val.replace(/,/g, ''),
+                          'ticketPrice',
+                        );
+                      }}
                       value={ticketValue.ticketPrice}
-                      suffix={SGD_UNIT}
                     />
                   </Form.Item>
                   <Form.Item>
@@ -491,16 +560,20 @@ const CreateTicket = ({
                           sellingEndTime: dateString[1],
                         })
                       }
-                      value={
+                      inputReadOnly
+                      value={[
+                        ticketValue.sellingStartTime
+                          ? moment(ticketValue.sellingStartTime)
+                          : moment(),
                         ticketValue.sellingEndTime
-                          ? [
-                              ticketValue.sellingStartTime
-                                ? moment(ticketValue.sellingStartTime)
-                                : null,
-                              moment(ticketValue.sellingEndTime),
-                            ]
-                          : undefined
+                          ? moment(ticketValue.sellingEndTime)
+                          : null,
+                      ]}
+                      disabledDate={(currentDate) =>
+                        currentDate &&
+                        currentDate < moment().subtract(1, 'days').endOf('day')
                       }
+                      showTime
                     />
                   </Form.Item>
                   <FoldingPanel
@@ -521,6 +594,8 @@ const CreateTicket = ({
                               'ticketDescription',
                             )
                           }
+                          showCount
+                          maxLength={500}
                           value={ticketValue.ticketDescription}
                         />
                       </Form.Item>
@@ -528,7 +603,11 @@ const CreateTicket = ({
                         label={
                           <>
                             Royalty Fee
-                            <QuestionTooltip title="Royalty Fee" />
+                            <QuestionTooltip
+                              title={t(
+                                'Royalty Fee you set determines the percentage cut that goes back to you when an attendee sells their ticket on the secondary market. By default, royalty fees are 0.',
+                              )}
+                            />
                           </>
                         }
                         style={{
@@ -552,7 +631,11 @@ const CreateTicket = ({
                         label={
                           <>
                             Ticket Ceiling Price
-                            <QuestionTooltip title="Ticket Ceiling Price" />
+                            <QuestionTooltip
+                              title={t(
+                                'Ticket Ceiling determines the maximum price limit which a ticket holder can list on the secondary market.',
+                              )}
+                            />
                           </>
                         }
                         style={{
@@ -563,12 +646,23 @@ const CreateTicket = ({
                         <Input
                           onChange={(e) => {
                             const val = e.target.value;
-                            if (!Number.isNaN(Number(val))) {
-                              changeTicketValues(
-                                e.target.value,
+                            if (val && Number.isNaN(Number(val))) return false;
+                            return changeTicketValues(
+                              e.target.value,
+                              'ticketCeilingPrice',
+                            );
+                          }}
+                          onBlur={(e) => {
+                            const val = e.target.value;
+                            if (val && Number(val) <= 0)
+                              return changeTicketValues(
+                                '',
                                 'ticketCeilingPrice',
                               );
-                            }
+                            return changeTicketValues(
+                              Number(val).toFixed(2),
+                              'ticketCeilingPrice',
+                            );
                           }}
                           value={ticketValue.ticketCeilingPrice}
                           suffix={SGD_UNIT}
@@ -594,7 +688,9 @@ const CreateTicket = ({
                           />
                         </p>
                         <span className="action" onClick={() => setOpen(true)}>
-                          Select
+                          {ticketValue.connectedTickets.length
+                            ? 'Edit'
+                            : 'Select'}
                         </span>
                       </ConnectTicketsTitle>
                       <ConnectTicketsList>

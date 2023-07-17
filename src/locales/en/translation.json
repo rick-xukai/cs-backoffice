@@ -331,6 +331,8 @@
   "Failed to get location, please try again": "Failed to get location, please try again",
   "Total Available Quantity": "Total Available Quantity",
   "Connect previous event tickets to reward previous event goers with free access to your new event!": "Connect previous event tickets to reward previous event goers with free access to your new event!",
+  "Ticket Ceiling determines the maximum price limit which a ticket holder can list on the secondary market.": "Ticket Ceiling determines the maximum price limit which a ticket holder can list on the secondary market.",
+  "Royalty Fee you set determines the percentage cut that goes back to you when an attendee sells their ticket on the secondary market. By default, royalty fees are 0.": "Royalty Fee you set determines the percentage cut that goes back to you when an attendee sells their ticket on the secondary market. By default, royalty fees are 0.",
   "Preview your event": "Preview your event",
   "Set the refund and cancellation policy": "Set the refund and cancellation policy",
   "Refundable": "Refundable",
