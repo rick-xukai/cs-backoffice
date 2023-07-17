@@ -71,7 +71,7 @@ export const EventListItem = ({
   onDelete?: any;
   image: string;
   title: string;
-  totalAvailableQuantity: any;
+  totalAvailableQuantity: number;
   ticketPrice: string;
   sellingTime: string;
   status?: StatusBadgeType;

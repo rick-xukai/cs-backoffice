@@ -54,7 +54,7 @@ const libraries: (
 export interface TicketListProps {
   ticketName: string;
   ticketImage: string;
-  totalAvailableQuantity: string;
+  totalAvailableQuantity: null;
   ticketPrice: string;
   absorbFees: boolean;
   sellingStartTime: string;

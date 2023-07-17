@@ -9,6 +9,7 @@ import {
   DatePicker,
   Select,
   Modal,
+  InputNumber,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -42,7 +43,7 @@ const { RangePicker } = DatePicker;
 const initialValues = {
   ticketName: '',
   ticketImage: '',
-  totalAvailableQuantity: '',
+  totalAvailableQuantity: null,
   ticketPrice: '',
   absorbFees: false,
   sellingStartTime: '',
@@ -105,7 +106,7 @@ const CreateTicket = ({
   useEffect(() => {
     setTicketValue({
       ...ticketValue,
-      sellingEndTime: formValue.startTime,
+      sellingEndTime: ticketValue.sellingEndTime || formValue.startTime,
     });
   }, [formValue.startTime, createTicketStatus]);
   const [onSave, setOnSave] = useState(false);
@@ -411,13 +412,16 @@ const CreateTicket = ({
                     <Row gutter={6} align="middle" wrap={false}>
                       <Col style={{ flexShrink: 0 }}>0 Sold /</Col>
                       <Col flex="auto">
-                        <Input
-                          style={{ height: 38 }}
+                        <InputNumber
+                          min={0}
+                          style={{
+                            height: 38,
+                            display: 'block',
+                            width: '100%',
+                          }}
+                          controls={false}
                           onChange={(e) =>
-                            changeTicketValues(
-                              e.target.value,
-                              'totalAvailableQuantity',
-                            )
+                            changeTicketValues(e, 'totalAvailableQuantity')
                           }
                           value={ticketValue.totalAvailableQuantity}
                         />
@@ -531,9 +535,12 @@ const CreateTicket = ({
                         }}
                       >
                         <Input
-                          onChange={(e) =>
-                            changeTicketValues(e.target.value, 'royaltyFee')
-                          }
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (!Number.isNaN(Number(val))) {
+                              changeTicketValues(e.target.value, 'royaltyFee');
+                            }
+                          }}
                           value={ticketValue.royaltyFee}
                           suffix="%"
                         />
@@ -551,12 +558,15 @@ const CreateTicket = ({
                         }}
                       >
                         <Input
-                          onChange={(e) =>
-                            changeTicketValues(
-                              e.target.value,
-                              'ticketCeilingPrice',
-                            )
-                          }
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (!Number.isNaN(Number(val))) {
+                              changeTicketValues(
+                                e.target.value,
+                                'ticketCeilingPrice',
+                              );
+                            }
+                          }}
                           value={ticketValue.ticketCeilingPrice}
                           suffix={SGD_UNIT}
                         />
@@ -574,7 +584,11 @@ const CreateTicket = ({
                       <ConnectTicketsTitle>
                         <p className="title">
                           Connected Tickets{' '}
-                          <QuestionTooltip title="Connected Tickets" />
+                          <QuestionTooltip
+                            title={t(
+                              'Connect previous event tickets to reward previous event goers with free access to your new event!',
+                            )}
+                          />
                         </p>
                         <span className="action" onClick={() => setOpen(true)}>
                           Select
