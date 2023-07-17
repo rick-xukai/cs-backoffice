@@ -48,6 +48,10 @@ import PublishTupsIcon from '../assets/images/publish-tips-icon.png';
 import QuestionCircleIcon from '../assets/images/icons/question-circle-icon.svg';
 import DeleteOutlinedIcon from '../assets/images/icons/delete.svg';
 import MoreOutlinedIcon from '../assets/images/icons/more-icon.svg';
+import ExportIcon from '../assets/images/icons/export.svg';
+import ClockIcon from '../assets/images/icons/clock.svg';
+import LocationRedIcon from '../assets/images/icons/location-red.svg';
+import TestCardImg from '../assets/images/test-card.png';
 
 const Images = {
   Logo,
@@ -102,6 +106,10 @@ const Images = {
   QuestionCircleIcon,
   DeleteOutlinedIcon,
   MoreOutlinedIcon,
+  ExportIcon,
+  ClockIcon,
+  LocationRedIcon,
+  TestCardImg,
 };
 
 export default Images;

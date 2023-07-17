@@ -330,5 +330,12 @@
   "Ticketing fees are deducted from your ticket revenue": "Ticketing fees are deducted from your ticket revenue",
   "Failed to get location, please try again": "Failed to get location, please try again",
   "Total Available Quantity": "Total Available Quantity",
-  "Connect previous event tickets to reward previous event goers with free access to your new event!": "Connect previous event tickets to reward previous event goers with free access to your new event!"
+  "Connect previous event tickets to reward previous event goers with free access to your new event!": "Connect previous event tickets to reward previous event goers with free access to your new event!",
+  "Preview your event": "Preview your event",
+  "Set the refund and cancellation policy": "Set the refund and cancellation policy",
+  "Refundable": "Refundable",
+  "NonRefund": "Non-refund",
+  "Event end time can not be in the past.": "Event end time can not be in the past.",
+  "CrowdServe is not liable to issue refunds via our platform. Attendees seeking refunds will be redirected to contact you to request a refund directly": "CrowdServe is not liable to issue refunds via our platform. Attendees seeking refunds will be redirected to contact you to request a refund directly.",
+  "Congrats! You have successfully published your event. Let's rock n rol!": "Congrats! You have successfully published your event. Let's rock n rol!"
 }

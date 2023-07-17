@@ -14,9 +14,8 @@ import StatusBadge from '../../../components/StatusBadge';
 import MoreIcon from '../../../components/MoreIcon';
 import { StatusBadgeType } from '../../../components/StatusBadge/StatusBadge.component';
 import UploadFileComponent from '../../../components/UploadFile/UploadFileComponent';
-import { TicketListProps } from './EventInfo';
 import { useAppDispatch } from '../../../app/hooks';
-import { uploadFileAction } from '../CreateEvent.slice';
+import { uploadFileAction, TicketListProps } from '../CreateEvent.slice';
 import Tips from '../../../components/Tips';
 
 export enum CreateTicketStatus {

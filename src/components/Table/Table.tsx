@@ -132,26 +132,26 @@ const TableComponent = ({
   paginationChange,
   onChange,
 }: {
+  loading: boolean;
+  columns: ColumnsType<any>;
+  tableData: object[];
   rowKey?: string;
   rowSelection?: object;
   showHeader?: boolean;
   children?: React.ReactChild;
-  loading: boolean;
-  currentPage: number;
-  currentPageSize: number;
-  columns: ColumnsType<any>;
-  tableData: object[];
-  tableDataTotal: number;
+  currentPage?: number;
+  currentPageSize?: number;
+  tableDataTotal?: number;
   showCustomPagination?: boolean;
   scrollY?: string;
-  paginationChange: (page: number, pageSize?: number) => void;
+  paginationChange?: (page: number, pageSize?: number) => void;
   onChange?: (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue | null>,
     sorter: SorterResult<any> | any,
   ) => void;
 }) => (
-  <TableContainer>
+  <TableContainer className="table-container">
     <Spin spinning={loading} indicator={<LoadingOutlined spin />} size="large">
       {children && <div>{children}</div>}
       <Table
