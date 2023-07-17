@@ -51,7 +51,7 @@ import MoreOutlinedIcon from '../assets/images/icons/more-icon.svg';
 import ExportIcon from '../assets/images/icons/export.svg';
 import ClockIcon from '../assets/images/icons/clock.svg';
 import LocationRedIcon from '../assets/images/icons/location-red.svg';
-import TestCardImg from '../assets/images/test-card.png';
+import NoEventBanner from '../assets/images/no-event-banner.png';
 
 const Images = {
   Logo,
@@ -109,7 +109,7 @@ const Images = {
   ExportIcon,
   ClockIcon,
   LocationRedIcon,
-  TestCardImg,
+  NoEventBanner,
 };
 
 export default Images;

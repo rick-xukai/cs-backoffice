@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Radio, Tooltip, Space } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
+import { SetRefundKey } from '../../../constants/General';
 import Tips from '../../../components/Tips/Tips';
 import TableComponent from '../../../components/Table/Table';
 import { Images } from '../../../theme';
@@ -12,53 +13,43 @@ import {
   EventInfoCard,
 } from '../CreateEventComponent';
 
-enum SetRefund {
-  refundable = 'Refundable',
-  nonRefund = 'Non-refund',
-}
+const initialTicketList = [
+  {
+    id: 1,
+    ticketTypeName: '-',
+    price: '-',
+    quantity: '-',
+  },
+];
 
-const Publish = ({ formValue }: { formValue: CreateEventFormValueProps }) => {
+const Publish = ({
+  formValue,
+  fieldEdit,
+}: {
+  formValue: CreateEventFormValueProps;
+  fieldEdit: (value: any, field: string) => void;
+}) => {
   const { t } = useTranslation();
 
-  const [refundValue, setRefundValue] = useState(SetRefund.nonRefund);
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
 
   const columns = [
     {
       title: 'Ticket Type Name',
-      dataIndex: 'ticketTypeName',
-      key: 'ticketTypeName',
+      dataIndex: 'ticketName',
+      key: 'ticketName',
     },
     {
       title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
+      dataIndex: 'ticketPrice',
+      key: 'ticketPrice',
     },
     {
       title: 'Quantity',
-      dataIndex: 'quantity',
-      key: 'quantity',
+      dataIndex: 'totalAvailableQuantity',
+      key: 'totalAvailableQuantity',
     },
   ];
-
-  const testData = [
-    {
-      id: 'SVIP',
-      ticketTypeName: 'SVIP',
-      price: 200,
-      quantity: '0 / 80',
-    },
-    {
-      id: 'VIP',
-      ticketTypeName: 'VIP',
-      price: 200,
-      quantity: '0 / 80',
-    },
-  ];
-
-  useEffect(() => {
-    console.log(formValue);
-  }, []);
 
   return (
     <Row>
@@ -78,7 +69,10 @@ const Publish = ({ formValue }: { formValue: CreateEventFormValueProps }) => {
               <EventInfoCard>
                 <Row>
                   <Col span={10} className="event-image">
-                    <img src={Images.TestCardImg} alt="" />
+                    <img
+                      src={formValue.banner || Images.NoEventBanner}
+                      alt=""
+                    />
                   </Col>
                   <Col span={14} className="info-detail">
                     <Col className="info-detail-name">Ladies First</Col>
@@ -86,13 +80,18 @@ const Publish = ({ formValue }: { formValue: CreateEventFormValueProps }) => {
                       <span>
                         <img src={Images.ClockIcon} alt="" />
                       </span>
-                      <span>Feb 23 2023, 19:30 - Feb 23 2023, 22:30</span>
+                      <span>
+                        {(formValue.startTime &&
+                          formValue.endTime &&
+                          `${formValue.startTime} - ${formValue.endTime}`) ||
+                          '-'}
+                      </span>
                     </Col>
                     <Col className="info-detail-items">
                       <span>
                         <img src={Images.LocationRedIcon} alt="" />
                       </span>
-                      <span>3 Singapore Indoor Stadium</span>
+                      <span>{formValue.location || '-'}</span>
                     </Col>
                   </Col>
                 </Row>
@@ -100,7 +99,10 @@ const Publish = ({ formValue }: { formValue: CreateEventFormValueProps }) => {
                   <Col className="event-ticket">
                     <TableComponent
                       columns={columns}
-                      tableData={testData}
+                      tableData={
+                        (formValue.ticketList.length && formValue.ticketList) ||
+                        initialTicketList
+                      }
                       loading={false}
                       showCustomPagination={false}
                     />
@@ -121,14 +123,18 @@ const Publish = ({ formValue }: { formValue: CreateEventFormValueProps }) => {
               </Col>
               <Col>
                 <Radio.Group
-                  onChange={(e) => setRefundValue(e.target.value)}
-                  value={refundValue}
+                  onChange={(e) =>
+                    fieldEdit(e.target.value, 'refundAndCancellation')
+                  }
+                  value={formValue.refundAndCancellation}
                 >
                   <Space direction="vertical">
-                    <Radio value={SetRefund.refundable}>
+                    <Radio value={SetRefundKey.refundable}>
                       {t('Refundable')}
                     </Radio>
-                    <Radio value={SetRefund.nonRefund}>{t('NonRefund')}</Radio>
+                    <Radio value={SetRefundKey.nonRefund}>
+                      {t('NonRefund')}
+                    </Radio>
                   </Space>
                 </Radio.Group>
               </Col>

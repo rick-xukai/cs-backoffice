@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { verificationApi } from '../../utils/func';
 import { RootState } from '../../app/store';
 import EventsService from '../../services/API/Events';
 
@@ -46,6 +45,7 @@ export interface CreateEventFormValueProps {
   currentLng: number;
   images: any[];
   ticketList: TicketListProps[];
+  refundAndCancellation: string;
 }
 export interface TicketTypes {
   ticketTypeId?: string;
@@ -79,6 +79,9 @@ export interface OrganizerData {
   id: number;
   name: string;
 }
+
+export const verificationApi = (response: any) =>
+  response.code === 200 && response.message === 'OK';
 
 /**
  * Create event
