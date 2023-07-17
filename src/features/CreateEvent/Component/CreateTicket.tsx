@@ -660,7 +660,13 @@ const CreateTicket = ({
                                 'ticketCeilingPrice',
                               );
                             return changeTicketValues(
-                              Number(val).toFixed(2),
+                              thousandsSeparator(val),
+                              'ticketCeilingPrice',
+                            );
+                          }}
+                          onFocus={(e) => {
+                            changeTicketValues(
+                              e.target.value.replace(/,/g, ''),
                               'ticketCeilingPrice',
                             );
                           }}
