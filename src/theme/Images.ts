@@ -52,6 +52,8 @@ import ExportIcon from '../assets/images/icons/export.svg';
 import ClockIcon from '../assets/images/icons/clock.svg';
 import LocationRedIcon from '../assets/images/icons/location-red.svg';
 import NoEventBanner from '../assets/images/no-event-banner.png';
+import CreateNewPromoIcon from '../assets/images/icons/create-new-promo.svg';
+import NoDataIcon from '../assets/images/icons/no-data.svg';
 import AddNewEventIcon from '../assets/images/icons/add-new-event.svg';
 
 const Images = {
@@ -111,6 +113,8 @@ const Images = {
   ClockIcon,
   LocationRedIcon,
   NoEventBanner,
+  CreateNewPromoIcon,
+  NoDataIcon,
   AddNewEventIcon,
 };
 

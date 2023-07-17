@@ -27,6 +27,7 @@ import { useAppDispatch } from '../../../app/hooks';
 import { Images } from '../../../theme';
 import { getCroppedImg, dataURLtoFile } from '../../../utils/func';
 import { UploadFileAcceptType } from '../../../constants/General';
+// eslint-disable-next-line import/no-cycle
 import {
   OrganizerData,
   openAiGeneratorAction,

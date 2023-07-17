@@ -26,13 +26,17 @@ import PageHeaderComponent from '../../components/PageHeader';
 import { CreateEventContainer } from './CreateEventComponent';
 import EventInfo from './Component/EventInfo';
 import CreateTicket from './Component/CreateTicket';
-import Settings from './Component/Settings';
+import Settings, {
+  CreatePromoStatus,
+  CreatePromoType,
+} from './Component/Settings';
 import Publish from './Component/Publish';
 import {
   reset,
   selectOrganizerData,
   getOrganizerAction,
   selectLoading,
+  CreateEventFormValueProps,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 
@@ -45,6 +49,12 @@ export enum ComponentSteps {
   publish = 3,
 }
 
+export const StatusImage = ({ src }: { src: string }) => (
+  <div>
+    <img src={src} alt="" className="status-img" />
+  </div>
+);
+
 const CreateEvent = () => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -54,7 +64,7 @@ const CreateEvent = () => {
   const loading = useAppSelector(selectLoading);
   const organizerData = useAppSelector(selectOrganizerData);
 
-  const [steps, setSteps] = useState<number>(ComponentSteps.createTicket);
+  const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
     ComponentSteps.eventInfo,
   );
@@ -67,24 +77,26 @@ const CreateEvent = () => {
   const [whichPathUrlWillTo, setWhichPathUrlWillTo] = useState<string>('');
   const [clickConfirmModalCloseIcon, setClickConfirmModalCloseIcon] =
     useState<boolean>(false);
-  const [createEventFormValue, setCreateEventFormValue] = useState({
-    eventName: '',
-    location: '',
-    addMyLocation: '',
-    currentLat: 0,
-    currentLng: 0,
-    organizerId: '',
-    address: '',
-    startTime: '',
-    endTime: '',
-    banner: '',
-    eventShortDescription: '',
-    description: '',
-    detailImage: '',
-    images: [],
-    ticketList: [],
-    refundAndCancellation: SetRefundKey.nonRefund,
-  });
+  const [createEventFormValue, setCreateEventFormValue] =
+    useState<CreateEventFormValueProps>({
+      eventName: '',
+      location: '',
+      addMyLocation: '',
+      currentLat: 0,
+      currentLng: 0,
+      organizerId: '',
+      address: '',
+      startTime: '',
+      endTime: '',
+      banner: '',
+      eventShortDescription: '',
+      description: '',
+      detailImage: '',
+      images: [],
+      ticketList: [],
+      refundAndCancellation: SetRefundKey.nonRefund,
+      promoList: [],
+    });
   const eventInfoFinish =
     createEventFormValue.eventName &&
     createEventFormValue.organizerId &&
@@ -93,43 +105,34 @@ const CreateEvent = () => {
     createEventFormValue.endTime &&
     createEventFormValue.banner &&
     createEventFormValue.eventShortDescription;
-
   const [progressItems, setProgressItems] = useState([
     {
-      title: t('Create Event'),
-      icon: (
-        <div>
-          <img src={Images.EditingIcon} alt="" className="status-img" />
-        </div>
-      ),
+      title: 'Create Event',
+      icon: <StatusImage src={Images.EditingIcon} />,
     },
     {
-      title: t('Create Ticket'),
-      icon: (
-        <div>
-          <img src={Images.NotStartedIcon} alt="" className="status-img" />
-        </div>
-      ),
+      title: 'Create Ticket',
+      icon: <StatusImage src={Images.NotStartedIcon} />,
     },
     {
-      title: t('Settings'),
-      icon: (
-        <div>
-          <img src={Images.NotStartedIcon} alt="" className="status-img" />
-        </div>
-      ),
+      title: 'Settings',
+      icon: <StatusImage src={Images.NotStartedIcon} />,
     },
     {
-      title: t('Publish'),
-      icon: (
-        <div>
-          <img src={Images.NotStartedIcon} alt="" className="status-img" />
-        </div>
-      ),
+      title: 'Publish',
+      icon: <StatusImage src={Images.NotStartedIcon} />,
     },
   ]);
   const [createTicketStatus, setCreateTicketStatus] = useState(
     CreateTicketStatus.list,
+  );
+
+  const [createPromoStatus, setCreatePromoStatus] = useState(
+    CreatePromoStatus.list,
+  );
+
+  const [createPromoType, setCreatePromoType] = useState(
+    CreatePromoType.bundle,
   );
 
   const onFinish = () => {
@@ -325,31 +328,17 @@ const CreateEvent = () => {
 
   useEffect(() => {
     const items = _.cloneDeep(progressItems);
-    items[steps].icon = (
-      <div>
-        <img src={Images.EditingIcon} alt="" className="status-img" />
-      </div>
-    );
+    items[steps].icon = <StatusImage src={Images.EditingIcon} />;
     if (steps !== previousStep) {
       let currentIcon = Images.NotStartedIcon;
       if (previousStep === ComponentSteps.eventInfo) {
-        if (
-          createEventFormValue.eventName &&
-          createEventFormValue.organizerId &&
-          createEventFormValue.location &&
-          createEventFormValue.startTime &&
-          createEventFormValue.endTime &&
-          createEventFormValue.banner &&
-          createEventFormValue.eventShortDescription
-        ) {
+        if (eventInfoFinish) {
           currentIcon = Images.SuccessIcon;
         } else {
           currentIcon = Images.NotFinishedIcon;
         }
         items[ComponentSteps.eventInfo].icon = (
-          <div>
-            <img src={currentIcon} alt="" className="status-img" />
-          </div>
+          <StatusImage src={currentIcon} />
         );
       } else if (previousStep === ComponentSteps.createTicket) {
         if (createEventFormValue.ticketList.length) {
@@ -358,16 +347,10 @@ const CreateEvent = () => {
           currentIcon = Images.NotFinishedIcon;
         }
         items[ComponentSteps.createTicket].icon = (
-          <div>
-            <img src={currentIcon} alt="" className="status-img" />
-          </div>
+          <StatusImage src={currentIcon} />
         );
       } else {
-        items[previousStep].icon = (
-          <div>
-            <img src={Images.NotStartedIcon} alt="" className="status-img" />
-          </div>
-        );
+        items[previousStep].icon = <StatusImage src={Images.NotStartedIcon} />;
       }
     }
     setProgressItems(items);
@@ -398,18 +381,6 @@ const CreateEvent = () => {
       dispatch(reset());
     };
   }, []);
-
-  useEffect(() => {
-    if (eventInfoFinish) {
-      const items = _.cloneDeep(progressItems);
-      progressItems[0].icon = (
-        <div>
-          <img src={Images.SuccessIcon} alt="" className="status-img" />
-        </div>
-      );
-      setProgressItems(items);
-    }
-  }, [eventInfoFinish]);
 
   return (
     <>
@@ -470,7 +441,17 @@ const CreateEvent = () => {
                     notSaveConfirm={notSaveConfirm}
                   />
                 )}
-                {steps === ComponentSteps.settings && <Settings />}
+                {steps === ComponentSteps.settings && (
+                  <Settings
+                    createPromoStatus={createPromoStatus}
+                    setCreatePromoStatus={setCreatePromoStatus}
+                    formValue={createEventFormValue}
+                    fieldEdit={handleFieldChange}
+                    notSaveConfirm={notSaveConfirm}
+                    setCreatePromoType={setCreatePromoType}
+                    createPromoType={createPromoType}
+                  />
+                )}
                 {steps === ComponentSteps.publish && (
                   <Publish
                     formValue={createEventFormValue}
@@ -481,9 +462,12 @@ const CreateEvent = () => {
             </div>
             {(steps !== ComponentSteps.publish && (
               <>
-                {steps === ComponentSteps.createTicket &&
-                (createTicketStatus === CreateTicketStatus.add ||
-                  createTicketStatus === CreateTicketStatus.edit) ? null : (
+                {(steps === ComponentSteps.createTicket &&
+                  (createTicketStatus === CreateTicketStatus.add ||
+                    createTicketStatus === CreateTicketStatus.edit)) ||
+                (steps === ComponentSteps.settings &&
+                  (createPromoStatus === CreatePromoStatus.add ||
+                    createPromoStatus === CreatePromoStatus.edit)) ? null : (
                   <div className="page-bottom">
                     <div className="bottom-btn">
                       <Button onClick={() => saveAsDraft()}>

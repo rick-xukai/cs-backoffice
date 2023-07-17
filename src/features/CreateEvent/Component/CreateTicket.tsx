@@ -21,7 +21,7 @@ import {
   ConnectTicketsList,
   ConnectTicketsTitle,
   CreateEventFormContainer,
-  EventList,
+  TicketList,
   FoldingPanel,
 } from '../CreateEventComponent';
 import {
@@ -360,7 +360,7 @@ const CreateTicket = ({
               </Button>
             </Col>
           </Row>
-          <EventList>
+          <TicketList>
             {formValue.ticketList.map((item, index) => (
               <TicketListItem
                 image={
@@ -383,7 +383,7 @@ const CreateTicket = ({
                 )}
               />
             ))}
-          </EventList>
+          </TicketList>
         </>
       );
     }

@@ -2,12 +2,51 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { RootState } from '../../app/store';
 import EventsService from '../../services/API/Events';
+import { SetRefundKey } from '../../constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
   code: number | undefined;
   message: string;
+}
+
+export enum PromoType {
+  code = 0,
+  bundle = 1,
+}
+export enum DiscountType {
+  percentage = 0,
+  amount = 1,
+}
+export enum ApplyCodeToType {
+  all = 0,
+  certain = 1,
+}
+export enum MethodType {
+  auto = 0,
+  discount = 1,
+}
+
+export interface PromoListProps {
+  promoType: PromoType;
+  promocodeName: string;
+  promoCode: string;
+  discountValue?: number;
+  discountType: DiscountType;
+  promoCodeAvailableQuantity?: number;
+  applyCodeTo: ApplyCodeToType;
+  certainTicketList: { ticketName: string; ticketPrice: any; id: any }[];
+  method: MethodType;
+  discountName: string;
+  customerBuysQuantity?: number;
+  customerGetsQuantity?: number;
+  customerBuysTicket: any;
+  customerGetsTicket: any;
+  customerBuysTicketName: any;
+  customerGetsTicketName: any;
+  id: string;
+  discountCode: string;
 }
 
 export interface TicketListProps {
@@ -47,7 +86,8 @@ export interface CreateEventFormValueProps {
   currentLng: number;
   images: any[];
   ticketList: TicketListProps[];
-  refundAndCancellation: string;
+  promoList: PromoListProps[];
+  refundAndCancellation: SetRefundKey.nonRefund;
 }
 export interface TicketTypes {
   ticketTypeId?: string;
