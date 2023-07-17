@@ -8,6 +8,7 @@ import {
   FullScreenDocument,
   FullScreenDocumentElement,
 } from '../constants/types';
+import { CreateEventFormValueProps } from '../features/CreateEvent/CreateEvent.slice';
 
 const OneMin = 60;
 const OneHour = 3600;
@@ -326,4 +327,22 @@ export const calculatePrice = (price: number, type: boolean) => {
     userPay: price + fee,
     takeHome: price,
   };
+};
+
+export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
+  if (
+    !source.eventName ||
+    !source.organizerId ||
+    !source.location ||
+    !source.startTime ||
+    !source.endTime ||
+    !source.banner ||
+    !source.eventShortDescription
+  ) {
+    return 0;
+  }
+  if (!source.ticketList.length) {
+    return 1;
+  }
+  return '';
 };

@@ -14,10 +14,12 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   defaultCurrentPage,
   defaultOrganizerPageSize,
+  SetRefundKey,
 } from '../../constants/General';
 import { useCookie } from '../../hooks';
 import { Images } from '../../theme';
 import { CookieKeys, UserRoleKeys } from '../../constants/Keys';
+import { validatUnfinishedSteps } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import ProgressBarComponent from '../../components/ProgressBar';
 import PageHeaderComponent from '../../components/PageHeader';
@@ -59,6 +61,8 @@ const CreateEvent = () => {
   const [blockRouter, setBlockRouter] = useState<boolean>(true);
   const [showNotSaveConfirmModal, setShowNotSaveConfirmModal] =
     useState<boolean>(false);
+  const [showMissingFieldsModal, setShowMissingFieldsModal] =
+    useState<boolean>(false);
   const [formValueSaved, setFormValueSaved] = useState<boolean>(true);
   const [whichPathUrlWillTo, setWhichPathUrlWillTo] = useState<string>('');
   const [clickConfirmModalCloseIcon, setClickConfirmModalCloseIcon] =
@@ -79,6 +83,7 @@ const CreateEvent = () => {
     detailImage: '',
     images: [],
     ticketList: [],
+    refundAndCancellation: SetRefundKey.nonRefund,
   });
   const eventInfoFinish =
     createEventFormValue.eventName &&
@@ -91,7 +96,7 @@ const CreateEvent = () => {
 
   const [progressItems, setProgressItems] = useState([
     {
-      title: 'Create Event',
+      title: t('Create Event'),
       icon: (
         <div>
           <img src={Images.EditingIcon} alt="" className="status-img" />
@@ -99,7 +104,7 @@ const CreateEvent = () => {
       ),
     },
     {
-      title: 'Create Ticket',
+      title: t('Create Ticket'),
       icon: (
         <div>
           <img src={Images.NotStartedIcon} alt="" className="status-img" />
@@ -107,7 +112,7 @@ const CreateEvent = () => {
       ),
     },
     {
-      title: 'Settings',
+      title: t('Settings'),
       icon: (
         <div>
           <img src={Images.NotStartedIcon} alt="" className="status-img" />
@@ -115,7 +120,7 @@ const CreateEvent = () => {
       ),
     },
     {
-      title: 'Publish',
+      title: t('Publish'),
       icon: (
         <div>
           <img src={Images.NotStartedIcon} alt="" className="status-img" />
@@ -261,19 +266,38 @@ const CreateEvent = () => {
   };
 
   const createEventPublish = () => {
-    setBlockRouter(false);
-    setShowNotSaveConfirmModal(false);
     const currentTime = new Date().getTime();
     const endTime = new Date(createEventFormValue.endTime).getTime();
-    if (currentTime > endTime) {
-      message.error(t('Event end time can not be in the past.'));
+    if (validatUnfinishedSteps(createEventFormValue) === '') {
+      if (currentTime > endTime) {
+        message.error(t('Event end time can not be in the past.'));
+      } else {
+        message.success(
+          t(
+            `Congrats! You have successfully published your event. Let's rock n rol!`,
+          ),
+        );
+        setWhichPathUrlWillTo(UserRoutes.events);
+        setBlockRouter(false);
+        setShowNotSaveConfirmModal(false);
+      }
     } else {
-      message.success(
-        t(
-          `Congrats! You have successfully published your event. Let's rock n rol!`,
-        ),
-      );
-      history.push(UserRoutes.events);
+      confirm({
+        open: showMissingFieldsModal,
+        centered: true,
+        closable: false,
+        okText: t('Go Complete'),
+        cancelText: t('Cancel'),
+        title: t('Missing Fields'),
+        icon: <ExclamationCircleOutlined />,
+        content: t('Please complete all required fields before publishing.'),
+        onOk() {
+          setSteps(Number(validatUnfinishedSteps(createEventFormValue)));
+        },
+        onCancel() {
+          setShowMissingFieldsModal(false);
+        },
+      });
     }
   };
 
@@ -323,6 +347,17 @@ const CreateEvent = () => {
           currentIcon = Images.NotFinishedIcon;
         }
         items[ComponentSteps.eventInfo].icon = (
+          <div>
+            <img src={currentIcon} alt="" className="status-img" />
+          </div>
+        );
+      } else if (previousStep === ComponentSteps.createTicket) {
+        if (createEventFormValue.ticketList.length) {
+          currentIcon = Images.SuccessIcon;
+        } else {
+          currentIcon = Images.NotFinishedIcon;
+        }
+        items[ComponentSteps.createTicket].icon = (
           <div>
             <img src={currentIcon} alt="" className="status-img" />
           </div>
@@ -437,7 +472,10 @@ const CreateEvent = () => {
                 )}
                 {steps === ComponentSteps.settings && <Settings />}
                 {steps === ComponentSteps.publish && (
-                  <Publish formValue={createEventFormValue} />
+                  <Publish
+                    formValue={createEventFormValue}
+                    fieldEdit={handleFieldChange}
+                  />
                 )}
               </Form>
             </div>
