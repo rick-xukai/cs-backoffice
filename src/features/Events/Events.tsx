@@ -1,22 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Button, Tooltip, Row, Col, message } from 'antd';
+import { Button, Row, Col, message, Spin, Input, Select } from 'antd';
+import {
+  LoadingOutlined,
+  CloseOutlined,
+  SearchOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import qs from 'qs';
 
 import {
+  priceUnit,
   defaultPageSize,
   defaultCurrentPage,
   TokenExpireResponseCode,
 } from '../../constants/General';
-import { FormatTimeKeys, CookieKeys, UserRoleKeys } from '../../constants/Keys';
+import {
+  FormatTimeKeys,
+  CookieKeys,
+  UserRoleKeys,
+  FilterEventStatus,
+} from '../../constants/Keys';
 import { formatTimeStrByTimeString, checkEventStatus } from '../../utils/func';
+import { Images, Colors } from '../../theme';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { useCookie } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
-import { EventsContainer } from './EventsComponent';
+import {
+  EventsContainer,
+  AddNewEventContainer,
+  EventListTableContainer,
+  EventStatusBadge,
+} from './EventsComponent';
 import {
   reset,
   selectError,
@@ -25,7 +43,13 @@ import {
   selectData,
   selectDataTotal,
   EventsListDataType,
+  setSearchKeyword,
+  setFilterStatus,
+  selectFilterStatus,
+  selectSearchKeyword,
 } from './Events.slice';
+
+const { Option } = Select;
 
 const Events = () => {
   const { t } = useTranslation();
@@ -38,6 +62,8 @@ const Events = () => {
   const error = useAppSelector(selectError);
   const eventsListData = useAppSelector(selectData);
   const eventsListDataTotal = useAppSelector(selectDataTotal);
+  const filterStatus = useAppSelector(selectFilterStatus);
+  const searchKeyword = useAppSelector(selectSearchKeyword);
 
   const [tableColumns, setTableColumns] = useState([]);
   const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
@@ -47,7 +73,7 @@ const Events = () => {
 
   const columns = [
     {
-      title: 'Event Name',
+      title: 'Event',
       dataIndex: 'name',
       key: 'name',
       role: [
@@ -56,26 +82,35 @@ const Events = () => {
         UserRoleKeys.partnerAdmin,
         UserRoleKeys.superAdmin,
       ],
+      width: 480,
       render: (text: string, record: EventsListDataType) => (
-        <Tooltip title={text}>
-          <Button className="name-btn ellipsis">
-            <Link
-              to={{
-                pathname: UserRoutes.eventInfo.replace(
-                  ':id',
-                  record.id.toString(),
-                ),
-                state: currentPaginationConfig,
-              }}
-            >
-              {text}
-            </Link>
-          </Button>
-        </Tooltip>
+        <Row>
+          <Col span={6}>
+            <div className="event-img">
+              <img src={Images.NoEventBanner} alt="" />
+            </div>
+          </Col>
+          <Col span={18} className="table-event">
+            <Row>
+              <Col span={24} className="event-name">
+                {record.name}
+              </Col>
+              <Col span={24} className="event-date">
+                {`${formatTimeStrByTimeString(
+                  record.startTime,
+                  FormatTimeKeys.norm,
+                )} - ${formatTimeStrByTimeString(
+                  record.endTime,
+                  FormatTimeKeys.norm,
+                )}`}
+              </Col>
+            </Row>
+          </Col>
+        </Row>
       ),
     },
     {
-      title: 'Event Time',
+      title: 'Sold',
       dataIndex: 'startTime',
       key: 'startTime',
       role: [
@@ -84,17 +119,10 @@ const Events = () => {
         UserRoleKeys.partnerAdmin,
         UserRoleKeys.superAdmin,
       ],
-      render: (text: string, record: EventsListDataType) => (
-        <div>
-          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.norm)} -</p>
-          <p>
-            {formatTimeStrByTimeString(record.endTime, FormatTimeKeys.norm)}
-          </p>
-        </div>
-      ),
+      render: () => <div>2917 / 3000</div>,
     },
     {
-      title: 'Location',
+      title: 'Revenue',
       dataIndex: 'location',
       key: 'location',
       role: [
@@ -103,47 +131,7 @@ const Events = () => {
         UserRoleKeys.partnerAdmin,
         UserRoleKeys.superAdmin,
       ],
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <p className="text-ellipsis">{text}</p>
-        </Tooltip>
-      ),
-    },
-    {
-      title: 'Organizer',
-      dataIndex: 'organizerName',
-      key: 'organizerName',
-      role: [UserRoleKeys.superAdmin],
-      render: (text: string) => (
-        <Tooltip title={text}>
-          <p className="text-ellipsis">{text}</p>
-        </Tooltip>
-      ),
-    },
-    {
-      title: 'Partner',
-      dataIndex: 'partnerName',
-      key: 'partnerName',
-      role: [UserRoleKeys.superAdmin],
-    },
-    {
-      title: 'Updated at',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      role: [
-        UserRoleKeys.organizerAdmin,
-        UserRoleKeys.organizerUser,
-        UserRoleKeys.partnerAdmin,
-        UserRoleKeys.superAdmin,
-      ],
-      render: (text: string) => (
-        <div>
-          <p>{formatTimeStrByTimeString(text, FormatTimeKeys.mdy)}</p>
-          <p style={{ fontSize: 13 }}>
-            {formatTimeStrByTimeString(text, FormatTimeKeys.hm)}
-          </p>
-        </div>
-      ),
+      render: () => <div>{`${'482,038'}${priceUnit}`}</div>,
     },
     {
       title: 'Status',
@@ -155,9 +143,40 @@ const Events = () => {
         UserRoleKeys.partnerAdmin,
         UserRoleKeys.superAdmin,
       ],
-      render: (status: number) => <p>{checkEventStatus(status)}</p>,
+      render: (status: number) => {
+        const background =
+          FilterEventStatus.find((item) => item.key === status)?.background ||
+          Colors.orange2;
+        const color =
+          FilterEventStatus.find((item) => item.key === status)?.color ||
+          Colors.orange3;
+        return (
+          <EventStatusBadge color={color} background={background}>
+            {checkEventStatus(status)}
+          </EventStatusBadge>
+        );
+      },
     },
+    // {
+    //   title: '',
+    //   dataIndex: '',
+    //   key: 'action',
+    //   role: [
+    //     UserRoleKeys.organizerAdmin,
+    //     UserRoleKeys.organizerUser,
+    //     UserRoleKeys.partnerAdmin,
+    //     UserRoleKeys.superAdmin,
+    //   ],
+    //   render: () => <p></p>,
+    // },
   ];
+
+  const handleStatusChange = (status: string) => {
+    let currentStatus: number | null = null;
+    currentStatus =
+      FilterEventStatus.find((item) => item.text === status)?.key || null;
+    dispatch(setFilterStatus(currentStatus));
+  };
 
   useEffect(() => {
     const roleColumns: any = [];
@@ -202,32 +221,98 @@ const Events = () => {
   return (
     <EventsContainer>
       <PageHeaderComponent title={t('Events')} />
-      <div className="page-main">
-        <Row>
-          <Col span={24} className="create-event">
-            <Link to={UserRoutes.createEvent}>
-              <Button>{t('Create New Event')}</Button>
-            </Link>
-          </Col>
-        </Row>
-        <TableComponent
-          loading={loading}
-          currentPage={currentPaginationConfig.currentPage}
-          currentPageSize={currentPaginationConfig.currentPageSize}
-          columns={tableColumns}
-          tableData={eventsListData}
-          tableDataTotal={eventsListDataTotal}
-          paginationChange={(page, pageSize) =>
-            history.push(
-              `${UserRoutes.events}?page=${
-                (pageSize === currentPaginationConfig.currentPageSize &&
-                  page) ||
-                defaultCurrentPage
-              }&pageSize=${pageSize}`,
-            )
-          }
+      {(loading && (
+        <Spin
+          spinning={loading}
+          indicator={<LoadingOutlined spin />}
+          size="large"
         />
-      </div>
+      )) || (
+        <div className="page-main">
+          <Row className="event-filter-container">
+            <Col span={24} lg={14}>
+              <Row className="content">
+                <Col span={14}>
+                  <Input
+                    value={searchKeyword}
+                    placeholder={t('Search event')}
+                    allowClear={{ clearIcon: <CloseOutlined /> }}
+                    suffix={!searchKeyword && <SearchOutlined />}
+                    onChange={(e) => dispatch(setSearchKeyword(e.target.value))}
+                  />
+                </Col>
+                <Col span={10} className="filter-status">
+                  <span>{t('Status')}:</span>
+                  <Select
+                    defaultValue={
+                      FilterEventStatus.find(
+                        (item) => item.key === filterStatus,
+                      )?.text
+                    }
+                    onChange={handleStatusChange}
+                    defaultActiveFirstOption={false}
+                  >
+                    {FilterEventStatus.map((item) => (
+                      <Option key={item.text} value={item.text}>
+                        {item.text}
+                      </Option>
+                    ))}
+                  </Select>
+                </Col>
+              </Row>
+            </Col>
+            {eventsListData.length && (
+              <Col span={10}>
+                <Link to={UserRoutes.createEvent}>
+                  <Button type="primary" className="create-new-event">
+                    <PlusOutlined />
+                    {t('Create New Event')}
+                  </Button>
+                </Link>
+              </Col>
+            )}
+          </Row>
+          {(eventsListData.length && (
+            <EventListTableContainer>
+              <TableComponent
+                loading={false}
+                currentPage={currentPaginationConfig.currentPage}
+                currentPageSize={currentPaginationConfig.currentPageSize}
+                columns={tableColumns}
+                tableData={eventsListData}
+                tableDataTotal={eventsListDataTotal}
+                paginationChange={(page, pageSize) =>
+                  history.push(
+                    `${UserRoutes.events}?page=${
+                      (pageSize === currentPaginationConfig.currentPageSize &&
+                        page) ||
+                      defaultCurrentPage
+                    }&pageSize=${pageSize}`,
+                  )
+                }
+              />
+            </EventListTableContainer>
+          )) || (
+            <AddNewEventContainer>
+              <div>
+                <img src={Images.AddNewEventIcon} alt="" />
+                <p className="title">{t('Create New Event')}</p>
+                <p className="description">
+                  {t(
+                    'Be the catalyst for extraordinary moments. Create your event and captivate your audience now!',
+                  )}
+                </p>
+                <Link to={UserRoutes.createEvent}>
+                  <Button type="primary">
+                    <PlusOutlined />
+                    {t('Create New Event')}
+                  </Button>
+                </Link>
+              </div>
+            </AddNewEventContainer>
+          )}
+        </div>
+      )}
     </EventsContainer>
   );
 };

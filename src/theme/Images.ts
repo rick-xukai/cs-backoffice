@@ -52,6 +52,7 @@ import ExportIcon from '../assets/images/icons/export.svg';
 import ClockIcon from '../assets/images/icons/clock.svg';
 import LocationRedIcon from '../assets/images/icons/location-red.svg';
 import NoEventBanner from '../assets/images/no-event-banner.png';
+import AddNewEventIcon from '../assets/images/icons/add-new-event.svg';
 
 const Images = {
   Logo,
@@ -110,6 +111,7 @@ const Images = {
   ClockIcon,
   LocationRedIcon,
   NoEventBanner,
+  AddNewEventIcon,
 };
 
 export default Images;
