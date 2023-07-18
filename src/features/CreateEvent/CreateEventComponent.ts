@@ -469,7 +469,7 @@ const CreateEventFormContainer = styled.div`
     }
     .main-box {
       .ant-form-item {
-        margin-bottom: 15px;
+        margin-bottom: 12px;
       }
       .eventShortDescription {
         margin-bottom: 30px;
@@ -492,6 +492,11 @@ const CreateEventFormContainer = styled.div`
     .ant-select-selection-item {
       margin-top: 1px;
     }
+  }
+  .ant-form-item-explain {
+    margin-top: 3px;
+    font-size: 11px;
+    margin-bottom: 6px;
   }
 `;
 

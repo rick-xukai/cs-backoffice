@@ -542,7 +542,7 @@ const CreateTicket = ({
                       value={ticketValue.ticketPrice}
                     />
                   </Form.Item>
-                  <Form.Item>
+                  <Form.Item style={{ marginTop: -10 }}>
                     <Checkbox
                       onChange={(e) =>
                         changeTicketValues(e.target.checked, 'absorbFees')
@@ -648,7 +648,7 @@ const CreateTicket = ({
                             Ticket Ceiling Price
                             <QuestionTooltip
                               title={t(
-                                'Ticket Ceiling determines the maximum price limit which a ticket holder can list on the secondary market.',
+                                `Ticket Ceiling determines the maximum price limit which a ticket holder can list on the secondary market.`,
                               )}
                             />
                           </>
