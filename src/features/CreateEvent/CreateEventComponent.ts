@@ -463,13 +463,16 @@ const CreateEventFormContainer = styled.div`
   .eventShortDescription {
     margin-bottom: 40px;
   }
+  .ant-form-item {
+    margin-bottom: 10px;
+  }
   @media (max-width: 992px) {
     .item-suggest-description {
       margin-bottom: 30px !important;
     }
     .main-box {
       .ant-form-item {
-        margin-bottom: 12px;
+        margin-bottom: 20px;
       }
       .eventShortDescription {
         margin-bottom: 30px;

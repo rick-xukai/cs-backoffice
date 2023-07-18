@@ -542,7 +542,7 @@ const CreateTicket = ({
                       value={ticketValue.ticketPrice}
                     />
                   </Form.Item>
-                  <Form.Item style={{ marginTop: -10 }}>
+                  <Form.Item style={{ marginTop: -10, marginBottom: 0 }}>
                     <Checkbox
                       onChange={(e) =>
                         changeTicketValues(e.target.checked, 'absorbFees')
@@ -613,14 +613,13 @@ const CreateTicket = ({
                       </Form.Item>
                       <Form.Item
                         label={
-                          <>
+                          <QuestionTooltip
+                            title={t(
+                              'Royalty Fee you set determines the percentage cut that goes back to you when an attendee sells their ticket on the secondary market. By default, royalty fees are 0.',
+                            )}
+                          >
                             Royalty Fee
-                            <QuestionTooltip
-                              title={t(
-                                'Royalty Fee you set determines the percentage cut that goes back to you when an attendee sells their ticket on the secondary market. By default, royalty fees are 0.',
-                              )}
-                            />
-                          </>
+                          </QuestionTooltip>
                         }
                         style={{
                           display: 'inline-block',
@@ -644,14 +643,13 @@ const CreateTicket = ({
                       </Form.Item>
                       <Form.Item
                         label={
-                          <>
+                          <QuestionTooltip
+                            title={t(
+                              `Ticket Ceiling determines the maximum price limit which a ticket holder can list on the secondary market.`,
+                            )}
+                          >
                             Ticket Ceiling Price
-                            <QuestionTooltip
-                              title={t(
-                                `Ticket Ceiling determines the maximum price limit which a ticket holder can list on the secondary market.`,
-                              )}
-                            />
-                          </>
+                          </QuestionTooltip>
                         }
                         style={{
                           display: 'inline-block',
@@ -702,12 +700,13 @@ const CreateTicket = ({
                       </Form.Item>
                       <ConnectTicketsTitle>
                         <p className="title">
-                          Connected Tickets{' '}
                           <QuestionTooltip
                             title={t(
                               'Connect previous event tickets to reward previous event goers with free access to your new event!',
                             )}
-                          />
+                          >
+                            Connected Tickets
+                          </QuestionTooltip>
                         </p>
                         <span className="action" onClick={() => setOpen(true)}>
                           {ticketValue.connectedTickets.length
