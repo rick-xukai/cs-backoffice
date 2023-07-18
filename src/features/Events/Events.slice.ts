@@ -55,6 +55,8 @@ interface EventsState {
   loading: boolean;
   data: [];
   total: number;
+  searchKeyword: string;
+  filterStatus: number | null;
   error:
     | {
         code: number | undefined;
@@ -66,6 +68,8 @@ interface EventsState {
 
 const initialState: EventsState = {
   loading: false,
+  searchKeyword: '',
+  filterStatus: 0,
   data: [],
   total: 0,
   error: null,
@@ -76,6 +80,12 @@ export const eventsSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    setSearchKeyword: (state, action) => {
+      state.searchKeyword = action.payload;
+    },
+    setFilterStatus: (state, action) => {
+      state.filterStatus = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -99,11 +109,15 @@ export const eventsSlice = createSlice({
   },
 });
 
-export const { reset } = eventsSlice.actions;
+export const { reset, setSearchKeyword, setFilterStatus } = eventsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.events.loading;
 export const selectError = (state: RootState) => state.events.error;
 export const selectData = (state: RootState) => state.events.data;
 export const selectDataTotal = (state: RootState) => state.events.total;
+export const selectFilterStatus = (state: RootState) =>
+  state.events.filterStatus;
+export const selectSearchKeyword = (state: RootState) =>
+  state.events.searchKeyword;
 
 export default eventsSlice.reducer;
