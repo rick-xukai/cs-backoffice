@@ -93,4 +93,7 @@ export const MiniContainer = styled.div`
     font-size: 13px;
     font-weight: 400;
   }
+  @media (max-width: ${BreakPoints.lg}px) {
+    margin-top: 0px;
+  }
 `;

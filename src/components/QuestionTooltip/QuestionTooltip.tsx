@@ -6,7 +6,13 @@ import { Image } from './QuestionTooltip.component';
 
 const { useBreakpoint } = Grid;
 
-const QuestionTooltip = ({ title }: { title: React.ReactNode }) => {
+const QuestionTooltip = ({
+  title,
+  children,
+}: {
+  title: React.ReactNode;
+  children: React.ReactNode;
+}) => {
   const { md } = useBreakpoint();
   return (
     <Tooltip
@@ -19,7 +25,12 @@ const QuestionTooltip = ({ title }: { title: React.ReactNode }) => {
       }}
       placement={md ? 'right' : 'topLeft'}
     >
-      <Image src={Images.QuestionCircleIcon} alt="" />
+      {children}
+      <Image
+        style={{ position: 'relative', top: -1 }}
+        src={Images.QuestionCircleIcon}
+        alt=""
+      />
     </Tooltip>
   );
 };
