@@ -731,7 +731,7 @@ export const EventList = styled.ul`
   flex: 1 0 0;
   flex-wrap: wrap;
 `;
-export const EventListItemDesktop = styled.li`
+export const TicketListItemDesktop = styled.li`
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
   border-radius: 2px;
   padding: 20px;
@@ -746,6 +746,11 @@ export const EventListItemDesktop = styled.li`
     font-size: 18px;
     font-weight: 700;
     color: ${Colors.black4};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
   }
   .label {
     color: ${Colors.grey6};
@@ -761,7 +766,7 @@ export const EventListItemDesktop = styled.li`
   }
 `;
 
-export const EventListItemMobile = styled.li`
+export const TicketListItemMobile = styled.li`
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
   border-radius: 2px;
   padding: 20px;
@@ -775,6 +780,12 @@ export const EventListItemMobile = styled.li`
     font-size: 18px;
     font-weight: 700;
     color: ${Colors.black4};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 23px;
   }
   .label {
     color: ${Colors.grey6};
@@ -783,6 +794,7 @@ export const EventListItemMobile = styled.li`
     margin-bottom: 4px;
     margin-top: 20px;
     margin-top: 12px;
+    width: 96%;
   }
   .value {
     color: ${Colors.black4};

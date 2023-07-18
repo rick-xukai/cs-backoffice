@@ -28,6 +28,7 @@ import {
   uploadProfileFileAction,
 } from './Profile.slice';
 import Tips from '../../components/Tips/Tips';
+import { TOKEN_EXPIRED_MESSAGE } from '../../constants/constants';
 
 const { TextArea } = Input;
 
@@ -142,7 +143,7 @@ const Profile = () => {
     if (error) {
       if (error.code === Messages.userDeprecated.code) {
         history.push(AuthRoutes.login);
-        message.error(t('User token is deprecated, please login again.'));
+        message.error(t(TOKEN_EXPIRED_MESSAGE));
         return;
       }
       message.error(error.message);

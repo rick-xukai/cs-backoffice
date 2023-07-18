@@ -5,3 +5,7 @@ export const SGD_UNIT = 'SGD';
 export const MMM_DD_YYYY_HH_MM = 'MMM DD, YYYY, HH:mm';
 export const OPEN_AI_TEMPLATE =
   'Preset question: As an event organizer, assist me in crafting a captivating event description using the given keywords and content below. The description should be concise, attractive and not exceed 500 characters.';
+export const TOKEN_EXPIRED_MESSAGE =
+  'User token is deprecated, please login again.';
+export const PRICE_LIMIT = 100000000;
+export const PERCENT_LIMIT = 100;

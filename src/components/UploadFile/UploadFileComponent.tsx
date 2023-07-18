@@ -66,6 +66,10 @@ const Container = styled.div`
   .ant-progress-outer {
     display: none !important;
   }
+  .ant-upload-list-picture-card .ant-upload-list-item-thumbnail .anticon {
+    font-size: 50px;
+    margin-top: 20px;
+  }
 `;
 
 const UploadFileComponent = ({
@@ -105,7 +109,9 @@ const UploadFileComponent = ({
 
   const handlePreview = async (file: UploadFile) => {
     setPreviewImageOpen(true);
-    setPreviewImageTitle(file.name || '');
+    setPreviewImageTitle(
+      !file.name || file.name.includes('http') ? 'Preview' : file.name,
+    );
   };
 
   const beforeUpload = (file: RcFile) => {

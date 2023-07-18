@@ -24,8 +24,10 @@ export interface TicketListProps {
   visibility: boolean;
   connectedTickets: { id: number; eventName: string; ticketName: string }[];
   ticketImageType: string;
+  ticketImageName: string;
   ticketThumbnailUrl: string;
   ticketThumbnailType: string;
+  ticketThumbnailName: string;
   id: string;
 }
 
@@ -174,7 +176,7 @@ export const getOrganizerAction = createAsyncThunk<
  * Upload File
  */
 export const uploadFileAction = createAsyncThunk<
-  { url: string },
+  { url: string; code: number },
   {},
   {
     rejectValue: ErrorType;
@@ -183,12 +185,13 @@ export const uploadFileAction = createAsyncThunk<
   try {
     const response = await EventsService.uploadFile(payload);
     if (verificationApi(response)) {
-      return response.data;
+      return { ...response.data, code: response.code };
     }
-    return rejectWithValue({
+    rejectWithValue({
       code: response.code,
       message: response.message,
     } as ErrorType);
+    return response;
   } catch (err: any) {
     if (!err.response) {
       throw err;

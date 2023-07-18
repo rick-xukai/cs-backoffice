@@ -28,13 +28,18 @@ import {
   CreateEventFormValueProps,
   TicketListProps,
 } from '../CreateEvent.slice';
-import { MMM_DD_YYYY_HH_MM, SGD_UNIT } from '../../../constants/constants';
+import {
+  MMM_DD_YYYY_HH_MM,
+  PERCENT_LIMIT,
+  PRICE_LIMIT,
+  SGD_UNIT,
+} from '../../../constants/constants';
 import QuestionTooltip from '../../../components/QuestionTooltip';
 // eslint-disable-next-line import/no-cycle
 import {
   CreateTicketStatus,
   EmptyState,
-  EventListItem,
+  TicketListItem,
   SelectEventsModal,
   TicketImageUpload,
   TipsCmp,
@@ -62,12 +67,14 @@ const initialValues = {
   visibility: true,
   connectedTickets: [],
   ticketImageType: '',
+  ticketImageName: '',
   ticketThumbnailUrl: '',
   ticketThumbnailType: '',
+  ticketThumbnailName: '',
   id: '',
 };
 
-const getEventListItemStatus: any = (startTime: string, endTime: string) => {
+const getTicketListItemStatus: any = (startTime: string, endTime: string) => {
   const today = moment().unix();
   const startTimeMoment = moment(startTime).unix();
   const endTimeMoment = moment(endTime).unix();
@@ -173,7 +180,7 @@ const CreateTicket = ({
               type: ticketValue.ticketImageType,
               thumbUrl: ticketValue.ticketImage,
               uid: ticketValue.ticketImage,
-              name: ticketValue.ticketImage,
+              name: ticketValue.ticketImageName,
             },
           ]
         : [],
@@ -188,7 +195,7 @@ const CreateTicket = ({
               type: ticketValue.ticketThumbnailType,
               thumbUrl: ticketValue.ticketThumbnailUrl,
               uid: ticketValue.ticketThumbnailUrl,
-              name: ticketValue.ticketThumbnailUrl,
+              name: ticketValue.ticketThumbnailName,
             },
           ]
         : [],
@@ -355,8 +362,12 @@ const CreateTicket = ({
           </Row>
           <EventList>
             {formValue.ticketList.map((item, index) => (
-              <EventListItem
-                image={item.ticketImage}
+              <TicketListItem
+                image={
+                  item.ticketImageType.includes('video')
+                    ? item.ticketThumbnailUrl
+                    : item.ticketImage
+                }
                 title={item.ticketName}
                 totalAvailableQuantity={`0 / ${item.totalAvailableQuantity}`}
                 ticketPrice={item.ticketPrice}
@@ -366,7 +377,7 @@ const CreateTicket = ({
                 onEdit={onEdit}
                 item={item}
                 index={index}
-                {...getEventListItemStatus(
+                {...getTicketListItemStatus(
                   item.sellingStartTime,
                   item.sellingEndTime,
                 )}
@@ -506,6 +517,7 @@ const CreateTicket = ({
                       onChange={(e) => {
                         const val = e.target.value;
                         if (val && Number.isNaN(Number(val))) return false;
+                        if (Number(val) >= PRICE_LIMIT) return false;
                         return changeTicketValues(
                           e.target.value,
                           'ticketPrice',
@@ -619,7 +631,10 @@ const CreateTicket = ({
                         <Input
                           onChange={(e) => {
                             const val = e.target.value;
-                            if (!Number.isNaN(Number(val))) {
+                            if (
+                              !Number.isNaN(Number(val)) &&
+                              Number(val) <= PERCENT_LIMIT
+                            ) {
                               changeTicketValues(e.target.value, 'royaltyFee');
                             }
                           }}
@@ -647,6 +662,7 @@ const CreateTicket = ({
                           onChange={(e) => {
                             const val = e.target.value;
                             if (val && Number.isNaN(Number(val))) return false;
+                            if (Number(val) >= PRICE_LIMIT) return false;
                             return changeTicketValues(
                               e.target.value,
                               'ticketCeilingPrice',

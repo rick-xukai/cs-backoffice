@@ -11,12 +11,13 @@ import {
   message,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 
 import ListEmpty from '../../../components/ListEmpty';
 import { Images } from '../../../theme';
 import {
-  EventListItemDesktop,
-  EventListItemMobile,
+  TicketListItemDesktop,
+  TicketListItemMobile,
   ModalFooterButton,
   SelectEventsTable,
 } from '../CreateEventComponent';
@@ -28,6 +29,9 @@ import { useAppDispatch } from '../../../app/hooks';
 import { uploadFileAction, TicketListProps } from '../CreateEvent.slice';
 import Tips from '../../../components/Tips';
 import { UploadFileAcceptType } from '../../../constants/General';
+import { TOKEN_EXPIRED_MESSAGE } from '../../../constants/constants';
+import { AuthRoutes } from '../../../navigation/Routes';
+import Messages from '../../../constants/Message';
 
 export enum CreateTicketStatus {
   list = 1,
@@ -64,7 +68,7 @@ export const EmptyState = ({ handleAddTicket }: { handleAddTicket: any }) => {
   );
 };
 
-export const EventListItem = ({
+export const TicketListItem = ({
   onEdit,
   onDelete,
   image,
@@ -110,15 +114,15 @@ export const EventListItem = ({
     />
   );
   return md ? (
-    <EventListItemDesktop>
-      <Row gutter={20}>
+    <TicketListItemDesktop>
+      <Row gutter={20} wrap={false}>
         <Col>
           <img src={image} alt="" className="banner" />
         </Col>
         <Col flex="auto">
-          <Row justify="space-between">
+          <Row justify="space-between" wrap={false}>
             <Col className="title">{title}</Col>
-            <Col>
+            <Col style={{ flexShrink: 0 }}>
               <Space>
                 <StatusBadge status={status} text={statusText} />
                 {more}
@@ -141,12 +145,12 @@ export const EventListItem = ({
           </Row>
         </Col>
       </Row>
-    </EventListItemDesktop>
+    </TicketListItemDesktop>
   ) : (
-    <EventListItemMobile>
-      <Row justify="space-between" style={{ marginBottom: 8 }}>
+    <TicketListItemMobile>
+      <Row justify="space-between" style={{ marginBottom: 8 }} wrap={false}>
         <Col>
-          <Row gutter={12}>
+          <Row gutter={12} wrap={false}>
             <Col>
               <img className="banner" src={image} alt="" />
             </Col>
@@ -172,7 +176,7 @@ export const EventListItem = ({
           <p className="value">{sellingTime}</p>
         </Col>
       </Row>
-    </EventListItemMobile>
+    </TicketListItemMobile>
   );
 };
 
@@ -260,6 +264,7 @@ export const TicketImageUpload = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const history = useHistory();
   const fileLimit = (size: number, type: string) => {
     const isLimit =
       size / 1024 / 1024 <= 20 &&
@@ -312,8 +317,15 @@ export const TicketImageUpload = ({
         ticketThumbnailUrl:
           (!e.file.type.includes('video') && response.payload.url) || '',
         ticketThumbnailType: e.file.type,
+        ticketImageName: e.file.name,
       });
       return e.onSuccess();
+    }
+    if (response.type === uploadFileAction.rejected.toString()) {
+      if (response.payload.code === Messages.userDeprecated.code) {
+        history.push(AuthRoutes.login);
+        return message.error(t(TOKEN_EXPIRED_MESSAGE));
+      }
     }
     return e.onError();
   };
@@ -328,6 +340,7 @@ export const TicketImageUpload = ({
       changeTicketValues({
         ticketThumbnailUrl: response.payload.url,
         ticketThumbnailType: e.file.type,
+        ticketThumbnailName: e.file.name,
       });
       return e.onSuccess();
     }
@@ -339,12 +352,15 @@ export const TicketImageUpload = ({
       ticketImageType: '',
       ticketThumbnailUrl: '',
       ticketThumbnailType: '',
+      ticketImageName: '',
+      ticketThumbnailName: '',
     });
   };
   const handleThumbnaiFileRemove = () => {
     changeTicketValues({
       ticketThumbnailUrl: '',
       ticketThumbnailType: '',
+      ticketThumbnailName: '',
     });
   };
   return (
@@ -365,7 +381,12 @@ export const TicketImageUpload = ({
         showVideoTip
       />
       {formValue.ticketImageType.includes('video') && (
-        <Form.Item label="Thumbnail image" required {...thumbnaiVerify}>
+        <Form.Item
+          label="Thumbnail image"
+          required
+          {...thumbnaiVerify}
+          style={{ marginTop: 10, marginBottom: 0 }}
+        >
           <UploadFileComponent
             fileList={thumbnaiFileList}
             previewImageUrl={formValue.ticketThumbnailUrl}

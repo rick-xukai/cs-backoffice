@@ -16,6 +16,7 @@ export const Wrapper = styled.div<{ status?: StatusBadgeType }>`
   align-items: center;
   gap: 4px;
   border-radius: 35px;
+  flex-shrink: 0;
   background: ${(props) => renderColor(props.status).background};
   color: ${(props) => renderColor(props.status).color};
   .circle {
