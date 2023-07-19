@@ -144,14 +144,18 @@ const Settings = ({
     if (createPromoStatus === CreatePromoStatus.edit) {
       if (
         formValue.promoList.find(
-          (item) => item.id !== promoValue.id && item.code === promoValue.code,
+          (item) =>
+            item.id !== promoValue.id &&
+            promoValue.code &&
+            item.code === promoValue.code,
         )
       ) {
-        message.error(
-          t(
+        message.error({
+          content: t(
             'This Discount Code already exists. Please use another name and try again.',
           ),
-        );
+          key: 'error',
+        });
         return;
       }
       const newPromoList = [...formValue.promoList];
@@ -161,12 +165,17 @@ const Settings = ({
       newPromoList[findIndex] = { ...promoValue };
       fieldEdit(newPromoList, 'promoList');
     } else {
-      if (formValue.promoList.find((item) => item.code === promoValue.code)) {
-        message.error(
-          t(
+      if (
+        formValue.promoList.find(
+          (item) => promoValue.code && item.code === promoValue.code,
+        )
+      ) {
+        message.error({
+          content: t(
             'This Discount Code already exists. Please use another name and try again.',
           ),
-        );
+          key: 'error',
+        });
         return;
       }
       fieldEdit(
