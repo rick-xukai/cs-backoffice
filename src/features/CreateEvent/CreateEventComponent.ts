@@ -281,13 +281,13 @@ const CreateEventFormContainer = styled.div`
       display: block;
     }
     .ant-form-item-label > label {
-      height: unset;
       font-weight: 400;
       color: ${Colors.grey6};
       margin-bottom: 5px;
       font-size: 13px;
       font-weight: 400;
       line-height: 19px;
+      height: 19px;
     }
     .ant-form-item-label > label::after {
       display: none;
@@ -425,6 +425,7 @@ const CreateEventFormContainer = styled.div`
   }
   .ant-input-number {
     height: 36px;
+    border-radius: 2px;
     .ant-input-number-input {
       height: 36px;
     }
@@ -464,7 +465,7 @@ const CreateEventFormContainer = styled.div`
     margin-bottom: 40px;
   }
   .ant-form-item {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
   @media (max-width: 992px) {
     .item-suggest-description {
@@ -500,6 +501,31 @@ const CreateEventFormContainer = styled.div`
     margin-top: 3px;
     font-size: 11px;
     margin-bottom: 6px;
+  }
+  .ant-input-affix-wrapper,
+  .ant-picker {
+    border-radius: 2px;
+  }
+  .ant-input {
+    height: 36px;
+    border-radius: 2px;
+  }
+  .ant-radio-button-wrapper {
+    height: 38px;
+    span:not(.ant-radio-button) {
+      position: relative;
+      top: -2px;
+    }
+  }
+  .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked) {
+    border-color: ${Colors.grey4};
+  }
+  .ant-radio-button-wrapper:last-child,
+  .ant-radio-button-wrapper:first-child {
+    border-radius: 0 2px 2px 0;
+  }
+  .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder {
+    line-height: 35px;
   }
 `;
 
@@ -728,7 +754,7 @@ export const ModalFooterButton = styled(Button)`
   line-height: 11px;
 `;
 
-export const EventList = styled.ul`
+export const TicketList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
@@ -951,6 +977,110 @@ const EventInfoCard = styled(Col)`
       }
     }
   }
+`;
+
+export const PromoList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 20px;
+  padding: 0 20px 20px 20px;
+  gap: 16px;
+  display: flex;
+  flex: 1 0 0;
+  flex-wrap: wrap;
+`;
+
+const promoListStyle = `
+ box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  padding: 40px 20px 20px 20px;
+  width: 100%;
+  flex-shrink: 0;
+  position: relative;
+  .badge {
+    background: ${Colors.grey9};
+    color: ${Colors.grey6};
+    font-size: 14px;
+    font-weight: 700;
+    padding: 2px 8px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 2px;
+  }
+  .more-icon{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
+  .title{
+    color: ${Colors.black4};
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 0;
+  }
+`;
+
+export const PromoListCode = styled.li`
+  ${promoListStyle}
+`;
+
+export const PromoListBundle = styled.li`
+  ${promoListStyle}
+`;
+
+export const LabelAndValueArea = styled(Row)``;
+
+export const LabelAndValue = styled(Col)`
+  .label {
+    font-size: 13px;
+    font-weight: 400;
+    color: ${Colors.grey6};
+    margin-top: 16px;
+  }
+  .value {
+    font-size: 15px;
+    font-weight: 500;
+    color: ${Colors.black4};
+    margin-top: 4px;
+  }
+  .table {
+    margin-top: 10px;
+    .head {
+      display: flex;
+      justify-content: space-between;
+      background: ${Colors.white2};
+      gap: 20px;
+      .head-item {
+        padding: 8px 16px;
+        width: 50%;
+        font-size: 12px;
+        font-weight: 700;
+      }
+    }
+    .body {
+      display: flex;
+      justify-content: space-between;
+      background: ${Colors.white};
+      gap: 20px;
+      .body-item {
+        padding: 8px 16px;
+        width: 50%;
+        font-size: 15px;
+        font-weight: 400;
+      }
+    }
+  }
+`;
+
+export const ActionTextButton = styled.span`
+  color: ${Colors.branding};
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+  margin-bottom: 0;
 `;
 
 export {

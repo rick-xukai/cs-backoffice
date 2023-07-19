@@ -32,12 +32,14 @@ import { UploadFileAcceptType } from '../../../constants/General';
 import { TOKEN_EXPIRED_MESSAGE } from '../../../constants/constants';
 import { AuthRoutes } from '../../../navigation/Routes';
 import Messages from '../../../constants/Message';
+import NoData from '../../../components/NoData/NoData';
 
 export enum CreateTicketStatus {
   list = 1,
   add = 2,
   edit = 3,
 }
+
 const { useBreakpoint } = Grid;
 export const EmptyState = ({ handleAddTicket }: { handleAddTicket: any }) => {
   const { t } = useTranslation();
@@ -217,9 +219,11 @@ export const SelectEventsModal = ({
           <Col span={2}>
             <Checkbox
               checked={
+                !!eventsListData.length &&
                 eventsListData.length ===
-                eventsListData.filter((item) => item.checked).length
+                  eventsListData.filter((item) => item.checked).length
               }
+              disabled={!eventsListData.length}
               onChange={(e) => hanldleCheckAll(e.target.checked)}
             />
           </Col>
@@ -227,20 +231,24 @@ export const SelectEventsModal = ({
           <Col span={7}>Ticket Name</Col>
         </Row>
       </Col>
-      {eventsListData.map((item, index) => (
-        <Col className="item" span={24} key={item.id}>
-          <Row>
-            <Col span={2}>
-              <Checkbox
-                onChange={(e) => handleSelectEvents(e.target.checked, index)}
-                checked={item.checked}
-              />
-            </Col>
-            <Col span={15}>{item.eventName}</Col>
-            <Col span={7}>{item.ticketName}</Col>
-          </Row>
-        </Col>
-      ))}
+      {eventsListData.length ? (
+        eventsListData.map((item, index) => (
+          <Col className="item" span={24} key={item.id}>
+            <Row>
+              <Col span={2}>
+                <Checkbox
+                  onChange={(e) => handleSelectEvents(e.target.checked, index)}
+                  checked={item.checked}
+                />
+              </Col>
+              <Col span={15}>{item.eventName}</Col>
+              <Col span={7}>{item.ticketName}</Col>
+            </Row>
+          </Col>
+        ))
+      ) : (
+        <NoData />
+      )}
     </SelectEventsTable>
   </Modal>
 );
