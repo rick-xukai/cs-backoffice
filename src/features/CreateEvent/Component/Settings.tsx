@@ -31,24 +31,28 @@ export enum CreatePromoType {
 }
 
 const initialValues = {
-  promoCode: '',
+  code: '',
   id: '',
-  promoType: PromoType.code,
-  discountValue: undefined,
-  promocodeName: '',
-  discountType: DiscountType.percentage,
-  promoCodeAvailableQuantity: undefined,
-  applyCodeTo: ApplyCodeToType.all,
-  certainTicketList: [],
+  type: PromoType.code,
+  name: '',
+  quantity: undefined,
   method: MethodType.auto,
-  discountName: '',
-  customerBuysQuantity: undefined,
-  customerGetsQuantity: undefined,
-  customerBuysTicket: undefined,
-  customerGetsTicket: undefined,
-  customerBuysTicketName: '',
-  customerGetsTicketName: '',
-  discountCode: '',
+  condition: {
+    ticketTypeId: undefined,
+    quantity: undefined,
+  },
+  gift: {
+    ticketTypeId: undefined,
+    quantity: undefined,
+  },
+  discount: {
+    type: DiscountType.percentage,
+    value: undefined,
+  },
+  apply: {
+    type: ApplyCodeToType.all,
+    ticketTypeIds: [],
+  },
 };
 
 const Settings = ({
@@ -96,9 +100,7 @@ const Settings = ({
       cancelText: 'Cancel',
       title: 'Delete Ticket',
       icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to delete ${
-        item.promocodeName || item.discountName
-      }?`,
+      content: `Are you sure you want to delete ${item.name}?`,
       onOk: () => {
         formValue.promoList.splice(index, 1);
         fieldEdit({
@@ -112,7 +114,7 @@ const Settings = ({
     setPromoValue({
       ...item,
     });
-    setCreatePromoType(item.promoType);
+    setCreatePromoType(item.type);
     setCreatePromoStatus(CreatePromoStatus.edit);
   };
 
@@ -130,33 +132,33 @@ const Settings = ({
     setOnSave(true);
     if (
       (createPromoType === CreatePromoType.bundle &&
-        (!promoValue.method ||
-          !promoValue.customerBuysQuantity ||
-          !promoValue.customerGetsQuantity)) ||
+        (!promoValue.condition.quantity || !promoValue.gift.quantity)) ||
       (createPromoType === CreatePromoType.code &&
-        (!promoValue.promoCode || !promoValue.discountValue))
+        (!promoValue.code ||
+          !promoValue.discount.value ||
+          (promoValue.apply.type === ApplyCodeToType.certain &&
+            !promoValue.apply.ticketTypeIds.length)))
     ) {
       return;
     }
     if (
       formValue.promoList.find(
-        (item) =>
-          item.promoType === PromoType.code &&
-          item.promoCode === promoValue.promoCode,
+        (item) => item.type === PromoType.code && item.code === promoValue.code,
       )
     ) {
-      message.error('promocode');
+      message.error('Promocode duplicated');
       return;
     }
     if (
       formValue.promoList.find(
         (item) =>
-          item.promoType === PromoType.bundle &&
+          item.type === PromoType.bundle &&
           item.method === MethodType.discount &&
-          item.discountCode === promoValue.discountCode,
+          item.id !== promoValue.id &&
+          item.code === promoValue.code,
       )
     ) {
-      message.error('discountCode');
+      message.error('Discount Code duplicated');
       return;
     }
     if (createPromoStatus === CreatePromoStatus.edit) {
@@ -173,7 +175,7 @@ const Settings = ({
           {
             ...promoValue,
             id: `add_${new Date().getTime()}`,
-            promoType: createPromoType,
+            type: createPromoType,
           },
         ],
         'promoList',

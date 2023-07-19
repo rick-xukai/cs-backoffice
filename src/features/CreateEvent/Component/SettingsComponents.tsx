@@ -170,18 +170,15 @@ export const PromoListItem = ({
 }) => {
   const { t } = useTranslation();
   const {
-    promoType,
-    promocodeName,
-    promoCode,
-    discountValue,
-    promoCodeAvailableQuantity,
-    certainTicketList,
-    discountName,
+    type,
+    name,
+    code,
+    quantity,
+    apply,
     method,
-    customerBuysQuantity,
-    customerGetsQuantity,
-    customerBuysTicket,
-    customerGetsTicket,
+    condition,
+    gift,
+    discount,
   } = item;
 
   const more = (
@@ -203,39 +200,38 @@ export const PromoListItem = ({
       }}
     />
   );
-  return promoType === PromoType.code ? (
+  return type === PromoType.code ? (
     <PromoListCode>
       <div className="badge">{t('Promocode')}</div>
       <div className="more-icon">{more}</div>
-      <p className="title">{promocodeName}</p>
+      <p className="title">{name}</p>
       <LabelAndValueArea>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Promocode')}</div>
-          <div className="value">{promoCode}</div>
+          <div className="value">{code}</div>
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Discount Value')}</div>
           <div className="value">
-            {discountValue} {SGD_UNIT}
+            {discount.value}{' '}
+            {discount.type === DiscountType.amount ? SGD_UNIT : '%'}
           </div>
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Promocode Available Quantity')}</div>
-          <div className="value">
-            0 / {promoCodeAvailableQuantity || 'Unlimited'}
-          </div>
+          <div className="value">0 / {quantity || 'Unlimited'}</div>
         </LabelAndValue>
 
         <LabelAndValue span={24}>
           <div className="label">{t('Apply Code To')}</div>
           <div className="value">
-            {certainTicketList.length ? (
+            {apply.ticketTypeIds.length ? (
               <div className="table">
                 <div className="head">
                   <div className="head-item">{t('Ticket Name')}</div>
                   <div className="head-item">{t('Price')}</div>
                 </div>
-                {certainTicketList.map((ticket) => (
+                {apply.ticketTypeIds.map((ticket) => (
                   <div className="body" key={ticket.id}>
                     <div className="body-item">{ticket.ticketName}</div>
                     <div className="body-item">
@@ -255,11 +251,11 @@ export const PromoListItem = ({
     <PromoListBundle>
       <div className="badge">{t('Bundle Promotion')}</div>
       <div className="more-icon">{more}</div>
-      <p className="title">{discountName}</p>
+      <p className="title">{name}</p>
       <LabelAndValueArea>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Discount Name')}</div>
-          <div className="value">{discountName || '-'}</div>
+          <div className="value">{name || '-'}</div>
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Method')}</div>
@@ -271,20 +267,18 @@ export const PromoListItem = ({
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Promocode Available Quantity')}</div>
-          <div className="value">
-            0 / {promoCodeAvailableQuantity || 'Unlimited'}
-          </div>
+          <div className="value">0 / {quantity || 'Unlimited'}</div>
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Customer Buys')}</div>
           <div className="value">
-            {customerBuysQuantity} X {customerBuysTicket}
+            {condition.quantity} X {condition.ticketTypeId}
           </div>
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Customer Gets')}</div>
           <div className="value">
-            {customerGetsQuantity} X {customerGetsTicket}
+            {gift.quantity} X {gift.ticketTypeId}
           </div>
         </LabelAndValue>
       </LabelAndValueArea>
@@ -398,7 +392,10 @@ export const AddEditForm = ({
   };
   const doneHandle = () => {
     changePromoValues({
-      certainTicketList: ticketsList.filter((item) => item.checked),
+      apply: {
+        ...promoValue.apply,
+        ticketTypeIds: ticketsList.filter((item) => item.checked),
+      },
     });
     setOpen(false);
   };
@@ -421,11 +418,14 @@ export const AddEditForm = ({
       cancelText: 'Cancel',
       title: 'Remove Ticket',
       icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to remove ${promoValue.certainTicketList[index].ticketName}?`,
+      content: `Are you sure you want to remove ${promoValue.apply.ticketTypeIds[index].ticketName}?`,
       onOk: () => {
-        promoValue.certainTicketList.splice(index, 1);
+        promoValue.apply.ticketTypeIds.splice(index, 1);
         changePromoValues({
-          certainTicketList: [...promoValue.certainTicketList],
+          apply: {
+            ...promoValue.apply,
+            ticketTypeIds: [...promoValue.apply.ticketTypeIds],
+          },
         });
       },
     });
@@ -434,12 +434,12 @@ export const AddEditForm = ({
     setTicketListData(
       ticketsListData.map((item: any) => ({
         ...item,
-        checked: !!promoValue.certainTicketList.find(
+        checked: !!promoValue.apply.ticketTypeIds.find(
           (ticket) => item.id === ticket.id,
         ),
       })),
     );
-  }, [promoValue]);
+  }, [promoValue.apply.ticketTypeIds]);
 
   const ticketOptions = ticketsListData.map((item: any) => ({
     label: item.ticketName,
@@ -456,10 +456,8 @@ export const AddEditForm = ({
                 <Input
                   showCount
                   maxLength={100}
-                  onChange={(e) =>
-                    changePromoValues(e.target.value, 'promocodeName')
-                  }
-                  value={promoValue.promocodeName}
+                  onChange={(e) => changePromoValues(e.target.value, 'name')}
+                  value={promoValue.name}
                 />
               </Form.Item>
             )}
@@ -467,17 +465,11 @@ export const AddEditForm = ({
               <Form.Item
                 label="Promocode"
                 required
-                {...requiredValidateForm(
-                  promoValue.promoCode,
-                  'Promocode',
-                  onSave,
-                )}
+                {...requiredValidateForm(promoValue.code, 'Promocode', onSave)}
               >
                 <Input
-                  onChange={(e) =>
-                    changePromoValues(e.target.value, 'promoCode')
-                  }
-                  value={promoValue.promoCode}
+                  onChange={(e) => changePromoValues(e.target.value, 'code')}
+                  value={promoValue.code}
                 />
               </Form.Item>
             )}
@@ -487,7 +479,7 @@ export const AddEditForm = ({
                 label="Discount Value"
                 required
                 {...requiredValidateForm(
-                  promoValue.discountValue,
+                  promoValue.discount.value,
                   'Discount Value',
                   onSave,
                 )}
@@ -495,24 +487,21 @@ export const AddEditForm = ({
                 <Row gutter={16}>
                   <Col>
                     <Radio.Group
-                      value={promoValue.discountType}
+                      value={promoValue.discount.type}
                       onChange={(e) =>
-                        changePromoValues({
-                          discountType: e.target.value,
-                          discountValue: '',
-                        })
+                        changePromoValues(
+                          {
+                            type: e.target.value,
+                            value: '',
+                          },
+                          'discount',
+                        )
                       }
                     >
-                      <Radio.Button
-                        name="discountType"
-                        value={DiscountType.percentage}
-                      >
+                      <Radio.Button name="type" value={DiscountType.percentage}>
                         {t('Percentage')}
                       </Radio.Button>
-                      <Radio.Button
-                        name="discountType"
-                        value={DiscountType.amount}
-                      >
+                      <Radio.Button name="type" value={DiscountType.amount}>
                         {t('Amount')}
                       </Radio.Button>
                     </Radio.Group>
@@ -524,43 +513,61 @@ export const AddEditForm = ({
                         if (val && Number.isNaN(Number(val))) return false;
                         if (
                           Number(val) >= PRICE_LIMIT &&
-                          promoValue.discountType === DiscountType.amount
+                          promoValue.discount.type === DiscountType.amount
                         )
                           return false;
                         if (
                           Number(val) >= PERCENT_LIMIT &&
-                          promoValue.discountType === DiscountType.percentage
+                          promoValue.discount.type === DiscountType.percentage
                         )
                           return false;
                         return changePromoValues(
-                          e.target.value,
-                          'discountValue',
+                          {
+                            ...promoValue.discount,
+                            value: e.target.value,
+                          },
+                          'discount',
                         );
                       }}
                       onBlur={(e) => {
                         const val = e.target.value;
-                        if (promoValue.discountType === DiscountType.amount) {
+                        if (promoValue.discount.type === DiscountType.amount) {
                           if (val && Number(val) <= 0)
-                            return changePromoValues('', 'discountValue');
+                            return changePromoValues(
+                              {
+                                ...promoValue.discount,
+                                value: '',
+                              },
+                              'discount',
+                            );
                           return changePromoValues(
-                            thousandsSeparator(val),
-                            'discountValue',
+                            {
+                              ...promoValue.discount,
+                              value: thousandsSeparator(val),
+                            },
+                            'discount',
                           );
                         }
                         return changePromoValues(
-                          `${Number(val)}`,
-                          'discountValue',
+                          {
+                            ...promoValue.discount,
+                            value: `${Number(val)}`,
+                          },
+                          'discount',
                         );
                       }}
                       onFocus={(e) => {
                         changePromoValues(
-                          e.target.value.replace(/,/g, ''),
-                          'discountValue',
+                          {
+                            ...promoValue.discount,
+                            value: e.target.value.replace(/,/g, ''),
+                          },
+                          'discount',
                         );
                       }}
-                      value={promoValue.discountValue || undefined}
+                      value={promoValue.discount.value || undefined}
                       suffix={
-                        promoValue.discountType === DiscountType.amount
+                        promoValue.discount.type === DiscountType.amount
                           ? SGD_UNIT
                           : '%'
                       }
@@ -576,10 +583,8 @@ export const AddEditForm = ({
                   <Input
                     showCount
                     maxLength={100}
-                    onChange={(e) =>
-                      changePromoValues(e.target.value, 'discountName')
-                    }
-                    value={promoValue.discountName}
+                    onChange={(e) => changePromoValues(e.target.value, 'name')}
+                    value={promoValue.name}
                   />
                 </Form.Item>
                 <Form.Item label="Method" required>
@@ -610,7 +615,7 @@ export const AddEditForm = ({
                     label="Discount Code"
                     required
                     {...requiredValidateForm(
-                      promoValue.discountCode,
+                      promoValue.code,
                       'Discount Code',
                       onSave,
                     )}
@@ -619,9 +624,9 @@ export const AddEditForm = ({
                       showCount
                       maxLength={100}
                       onChange={(e) =>
-                        changePromoValues(e.target.value, 'discountCode')
+                        changePromoValues(e.target.value, 'code')
                       }
-                      value={promoValue.discountCode}
+                      value={promoValue.code}
                     />
                   </Form.Item>
                 )}
@@ -632,18 +637,24 @@ export const AddEditForm = ({
                       label="Customer Buys"
                       required
                       {...requiredValidateForm(
-                        promoValue.customerBuysQuantity,
+                        promoValue.condition.quantity,
                         'Customer Buys',
                         onSave,
                       )}
                     >
                       <InputNumber
                         onChange={(e) =>
-                          changePromoValues(e, 'customerBuysQuantity')
+                          changePromoValues(
+                            {
+                              ...promoValue.condition,
+                              quantity: e,
+                            },
+                            'condition',
+                          )
                         }
                         min={1}
                         style={{ width: 160 }}
-                        value={promoValue.customerBuysQuantity}
+                        value={promoValue.condition.quantity}
                       />
                     </Form.Item>
                   </Col>
@@ -651,7 +662,7 @@ export const AddEditForm = ({
                     <Form.Item
                       label={<div>&nbsp;</div>}
                       {...requiredValidateForm(
-                        promoValue.customerBuysTicket,
+                        promoValue.condition.ticketTypeId,
                         'Customer Ticket',
                         onSave,
                       )}
@@ -659,9 +670,15 @@ export const AddEditForm = ({
                       <Select
                         options={ticketOptions}
                         onChange={(e) =>
-                          changePromoValues(e, 'customerBuysTicket')
+                          changePromoValues(
+                            {
+                              ...promoValue.condition,
+                              ticketTypeId: e,
+                            },
+                            'condition',
+                          )
                         }
-                        value={promoValue.customerBuysTicket}
+                        value={promoValue.condition.ticketTypeId}
                         placeholder="Select Ticket"
                       />
                     </Form.Item>
@@ -673,18 +690,24 @@ export const AddEditForm = ({
                       label="Customer Gets"
                       required
                       {...requiredValidateForm(
-                        promoValue.customerGetsQuantity,
+                        promoValue.gift.quantity,
                         'Customer Gets',
                         onSave,
                       )}
                     >
                       <InputNumber
                         onChange={(e) =>
-                          changePromoValues(e, 'customerGetsQuantity')
+                          changePromoValues(
+                            {
+                              ...promoValue.gift,
+                              quantity: e,
+                            },
+                            'gift',
+                          )
                         }
                         min={1}
                         style={{ width: 160 }}
-                        value={promoValue.customerGetsQuantity}
+                        value={promoValue.gift.quantity}
                       />
                     </Form.Item>
                   </Col>
@@ -693,7 +716,7 @@ export const AddEditForm = ({
                     <Form.Item
                       label={<div>&nbsp;</div>}
                       {...requiredValidateForm(
-                        promoValue.customerGetsTicket,
+                        promoValue.gift.ticketTypeId,
                         'Customer Gets Ticket',
                         onSave,
                       )}
@@ -701,9 +724,15 @@ export const AddEditForm = ({
                       <Select
                         options={ticketOptions}
                         onChange={(e) =>
-                          changePromoValues(e, 'customerGetsTicket')
+                          changePromoValues(
+                            {
+                              ...promoValue.gift,
+                              ticketTypeId: e,
+                            },
+                            'gift',
+                          )
                         }
-                        value={promoValue.customerGetsTicket}
+                        value={promoValue.gift.ticketTypeId}
                         placeholder="Select Ticket"
                       />
                     </Form.Item>
@@ -727,11 +756,11 @@ export const AddEditForm = ({
                       ) {
                         changePromoValues(
                           `${val ? Number(val) : ''}`,
-                          'promoCodeAvailableQuantity',
+                          'quantity',
                         );
                       }
                     }}
-                    value={promoValue.promoCodeAvailableQuantity}
+                    value={promoValue.quantity}
                     placeholder="Unlimiteded"
                   />
                 </Col>
@@ -742,8 +771,8 @@ export const AddEditForm = ({
                 label="Apply Code To"
                 required
                 {...requiredValidateForm(
-                  promoValue.applyCodeTo === ApplyCodeToType.certain
-                    ? promoValue.certainTicketList.length
+                  promoValue.apply.type === ApplyCodeToType.certain
+                    ? promoValue.apply.ticketTypeIds.length
                     : true,
                   'Certain tickets',
                   onSave,
@@ -753,30 +782,33 @@ export const AddEditForm = ({
                   <Col>
                     <Radio.Group
                       onChange={(e) =>
-                        changePromoValues(e.target.value, 'applyCodeTo')
+                        changePromoValues(
+                          {
+                            ...promoValue.apply,
+                            type: e.target.value,
+                          },
+                          'apply',
+                        )
                       }
-                      value={promoValue.applyCodeTo}
+                      value={promoValue.apply.type}
                       style={{ marginTop: 5 }}
                     >
                       <Space size="small" direction="vertical">
-                        <Radio name="applyCodeTo" value={ApplyCodeToType.all}>
+                        <Radio name="apply" value={ApplyCodeToType.all}>
                           {t('All tickets')}
                         </Radio>
-                        <Radio
-                          name="applyCodeTo"
-                          value={ApplyCodeToType.certain}
-                        >
+                        <Radio name="apply" value={ApplyCodeToType.certain}>
                           {t('Certain tickets')}
                         </Radio>
                       </Space>
                     </Radio.Group>
                   </Col>
-                  {promoValue.applyCodeTo === ApplyCodeToType.certain && (
+                  {promoValue.apply.type === ApplyCodeToType.certain && (
                     <Col>
                       <Row align="bottom">
                         <Col>
                           <ActionTextButton onClick={() => setOpen(true)}>
-                            {promoValue.certainTicketList.length
+                            {promoValue.apply.ticketTypeIds.length
                               ? 'Edit'
                               : 'Select'}
                           </ActionTextButton>
@@ -787,9 +819,9 @@ export const AddEditForm = ({
                 </Row>
               </Form.Item>
             )}
-            {promoValue.applyCodeTo === ApplyCodeToType.certain && (
+            {promoValue.apply.type === ApplyCodeToType.certain && (
               <ConnectTicketsList>
-                {promoValue.certainTicketList.map((item, index) => (
+                {promoValue.apply.ticketTypeIds.map((item, index) => (
                   <ConnectTicketItem key={item.id}>
                     <div>
                       <p className="title">{item.ticketName}</p>
