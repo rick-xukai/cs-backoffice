@@ -54,24 +54,28 @@ export interface PromoListProps {
 }
 
 export interface TicketListProps {
-  ticketName: string;
-  ticketImage: string;
-  totalAvailableQuantity: string;
-  ticketPrice: string;
-  absorbFees: boolean;
-  sellingStartTime: string;
-  sellingEndTime: string;
-  ticketDescription: string;
-  royaltyFee: string;
-  ticketCeilingPrice: string;
-  visibility: boolean;
-  connectedTickets: { id: number; eventName: string; ticketName: string }[];
-  ticketImageType: string;
-  ticketImageName: string;
-  ticketThumbnailUrl: string;
-  ticketThumbnailType: string;
-  ticketThumbnailName: string;
   id: string;
+  name: string;
+  description: string;
+  price: string;
+  absorbFees: boolean;
+  stock: string;
+  ceilingPrice: string;
+  royaltiesFee: string;
+  image: string;
+  imageType: string;
+  thumbnailUrl: string;
+  thumbnailType: string;
+  sellStartTime: string;
+  sellEndTime: string;
+  visibility: boolean;
+  connectedTickets: {
+    ticketTypeId: number;
+    eventName: string;
+    ticketName: string;
+  }[];
+  imageName: string;
+  thumbnailName: string;
 }
 
 export interface CreateEventFormValueProps {

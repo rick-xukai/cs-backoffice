@@ -54,23 +54,23 @@ import { UploadFileAcceptType } from '../../../constants/General';
 const { RangePicker } = DatePicker;
 
 const initialValues = {
-  ticketName: '',
-  ticketImage: '',
-  totalAvailableQuantity: '',
-  ticketPrice: '',
+  name: '',
+  image: '',
+  stock: '',
+  price: '',
   absorbFees: false,
-  sellingStartTime: '',
-  sellingEndTime: '',
-  ticketDescription: '',
-  royaltyFee: '',
-  ticketCeilingPrice: '',
+  sellStartTime: '',
+  sellEndTime: '',
+  description: '',
+  royaltiesFee: '',
+  ceilingPrice: '',
   visibility: true,
   connectedTickets: [],
-  ticketImageType: '',
-  ticketImageName: '',
-  ticketThumbnailUrl: '',
-  ticketThumbnailType: '',
-  ticketThumbnailName: '',
+  imageType: '',
+  imageName: '',
+  thumbnailUrl: '',
+  thumbnailType: '',
+  thumbnailName: '',
   id: '',
 };
 
@@ -116,12 +116,12 @@ const CreateTicket = ({
   const [thumbnaiFileList, setThumbnaiFileList] = useState<any>([]);
   const [ticketValue, setTicketValue] = useState<TicketListProps>({
     ...initialValues,
-    sellingEndTime: formValue.startTime,
+    sellEndTime: formValue.startTime,
   });
   useEffect(() => {
     setTicketValue({
       ...ticketValue,
-      sellingEndTime: ticketValue.sellingEndTime || formValue.startTime,
+      sellEndTime: ticketValue.sellEndTime || formValue.startTime,
     });
   }, [formValue.startTime, createTicketStatus]);
   const [onSave, setOnSave] = useState(false);
@@ -173,34 +173,34 @@ const CreateTicket = ({
 
   useEffect(() => {
     setFileList(
-      ticketValue.ticketImage
+      ticketValue.image
         ? [
             {
-              url: ticketValue.ticketImage,
-              type: ticketValue.ticketImageType,
-              thumbUrl: ticketValue.ticketImage,
-              uid: ticketValue.ticketImage,
-              name: ticketValue.ticketImageName,
+              url: ticketValue.image,
+              type: ticketValue.imageType,
+              thumbUrl: ticketValue.image,
+              uid: ticketValue.image,
+              name: ticketValue.imageName,
             },
           ]
         : [],
     );
-  }, [ticketValue.ticketImage]);
+  }, [ticketValue.image]);
   useEffect(() => {
     setThumbnaiFileList(
-      ticketValue.ticketThumbnailUrl
+      ticketValue.thumbnailUrl
         ? [
             {
-              url: ticketValue.ticketThumbnailUrl,
-              type: ticketValue.ticketThumbnailType,
-              thumbUrl: ticketValue.ticketThumbnailUrl,
-              uid: ticketValue.ticketThumbnailUrl,
-              name: ticketValue.ticketThumbnailName,
+              url: ticketValue.thumbnailUrl,
+              type: ticketValue.thumbnailType,
+              thumbUrl: ticketValue.thumbnailUrl,
+              uid: ticketValue.thumbnailUrl,
+              name: ticketValue.thumbnailName,
             },
           ]
         : [],
     );
-  }, [ticketValue.ticketThumbnailUrl]);
+  }, [ticketValue.thumbnailUrl]);
 
   const [eventsListData, setEventsListData] = useState([
     {
@@ -233,7 +233,7 @@ const CreateTicket = ({
       eventsListData.map((item) => ({
         ...item,
         checked: !!ticketValue.connectedTickets.find(
-          (ticket) => item.id === ticket.id,
+          (ticket) => item.id === ticket.ticketTypeId,
         ),
       })),
     );
@@ -270,12 +270,12 @@ const CreateTicket = ({
   const handleSave = () => {
     setOnSave(true);
     if (
-      !ticketValue.ticketName ||
-      !ticketValue.ticketImage ||
-      !`${ticketValue.ticketPrice}` ||
-      !`${ticketValue.totalAvailableQuantity}` ||
-      !ticketValue.sellingStartTime ||
-      !ticketValue.sellingEndTime
+      !ticketValue.name ||
+      !ticketValue.image ||
+      !`${ticketValue.price}` ||
+      !`${ticketValue.stock}` ||
+      !ticketValue.sellStartTime ||
+      !ticketValue.sellEndTime
     ) {
       return;
     }
@@ -319,7 +319,7 @@ const CreateTicket = ({
       cancelText: 'Cancel',
       title: 'Delete Ticket',
       icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to delete ${item.ticketName}?`,
+      content: `Are you sure you want to delete ${item.name}?`,
       onOk: () => {
         formValue.ticketList.splice(index, 1);
         fieldEdit({
@@ -333,7 +333,7 @@ const CreateTicket = ({
     setCreateTicketStatus(CreateTicketStatus.edit);
   };
   const calculatedPrice = calculatePrice(
-    Number(ticketValue.ticketPrice.replace(/,/g, '')),
+    Number(ticketValue.price.replace(/,/g, '')),
     ticketValue.absorbFees,
   );
 
@@ -364,22 +364,22 @@ const CreateTicket = ({
             {formValue.ticketList.map((item, index) => (
               <TicketListItem
                 image={
-                  item.ticketImageType.includes('video')
-                    ? item.ticketThumbnailUrl
-                    : item.ticketImage
+                  item.imageType.includes('video')
+                    ? item.thumbnailUrl
+                    : item.image
                 }
-                title={item.ticketName}
-                totalAvailableQuantity={`0 / ${item.totalAvailableQuantity}`}
-                ticketPrice={item.ticketPrice}
-                sellingTime={`${item.sellingStartTime} - ${item.sellingEndTime}`}
+                title={item.name}
+                stock={`0 / ${item.stock}`}
+                price={item.price}
+                sellingTime={`${item.sellStartTime} - ${item.sellEndTime}`}
                 key={item.id}
                 onDelete={onDelete}
                 onEdit={onEdit}
                 item={item}
                 index={index}
                 {...getTicketListItemStatus(
-                  item.sellingStartTime,
-                  item.sellingEndTime,
+                  item.sellStartTime,
+                  item.sellEndTime,
                 )}
               />
             ))}
@@ -406,7 +406,7 @@ const CreateTicket = ({
                     label="Ticket Name"
                     required
                     {...requiredValidateForm(
-                      ticketValue.ticketName,
+                      ticketValue.name,
                       'Ticket Name',
                       onSave,
                     )}
@@ -415,16 +415,16 @@ const CreateTicket = ({
                       showCount
                       maxLength={100}
                       onChange={(e) =>
-                        changeTicketValues(e.target.value, 'ticketName')
+                        changeTicketValues(e.target.value, 'name')
                       }
-                      value={ticketValue.ticketName}
+                      value={ticketValue.name}
                     />
                   </Form.Item>
                   <Form.Item
                     label="Ticket Image"
                     required
                     {...requiredValidateForm(
-                      ticketValue.ticketImage,
+                      ticketValue.image,
                       'Ticket Image',
                       onSave,
                     )}
@@ -437,7 +437,7 @@ const CreateTicket = ({
                       handleThumbnaiUploadChange={handleThumbnaiUploadChange}
                       changeTicketValues={changeTicketValues}
                       thumbnaiVerify={requiredValidateForm(
-                        ticketValue.ticketThumbnailUrl,
+                        ticketValue.thumbnailUrl,
                         'Thumbnail image',
                         onSave,
                       )}
@@ -452,7 +452,7 @@ const CreateTicket = ({
                     label="Total Available Quantity"
                     required
                     {...requiredValidateForm(
-                      ticketValue.totalAvailableQuantity,
+                      ticketValue.stock,
                       'Total Available Quantity',
                       onSave,
                     )}
@@ -477,11 +477,11 @@ const CreateTicket = ({
                             ) {
                               changeTicketValues(
                                 `${val ? Number(val) : ''}`,
-                                'totalAvailableQuantity',
+                                'stock',
                               );
                             }
                           }}
-                          value={ticketValue.totalAvailableQuantity}
+                          value={ticketValue.stock}
                         />
                       </Col>
                     </Row>
@@ -494,15 +494,15 @@ const CreateTicket = ({
                     label="Ticket Price"
                     required
                     {...requiredValidateForm(
-                      ticketValue.ticketPrice,
+                      ticketValue.price,
                       'Ticket Price',
                       onSave,
                     )}
                     help={
-                      ticketValue.ticketPrice
+                      ticketValue.price
                         ? `User Pay: ${calculatedPrice.userPay} SGD. Take Home: ${calculatedPrice.takeHome} SGD`
                         : requiredValidateForm(
-                            ticketValue.ticketPrice,
+                            ticketValue.price,
                             'Ticket Price',
                             onSave,
                           ).help
@@ -518,28 +518,25 @@ const CreateTicket = ({
                         const val = e.target.value;
                         if (val && Number.isNaN(Number(val))) return false;
                         if (Number(val) >= PRICE_LIMIT) return false;
-                        return changeTicketValues(
-                          e.target.value,
-                          'ticketPrice',
-                        );
+                        return changeTicketValues(e.target.value, 'price');
                       }}
                       onBlur={(e) => {
                         const val = e.target.value;
                         if (Number(val) <= 0)
-                          return changeTicketValues('', 'ticketPrice');
+                          return changeTicketValues('', 'price');
                         return changeTicketValues(
                           thousandsSeparator(val),
-                          'ticketPrice',
+                          'price',
                         );
                       }}
                       onFocus={(e) => {
                         const val = e.target.value;
                         return changeTicketValues(
                           val.replace(/,/g, ''),
-                          'ticketPrice',
+                          'price',
                         );
                       }}
-                      value={ticketValue.ticketPrice}
+                      value={ticketValue.price}
                     />
                   </Form.Item>
                   <Form.Item style={{ marginTop: -10, marginBottom: 0 }}>
@@ -559,7 +556,7 @@ const CreateTicket = ({
                     label="Selling Time"
                     required
                     {...requiredValidateForm(
-                      ticketValue.sellingStartTime,
+                      ticketValue.sellStartTime,
                       'Selling Time',
                       onSave,
                     )}
@@ -568,17 +565,17 @@ const CreateTicket = ({
                       format={MMM_DD_YYYY_HH_MM}
                       onChange={(e, dateString) =>
                         changeTicketValues({
-                          sellingStartTime: dateString[0],
-                          sellingEndTime: dateString[1],
+                          sellStartTime: dateString[0],
+                          sellEndTime: dateString[1],
                         })
                       }
                       inputReadOnly
                       value={[
-                        ticketValue.sellingStartTime
-                          ? moment(ticketValue.sellingStartTime)
+                        ticketValue.sellStartTime
+                          ? moment(ticketValue.sellStartTime)
                           : moment(),
-                        ticketValue.sellingEndTime
-                          ? moment(ticketValue.sellingEndTime)
+                        ticketValue.sellEndTime
+                          ? moment(ticketValue.sellEndTime)
                           : null,
                       ]}
                       disabledDate={(currentDate) =>
@@ -590,9 +587,9 @@ const CreateTicket = ({
                   </Form.Item>
                   <FoldingPanel
                     defaultActiveKey={
-                      ticketValue.ticketDescription ||
-                      ticketValue.royaltyFee ||
-                      ticketValue.ticketCeilingPrice
+                      ticketValue.description ||
+                      ticketValue.royaltiesFee ||
+                      ticketValue.ceilingPrice
                         ? [1]
                         : [] || ticketValue.connectedTickets.length
                     }
@@ -601,14 +598,12 @@ const CreateTicket = ({
                       <Form.Item label="Ticket Description ">
                         <Input.TextArea
                           onChange={(e) =>
-                            changeTicketValues(
-                              e.target.value,
-                              'ticketDescription',
-                            )
+                            changeTicketValues(e.target.value, 'description')
                           }
                           showCount
                           maxLength={500}
-                          value={ticketValue.ticketDescription}
+                          value={ticketValue.description}
+                          autoSize
                         />
                       </Form.Item>
                       <Form.Item
@@ -634,10 +629,13 @@ const CreateTicket = ({
                               !Number.isNaN(Number(val)) &&
                               Number(val) <= PERCENT_LIMIT
                             ) {
-                              changeTicketValues(e.target.value, 'royaltyFee');
+                              changeTicketValues(
+                                e.target.value,
+                                'royaltiesFee',
+                              );
                             }
                           }}
-                          value={ticketValue.royaltyFee}
+                          value={ticketValue.royaltiesFee}
                           suffix="%"
                         />
                       </Form.Item>
@@ -663,28 +661,25 @@ const CreateTicket = ({
                             if (Number(val) >= PRICE_LIMIT) return false;
                             return changeTicketValues(
                               e.target.value,
-                              'ticketCeilingPrice',
+                              'ceilingPrice',
                             );
                           }}
                           onBlur={(e) => {
                             const val = e.target.value;
                             if (val && Number(val) <= 0)
-                              return changeTicketValues(
-                                '',
-                                'ticketCeilingPrice',
-                              );
+                              return changeTicketValues('', 'ceilingPrice');
                             return changeTicketValues(
                               thousandsSeparator(val),
-                              'ticketCeilingPrice',
+                              'ceilingPrice',
                             );
                           }}
                           onFocus={(e) => {
                             changeTicketValues(
                               e.target.value.replace(/,/g, ''),
-                              'ticketCeilingPrice',
+                              'ceilingPrice',
                             );
                           }}
-                          value={ticketValue.ticketCeilingPrice}
+                          value={ticketValue.ceilingPrice}
                           suffix={SGD_UNIT}
                         />
                       </Form.Item>
@@ -716,7 +711,7 @@ const CreateTicket = ({
                       </ConnectTicketsTitle>
                       <ConnectTicketsList>
                         {ticketValue.connectedTickets.map((item, index) => (
-                          <ConnectTicketItem key={item.id}>
+                          <ConnectTicketItem key={item.ticketTypeId}>
                             <div>
                               <p className="title">{item.eventName}</p>
                               <p className="sub-title">{item.ticketName}</p>

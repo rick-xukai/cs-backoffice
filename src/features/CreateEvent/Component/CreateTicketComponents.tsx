@@ -75,8 +75,8 @@ export const TicketListItem = ({
   onDelete,
   image,
   title,
-  totalAvailableQuantity,
-  ticketPrice,
+  stock,
+  price,
   sellingTime,
   status,
   statusText,
@@ -87,8 +87,8 @@ export const TicketListItem = ({
   onDelete?: any;
   image: string;
   title: string;
-  totalAvailableQuantity: number;
-  ticketPrice: string;
+  stock: number;
+  price: string;
   sellingTime: string;
   status?: StatusBadgeType;
   statusText: string;
@@ -134,11 +134,11 @@ export const TicketListItem = ({
           <Row justify="start">
             <Col span={6}>
               <p className="label">Total Available Quantity</p>
-              <p className="value">{totalAvailableQuantity}</p>
+              <p className="value">{stock}</p>
             </Col>
             <Col span={6}>
               <p className="label">Ticket Price (SDG)</p>
-              <p className="value">{ticketPrice}</p>
+              <p className="value">{price}</p>
             </Col>
             <Col span={12}>
               <p className="label">Selling Time</p>
@@ -167,11 +167,11 @@ export const TicketListItem = ({
       <Row>
         <Col span={12}>
           <p className="label">Total Available Quantity</p>
-          <p className="value">{totalAvailableQuantity}</p>
+          <p className="value">{stock}</p>
         </Col>
         <Col span={12}>
           <p className="label">Ticket Price (SDG)</p>
-          <p className="value">{ticketPrice}</p>
+          <p className="value">{price}</p>
         </Col>
         <Col span={24}>
           <p className="label">Selling Time</p>
@@ -320,12 +320,12 @@ export const TicketImageUpload = ({
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
       changeTicketValues({
-        ticketImage: response.payload.url,
-        ticketImageType: e.file.type,
-        ticketThumbnailUrl:
+        image: response.payload.url,
+        imageType: e.file.type,
+        thumbnailUrl:
           (!e.file.type.includes('video') && response.payload.url) || '',
-        ticketThumbnailType: e.file.type,
-        ticketImageName: e.file.name,
+        thumbnailType: e.file.type,
+        imageName: e.file.name,
       });
       return e.onSuccess();
     }
@@ -346,9 +346,9 @@ export const TicketImageUpload = ({
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
       changeTicketValues({
-        ticketThumbnailUrl: response.payload.url,
-        ticketThumbnailType: e.file.type,
-        ticketThumbnailName: e.file.name,
+        thumbnailUrl: response.payload.url,
+        thumbnailType: e.file.type,
+        thumbnailName: e.file.name,
       });
       return e.onSuccess();
     }
@@ -356,19 +356,19 @@ export const TicketImageUpload = ({
   };
   const handleFileRemove = () => {
     changeTicketValues({
-      ticketImage: '',
-      ticketImageType: '',
-      ticketThumbnailUrl: '',
-      ticketThumbnailType: '',
-      ticketImageName: '',
-      ticketThumbnailName: '',
+      image: '',
+      imageType: '',
+      thumbnailUrl: '',
+      thumbnailType: '',
+      imageName: '',
+      thumbnailName: '',
     });
   };
   const handleThumbnaiFileRemove = () => {
     changeTicketValues({
-      ticketThumbnailUrl: '',
-      ticketThumbnailType: '',
-      ticketThumbnailName: '',
+      thumbnailUrl: '',
+      thumbnailType: '',
+      thumbnailName: '',
     });
   };
   return (
@@ -379,8 +379,8 @@ export const TicketImageUpload = ({
           type: t('PNG, JPEG, GIF or MP4 files only'),
           size: t('up to [size] MB in size', { size: '20' }),
         }}
-        previewImageUrl={formValue.ticketImage}
-        previewType={formValue.ticketImageType}
+        previewImageUrl={formValue.image}
+        previewType={formValue.imageType}
         handleChange={handleUploadChange}
         customRequest={customRequest}
         handleFileRemove={handleFileRemove}
@@ -388,7 +388,7 @@ export const TicketImageUpload = ({
         fileList={fileList}
         showVideoTip
       />
-      {formValue.ticketImageType.includes('video') && (
+      {formValue.imageType.includes('video') && (
         <Form.Item
           label="Thumbnail image"
           required
@@ -397,8 +397,8 @@ export const TicketImageUpload = ({
         >
           <UploadFileComponent
             fileList={thumbnaiFileList}
-            previewImageUrl={formValue.ticketThumbnailUrl}
-            previewType={formValue.ticketThumbnailType}
+            previewImageUrl={formValue.thumbnailUrl}
+            previewType={formValue.thumbnailType}
             limitFileSize={15}
             handleChange={handleThumbnaiUploadChange}
             handleFileRemove={handleThumbnaiFileRemove}
