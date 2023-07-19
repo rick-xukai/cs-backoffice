@@ -352,3 +352,8 @@ export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
   }
   return '';
 };
+
+export const validatePromoCode = (code: string) => {
+  const reg = /^[A-Za-z0-9-_@]+$/;
+  return reg.test(code);
+};

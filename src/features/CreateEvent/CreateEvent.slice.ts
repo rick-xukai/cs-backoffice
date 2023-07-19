@@ -49,7 +49,7 @@ export interface PromoListProps {
   id: string;
   apply: {
     type: ApplyCodeToType;
-    ticketTypeIds: { ticketName: string; ticketPrice: any; id: any }[];
+    ticketTypeIds: { name: string; price: any; id: any }[];
   };
 }
 

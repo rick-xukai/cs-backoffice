@@ -39,7 +39,11 @@ import {
   PromoListProps,
   PromoType,
 } from '../CreateEvent.slice';
-import { requiredValidateForm, thousandsSeparator } from '../../../utils/func';
+import {
+  requiredValidateForm,
+  thousandsSeparator,
+  validatePromoCode,
+} from '../../../utils/func';
 import {
   PERCENT_LIMIT,
   PRICE_LIMIT,
@@ -172,13 +176,13 @@ export const PromoListItem = ({
   const {
     type,
     name,
-    code,
     quantity,
     apply,
     method,
     condition,
     gift,
     discount,
+    code,
   } = item;
 
   const more = (
@@ -204,11 +208,11 @@ export const PromoListItem = ({
     <PromoListCode>
       <div className="badge">{t('Promocode')}</div>
       <div className="more-icon">{more}</div>
-      <p className="title">{name}</p>
+      <p className="title">{code}</p>
       <LabelAndValueArea>
         <LabelAndValue {...labelAndValueColumn}>
-          <div className="label">{t('Promocode')}</div>
-          <div className="value">{code}</div>
+          <div className="label">{t('Promocode Name')}</div>
+          <div className="value">{name || '-'}</div>
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Discount Value')}</div>
@@ -233,9 +237,9 @@ export const PromoListItem = ({
                 </div>
                 {apply.ticketTypeIds.map((ticket) => (
                   <div className="body" key={ticket.id}>
-                    <div className="body-item">{ticket.ticketName}</div>
+                    <div className="body-item">{ticket.name}</div>
                     <div className="body-item">
-                      {ticket.ticketPrice} {SGD_UNIT}
+                      {ticket.price} {SGD_UNIT}
                     </div>
                   </div>
                 ))}
@@ -251,8 +255,10 @@ export const PromoListItem = ({
     <PromoListBundle>
       <div className="badge">{t('Bundle Promotion')}</div>
       <div className="more-icon">{more}</div>
-      <p className="title">{name}</p>
-      <LabelAndValueArea>
+      {method === MethodType.discount ? <p className="title">{code}</p> : null}
+      <LabelAndValueArea
+        style={{ marginTop: method === MethodType.auto ? -16 : 0 }}
+      >
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Discount Name')}</div>
           <div className="value">{name || '-'}</div>
@@ -296,9 +302,9 @@ export const SelectTicketsModal = ({
 }: {
   doneHandle: any;
   ticketsListData: {
-    ticketName: string;
+    name: string;
     id: number;
-    ticketPrice: number | string;
+    price: number | string;
     checked?: boolean;
   }[];
   setOpen: any;
@@ -349,8 +355,8 @@ export const SelectTicketsModal = ({
                     checked={item.checked}
                   />
                 </Col>
-                <Col span={15}>{item.ticketName}</Col>
-                <Col span={7}>{item.ticketPrice}</Col>
+                <Col span={15}>{item.name}</Col>
+                <Col span={7}>{item.price}</Col>
               </Row>
             </Col>
           ))
@@ -418,7 +424,7 @@ export const AddEditForm = ({
       cancelText: 'Cancel',
       title: 'Remove Ticket',
       icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to remove ${promoValue.apply.ticketTypeIds[index].ticketName}?`,
+      content: `Are you sure you want to remove ${promoValue.apply.ticketTypeIds[index].name}?`,
       onOk: () => {
         promoValue.apply.ticketTypeIds.splice(index, 1);
         changePromoValues({
@@ -442,7 +448,7 @@ export const AddEditForm = ({
   }, [promoValue.apply.ticketTypeIds]);
 
   const ticketOptions = ticketsListData.map((item: any) => ({
-    label: item.ticketName,
+    label: item.name,
     value: item.id,
   }));
 
@@ -468,7 +474,11 @@ export const AddEditForm = ({
                 {...requiredValidateForm(promoValue.code, 'Promocode', onSave)}
               >
                 <Input
-                  onChange={(e) => changePromoValues(e.target.value, 'code')}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val && validatePromoCode(val))
+                      changePromoValues(val, 'code');
+                  }}
                   value={promoValue.code}
                 />
               </Form.Item>
@@ -510,18 +520,23 @@ export const AddEditForm = ({
                     <Input
                       onChange={(e) => {
                         const val = e.target.value;
-                        if (val && Number.isNaN(Number(val))) return false;
+                        if (
+                          (val && Number.isNaN(Number(val))) ||
+                          val.includes(' ')
+                        ) {
+                          return;
+                        }
                         if (
                           Number(val) >= PRICE_LIMIT &&
                           promoValue.discount.type === DiscountType.amount
                         )
-                          return false;
+                          return;
                         if (
-                          Number(val) >= PERCENT_LIMIT &&
+                          Number(val) > PERCENT_LIMIT &&
                           promoValue.discount.type === DiscountType.percentage
                         )
-                          return false;
-                        return changePromoValues(
+                          return;
+                        changePromoValues(
                           {
                             ...promoValue.discount,
                             value: e.target.value,
@@ -565,7 +580,7 @@ export const AddEditForm = ({
                           'discount',
                         );
                       }}
-                      value={promoValue.discount.value || undefined}
+                      value={promoValue.discount.value}
                       suffix={
                         promoValue.discount.type === DiscountType.amount
                           ? SGD_UNIT
@@ -623,9 +638,11 @@ export const AddEditForm = ({
                     <Input
                       showCount
                       maxLength={100}
-                      onChange={(e) =>
-                        changePromoValues(e.target.value, 'code')
-                      }
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (validatePromoCode(val))
+                          changePromoValues(val, 'code');
+                      }}
                       value={promoValue.code}
                     />
                   </Form.Item>
@@ -824,9 +841,9 @@ export const AddEditForm = ({
                 {promoValue.apply.ticketTypeIds.map((item, index) => (
                   <ConnectTicketItem key={item.id}>
                     <div>
-                      <p className="title">{item.ticketName}</p>
+                      <p className="title">{item.name}</p>
                       <p className="sub-title">
-                        {item.ticketPrice} {SGD_UNIT}
+                        {item.price} {SGD_UNIT}
                       </p>
                     </div>
                     <img

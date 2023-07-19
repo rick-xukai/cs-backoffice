@@ -141,27 +141,19 @@ const Settings = ({
     ) {
       return;
     }
-    if (
-      formValue.promoList.find(
-        (item) => item.type === PromoType.code && item.code === promoValue.code,
-      )
-    ) {
-      message.error('Promocode duplicated');
-      return;
-    }
-    if (
-      formValue.promoList.find(
-        (item) =>
-          item.type === PromoType.bundle &&
-          item.method === MethodType.discount &&
-          item.id !== promoValue.id &&
-          item.code === promoValue.code,
-      )
-    ) {
-      message.error('Discount Code duplicated');
-      return;
-    }
     if (createPromoStatus === CreatePromoStatus.edit) {
+      if (
+        formValue.promoList.find(
+          (item) => item.id !== promoValue.id && item.code === promoValue.code,
+        )
+      ) {
+        message.error(
+          t(
+            'This Discount Code already exists. Please use another name and try again.',
+          ),
+        );
+        return;
+      }
       const newPromoList = [...formValue.promoList];
       const findIndex = formValue.promoList.findIndex(
         (item) => item.id === promoValue.id,
@@ -169,6 +161,14 @@ const Settings = ({
       newPromoList[findIndex] = { ...promoValue };
       fieldEdit(newPromoList, 'promoList');
     } else {
+      if (formValue.promoList.find((item) => item.code === promoValue.code)) {
+        message.error(
+          t(
+            'This Discount Code already exists. Please use another name and try again.',
+          ),
+        );
+        return;
+      }
       fieldEdit(
         [
           ...formValue.promoList,
@@ -217,7 +217,7 @@ const Settings = ({
       return (
         <>
           <Row justify="space-between" align="middle" className="main-title">
-            <Col>{t('Create Ticket')}</Col>
+            <Col>{t('Settings')}</Col>
             <Col>
               <AddDiscountDropDown
                 width={139}

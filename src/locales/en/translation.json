@@ -361,8 +361,9 @@
   "Customer Buys": "Customer Buys",
   "Customer Gets": "Customer Gets",
   "All tickets": "All tickets",
-  "Certain tickets" :"Certain tickets",
+  "Certain tickets": "Certain tickets",
   "Percentage": "Percentage",
   "Automatic discount": "Automatic discount",
-  "Discount code": "Discount code"
+  "Discount code": "Discount code",
+  "This Discount Code already exists. Please use another name and try again.": "This Discount Code already exists. Please use another name and try again."
 }
