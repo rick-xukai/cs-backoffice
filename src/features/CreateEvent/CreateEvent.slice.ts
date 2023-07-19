@@ -29,24 +29,28 @@ export enum MethodType {
 }
 
 export interface PromoListProps {
-  promoType: PromoType;
-  promocodeName: string;
-  promoCode: string;
-  discountValue?: number;
-  discountType: DiscountType;
-  promoCodeAvailableQuantity?: number;
-  applyCodeTo: ApplyCodeToType;
-  certainTicketList: { ticketName: string; ticketPrice: any; id: any }[];
+  type: PromoType;
+  name: string;
+  code: string;
+  discount: {
+    type: DiscountType;
+    value?: number;
+  };
+  quantity?: number;
   method: MethodType;
-  discountName: string;
-  customerBuysQuantity?: number;
-  customerGetsQuantity?: number;
-  customerBuysTicket: any;
-  customerGetsTicket: any;
-  customerBuysTicketName: any;
-  customerGetsTicketName: any;
+  condition: {
+    ticketTypeId: any;
+    quantity?: number;
+  };
+  gift: {
+    ticketTypeId: any;
+    quantity?: number;
+  };
   id: string;
-  discountCode: string;
+  apply: {
+    type: ApplyCodeToType;
+    ticketTypeIds: { ticketName: string; ticketPrice: any; id: any }[];
+  };
 }
 
 export interface TicketListProps {
