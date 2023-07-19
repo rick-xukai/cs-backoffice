@@ -1013,12 +1013,16 @@ const promoListStyle = `
     position: absolute;
     right: 20px;
     top: 20px;
+    z-index: 2;
   }
   .title{
     color: ${Colors.black4};
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 95%;
   }
 `;
 
