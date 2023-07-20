@@ -79,32 +79,23 @@ const CreateEvent = () => {
     useState<boolean>(false);
   const [createEventFormValue, setCreateEventFormValue] =
     useState<CreateEventFormValueProps>({
-      eventName: '',
+      name: '',
       location: '',
-      addMyLocation: '',
-      currentLat: 0,
-      currentLng: 0,
+      locationCoord: '',
       organizerId: '',
       address: '',
       startTime: '',
       endTime: '',
-      banner: '',
-      eventShortDescription: '',
+      image: '',
+      descriptionShort: '',
       description: '',
-      detailImage: '',
+      descriptionImages: [],
       images: [],
       ticketList: [],
       refundAndCancellation: SetRefundKey.nonRefund,
       promoList: [],
     });
-  const eventInfoFinish =
-    createEventFormValue.eventName &&
-    createEventFormValue.organizerId &&
-    (createEventFormValue.location || createEventFormValue.addMyLocation) &&
-    createEventFormValue.startTime &&
-    createEventFormValue.endTime &&
-    createEventFormValue.banner &&
-    createEventFormValue.eventShortDescription;
+
   const [progressItems, setProgressItems] = useState([
     {
       title: 'Create Event',
@@ -140,7 +131,7 @@ const CreateEvent = () => {
   };
 
   const saveAsDraft = (type?: string) => {
-    if (!createEventFormValue.eventName) {
+    if (!createEventFormValue.name) {
       message.error(
         t('Please enter a name for your event before saving as a draft.'),
       );
@@ -163,8 +154,7 @@ const CreateEvent = () => {
     } else if (field === 'locationLatLng') {
       setCreateEventFormValue({
         ...createEventFormValue,
-        currentLat: value.lat,
-        currentLng: value.lng,
+        locationCoord: `${value.lat},${value.lng}`,
         location: value.location,
       });
     } else if (field) {
@@ -332,7 +322,7 @@ const CreateEvent = () => {
     if (steps !== previousStep) {
       let currentIcon = Images.NotStartedIcon;
       if (previousStep === ComponentSteps.eventInfo) {
-        if (eventInfoFinish) {
+        if (validatUnfinishedSteps(createEventFormValue) !== 0) {
           currentIcon = Images.SuccessIcon;
         } else {
           currentIcon = Images.NotFinishedIcon;

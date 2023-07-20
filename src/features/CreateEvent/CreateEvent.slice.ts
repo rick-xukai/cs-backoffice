@@ -79,19 +79,17 @@ export interface TicketListProps {
 }
 
 export interface CreateEventFormValueProps {
-  eventName: string;
+  name: string;
   location: string;
-  addMyLocation: string;
+  locationCoord: string;
   organizerId: string;
   address: string;
   startTime: string;
   endTime: string;
-  banner: string;
-  eventShortDescription: string;
+  image: string;
+  descriptionShort: string;
   description: string;
-  detailImage: string;
-  currentLat: number;
-  currentLng: number;
+  descriptionImages: any[];
   images: any[];
   ticketList: TicketListProps[];
   promoList: PromoListProps[];
