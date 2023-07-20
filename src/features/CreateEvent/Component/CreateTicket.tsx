@@ -526,7 +526,8 @@ const CreateTicket = ({
                             if (
                               !val.includes('.') &&
                               !Number.isNaN(Number(val)) &&
-                              Number(val) >= 0
+                              Number(val) >= 0 &&
+                              Number(val) < PRICE_LIMIT
                             ) {
                               changeTicketValues(
                                 `${val ? Number(val) : ''}`,
