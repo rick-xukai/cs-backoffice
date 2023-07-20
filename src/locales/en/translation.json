@@ -365,5 +365,11 @@
   "Percentage": "Percentage",
   "Automatic discount": "Automatic discount",
   "Discount code": "Discount code",
-  "This Discount Code already exists. Please use another name and try again.": "This Discount Code already exists. Please use another name and try again."
+  "This Discount Code already exists. Please use another name and try again.": "This Discount Code already exists. Please use another name and try again.",
+  "View Dashboard": "View Dashboard",
+  "View on CrowdServe": "View on CrowdServe",
+  "Copy Link": "Copy Link",
+  "Cancel Event": "Cancel Event",
+  "Are you sure you want to cancel this event? All the user tickets will be refunded": "Are you sure you want to cancel this event? All the user tickets will be refunded",
+  "Back": "Back"
 }

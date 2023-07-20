@@ -78,6 +78,11 @@ export interface TicketListProps {
   thumbnailName: string;
 }
 
+export interface DescriptionImagesProps {
+  image: string;
+  size: string;
+}
+
 export interface CreateEventFormValueProps {
   name: string;
   location: string;
@@ -89,12 +94,14 @@ export interface CreateEventFormValueProps {
   image: string;
   descriptionShort: string;
   description: string;
-  descriptionImages: any[];
-  images: any[];
+  descriptionImages: DescriptionImagesProps[];
   ticketList: TicketListProps[];
   promoList: PromoListProps[];
-  refundAndCancellation: SetRefundKey.nonRefund;
+  refundPolicy: SetRefundKey.nonRefund;
+  status?: number;
+  descriptionImagesFileList?: any[];
 }
+
 export interface TicketTypes {
   ticketTypeId?: string;
   name: string;
@@ -136,7 +143,7 @@ export const verificationApi = (response: any) =>
  */
 export const createEventAction = createAsyncThunk<
   { id: number },
-  CreateEventPayloadType,
+  CreateEventFormValueProps,
   {
     rejectValue: ErrorType;
   }
@@ -159,6 +166,38 @@ export const createEventAction = createAsyncThunk<
     } as ErrorType);
   }
 });
+
+/**
+ * Create event save as draft
+ */
+export const createEventSaveDraftAction = createAsyncThunk<
+  { id: number },
+  CreateEventFormValueProps,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'createEventSaveDraft/createEventSaveDraftAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventsService.createEvent(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
 
 /**
  * Update event
@@ -271,6 +310,8 @@ export const openAiGeneratorAction = createAsyncThunk<
 
 interface CreateEventState {
   loading: boolean;
+  publishLoading: boolean;
+  saveDraftLoading: boolean;
   data: { id: number | string };
   organizerData: OrganizerData[];
   error:
@@ -284,6 +325,8 @@ interface CreateEventState {
 
 const initialState: CreateEventState = {
   loading: false,
+  publishLoading: false,
+  saveDraftLoading: false,
   data: { id: '' },
   organizerData: [],
   error: null,
@@ -299,14 +342,30 @@ export const createEventSlice = createSlice({
     builder
       .addCase(createEventAction.pending, (state) => {
         state.data = { id: 0 };
-        state.loading = true;
+        state.publishLoading = true;
       })
       .addCase(createEventAction.fulfilled, (state, action: any) => {
-        state.loading = false;
+        state.publishLoading = false;
         state.data = action.payload;
       })
       .addCase(createEventAction.rejected, (state, action) => {
-        state.loading = false;
+        state.publishLoading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(createEventSaveDraftAction.pending, (state) => {
+        state.data = { id: 0 };
+        state.saveDraftLoading = true;
+      })
+      .addCase(createEventSaveDraftAction.fulfilled, (state, action: any) => {
+        state.saveDraftLoading = false;
+        state.data = action.payload;
+      })
+      .addCase(createEventSaveDraftAction.rejected, (state, action) => {
+        state.saveDraftLoading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
@@ -351,6 +410,10 @@ export const createEventSlice = createSlice({
 export const { reset } = createEventSlice.actions;
 
 export const selectLoading = (state: RootState) => state.createEvent.loading;
+export const selectSaveDraftLoading = (state: RootState) =>
+  state.createEvent.saveDraftLoading;
+export const selectPublishLoading = (state: RootState) =>
+  state.createEvent.publishLoading;
 export const selectData = (state: RootState) => state.createEvent.data;
 export const selectOrganizerData = (state: RootState) =>
   state.createEvent.organizerData;

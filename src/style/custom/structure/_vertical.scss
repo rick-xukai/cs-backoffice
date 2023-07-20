@@ -443,3 +443,28 @@ body[data-sidebar='dark'] {
   height: 100%;
   z-index: 10;
 }
+.event-edit {
+  &.disable {
+    display: none;
+  }
+  .ant-tooltip-inner {
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.80);
+    color: $white;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 19px;
+  }
+  .ant-tooltip-arrow {
+    display: none;
+  }
+}
+.event-more-action {
+  .ant-dropdown-menu-item {
+    padding: 10px 12px;
+    color: $black900;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 21px;
+  }
+}

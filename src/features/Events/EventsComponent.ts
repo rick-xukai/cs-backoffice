@@ -99,6 +99,27 @@ const EventsContainer = styled.div`
       }
     }
   }
+  .event-list-action {
+    display: flex;
+    > :first-child {
+      margin-right: 20px;
+    }
+    .icon-content,
+    .icon-content-disable {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-content {
+      :hover {
+        cursor: pointer;
+        border-radius: 50%;
+        background: ${Colors.grey9};
+      }
+    }
+  }
   .ant-btn[disabled] {
     background: unset;
     color: ${Colors.grey7};
@@ -195,6 +216,10 @@ const EventListTableContainer = styled.div`
         margin-bottom: 4px;
         overflow: hidden;
         text-overflow: ellipsis;
+        cursor: pointer;
+        :hover {
+          text-decoration: underline;
+        }
       }
       .event-date {
         font-size: 13px;
