@@ -135,12 +135,14 @@ const Settings = ({
         (!promoValue.condition.quantity ||
           !promoValue.gift.quantity ||
           !promoValue.condition.ticketTypeId ||
-          !promoValue.gift.ticketTypeId)) ||
+          !promoValue.gift.ticketTypeId ||
+          !promoValue.name)) ||
       (createPromoType === CreatePromoType.code &&
         (!promoValue.code ||
           !promoValue.discount.value ||
           (promoValue.apply.type === ApplyCodeToType.certain &&
-            !promoValue.apply.ticketTypeIds.length)))
+            !promoValue.apply.ticketTypeIds.length) ||
+          !promoValue.name))
     ) {
       return;
     }
