@@ -469,7 +469,15 @@ export const AddEditForm = ({
         <Col lg={(pageTipsShow && 14) || 21} span={24}>
           <div className="main-box">
             {createPromoType === CreatePromoType.code && (
-              <Form.Item label="Promocode Name">
+              <Form.Item
+                label="Promocode Name"
+                required
+                {...requiredValidateForm(
+                  promoValue.name,
+                  'Promocode Name',
+                  onSave,
+                )}
+              >
                 <Input
                   showCount
                   maxLength={100}
@@ -607,7 +615,15 @@ export const AddEditForm = ({
             )}
             {createPromoType === CreatePromoType.bundle && (
               <>
-                <Form.Item label="Discount Name">
+                <Form.Item
+                  label="Discount Name"
+                  required
+                  {...requiredValidateForm(
+                    promoValue.name,
+                    'Discount Name',
+                    onSave,
+                  )}
+                >
                   <Input
                     showCount
                     maxLength={100}
