@@ -167,42 +167,59 @@ const CreateTicket = ({
     return isLimit;
   };
   const handleUploadChange = (info: any) => {
-    if (beforeUpload(info.file)) setFileList(info.fileList);
+    if (!info.fileList.length) {
+      setFileList(info.fileList);
+      return;
+    }
+    if (beforeUpload(info.file)) {
+      setFileList([
+        {
+          ...info.file,
+          thumbUrl: info.file?.response?.image,
+        },
+      ]);
+    }
   };
+
   const handleThumbnaiUploadChange = (info: any) => {
-    if (imageBeforeUpload(info.file)) setThumbnaiFileList(info.fileList);
+    if (imageBeforeUpload(info.file) || !info.fileList.length)
+      setThumbnaiFileList(info.fileList);
   };
 
   useEffect(() => {
-    setFileList(
-      ticketValue.image
-        ? [
-            {
-              url: ticketValue.image,
-              type: ticketValue.imageType,
-              thumbUrl: ticketValue.image,
-              uid: ticketValue.image,
-              name: ticketValue.imageName,
-            },
-          ]
-        : [],
-    );
-  }, [ticketValue.image]);
+    if (fileList[0]?.response) {
+      setTicketValue({
+        ...ticketValue,
+        ...fileList[0].response,
+      });
+    } else {
+      setTicketValue({
+        ...ticketValue,
+        image: '',
+        imageType: '',
+        imageName: '',
+        thumbnailUrl: '',
+        thumbnailType: '',
+        thumbnailName: '',
+      });
+      setThumbnaiFileList([]);
+    }
+  }, [fileList]);
   useEffect(() => {
-    setThumbnaiFileList(
-      ticketValue.thumbnailUrl
-        ? [
-            {
-              url: ticketValue.thumbnailUrl,
-              type: ticketValue.thumbnailType,
-              thumbUrl: ticketValue.thumbnailUrl,
-              uid: ticketValue.thumbnailUrl,
-              name: ticketValue.thumbnailName,
-            },
-          ]
-        : [],
-    );
-  }, [ticketValue.thumbnailUrl]);
+    if (thumbnaiFileList[0]?.response) {
+      setTicketValue({
+        ...ticketValue,
+        ...thumbnaiFileList[0].response,
+      });
+    } else {
+      setTicketValue({
+        ...ticketValue,
+        thumbnailUrl: '',
+        thumbnailType: '',
+        thumbnailName: '',
+      });
+    }
+  }, [thumbnaiFileList]);
 
   const [eventsListData, setEventsListData] = useState([
     {
@@ -265,6 +282,8 @@ const CreateTicket = ({
   useEffect(() => {
     if (createTicketStatus === CreateTicketStatus.list) {
       setTicketValue({ ...initialValues });
+      setFileList([]);
+      setThumbnaiFileList([]);
     }
     setOnSave(false);
   }, [createTicketStatus]);
@@ -330,10 +349,42 @@ const CreateTicket = ({
       },
     });
   };
+
   const onEdit = (index: any, item: any) => {
     setTicketValue({ ...item });
+    setFileList([
+      {
+        name: item.imageName,
+        status: 'done',
+        percent: 100,
+        type: item.imageType,
+        thumbUrl: item.image,
+        response: {
+          image: item.image,
+          imageName: item.imageName,
+          imageType: item.imageType,
+          thumbnailType: item.imageType,
+          thumbnailUrl: item.image,
+        },
+      },
+    ]);
+    setThumbnaiFileList([
+      {
+        name: item.thumbnailName,
+        status: 'done',
+        percent: 100,
+        type: item.thumbnailType,
+        thumbUrl: item.thumbnailUrl,
+        response: {
+          thumbnailName: item.thumbnailName,
+          thumbnailType: item.thumbnailType,
+          thumbnailUrl: item.thumbnailUrl,
+        },
+      },
+    ]);
     setCreateTicketStatus(CreateTicketStatus.edit);
   };
+
   const calculatedPrice = calculatePrice(
     Number(ticketValue.price.replace(/,/g, '')),
     ticketValue.absorbFees,

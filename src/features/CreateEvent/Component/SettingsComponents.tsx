@@ -220,7 +220,7 @@ export const PromoListItem = ({
       <div className="badge">{t('Promocode')}</div>
       <div className="more-icon">{more}</div>
       <p className="title">{code}</p>
-      <LabelAndValueArea>
+      <LabelAndValueArea gutter={16}>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Promocode Name')}</div>
           <div className="value">{name || '-'}</div>
@@ -269,6 +269,7 @@ export const PromoListItem = ({
       {method === MethodType.discount ? <p className="title">{code}</p> : null}
       <LabelAndValueArea
         style={{ marginTop: method === MethodType.auto ? -16 : 0 }}
+        gutter={16}
       >
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Discount Name')}</div>
@@ -289,13 +290,13 @@ export const PromoListItem = ({
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Customer Buys')}</div>
           <div className="value">
-            {condition.quantity} X {conditionName}
+            {condition.quantity} <span>X</span> {conditionName}
           </div>
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Customer Gets')}</div>
           <div className="value">
-            {gift.quantity} X {giftName}
+            {gift.quantity} <span>X</span> {giftName}
           </div>
         </LabelAndValue>
       </LabelAndValueArea>
@@ -495,8 +496,7 @@ export const AddEditForm = ({
                 <Input
                   onChange={(e) => {
                     const val = e.target.value;
-                    if (val && validatePromoCode(val))
-                      changePromoValues(val, 'code');
+                    if (validatePromoCode(val)) changePromoValues(val, 'code');
                   }}
                   value={promoValue.code}
                   maxLength={100}

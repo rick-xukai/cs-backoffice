@@ -1048,6 +1048,9 @@ export const LabelAndValue = styled(Col)`
     font-weight: 500;
     color: ${Colors.black4};
     margin-top: 4px;
+    span {
+      font-weight: 400;
+    }
   }
   .table {
     margin-top: 10px;
