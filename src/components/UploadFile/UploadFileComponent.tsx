@@ -170,14 +170,13 @@ const UploadFileComponent = ({
       )}
       <div className="info">
         <p>{`${description.type} ${description.size}`}</p>
-        {limitFileSize === 30 ||
-          (showVideoTip && (
-            <p className="thumbnail-image-required">
-              {t(
-                '(Plz note that a thumbnail image is required when uploading an mp4 file)',
-              )}
-            </p>
-          ))}
+        {(limitFileSize === 30 || showVideoTip) && (
+          <p className="thumbnail-image-required">
+            {t(
+              '(Plz note that a thumbnail image is required when uploading an mp4 file)',
+            )}
+          </p>
+        )}
       </div>
       <Modal
         open={previewImageOpen}

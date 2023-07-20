@@ -319,15 +319,13 @@ export const TicketImageUpload = ({
     }
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
-      changeTicketValues({
+      return e.onSuccess({
         image: response.payload.url,
         imageType: e.file.type,
-        thumbnailUrl:
-          (!e.file.type.includes('video') && response.payload.url) || '',
+        thumbnailUrl: response.payload.url,
         thumbnailType: e.file.type,
         imageName: e.file.name,
       });
-      return e.onSuccess();
     }
     if (response.type === uploadFileAction.rejected.toString()) {
       if (response.payload.code === Messages.userDeprecated.code) {
@@ -345,12 +343,11 @@ export const TicketImageUpload = ({
     }
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
-      changeTicketValues({
+      return e.onSuccess({
         thumbnailUrl: response.payload.url,
         thumbnailType: e.file.type,
         thumbnailName: e.file.name,
       });
-      return e.onSuccess();
     }
     return e.onError();
   };
