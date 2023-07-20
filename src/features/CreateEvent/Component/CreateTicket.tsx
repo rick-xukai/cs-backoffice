@@ -122,6 +122,8 @@ const CreateTicket = ({
     setTicketValue({
       ...ticketValue,
       sellEndTime: ticketValue.sellEndTime || formValue.startTime,
+      sellStartTime:
+        ticketValue.sellStartTime || moment().format(MMM_DD_YYYY_HH_MM),
     });
   }, [formValue.startTime, createTicketStatus]);
   const [onSave, setOnSave] = useState(false);
