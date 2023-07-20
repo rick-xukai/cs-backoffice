@@ -16,9 +16,9 @@ import {
 const initialTicketList = [
   {
     id: 1,
-    ticketTypeName: '-',
-    price: '-',
-    quantity: '-',
+    name: '-',
+    price: 0,
+    stock: 0,
   },
 ];
 
@@ -43,13 +43,15 @@ const Publish = ({
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      render: (price: string) => <div>{`${price} ${priceUnit}`}</div>,
+      render: (price: string) => (
+        <div>{(price && `${price} ${priceUnit}`) || '-'}</div>
+      ),
     },
     {
       title: 'Total Available Quantity',
       dataIndex: 'stock',
       key: 'stock',
-      render: (stock: string) => <div>{`0 / ${stock}`}</div>,
+      render: (stock: string) => <div>{(stock && `0 / ${stock}`) || '-'}</div>,
     },
   ];
 
