@@ -87,8 +87,8 @@ const EventInfo = ({
     useState<boolean>(false);
   const [noSearchResult, setNoSearchResult] = useState<boolean>(false);
   const [mapLatLng, setMapLatLng] = useState({
-    lat: formValue.currentLat,
-    lng: formValue.currentLng,
+    lat: Number(formValue.locationCoord.split(',')[0]),
+    lng: Number(formValue.locationCoord.split(',')[1]),
   });
   const [openAiLoading, setOpenAiLoading] = useState(false);
 
@@ -99,9 +99,7 @@ const EventInfo = ({
     if (response.type === uploadFileAction.fulfilled.toString()) {
       if (type === 'banner') {
         setBannerFile(response.payload.url);
-        fieldEdit(response.payload.url, 'banner');
-      } else {
-        fieldEdit(response.payload.url, 'detailImage');
+        fieldEdit(response.payload.url, 'image');
       }
       message.success(t('Upload successful.'));
     } else {
@@ -249,10 +247,12 @@ const EventInfo = ({
   );
 
   useEffect(() => {
-    if (formValue.banner) {
-      setBannerFile(formValue.banner);
+    const currentLat = Number(formValue.locationCoord.split(',')[0]);
+    const currentLng = Number(formValue.locationCoord.split(',')[1]);
+    if (formValue.image) {
+      setBannerFile(formValue.image);
     }
-    if (formValue.currentLat !== 0 && formValue.currentLng !== 0) {
+    if (currentLat !== 0 && currentLng !== 0) {
       setShowLocationMap(true);
     }
     if (!formValue.location) {
@@ -281,11 +281,11 @@ const EventInfo = ({
         <Row>
           <Col lg={(pageTipsShow && 14) || 21} span={24} className="left-form">
             <div className="main-box">
-              <Form.Item required label="Event Name" name="eventName">
+              <Form.Item required label="Event Name" name="name">
                 <Input
                   showCount
                   maxLength={100}
-                  onChange={(e) => fieldEdit(e.target.value, 'eventName')}
+                  onChange={(e) => fieldEdit(e.target.value, 'name')}
                 />
               </Form.Item>
               <Form.Item required label="Organizer" name="organizerId">
@@ -461,7 +461,7 @@ const EventInfo = ({
                   showCount
                   maxLength={200}
                   onChange={(e) =>
-                    fieldEdit(e.target.value, 'eventShortDescription')
+                    fieldEdit(e.target.value, 'descriptionShort')
                   }
                 />
               </Form.Item>

@@ -69,14 +69,11 @@ const Publish = ({
               <EventInfoCard>
                 <Row>
                   <Col span={10} className="event-image">
-                    <img
-                      src={formValue.banner || Images.NoEventBanner}
-                      alt=""
-                    />
+                    <img src={formValue.image || Images.NoEventBanner} alt="" />
                   </Col>
                   <Col span={14} className="info-detail">
                     <Col className="info-detail-name">
-                      {formValue.eventName || '-'}
+                      {formValue.name || '-'}
                     </Col>
                     <Col className="info-detail-items">
                       <span>

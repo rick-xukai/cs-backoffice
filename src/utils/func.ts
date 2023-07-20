@@ -337,13 +337,13 @@ export const calculatePrice = (price: any, type: boolean) => {
 
 export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
   if (
-    !source.eventName ||
+    !source.name ||
     !source.organizerId ||
     !source.location ||
     !source.startTime ||
     !source.endTime ||
-    !source.banner ||
-    !source.eventShortDescription
+    !source.image ||
+    !source.descriptionShort
   ) {
     return 0;
   }
