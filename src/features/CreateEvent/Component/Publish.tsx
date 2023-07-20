@@ -3,7 +3,7 @@ import { Row, Col, Radio, Tooltip, Space } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
-import { SetRefundKey } from '../../../constants/General';
+import { SetRefundKey, priceUnit } from '../../../constants/General';
 import Tips from '../../../components/Tips/Tips';
 import TableComponent from '../../../components/Table/Table';
 import { Images } from '../../../theme';
@@ -36,18 +36,20 @@ const Publish = ({
   const columns = [
     {
       title: 'Ticket Type Name',
-      dataIndex: 'ticketName',
-      key: 'ticketName',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: 'Price',
-      dataIndex: 'ticketPrice',
-      key: 'ticketPrice',
+      dataIndex: 'price',
+      key: 'price',
+      render: (price: string) => <div>{`${price} ${priceUnit}`}</div>,
     },
     {
-      title: 'Quantity',
-      dataIndex: 'totalAvailableQuantity',
-      key: 'totalAvailableQuantity',
+      title: 'Total Available Quantity',
+      dataIndex: 'stock',
+      key: 'stock',
+      render: (stock: string) => <div>{`0 / ${stock}`}</div>,
     },
   ];
 
@@ -125,7 +127,7 @@ const Publish = ({
                   onChange={(e) =>
                     fieldEdit(e.target.value, 'refundAndCancellation')
                   }
-                  value={formValue.refundAndCancellation}
+                  value={formValue.refundPolicy}
                 >
                   <Space direction="vertical">
                     <Radio value={SetRefundKey.refundable}>

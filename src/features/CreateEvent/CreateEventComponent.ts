@@ -63,6 +63,18 @@ const CreateEventContainer = styled.div`
     width: calc(100% - 240px);
     right: 0;
     text-align: right;
+    .bottom-btn {
+      > :first-child {
+        .anticon {
+          color: ${Colors.grey6};
+        }
+      }
+      > :last-child {
+        .anticon {
+          color: ${Colors.white};
+        }
+      }
+    }
     .ant-btn {
       height: 44px;
       border-radius: 2px;
@@ -78,8 +90,14 @@ const CreateEventContainer = styled.div`
       }
     }
     .ant-btn[disabled] {
-      background: ${Colors.grey9};
-      color: ${Colors.grey7};
+      color: ${Colors.grey6};
+      border: 1px solid ${Colors.grey6};
+      background: ${Colors.white};
+    }
+    .ant-btn-primary[disabled] {
+      background: ${Colors.branding};
+      border: none;
+      color: ${Colors.white};
     }
   }
   @media (max-width: 992px) {

@@ -55,6 +55,8 @@ import NoEventBanner from '../assets/images/no-event-banner.png';
 import CreateNewPromoIcon from '../assets/images/icons/create-new-promo.svg';
 import NoDataIcon from '../assets/images/icons/no-data.svg';
 import AddNewEventIcon from '../assets/images/icons/add-new-event.svg';
+import Editor from '../assets/images/icons/editor.svg';
+import EditorDisable from '../assets/images/icons/editor-disable.svg';
 
 const Images = {
   Logo,
@@ -116,6 +118,8 @@ const Images = {
   CreateNewPromoIcon,
   NoDataIcon,
   AddNewEventIcon,
+  Editor,
+  EditorDisable,
 };
 
 export default Images;

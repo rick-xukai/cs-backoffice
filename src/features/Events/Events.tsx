@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Button, Row, Col, message, Spin, Input, Select } from 'antd';
+import {
+  Button,
+  Row,
+  Col,
+  message,
+  Spin,
+  Input,
+  Select,
+  Tooltip,
+  Dropdown,
+  Modal,
+} from 'antd';
+import type { MenuProps } from 'antd';
 import {
   LoadingOutlined,
   CloseOutlined,
   SearchOutlined,
   PlusOutlined,
+  ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import qs from 'qs';
 
@@ -17,12 +30,11 @@ import {
   TokenExpireResponseCode,
 } from '../../constants/General';
 import {
-  FormatTimeKeys,
   CookieKeys,
   UserRoleKeys,
   FilterEventStatus,
 } from '../../constants/Keys';
-import { formatTimeStrByTimeString, checkEventStatus } from '../../utils/func';
+import { checkEventStatus } from '../../utils/func';
 import { Images, Colors } from '../../theme';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { useCookie } from '../../hooks';
@@ -50,6 +62,7 @@ import {
 } from './Events.slice';
 
 const { Option } = Select;
+const { confirm } = Modal;
 
 const Events = () => {
   const { t } = useTranslation();
@@ -83,11 +96,11 @@ const Events = () => {
         UserRoleKeys.superAdmin,
       ],
       width: 480,
-      render: (text: string, record: EventsListDataType) => (
+      render: (_: string, record: EventsListDataType) => (
         <Row>
           <Col span={6}>
             <div className="event-img">
-              <img src={Images.NoEventBanner} alt="" />
+              <img src={record.image} alt="" />
             </div>
           </Col>
           <Col span={18} className="table-event">
@@ -96,13 +109,7 @@ const Events = () => {
                 {record.name}
               </Col>
               <Col span={24} className="event-date">
-                {`${formatTimeStrByTimeString(
-                  record.startTime,
-                  FormatTimeKeys.norm,
-                )} - ${formatTimeStrByTimeString(
-                  record.endTime,
-                  FormatTimeKeys.norm,
-                )}`}
+                {record.time}
               </Col>
             </Row>
           </Col>
@@ -111,27 +118,31 @@ const Events = () => {
     },
     {
       title: 'Sold',
-      dataIndex: 'startTime',
-      key: 'startTime',
+      dataIndex: 'soldTotal',
+      key: 'soldTotal',
       role: [
         UserRoleKeys.organizerAdmin,
         UserRoleKeys.organizerUser,
         UserRoleKeys.partnerAdmin,
         UserRoleKeys.superAdmin,
       ],
-      render: () => <div>2917 / 3000</div>,
+      render: (soldTotal: number, record: EventsListDataType) => (
+        <div>{`${soldTotal} / ${record.total}`}</div>
+      ),
     },
     {
       title: 'Revenue',
-      dataIndex: 'location',
-      key: 'location',
+      dataIndex: 'revenue',
+      key: 'revenue',
       role: [
         UserRoleKeys.organizerAdmin,
         UserRoleKeys.organizerUser,
         UserRoleKeys.partnerAdmin,
         UserRoleKeys.superAdmin,
       ],
-      render: () => <div>{`${'482,038'}${priceUnit}`}</div>,
+      render: (revenue: number) => (
+        <div>{`${revenue.toLocaleString()} ${priceUnit}`}</div>
+      ),
     },
     {
       title: 'Status',
@@ -157,18 +168,91 @@ const Events = () => {
         );
       },
     },
-    // {
-    //   title: '',
-    //   dataIndex: '',
-    //   key: 'action',
-    //   role: [
-    //     UserRoleKeys.organizerAdmin,
-    //     UserRoleKeys.organizerUser,
-    //     UserRoleKeys.partnerAdmin,
-    //     UserRoleKeys.superAdmin,
-    //   ],
-    //   render: () => <p></p>,
-    // },
+    {
+      title: '',
+      dataIndex: '',
+      key: 'action',
+      role: [
+        UserRoleKeys.organizerAdmin,
+        UserRoleKeys.organizerUser,
+        UserRoleKeys.partnerAdmin,
+        UserRoleKeys.superAdmin,
+      ],
+      render: (_: any, record: EventsListDataType) => {
+        const items: MenuProps['items'] = [
+          {
+            label: t('View Dashboard'),
+            key: 'View Dashboard',
+          },
+          {
+            label: t('View on CrowdServe'),
+            key: 'View on CrowdServe',
+          },
+          {
+            label: t('Edit'),
+            key: 'Edit',
+          },
+          {
+            label: t('Copy Link'),
+            key: 'Copy Link',
+          },
+          {
+            label: t('Cancel Event'),
+            key: 'Cancel Event',
+            onClick: () => {
+              confirm({
+                centered: true,
+                closable: false,
+                okText: t('Cancel Event'),
+                cancelText: t('Back'),
+                title: t('Cancel Event'),
+                icon: <ExclamationCircleOutlined />,
+                content: t(
+                  'Are you sure you want to cancel this event? All the user tickets will be refunded',
+                ),
+              });
+            },
+          },
+        ];
+
+        const actionIcon =
+          (record.status ===
+            FilterEventStatus.find((item) => item.text === 'Upcoming')?.key &&
+            Images.Editor) ||
+          Images.EditorDisable;
+
+        return (
+          <div className="event-list-action">
+            <Tooltip
+              title={t('Edit')}
+              overlayClassName={`${
+                (actionIcon === Images.EditorDisable && 'event-edit disable') ||
+                'event-edit'
+              }`}
+              placement="bottom"
+            >
+              <div
+                className={`${
+                  (actionIcon === Images.Editor && 'icon-content') ||
+                  'icon-content-disable'
+                }`}
+              >
+                <img src={actionIcon} alt="" />
+              </div>
+            </Tooltip>
+            <div className="icon-content">
+              <Dropdown
+                menu={{ items }}
+                trigger={['click']}
+                overlayClassName="event-more-action"
+              >
+                <img src={Images.MoreOutlinedIcon} alt="" />
+              </Dropdown>
+            </div>
+          </div>
+        );
+      },
+    },
   ];
 
   const handleStatusChange = (status: string) => {

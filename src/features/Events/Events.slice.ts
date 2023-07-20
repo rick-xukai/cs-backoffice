@@ -13,13 +13,16 @@ export interface ErrorType {
 export interface EventsListDataType {
   id: string;
   name: string;
-  startTime: string;
-  endTime: string;
+  image: string;
   updatedAt: string;
   location: string;
   organizerName: string;
   partnerName: string;
   status: number;
+  revenue: number;
+  soldTotal: number;
+  total: number;
+  time: string;
 }
 
 /**

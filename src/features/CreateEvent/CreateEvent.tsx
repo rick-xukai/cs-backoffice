@@ -33,10 +33,14 @@ import Settings, {
 import Publish from './Component/Publish';
 import {
   reset,
+  selectError,
+  createEventAction,
   selectOrganizerData,
   getOrganizerAction,
   selectLoading,
   CreateEventFormValueProps,
+  selectPublishLoading,
+  selectSaveDraftLoading,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 
@@ -47,6 +51,11 @@ export enum ComponentSteps {
   createTicket = 1,
   settings = 2,
   publish = 3,
+}
+
+export enum CreateEventActionType {
+  publish = 0,
+  saveAsDraft = 1,
 }
 
 export const StatusImage = ({ src }: { src: string }) => (
@@ -62,6 +71,9 @@ const CreateEvent = () => {
   const cookies = useCookie([CookieKeys.authUserRole]);
 
   const loading = useAppSelector(selectLoading);
+  const publishLoading = useAppSelector(selectPublishLoading);
+  const saveDraftLoading = useAppSelector(selectSaveDraftLoading);
+  const error = useAppSelector(selectError);
   const organizerData = useAppSelector(selectOrganizerData);
 
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
@@ -90,10 +102,10 @@ const CreateEvent = () => {
       descriptionShort: '',
       description: '',
       descriptionImages: [],
-      images: [],
       ticketList: [],
-      refundAndCancellation: SetRefundKey.nonRefund,
+      refundPolicy: SetRefundKey.nonRefund,
       promoList: [],
+      descriptionImagesFileList: [],
     });
 
   const [progressItems, setProgressItems] = useState([
@@ -130,15 +142,25 @@ const CreateEvent = () => {
     setFormValueSaved(true);
   };
 
-  const saveAsDraft = (type?: string) => {
+  const saveAsDraft = async (type?: string) => {
     if (!createEventFormValue.name) {
       message.error(
         t('Please enter a name for your event before saving as a draft.'),
       );
     } else {
-      message.success(t('Draft Saved Successfully!'));
-      if (type && type === 'blockRouter') {
-        setBlockRouter(false);
+      const payload = {
+        ...createEventFormValue,
+        status: CreateEventActionType.saveAsDraft,
+        startTime: moment(createEventFormValue.startTime).format(),
+        endTime: moment(createEventFormValue.endTime).format(),
+      };
+      delete payload.descriptionImagesFileList;
+      const response = await dispatch(createEventAction(payload));
+      if (response.type === createEventAction.fulfilled.toString()) {
+        message.success(t('Draft Saved Successfully!'));
+        if (type && type === 'blockRouter') {
+          setBlockRouter(false);
+        }
       }
     }
   };
@@ -258,21 +280,31 @@ const CreateEvent = () => {
     return { defaultValue, defaultId };
   };
 
-  const createEventPublish = () => {
+  const createEventPublish = async () => {
     const currentTime = new Date().getTime();
     const endTime = new Date(createEventFormValue.endTime).getTime();
     if (validatUnfinishedSteps(createEventFormValue) === '') {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
       } else {
-        message.success(
-          t(
-            `Congrats! You have successfully published your event. Let's rock n rol!`,
-          ),
-        );
-        setWhichPathUrlWillTo(UserRoutes.events);
-        setBlockRouter(false);
-        setShowNotSaveConfirmModal(false);
+        const payload = {
+          ...createEventFormValue,
+          status: CreateEventActionType.publish,
+          startTime: moment(createEventFormValue.startTime).format(),
+          endTime: moment(createEventFormValue.endTime).format(),
+        };
+        delete payload.descriptionImagesFileList;
+        const response = await dispatch(createEventAction(payload));
+        if (response.type === createEventAction.fulfilled.toString()) {
+          message.success(
+            t(
+              `Congrats! You have successfully published your event. Let's rock n rol!`,
+            ),
+          );
+          setWhichPathUrlWillTo(UserRoutes.events);
+          setBlockRouter(false);
+          setShowNotSaveConfirmModal(false);
+        }
       }
     } else {
       confirm({
@@ -339,6 +371,13 @@ const CreateEvent = () => {
         items[ComponentSteps.createTicket].icon = (
           <StatusImage src={currentIcon} />
         );
+      } else if (previousStep === ComponentSteps.settings) {
+        if (createEventFormValue.promoList.length) {
+          currentIcon = Images.SuccessIcon;
+        } else {
+          currentIcon = Images.NotFinishedIcon;
+        }
+        items[ComponentSteps.settings].icon = <StatusImage src={currentIcon} />;
       } else {
         items[previousStep].icon = <StatusImage src={Images.NotStartedIcon} />;
       }
@@ -353,6 +392,12 @@ const CreateEvent = () => {
       organizerId: checkOrganizerDefaultValue().defaultId,
     });
   }, [organizerData]);
+
+  useEffect(() => {
+    if (error) {
+      message.error(error.message);
+    }
+  }, [error]);
 
   useEffect(() => {
     window.addEventListener('beforeunload', notSaveAlert);
@@ -476,10 +521,19 @@ const CreateEvent = () => {
             )) || (
               <div className="page-bottom">
                 <div className="bottom-btn">
-                  <Button onClick={() => saveAsDraft()}>
+                  <Button
+                    onClick={() => saveAsDraft()}
+                    disabled={saveDraftLoading}
+                  >
+                    {saveDraftLoading && <LoadingOutlined spin />}
                     {t('Save as Draft')}
                   </Button>
-                  <Button type="primary" onClick={createEventPublish}>
+                  <Button
+                    type="primary"
+                    onClick={createEventPublish}
+                    disabled={publishLoading}
+                  >
+                    {publishLoading && <LoadingOutlined spin />}
                     {t('Publish')}
                   </Button>
                 </div>
