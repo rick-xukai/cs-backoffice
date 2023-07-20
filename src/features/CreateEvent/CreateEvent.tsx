@@ -372,6 +372,18 @@ const CreateEvent = () => {
     };
   }, []);
 
+  const blockStep = () => {
+    if (
+      (steps === ComponentSteps.createTicket &&
+        createTicketStatus !== CreateTicketStatus.list) ||
+      (steps === ComponentSteps.settings &&
+        createPromoStatus !== CreatePromoStatus.list)
+    )
+      return true;
+
+    return false;
+  };
+
   return (
     <>
       <Prompt when={blockRouter} message={handleRouterHoldUp} />
@@ -398,6 +410,8 @@ const CreateEvent = () => {
                 const mobileItems = { ...item, title: '' };
                 return mobileItems;
               })}
+              notSaveConfirm={notSaveConfirm}
+              blockStep={blockStep}
             />
             <div className="page-main">
               <Form
