@@ -99,37 +99,64 @@ const ProgressBar = ({
   currentStep,
   currentStepName,
   setSteps,
+  notSaveConfirm,
+  blockStep,
 }: {
   items: StepsProps['items'];
   mobileItems: StepsProps['items'];
   currentStep: number;
   currentStepName: string;
   setSteps: (step: number) => void;
-}) => (
-  <ProgressBarContainer>
-    <Row>
-      <Col lg={24} span={0}>
-        <Steps
-          current={currentStep}
-          labelPlacement="vertical"
-          items={items}
-          onChange={(e) => setSteps(e)}
-        />
-      </Col>
-      <Col lg={0} span={24}>
-        <div className="mobile-steps">
+  notSaveConfirm: (
+    onOk?: any,
+    onCancel?: any,
+    okText?: string,
+    cancelText?: string,
+    title?: string,
+    content?: string,
+  ) => void;
+  blockStep: () => boolean;
+}) => {
+  const handleStepChange = (e: number) => {
+    if (blockStep()) {
+      notSaveConfirm(
+        () => {
+          setSteps(e);
+        },
+        () => {},
+        'Confirm',
+        'Cancel',
+      );
+      return;
+    }
+    setSteps(e);
+  };
+  return (
+    <ProgressBarContainer>
+      <Row>
+        <Col lg={24} span={0}>
           <Steps
             current={currentStep}
             labelPlacement="vertical"
-            items={mobileItems}
-            onChange={(e) => setSteps(e)}
-            responsive={false}
+            items={items}
+            onChange={handleStepChange}
           />
-        </div>
-        <div className="step-name">{currentStepName}</div>
-      </Col>
-    </Row>
-  </ProgressBarContainer>
-);
+        </Col>
+        <Col lg={0} span={24}>
+          <div className="mobile-steps">
+            <Steps
+              current={currentStep}
+              labelPlacement="vertical"
+              items={mobileItems}
+              onChange={handleStepChange}
+              responsive={false}
+            />
+          </div>
+          <div className="step-name">{currentStepName}</div>
+        </Col>
+      </Row>
+    </ProgressBarContainer>
+  );
+};
 
 export default ProgressBar;
