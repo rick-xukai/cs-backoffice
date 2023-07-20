@@ -16,6 +16,7 @@ export const Container = styled(Col)`
     bottom: 55px;
     left: 0;
     padding: 16px 15px;
+    z-index: 2;
     .tips-content-image {
       display: none;
     }
