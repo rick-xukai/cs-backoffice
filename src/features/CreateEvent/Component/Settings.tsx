@@ -218,6 +218,10 @@ const Settings = ({
     setOnSave(false);
   }, [createPromoStatus]);
 
+  useEffect(() => {
+    setCreatePromoStatus(CreatePromoStatus.list);
+  }, []);
+
   const renderContent = () => {
     if (createPromoStatus === CreatePromoStatus.list) {
       if (!formValue.promoList.length) {
