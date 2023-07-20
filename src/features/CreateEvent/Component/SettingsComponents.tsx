@@ -491,6 +491,8 @@ export const AddEditForm = ({
                       changePromoValues(val, 'code');
                   }}
                   value={promoValue.code}
+                  maxLength={100}
+                  showCount
                 />
               </Form.Item>
             )}
@@ -648,6 +650,7 @@ export const AddEditForm = ({
                   >
                     <Input
                       showCount
+                      maxLength={100}
                       onChange={(e) => {
                         const val = e.target.value;
                         if (validatePromoCode(val))

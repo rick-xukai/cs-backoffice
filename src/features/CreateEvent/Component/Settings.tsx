@@ -225,6 +225,15 @@ const Settings = ({
     setCreatePromoStatus(CreatePromoStatus.list);
   }, []);
 
+  useEffect(() => {
+    if (
+      createPromoStatus === CreatePromoStatus.add ||
+      createPromoStatus === CreatePromoStatus.edit
+    ) {
+      window.scrollTo({ top: 0 });
+    }
+  }, [createPromoStatus]);
+
   const renderContent = () => {
     if (createPromoStatus === CreatePromoStatus.list) {
       if (!formValue.promoList.length) {
