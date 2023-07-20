@@ -91,16 +91,16 @@ const Settings = ({
       });
     }
   };
-  const onDelete = (index: any, item: any) => {
+  const onDelete = (index: any) => {
     Modal.confirm({
       className: 'notSaveConfirmModal',
       centered: true,
       closable: false,
       okText: 'Delete',
       cancelText: 'Cancel',
-      title: 'Delete Ticket',
+      title: 'Delete Discount',
       icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to delete ${item.name}?`,
+      content: `Are you sure you want to delete this discount?`,
       onOk: () => {
         formValue.promoList.splice(index, 1);
         fieldEdit({
@@ -132,7 +132,10 @@ const Settings = ({
     setOnSave(true);
     if (
       (createPromoType === CreatePromoType.bundle &&
-        (!promoValue.condition.quantity || !promoValue.gift.quantity)) ||
+        (!promoValue.condition.quantity ||
+          !promoValue.gift.quantity ||
+          !promoValue.condition.ticketTypeId ||
+          !promoValue.gift.ticketTypeId)) ||
       (createPromoType === CreatePromoType.code &&
         (!promoValue.code ||
           !promoValue.discount.value ||
@@ -259,6 +262,7 @@ const Settings = ({
                 key={item.id}
                 index={index}
                 item={item}
+                formValue={formValue}
               />
             ))}
           </PromoList>

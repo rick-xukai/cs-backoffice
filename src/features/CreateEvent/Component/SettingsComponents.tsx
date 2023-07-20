@@ -34,6 +34,7 @@ import {
 import MoreIcon from '../../../components/MoreIcon/MoreIcon';
 import {
   ApplyCodeToType,
+  CreateEventFormValueProps,
   DiscountType,
   MethodType,
   PromoListProps,
@@ -166,11 +167,13 @@ export const PromoListItem = ({
   onEdit,
   index,
   item,
+  formValue,
 }: {
   onDelete: any;
   onEdit: any;
   index: number;
   item: PromoListProps;
+  formValue: CreateEventFormValueProps;
 }) => {
   const { t } = useTranslation();
   const {
@@ -204,6 +207,14 @@ export const PromoListItem = ({
       }}
     />
   );
+
+  const conditionName = formValue.ticketList.find(
+    (ticket) => ticket.id === condition.ticketTypeId,
+  )?.name;
+  const giftName = formValue.ticketList.find(
+    (ticket) => ticket.id === gift.ticketTypeId,
+  )?.name;
+
   return type === PromoType.code ? (
     <PromoListCode>
       <div className="badge">{t('Promocode')}</div>
@@ -278,13 +289,13 @@ export const PromoListItem = ({
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Customer Buys')}</div>
           <div className="value">
-            {condition.quantity} X {condition.ticketTypeId}
+            {condition.quantity} X {conditionName}
           </div>
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Customer Gets')}</div>
           <div className="value">
-            {gift.quantity} X {gift.ticketTypeId}
+            {gift.quantity} X {giftName}
           </div>
         </LabelAndValue>
       </LabelAndValueArea>
@@ -566,7 +577,7 @@ export const AddEditForm = ({
                         return changePromoValues(
                           {
                             ...promoValue.discount,
-                            value: `${Number(val)}`,
+                            value: Number(val).toFixed(2),
                           },
                           'discount',
                         );
@@ -637,7 +648,6 @@ export const AddEditForm = ({
                   >
                     <Input
                       showCount
-                      maxLength={100}
                       onChange={(e) => {
                         const val = e.target.value;
                         if (validatePromoCode(val))
@@ -660,17 +670,19 @@ export const AddEditForm = ({
                       )}
                     >
                       <InputNumber
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          if (`${e}`.includes('.')) return;
                           changePromoValues(
                             {
                               ...promoValue.condition,
                               quantity: e,
                             },
                             'condition',
-                          )
-                        }
-                        min={1}
+                          );
+                        }}
                         style={{ width: 160 }}
+                        min={1}
+                        step={1}
                         value={promoValue.condition.quantity}
                       />
                     </Form.Item>
@@ -713,16 +725,18 @@ export const AddEditForm = ({
                       )}
                     >
                       <InputNumber
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          if (`${e}`.includes('.')) return;
                           changePromoValues(
                             {
                               ...promoValue.gift,
                               quantity: e,
                             },
                             'gift',
-                          )
-                        }
+                          );
+                        }}
                         min={1}
+                        step={1}
                         style={{ width: 160 }}
                         value={promoValue.gift.quantity}
                       />
@@ -766,16 +780,17 @@ export const AddEditForm = ({
                   <Input
                     onChange={(e) => {
                       const val = e.target.value;
-                      if (
-                        !val.includes('.') &&
-                        !Number.isNaN(Number(val)) &&
-                        Number(val) >= 0
-                      ) {
-                        changePromoValues(
-                          `${val ? Number(val) : ''}`,
-                          'quantity',
-                        );
-                      }
+                      // if (
+                      //   Number.isNaN(Number(val)) ||
+                      //   val.includes('.') ||
+                      //   Number(val) < 0
+                      // ) {
+                      //   return;
+                      // }
+                      changePromoValues(
+                        `${Number(val.replace(/[^0-9]/g, '')) || ''}`,
+                        'quantity',
+                      );
                     }}
                     value={promoValue.quantity}
                     placeholder="Unlimiteded"
