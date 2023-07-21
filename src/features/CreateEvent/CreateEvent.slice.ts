@@ -57,11 +57,11 @@ export interface TicketListProps {
   id: string;
   name: string;
   description: string;
-  price: string;
+  price: number;
   absorbFees: boolean;
-  stock: string;
-  ceilingPrice: string;
-  royaltiesFee: string;
+  stock: number;
+  ceilingPrice: number;
+  royaltiesFee: number;
   image: string;
   imageType: string;
   thumbnailUrl: string;
@@ -95,8 +95,8 @@ export interface CreateEventFormValueProps {
   descriptionShort: string;
   description: string;
   descriptionImages: DescriptionImagesProps[];
-  ticketList: TicketListProps[];
-  promoList: PromoListProps[];
+  ticketTypes: TicketListProps[];
+  discounts: PromoListProps[];
   refundPolicy: SetRefundKey.nonRefund;
   status?: number;
   descriptionImagesFileList?: any[];

@@ -56,14 +56,14 @@ const { RangePicker } = DatePicker;
 const initialValues = {
   name: '',
   image: '',
-  stock: '',
-  price: '',
+  stock: 0,
+  price: 0,
   absorbFees: false,
   sellStartTime: '',
   sellEndTime: '',
   description: '',
-  royaltiesFee: '',
-  ceilingPrice: '',
+  royaltiesFee: 0,
+  ceilingPrice: 0,
   visibility: true,
   connectedTickets: [],
   imageType: '',
@@ -302,19 +302,19 @@ const CreateTicket = ({
     }
     setCreateTicketStatus(CreateTicketStatus.edit);
     if (createTicketStatus === CreateTicketStatus.edit) {
-      const newTicketList = [...formValue.ticketList];
-      const findIndex = formValue.ticketList.findIndex(
+      const newTicketList = [...formValue.ticketTypes];
+      const findIndex = formValue.ticketTypes.findIndex(
         (item) => item.id === ticketValue.id,
       );
       newTicketList[findIndex] = { ...ticketValue };
-      fieldEdit(newTicketList, 'ticketList');
+      fieldEdit(newTicketList, 'ticketTypes');
     } else {
       fieldEdit(
         [
-          ...formValue.ticketList,
+          ...formValue.ticketTypes,
           { ...ticketValue, id: `add_${new Date().getTime()}` },
         ],
-        'ticketList',
+        'ticketTypes',
       );
     }
     setCreateTicketStatus(CreateTicketStatus.list);
@@ -342,9 +342,9 @@ const CreateTicket = ({
       icon: <ExclamationCircleOutlined />,
       content: `Are you sure you want to delete ${item.name}?`,
       onOk: () => {
-        formValue.ticketList.splice(index, 1);
+        formValue.ticketTypes.splice(index, 1);
         fieldEdit({
-          ticketList: [...formValue.ticketList],
+          ticketTypes: [...formValue.ticketTypes],
         });
       },
     });
@@ -386,13 +386,13 @@ const CreateTicket = ({
   };
 
   const calculatedPrice = calculatePrice(
-    Number(ticketValue.price.replace(/,/g, '')),
+    Number(ticketValue.price.toString().replace(/,/g, '')),
     ticketValue.absorbFees,
   );
 
   const renderContent = () => {
     if (createTicketStatus === CreateTicketStatus.list) {
-      if (!formValue.ticketList.length)
+      if (!formValue.ticketTypes.length)
         return <EmptyState handleAddTicket={handleAddTicket} />;
       return (
         <>
@@ -414,7 +414,7 @@ const CreateTicket = ({
             </Col>
           </Row>
           <TicketList>
-            {formValue.ticketList.map((item, index) => (
+            {formValue.ticketTypes.map((item, index) => (
               <TicketListItem
                 image={
                   item.imageType.includes('video')

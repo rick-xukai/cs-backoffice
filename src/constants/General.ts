@@ -82,8 +82,8 @@ export const UserActiveStatus = [
 ];
 export const UploadFileAcceptType = ['image/png', 'image/jpeg', 'image/gif'];
 export enum SetRefundKey {
-  refundable = '0',
-  nonRefund = '1',
+  refundable = 0,
+  nonRefund = 1,
 }
 export const DescriptionImagesSize = [
   {
@@ -92,7 +92,7 @@ export const DescriptionImagesSize = [
   },
   {
     key: 12,
-    text: 'middle',
+    text: 'medium',
   },
   {
     key: 24,

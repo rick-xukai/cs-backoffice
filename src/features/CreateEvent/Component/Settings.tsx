@@ -102,9 +102,9 @@ const Settings = ({
       icon: <ExclamationCircleOutlined />,
       content: `Are you sure you want to delete this discount?`,
       onOk: () => {
-        formValue.promoList.splice(index, 1);
+        formValue.discounts.splice(index, 1);
         fieldEdit({
-          promoList: [...formValue.promoList],
+          discounts: [...formValue.discounts],
         });
       },
     });
@@ -148,7 +148,7 @@ const Settings = ({
     }
     if (createPromoStatus === CreatePromoStatus.edit) {
       if (
-        formValue.promoList.find(
+        formValue.discounts.find(
           (item) =>
             item.id !== promoValue.id &&
             promoValue.code &&
@@ -163,15 +163,15 @@ const Settings = ({
         });
         return;
       }
-      const newPromoList = [...formValue.promoList];
-      const findIndex = formValue.promoList.findIndex(
+      const newPromoList = [...formValue.discounts];
+      const findIndex = formValue.discounts.findIndex(
         (item) => item.id === promoValue.id,
       );
       newPromoList[findIndex] = { ...promoValue };
-      fieldEdit(newPromoList, 'promoList');
+      fieldEdit(newPromoList, 'discounts');
     } else {
       if (
-        formValue.promoList.find(
+        formValue.discounts.find(
           (item) => promoValue.code && item.code === promoValue.code,
         )
       ) {
@@ -185,14 +185,14 @@ const Settings = ({
       }
       fieldEdit(
         [
-          ...formValue.promoList,
+          ...formValue.discounts,
           {
             ...promoValue,
             id: `add_${new Date().getTime()}`,
             type: createPromoType,
           },
         ],
-        'promoList',
+        'discounts',
       );
     }
     setCreatePromoStatus(CreatePromoStatus.list);
@@ -212,7 +212,7 @@ const Settings = ({
 
   const setTicketListData = (newList: any) => {
     fieldEdit({
-      ticketList: newList,
+      ticketTypes: newList,
     });
   };
 
@@ -238,7 +238,7 @@ const Settings = ({
 
   const renderContent = () => {
     if (createPromoStatus === CreatePromoStatus.list) {
-      if (!formValue.promoList.length) {
+      if (!formValue.discounts.length) {
         return <EmptyState codeClick={codeClick} bundleClick={bundleClick} />;
       }
       return (
@@ -266,7 +266,7 @@ const Settings = ({
             </Col>
           </Row>
           <PromoList>
-            {formValue.promoList.map((item, index: number) => (
+            {formValue.discounts.map((item, index: number) => (
               <PromoListItem
                 onDelete={onDelete}
                 onEdit={onEdit}
@@ -300,7 +300,7 @@ const Settings = ({
             setOnSave={setOnSave}
             pageTipsShow={pageTipsShow}
             setPageTipsShow={setPageTipsShow}
-            ticketsListData={formValue.ticketList}
+            ticketsListData={formValue.ticketTypes}
             setTicketListData={setTicketListData}
             createPromoType={createPromoType}
           />

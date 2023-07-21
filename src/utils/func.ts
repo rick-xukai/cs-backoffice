@@ -145,6 +145,9 @@ export const base64Encrypt = (parameters: {}) => {
 export const checkEventStatus = (status: number) => {
   let statusText = '';
   switch (status) {
+    case 0:
+      statusText = 'Darft';
+      break;
     case 1:
       statusText = 'Upcoming';
       break;
@@ -347,7 +350,7 @@ export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
   ) {
     return 0;
   }
-  if (!source.ticketList.length) {
+  if (!source.ticketTypes.length) {
     return 1;
   }
   return '';

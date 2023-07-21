@@ -480,7 +480,7 @@ const CreateEventFormContainer = styled.div`
     color: ${Colors.grey6};
   }
   .eventShortDescription {
-    margin-bottom: 40px;
+    margin-bottom: 40px !important;
   }
   .ant-form-item {
     margin-bottom: 15px;

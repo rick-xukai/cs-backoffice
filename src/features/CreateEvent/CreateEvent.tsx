@@ -41,6 +41,7 @@ import {
   CreateEventFormValueProps,
   selectPublishLoading,
   selectSaveDraftLoading,
+  createEventSaveDraftAction,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 
@@ -54,8 +55,8 @@ export enum ComponentSteps {
 }
 
 export enum CreateEventActionType {
-  publish = 0,
-  saveAsDraft = 1,
+  publish = 1,
+  saveAsDraft = 0,
 }
 
 export const StatusImage = ({ src }: { src: string }) => (
@@ -102,9 +103,9 @@ const CreateEvent = () => {
       descriptionShort: '',
       description: '',
       descriptionImages: [],
-      ticketList: [],
+      ticketTypes: [],
       refundPolicy: SetRefundKey.nonRefund,
-      promoList: [],
+      discounts: [],
       descriptionImagesFileList: [],
     });
 
@@ -154,9 +155,21 @@ const CreateEvent = () => {
         startTime: moment(createEventFormValue.startTime).format(),
         endTime: moment(createEventFormValue.endTime).format(),
       };
+      const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
+        const types = {
+          ...item,
+          price: Number(item.price),
+          stock: Number(item.stock),
+          sellStartTime: moment(item.sellStartTime).format(),
+          sellEndTime: moment(item.sellEndTime).format(),
+        };
+        return types;
+      });
       delete payload.descriptionImagesFileList;
-      const response = await dispatch(createEventAction(payload));
-      if (response.type === createEventAction.fulfilled.toString()) {
+      const response = await dispatch(
+        createEventSaveDraftAction({ ...payload, ticketTypes }),
+      );
+      if (response.type === createEventSaveDraftAction.fulfilled.toString()) {
         message.success(t('Draft Saved Successfully!'));
         if (type && type === 'blockRouter') {
           setBlockRouter(false);
@@ -293,8 +306,20 @@ const CreateEvent = () => {
           startTime: moment(createEventFormValue.startTime).format(),
           endTime: moment(createEventFormValue.endTime).format(),
         };
+        const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
+          const types = {
+            ...item,
+            price: Number(item.price),
+            stock: Number(item.stock),
+            sellStartTime: moment(item.sellStartTime).format(),
+            sellEndTime: moment(item.sellEndTime).format(),
+          };
+          return types;
+        });
         delete payload.descriptionImagesFileList;
-        const response = await dispatch(createEventAction(payload));
+        const response = await dispatch(
+          createEventAction({ ...payload, ticketTypes }),
+        );
         if (response.type === createEventAction.fulfilled.toString()) {
           message.success(
             t(
@@ -363,7 +388,7 @@ const CreateEvent = () => {
           <StatusImage src={currentIcon} />
         );
       } else if (previousStep === ComponentSteps.createTicket) {
-        if (createEventFormValue.ticketList.length) {
+        if (createEventFormValue.ticketTypes.length) {
           currentIcon = Images.SuccessIcon;
         } else {
           currentIcon = Images.NotFinishedIcon;
@@ -372,7 +397,7 @@ const CreateEvent = () => {
           <StatusImage src={currentIcon} />
         );
       } else if (previousStep === ComponentSteps.settings) {
-        if (createEventFormValue.promoList.length) {
+        if (createEventFormValue.discounts.length) {
           currentIcon = Images.SuccessIcon;
         } else {
           currentIcon = Images.NotFinishedIcon;
