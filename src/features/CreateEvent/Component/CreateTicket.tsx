@@ -100,14 +100,16 @@ const CreateTicket = ({
   createTicketStatus,
   setCreateTicketStatus,
   formValue,
+  ticketFormEdit,
   fieldEdit,
-  notSaveConfirm,
+  setTicketFormEdit,
 }: {
   createTicketStatus: CreateTicketStatus;
   setCreateTicketStatus: any;
   formValue: CreateEventFormValueProps;
-  fieldEdit: (value: any, field?: string) => void;
-  notSaveConfirm: any;
+  ticketFormEdit: boolean;
+  fieldEdit: (value: any, field: string) => void;
+  setTicketFormEdit: (status: boolean) => void;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -129,6 +131,7 @@ const CreateTicket = ({
   const [onSave, setOnSave] = useState(false);
 
   const changeTicketValues = (value: any, field?: string) => {
+    setTicketFormEdit(true);
     if (field) {
       setTicketValue({
         ...ticketValue,
@@ -183,7 +186,14 @@ const CreateTicket = ({
 
   const handleThumbnaiUploadChange = (info: any) => {
     if (imageBeforeUpload(info.file) || !info.fileList.length)
-      setThumbnaiFileList(info.fileList);
+      setThumbnaiFileList([
+        {
+          ...info.fileList[0],
+          thumbUrl:
+            (info.file.response && info.file.response.thumbnailUrl) ||
+            info.file.thumbUrl,
+        },
+      ]);
   };
 
   useEffect(() => {
@@ -284,6 +294,7 @@ const CreateTicket = ({
       setTicketValue({ ...initialValues });
       setFileList([]);
       setThumbnaiFileList([]);
+      setTicketFormEdit(false);
     }
     setOnSave(false);
   }, [createTicketStatus]);
@@ -321,16 +332,28 @@ const CreateTicket = ({
   };
 
   const handleCancelCreateTicket = () => {
-    notSaveConfirm(
-      () => {
-        handleSave();
-      },
-      () => {
-        setCreateTicketStatus(CreateTicketStatus.list);
-      },
-      'Save',
-    );
+    if (ticketFormEdit) {
+      Modal.confirm({
+        className: 'notSaveConfirmModal',
+        centered: true,
+        closable: false,
+        okText: t('Save'),
+        cancelText: t('Leave'),
+        title: t('Unsaved Content'),
+        icon: <ExclamationCircleOutlined />,
+        content: t('Leaving this page will result in losing your content.'),
+        onOk: () => {
+          handleSave();
+        },
+        onCancel: () => {
+          setCreateTicketStatus(CreateTicketStatus.list);
+        },
+      });
+    } else {
+      setCreateTicketStatus(CreateTicketStatus.list);
+    }
   };
+
   const onDelete = (index: any, item: any) => {
     Modal.confirm({
       className: 'notSaveConfirmModal',
@@ -343,9 +366,7 @@ const CreateTicket = ({
       content: `Are you sure you want to delete ${item.name}?`,
       onOk: () => {
         formValue.ticketTypes.splice(index, 1);
-        fieldEdit({
-          ticketTypes: [...formValue.ticketTypes],
-        });
+        fieldEdit(formValue.ticketTypes, 'ticketTypes');
       },
     });
   };
