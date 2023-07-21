@@ -331,9 +331,7 @@ export const calculatePrice = (price: any, type: boolean) => {
     };
 
   return {
-    userPay: thousandsSeparator(
-      `${Number(price) + Number(price) * 0.05 + 0.5}`,
-    ),
+    userPay: thousandsSeparator(`${Number(price) + Number(price) * 0.05}`),
     takeHome: thousandsSeparator(`${price}`),
   };
 };

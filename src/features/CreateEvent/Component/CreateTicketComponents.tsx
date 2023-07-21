@@ -26,7 +26,11 @@ import MoreIcon from '../../../components/MoreIcon';
 import { StatusBadgeType } from '../../../components/StatusBadge/StatusBadge.component';
 import UploadFileComponent from '../../../components/UploadFile/UploadFileComponent';
 import { useAppDispatch } from '../../../app/hooks';
-import { uploadFileAction, TicketListProps } from '../CreateEvent.slice';
+import {
+  uploadFileAction,
+  TicketListProps,
+  ListTicketType,
+} from '../CreateEvent.slice';
 import Tips from '../../../components/Tips';
 import { UploadFileAcceptType } from '../../../constants/General';
 import { TOKEN_EXPIRED_MESSAGE } from '../../../constants/constants';
@@ -191,12 +195,7 @@ export const SelectEventsModal = ({
   handleSelectEvents,
 }: {
   doneHandle: any;
-  eventsListData: {
-    eventName: string;
-    ticketName: string;
-    id: number;
-    checked: boolean;
-  }[];
+  eventsListData: ListTicketType[];
   setOpen: any;
   open: boolean;
   hanldleCheckAll: any;
@@ -242,7 +241,7 @@ export const SelectEventsModal = ({
                 />
               </Col>
               <Col span={15}>{item.eventName}</Col>
-              <Col span={7}>{item.ticketName}</Col>
+              <Col span={7}>{item.name}</Col>
             </Row>
           </Col>
         ))

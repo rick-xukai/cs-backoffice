@@ -42,6 +42,8 @@ import {
   selectPublishLoading,
   selectSaveDraftLoading,
   createEventSaveDraftAction,
+  selectListTicketType,
+  getListTicketTypeAction,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 
@@ -76,6 +78,7 @@ const CreateEvent = () => {
   const saveDraftLoading = useAppSelector(selectSaveDraftLoading);
   const error = useAppSelector(selectError);
   const organizerData = useAppSelector(selectOrganizerData);
+  const listTicketType = useAppSelector(selectListTicketType);
 
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
@@ -159,6 +162,8 @@ const CreateEvent = () => {
           ...item,
           price: Number(item.price),
           stock: Number(item.stock),
+          ceilingPrice: Number(item.ceilingPrice),
+          royaltiesFee: Number(item.royaltiesFee),
           sellStartTime: moment(item.sellStartTime).format(),
           sellEndTime: moment(item.sellEndTime).format(),
         };
@@ -318,6 +323,8 @@ const CreateEvent = () => {
             ...item,
             price: Number(item.price),
             stock: Number(item.stock),
+            ceilingPrice: Number(item.ceilingPrice),
+            royaltiesFee: Number(item.royaltiesFee),
             sellStartTime: moment(item.sellStartTime).format(),
             sellEndTime: moment(item.sellEndTime).format(),
           };
@@ -443,6 +450,7 @@ const CreateEvent = () => {
         size: defaultOrganizerPageSize,
       }),
     );
+    dispatch(getListTicketTypeAction());
     return () => {
       window.removeEventListener('beforeunload', notSaveAlert);
       document.removeEventListener('gesturestart', notSaveAlert);
@@ -523,6 +531,7 @@ const CreateEvent = () => {
                     fieldEdit={handleFieldChange}
                     ticketFormEdit={ticketFormEdit}
                     setTicketFormEdit={setTicketFormEdit}
+                    listTicketType={listTicketType}
                   />
                 )}
                 {steps === ComponentSteps.settings && (

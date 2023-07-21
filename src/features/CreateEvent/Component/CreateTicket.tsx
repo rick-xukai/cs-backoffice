@@ -27,6 +27,7 @@ import {
 import {
   CreateEventFormValueProps,
   TicketListProps,
+  ListTicketType,
 } from '../CreateEvent.slice';
 import {
   MMM_DD_YYYY_HH_MM,
@@ -56,14 +57,14 @@ const { RangePicker } = DatePicker;
 const initialValues = {
   name: '',
   image: '',
-  stock: 0,
-  price: 0,
+  stock: '',
+  price: '',
   absorbFees: false,
   sellStartTime: '',
   sellEndTime: '',
   description: '',
-  royaltiesFee: 0,
-  ceilingPrice: 0,
+  royaltiesFee: '',
+  ceilingPrice: '',
   visibility: true,
   connectedTickets: [],
   imageType: '',
@@ -101,6 +102,7 @@ const CreateTicket = ({
   setCreateTicketStatus,
   formValue,
   ticketFormEdit,
+  listTicketType,
   fieldEdit,
   setTicketFormEdit,
 }: {
@@ -108,6 +110,7 @@ const CreateTicket = ({
   setCreateTicketStatus: any;
   formValue: CreateEventFormValueProps;
   ticketFormEdit: boolean;
+  listTicketType: ListTicketType[];
   fieldEdit: (value: any, field: string) => void;
   setTicketFormEdit: (status: boolean) => void;
 }) => {
@@ -129,6 +132,7 @@ const CreateTicket = ({
     });
   }, [formValue.startTime, createTicketStatus]);
   const [onSave, setOnSave] = useState(false);
+  const [showNoEndTimeError, setShowNoEndTimeError] = useState<boolean>(false);
 
   const changeTicketValues = (value: any, field?: string) => {
     setTicketFormEdit(true);
@@ -231,20 +235,12 @@ const CreateTicket = ({
     }
   }, [thumbnaiFileList]);
 
-  const [eventsListData, setEventsListData] = useState([
-    {
-      eventName: 'Legacy Glowhard 2023: A New Realm',
-      ticketName: 'SVIP',
-      id: 1,
-      checked: false,
-    },
-    {
-      eventName: 'Legacy Glowhard 2023: A New Realme',
-      ticketName: 'SVIPP',
-      id: 2,
-      checked: false,
-    },
-  ]);
+  const [eventsListData, setEventsListData] = useState(
+    listTicketType.map((item) => {
+      const listTicket = { ...item, checked: false };
+      return listTicket;
+    }),
+  );
 
   const handleSelectEvents = (checked: boolean, index: number) => {
     eventsListData[index].checked = checked;
@@ -309,6 +305,9 @@ const CreateTicket = ({
       !ticketValue.sellStartTime ||
       !ticketValue.sellEndTime
     ) {
+      if (!ticketValue.sellEndTime && ticketValue.sellStartTime) {
+        setShowNoEndTimeError(true);
+      }
       return;
     }
     setCreateTicketStatus(CreateTicketStatus.edit);
@@ -405,6 +404,12 @@ const CreateTicket = ({
     ]);
     setCreateTicketStatus(CreateTicketStatus.edit);
   };
+
+  useEffect(() => {
+    if (ticketValue.sellEndTime) {
+      setShowNoEndTimeError(false);
+    }
+  }, [ticketValue]);
 
   const calculatedPrice = calculatePrice(
     Number(ticketValue.price.toString().replace(/,/g, '')),
@@ -637,6 +642,7 @@ const CreateTicket = ({
                     )}
                   >
                     <RangePicker
+                      className={(showNoEndTimeError && 'show-error') || ''}
                       format={MMM_DD_YYYY_HH_MM}
                       onChange={(e, dateString) =>
                         changeTicketValues({
@@ -645,7 +651,7 @@ const CreateTicket = ({
                         })
                       }
                       inputReadOnly
-                      value={[
+                      defaultValue={[
                         ticketValue.sellStartTime
                           ? moment(ticketValue.sellStartTime)
                           : moment(),
@@ -660,6 +666,9 @@ const CreateTicket = ({
                       showTime
                     />
                   </Form.Item>
+                  {showNoEndTimeError && (
+                    <div className="end-date-error">End date is required</div>
+                  )}
                   <FoldingPanel
                     defaultActiveKey={
                       ticketValue.description ||
