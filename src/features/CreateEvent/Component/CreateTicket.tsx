@@ -129,6 +129,7 @@ const CreateTicket = ({
     });
   }, [formValue.startTime, createTicketStatus]);
   const [onSave, setOnSave] = useState(false);
+  const [showNoEndTimeError, setShowNoEndTimeError] = useState<boolean>(false);
 
   const changeTicketValues = (value: any, field?: string) => {
     setTicketFormEdit(true);
@@ -309,6 +310,9 @@ const CreateTicket = ({
       !ticketValue.sellStartTime ||
       !ticketValue.sellEndTime
     ) {
+      if (!ticketValue.sellEndTime) {
+        setShowNoEndTimeError(true);
+      }
       return;
     }
     setCreateTicketStatus(CreateTicketStatus.edit);
@@ -405,6 +409,12 @@ const CreateTicket = ({
     ]);
     setCreateTicketStatus(CreateTicketStatus.edit);
   };
+
+  useEffect(() => {
+    if (ticketValue.sellEndTime) {
+      setShowNoEndTimeError(false);
+    }
+  }, [ticketValue]);
 
   const calculatedPrice = calculatePrice(
     Number(ticketValue.price.toString().replace(/,/g, '')),
@@ -637,6 +647,7 @@ const CreateTicket = ({
                     )}
                   >
                     <RangePicker
+                      className={(showNoEndTimeError && 'show-error') || ''}
                       format={MMM_DD_YYYY_HH_MM}
                       onChange={(e, dateString) =>
                         changeTicketValues({
@@ -660,6 +671,9 @@ const CreateTicket = ({
                       showTime
                     />
                   </Form.Item>
+                  {showNoEndTimeError && (
+                    <div className="end-date-error">End date is required</div>
+                  )}
                   <FoldingPanel
                     defaultActiveKey={
                       ticketValue.description ||

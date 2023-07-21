@@ -100,6 +100,14 @@ const CreateEventContainer = styled.div`
       color: ${Colors.white};
     }
   }
+  .end-date-error {
+    font-size: 12px;
+    color: #e16058;
+    margin-top: -12px;
+  }
+  .show-error {
+    border-color: #e16058;
+  }
   @media (max-width: 992px) {
     padding: calc(98px + 15px) 15px 85px;
     overflow-x: hidden;

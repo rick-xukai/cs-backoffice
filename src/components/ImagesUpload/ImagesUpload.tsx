@@ -139,19 +139,17 @@ const ImagesUpload = ({
     formData.append('file', e.file);
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
-      const newImageListPayload = [
-        ...imageListPayload,
-        {
-          image: response.payload.url,
-          size: DescriptionImagesSize.find(
-            (item) => item.key === ImageSizes.large,
-          )?.text,
-        },
-      ];
+      const newImageListPayload = imageListPayload;
+      newImageListPayload.push({
+        image: response.payload.url,
+        size: DescriptionImagesSize.find(
+          (item) => item.key === ImageSizes.large,
+        )?.text,
+      });
+      setImageListPayload(newImageListPayload);
       if (fieldEdit) {
         fieldEdit(newImageListPayload);
       }
-      setImageListPayload(newImageListPayload);
       e.onSuccess(response.payload.url);
     } else {
       e.onError();
