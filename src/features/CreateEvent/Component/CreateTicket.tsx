@@ -27,6 +27,7 @@ import {
 import {
   CreateEventFormValueProps,
   TicketListProps,
+  ListTicketType,
 } from '../CreateEvent.slice';
 import {
   MMM_DD_YYYY_HH_MM,
@@ -101,6 +102,7 @@ const CreateTicket = ({
   setCreateTicketStatus,
   formValue,
   ticketFormEdit,
+  listTicketType,
   fieldEdit,
   setTicketFormEdit,
 }: {
@@ -108,6 +110,7 @@ const CreateTicket = ({
   setCreateTicketStatus: any;
   formValue: CreateEventFormValueProps;
   ticketFormEdit: boolean;
+  listTicketType: ListTicketType[];
   fieldEdit: (value: any, field: string) => void;
   setTicketFormEdit: (status: boolean) => void;
 }) => {
@@ -232,20 +235,12 @@ const CreateTicket = ({
     }
   }, [thumbnaiFileList]);
 
-  const [eventsListData, setEventsListData] = useState([
-    {
-      eventName: 'Legacy Glowhard 2023: A New Realm',
-      ticketName: 'SVIP',
-      id: 1,
-      checked: false,
-    },
-    {
-      eventName: 'Legacy Glowhard 2023: A New Realme',
-      ticketName: 'SVIPP',
-      id: 2,
-      checked: false,
-    },
-  ]);
+  const [eventsListData, setEventsListData] = useState(
+    listTicketType.map((item) => {
+      const listTicket = { ...item, checked: false };
+      return listTicket;
+    }),
+  );
 
   const handleSelectEvents = (checked: boolean, index: number) => {
     eventsListData[index].checked = checked;
@@ -310,7 +305,7 @@ const CreateTicket = ({
       !ticketValue.sellStartTime ||
       !ticketValue.sellEndTime
     ) {
-      if (!ticketValue.sellEndTime) {
+      if (!ticketValue.sellEndTime && ticketValue.sellStartTime) {
         setShowNoEndTimeError(true);
       }
       return;
@@ -656,7 +651,7 @@ const CreateTicket = ({
                         })
                       }
                       inputReadOnly
-                      value={[
+                      defaultValue={[
                         ticketValue.sellStartTime
                           ? moment(ticketValue.sellStartTime)
                           : moment(),

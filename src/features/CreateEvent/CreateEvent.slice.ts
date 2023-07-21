@@ -28,6 +28,13 @@ export enum MethodType {
   discount = 1,
 }
 
+export interface ListTicketType {
+  id: number | string;
+  name: string;
+  eventName: string;
+  checked?: boolean;
+}
+
 export interface PromoListProps {
   type: PromoType;
   name: string;
@@ -200,6 +207,38 @@ export const createEventSaveDraftAction = createAsyncThunk<
 );
 
 /**
+ * Get list ticket type
+ */
+export const getListTicketTypeAction = createAsyncThunk<
+  ListTicketType[],
+  undefined,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getListTicketType/getListTicketTypeAction',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await EventsService.getListTicketType();
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
  * Update event
  */
 export const updateEventAction = createAsyncThunk<
@@ -310,9 +349,11 @@ export const openAiGeneratorAction = createAsyncThunk<
 
 interface CreateEventState {
   loading: boolean;
+  listTicketTypeLoading: boolean;
   publishLoading: boolean;
   saveDraftLoading: boolean;
   data: { id: number | string };
+  listTicketType: ListTicketType[];
   organizerData: OrganizerData[];
   error:
     | {
@@ -325,9 +366,11 @@ interface CreateEventState {
 
 const initialState: CreateEventState = {
   loading: false,
+  listTicketTypeLoading: false,
   publishLoading: false,
   saveDraftLoading: false,
   data: { id: '' },
+  listTicketType: [],
   organizerData: [],
   error: null,
 };
@@ -366,6 +409,22 @@ export const createEventSlice = createSlice({
       })
       .addCase(createEventSaveDraftAction.rejected, (state, action) => {
         state.saveDraftLoading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(getListTicketTypeAction.pending, (state) => {
+        state.listTicketType = [];
+        state.listTicketTypeLoading = true;
+      })
+      .addCase(getListTicketTypeAction.fulfilled, (state, action: any) => {
+        state.listTicketTypeLoading = false;
+        state.listTicketType = action.payload;
+      })
+      .addCase(getListTicketTypeAction.rejected, (state, action) => {
+        state.listTicketTypeLoading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
@@ -418,5 +477,7 @@ export const selectData = (state: RootState) => state.createEvent.data;
 export const selectOrganizerData = (state: RootState) =>
   state.createEvent.organizerData;
 export const selectError = (state: RootState) => state.createEvent.error;
+export const selectListTicketType = (state: RootState) =>
+  state.createEvent.listTicketType;
 
 export default createEventSlice.reducer;

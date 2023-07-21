@@ -72,6 +72,9 @@ const API = {
   fetchOpenAi: {
     post: '/admin/openai',
   },
+  getListTicketType: {
+    get: '/admin/event/ticketType',
+  },
 };
 
 export default API;

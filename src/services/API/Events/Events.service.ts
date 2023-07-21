@@ -75,6 +75,15 @@ const openAiGenerator = async (payload: any) => {
   return response;
 };
 
+const getListTicketType = async () => {
+  const uri = API.getListTicketType.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -83,4 +92,5 @@ export default {
   uploadFile,
   updateEvent,
   openAiGenerator,
+  getListTicketType,
 };

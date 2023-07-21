@@ -42,6 +42,8 @@ import {
   selectPublishLoading,
   selectSaveDraftLoading,
   createEventSaveDraftAction,
+  selectListTicketType,
+  getListTicketTypeAction,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 
@@ -76,6 +78,7 @@ const CreateEvent = () => {
   const saveDraftLoading = useAppSelector(selectSaveDraftLoading);
   const error = useAppSelector(selectError);
   const organizerData = useAppSelector(selectOrganizerData);
+  const listTicketType = useAppSelector(selectListTicketType);
 
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
@@ -447,6 +450,7 @@ const CreateEvent = () => {
         size: defaultOrganizerPageSize,
       }),
     );
+    dispatch(getListTicketTypeAction());
     return () => {
       window.removeEventListener('beforeunload', notSaveAlert);
       document.removeEventListener('gesturestart', notSaveAlert);
@@ -527,6 +531,7 @@ const CreateEvent = () => {
                     fieldEdit={handleFieldChange}
                     ticketFormEdit={ticketFormEdit}
                     setTicketFormEdit={setTicketFormEdit}
+                    listTicketType={listTicketType}
                   />
                 )}
                 {steps === ComponentSteps.settings && (
