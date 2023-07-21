@@ -644,12 +644,15 @@ const CreateTicket = ({
                     <RangePicker
                       className={(showNoEndTimeError && 'show-error') || ''}
                       format={MMM_DD_YYYY_HH_MM}
-                      onChange={(e, dateString) =>
+                      onChange={(e, dateString) => {
+                        if (!dateString[0] && !dateString[1]) {
+                          setShowNoEndTimeError(false);
+                        }
                         changeTicketValues({
                           sellStartTime: dateString[0],
                           sellEndTime: dateString[1],
-                        })
-                      }
+                        });
+                      }}
                       inputReadOnly
                       defaultValue={[
                         ticketValue.sellStartTime
