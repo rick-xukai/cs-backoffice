@@ -208,10 +208,10 @@ export const PromoListItem = ({
     />
   );
 
-  const conditionName = formValue.ticketList.find(
+  const conditionName = formValue.ticketTypes.find(
     (ticket) => ticket.id === condition.ticketTypeId,
   )?.name;
-  const giftName = formValue.ticketList.find(
+  const giftName = formValue.ticketTypes.find(
     (ticket) => ticket.id === gift.ticketTypeId,
   )?.name;
 

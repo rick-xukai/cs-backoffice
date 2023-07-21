@@ -345,7 +345,7 @@ const Events = () => {
                 </Col>
               </Row>
             </Col>
-            {eventsListData.length && (
+            {(eventsListData.length && (
               <Col span={10}>
                 <Link to={UserRoutes.createEvent}>
                   <Button type="primary" className="create-new-event">
@@ -354,7 +354,8 @@ const Events = () => {
                   </Button>
                 </Link>
               </Col>
-            )}
+            )) ||
+              null}
           </Row>
           {(eventsListData.length && (
             <EventListTableContainer>

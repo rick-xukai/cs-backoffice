@@ -103,7 +103,8 @@ const Publish = ({
                     <TableComponent
                       columns={columns}
                       tableData={
-                        (formValue.ticketList.length && formValue.ticketList) ||
+                        (formValue.ticketTypes.length &&
+                          formValue.ticketTypes) ||
                         initialTicketList
                       }
                       loading={false}

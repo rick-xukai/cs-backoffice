@@ -2,7 +2,7 @@ import { RequestClientClass } from '../../../utils/requestClient';
 import { API_SERVER } from '../../../constants/predicates';
 import API from '../../../constants/API';
 
-import { CreateEventPayloadType } from '../../../features/CreateEvent/CreateEvent.slice';
+import { CreateEventFormValueProps } from '../../../features/CreateEvent/CreateEvent.slice';
 
 const requestClient = () => new RequestClientClass(API_SERVER);
 
@@ -25,7 +25,7 @@ const getEventDetail = async (payload: string) => {
   return response;
 };
 
-const createEvent = async (payload: CreateEventPayloadType) => {
+const createEvent = async (payload: CreateEventFormValueProps) => {
   const uri = API.createEvent.post;
   const response = await requestClient()
     .setUri(uri)
