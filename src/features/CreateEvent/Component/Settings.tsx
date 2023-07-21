@@ -60,17 +60,19 @@ const Settings = ({
   setCreatePromoStatus,
   formValue,
   fieldEdit,
-  notSaveConfirm,
   setCreatePromoType,
   createPromoType,
+  settingsFormEdit,
+  setSettingsFormEdit,
 }: {
   createPromoStatus: CreatePromoStatus;
   setCreatePromoStatus: any;
   formValue: CreateEventFormValueProps;
-  fieldEdit: (value: any, field?: string) => void;
-  notSaveConfirm: any;
+  fieldEdit: (value: any, field: string) => void;
   setCreatePromoType: any;
   createPromoType: CreatePromoType;
+  settingsFormEdit: boolean;
+  setSettingsFormEdit: (status: boolean) => void;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -79,6 +81,7 @@ const Settings = ({
     ...initialValues,
   });
   const changePromoValues = (value: any, field?: string) => {
+    setSettingsFormEdit(true);
     if (field) {
       setPromoValue({
         ...promoValue,
@@ -103,9 +106,7 @@ const Settings = ({
       content: `Are you sure you want to delete this discount?`,
       onOk: () => {
         formValue.discounts.splice(index, 1);
-        fieldEdit({
-          discounts: [...formValue.discounts],
-        });
+        fieldEdit(formValue.discounts, 'discounts');
       },
     });
   };
@@ -199,21 +200,30 @@ const Settings = ({
   };
 
   const handleCancelCreateTicket = () => {
-    notSaveConfirm(
-      () => {
-        handleSave();
-      },
-      () => {
-        setCreatePromoStatus(CreatePromoStatus.list);
-      },
-      'Save',
-    );
+    if (settingsFormEdit) {
+      Modal.confirm({
+        className: 'notSaveConfirmModal',
+        centered: true,
+        closable: false,
+        okText: t('Save'),
+        cancelText: t('Leave'),
+        title: t('Unsaved Content'),
+        icon: <ExclamationCircleOutlined />,
+        content: t('Leaving this page will result in losing your content.'),
+        onOk: () => {
+          handleSave();
+        },
+        onCancel: () => {
+          setCreatePromoStatus(CreatePromoStatus.list);
+        },
+      });
+    } else {
+      setCreatePromoStatus(CreatePromoStatus.list);
+    }
   };
 
   const setTicketListData = (newList: any) => {
-    fieldEdit({
-      ticketTypes: newList,
-    });
+    fieldEdit(newList, 'ticketTypes');
   };
 
   useEffect(() => {
@@ -228,6 +238,9 @@ const Settings = ({
   }, []);
 
   useEffect(() => {
+    if (createPromoStatus === CreatePromoStatus.list) {
+      setSettingsFormEdit(false);
+    }
     if (
       createPromoStatus === CreatePromoStatus.add ||
       createPromoStatus === CreatePromoStatus.edit

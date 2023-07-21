@@ -86,7 +86,10 @@ const CreateEvent = () => {
     useState<boolean>(false);
   const [showMissingFieldsModal, setShowMissingFieldsModal] =
     useState<boolean>(false);
-  const [formValueSaved, setFormValueSaved] = useState<boolean>(true);
+  const [eventInfoFormEdit, setEventInfoFormEdit] = useState<boolean>(false);
+  const [ticketFormEdit, setTicketFormEdit] = useState<boolean>(false);
+  const [settingsFormEdit, setSettingsFormEdit] = useState<boolean>(false);
+
   const [whichPathUrlWillTo, setWhichPathUrlWillTo] = useState<string>('');
   const [clickConfirmModalCloseIcon, setClickConfirmModalCloseIcon] =
     useState<boolean>(false);
@@ -139,10 +142,6 @@ const CreateEvent = () => {
     CreatePromoType.bundle,
   );
 
-  const onFinish = () => {
-    setFormValueSaved(true);
-  };
-
   const saveAsDraft = async (type?: string) => {
     if (!createEventFormValue.name) {
       message.error(
@@ -174,12 +173,20 @@ const CreateEvent = () => {
         if (type && type === 'blockRouter') {
           setBlockRouter(false);
         }
+        setEventInfoFormEdit(false);
       }
     }
   };
 
-  const handleFieldChange = (value: any, field?: string) => {
-    setFormValueSaved(false);
+  /**
+   *
+   * @param value Form data
+   * @param field Field name, required!
+   */
+  const handleFieldChange = (value: any, field: string) => {
+    if (field !== 'ticketTypes' && field !== 'discounts') {
+      setEventInfoFormEdit(true);
+    }
     if (field === 'eventTime') {
       setCreateEventFormValue({
         ...createEventFormValue,
@@ -256,7 +263,7 @@ const CreateEvent = () => {
   const handleRouterHoldUp = (location: any) => {
     const pathUrl = `${location.pathname}${location.search}`;
     setWhichPathUrlWillTo(pathUrl);
-    if (!formValueSaved) {
+    if (eventInfoFormEdit || ticketFormEdit || settingsFormEdit) {
       setShowNotSaveConfirmModal(true);
     } else {
       setBlockRouter(false);
@@ -329,6 +336,7 @@ const CreateEvent = () => {
           setWhichPathUrlWillTo(UserRoutes.events);
           setBlockRouter(false);
           setShowNotSaveConfirmModal(false);
+          setEventInfoFormEdit(false);
         }
       }
     } else {
@@ -445,9 +453,11 @@ const CreateEvent = () => {
   const blockStep = () => {
     if (
       (steps === ComponentSteps.createTicket &&
-        createTicketStatus !== CreateTicketStatus.list) ||
+        createTicketStatus !== CreateTicketStatus.list &&
+        ticketFormEdit) ||
       (steps === ComponentSteps.settings &&
-        createPromoStatus !== CreatePromoStatus.list)
+        createPromoStatus !== CreatePromoStatus.list &&
+        settingsFormEdit)
     )
       return true;
 
@@ -486,7 +496,6 @@ const CreateEvent = () => {
             <div className="page-main">
               <Form
                 name="create_event"
-                onFinish={onFinish}
                 initialValues={{
                   ...createEventFormValue,
                   organizerId: checkOrganizerDefaultValue().defaultValue,
@@ -512,7 +521,8 @@ const CreateEvent = () => {
                     setCreateTicketStatus={setCreateTicketStatus}
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
-                    notSaveConfirm={notSaveConfirm}
+                    ticketFormEdit={ticketFormEdit}
+                    setTicketFormEdit={setTicketFormEdit}
                   />
                 )}
                 {steps === ComponentSteps.settings && (
@@ -521,7 +531,8 @@ const CreateEvent = () => {
                     setCreatePromoStatus={setCreatePromoStatus}
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
-                    notSaveConfirm={notSaveConfirm}
+                    settingsFormEdit={settingsFormEdit}
+                    setSettingsFormEdit={setSettingsFormEdit}
                     setCreatePromoType={setCreatePromoType}
                     createPromoType={createPromoType}
                   />
