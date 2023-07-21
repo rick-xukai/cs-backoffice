@@ -667,7 +667,9 @@ const CreateTicket = ({
                     />
                   </Form.Item>
                   {showNoEndTimeError && (
-                    <div className="end-date-error">End date is required</div>
+                    <div className="end-date-error">
+                      Selling Time is required
+                    </div>
                   )}
                   <FoldingPanel
                     defaultActiveKey={
