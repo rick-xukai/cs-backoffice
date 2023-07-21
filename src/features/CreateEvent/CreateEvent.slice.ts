@@ -57,11 +57,11 @@ export interface TicketListProps {
   id: string;
   name: string;
   description: string;
-  price: number;
+  price: number | string;
   absorbFees: boolean;
-  stock: number;
-  ceilingPrice: number;
-  royaltiesFee: number;
+  stock: number | string;
+  ceilingPrice: number | string;
+  royaltiesFee: number | string;
   image: string;
   imageType: string;
   thumbnailUrl: string;

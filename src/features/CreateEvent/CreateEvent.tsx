@@ -159,6 +159,8 @@ const CreateEvent = () => {
           ...item,
           price: Number(item.price),
           stock: Number(item.stock),
+          ceilingPrice: Number(item.ceilingPrice),
+          royaltiesFee: Number(item.royaltiesFee),
           sellStartTime: moment(item.sellStartTime).format(),
           sellEndTime: moment(item.sellEndTime).format(),
         };
@@ -318,6 +320,8 @@ const CreateEvent = () => {
             ...item,
             price: Number(item.price),
             stock: Number(item.stock),
+            ceilingPrice: Number(item.ceilingPrice),
+            royaltiesFee: Number(item.royaltiesFee),
             sellStartTime: moment(item.sellStartTime).format(),
             sellEndTime: moment(item.sellEndTime).format(),
           };
