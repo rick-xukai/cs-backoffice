@@ -105,7 +105,7 @@ export interface CreateEventFormValueProps {
   refundPolicy: SetRefundKey.nonRefundable;
   startTime?: string;
   endTime?: string;
-  status?: number;
+  publish?: number;
 }
 
 export interface TicketTypes {
