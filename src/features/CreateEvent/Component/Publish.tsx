@@ -38,7 +38,7 @@ const Publish = ({
       title: 'Ticket Type Name',
       dataIndex: 'name',
       key: 'name',
-      width: '50%',
+      width: '45%',
     },
     {
       title: 'Price',
@@ -73,10 +73,10 @@ const Publish = ({
               </Col>
               <EventInfoCard>
                 <Row>
-                  <Col span={10} className="event-image">
+                  <Col lg={10} span={24} className="event-image">
                     <img src={formValue.image || Images.NoEventBanner} alt="" />
                   </Col>
-                  <Col span={14} className="info-detail">
+                  <Col lg={14} span={24} className="info-detail">
                     <Col className="info-detail-name">
                       {formValue.name || '-'}
                     </Col>
@@ -118,6 +118,11 @@ const Publish = ({
                 <span>{t('Set the refund and cancellation policy')}</span>
                 <span>
                   <Tooltip
+                    overlayInnerStyle={{
+                      fontSize: 13,
+                      fontWeight: 400,
+                      padding: 8,
+                    }}
                     title={t(
                       'CrowdServe is not liable to issue refunds via our platform. Attendees seeking refunds will be redirected to contact you to request a refund directly',
                     )}

@@ -238,9 +238,6 @@ const Settings = ({
   }, []);
 
   useEffect(() => {
-    if (createPromoStatus === CreatePromoStatus.list) {
-      setSettingsFormEdit(false);
-    }
     if (
       createPromoStatus === CreatePromoStatus.add ||
       createPromoStatus === CreatePromoStatus.edit
