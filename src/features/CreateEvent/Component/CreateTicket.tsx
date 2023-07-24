@@ -121,12 +121,12 @@ const CreateTicket = ({
   const [thumbnaiFileList, setThumbnaiFileList] = useState<any>([]);
   const [ticketValue, setTicketValue] = useState<TicketListProps>({
     ...initialValues,
-    sellEndTime: formValue.startTime,
+    sellEndTime: formValue.startTime || '',
   });
   useEffect(() => {
     setTicketValue({
       ...ticketValue,
-      sellEndTime: ticketValue.sellEndTime || formValue.startTime,
+      sellEndTime: ticketValue.sellEndTime || formValue.startTime || '',
       sellStartTime:
         ticketValue.sellStartTime || moment().format(MMM_DD_YYYY_HH_MM),
     });

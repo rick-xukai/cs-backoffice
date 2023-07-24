@@ -78,8 +78,8 @@ export interface TicketListProps {
   visibility: boolean;
   connectedTickets: {
     ticketTypeId: number;
-    eventName: string;
-    ticketName: string;
+    eventName?: string;
+    ticketName?: string;
   }[];
   imageName: string;
   thumbnailName: string;
@@ -96,15 +96,15 @@ export interface CreateEventFormValueProps {
   locationCoord: string;
   organizerId: string;
   address: string;
-  startTime: string;
-  endTime: string;
   image: string;
   descriptionShort: string;
   description: string;
   descriptionImages: DescriptionImagesProps[];
   ticketTypes: TicketListProps[];
   discounts: PromoListProps[];
-  refundPolicy: SetRefundKey.nonRefund;
+  refundPolicy: SetRefundKey.nonRefundable;
+  startTime?: string;
+  endTime?: string;
   status?: number;
   descriptionImagesFileList?: any[];
 }

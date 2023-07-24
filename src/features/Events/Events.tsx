@@ -100,7 +100,7 @@ const Events = () => {
         <Row>
           <Col span={6}>
             <div className="event-img">
-              <img src={record.image} alt="" />
+              <img src={record.image || Images.NoEventBanner} alt="" />
             </div>
           </Col>
           <Col span={18} className="table-event">

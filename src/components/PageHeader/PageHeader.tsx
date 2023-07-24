@@ -149,6 +149,15 @@ const PageHeaderContainer = styled.div`
     }
     .title-content {
       margin-left: 48px;
+      &.mobile {
+        .no-back {
+          color: ${Colors.black};
+          font-size: 24px;
+          font-weight: 700;
+          line-height: 32px;
+          text-transform: uppercase;
+        }
+      }
     }
   }
 `;
@@ -243,7 +252,9 @@ const PageHeaderComponent = ({
                     <span className="title">{title}</span>
                   </Col>
                 )) || (
-                  <span className="title">{title.toLocaleUpperCase()}</span>
+                  <span className="title no-back">
+                    {title.toLocaleUpperCase()}
+                  </span>
                 )}
               </span>
             </div>

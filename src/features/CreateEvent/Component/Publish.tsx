@@ -38,6 +38,7 @@ const Publish = ({
       title: 'Ticket Type Name',
       dataIndex: 'name',
       key: 'name',
+      width: '50%',
     },
     {
       title: 'Price',
@@ -48,7 +49,7 @@ const Publish = ({
       ),
     },
     {
-      title: 'Total Available Quantity',
+      title: 'Quantity',
       dataIndex: 'stock',
       key: 'stock',
       render: (stock: string) => <div>{(stock && `0 / ${stock}`) || '-'}</div>,
@@ -127,16 +128,14 @@ const Publish = ({
               </Col>
               <Col>
                 <Radio.Group
-                  onChange={(e) =>
-                    fieldEdit(e.target.value, 'refundAndCancellation')
-                  }
+                  onChange={(e) => fieldEdit(e.target.value, 'refundPolicy')}
                   value={formValue.refundPolicy}
                 >
                   <Space direction="vertical">
                     <Radio value={SetRefundKey.refundable}>
                       {t('Refundable')}
                     </Radio>
-                    <Radio value={SetRefundKey.nonRefund}>
+                    <Radio value={SetRefundKey.nonRefundable}>
                       {t('NonRefund')}
                     </Radio>
                   </Space>

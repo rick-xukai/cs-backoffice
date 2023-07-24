@@ -63,7 +63,11 @@ export const EmptyState = ({ handleAddTicket }: { handleAddTicket: any }) => {
               'Create an unforgettable experience that sets your event apart. Let your creativity soar – start creating tickets.',
             )}
             actions={
-              <Button type="primary" onClick={handleAddTicket}>
+              <Button
+                style={{ width: 240 }}
+                type="primary"
+                onClick={handleAddTicket}
+              >
                 {t('Add Ticket')}
               </Button>
             }
@@ -327,9 +331,11 @@ export const TicketImageUpload = ({
       });
     }
     if (response.type === uploadFileAction.rejected.toString()) {
-      if (response.payload.code === Messages.userDeprecated.code) {
-        history.push(AuthRoutes.login);
-        return message.error(t(TOKEN_EXPIRED_MESSAGE));
+      if (response.payload) {
+        if (response.payload.code === Messages.userDeprecated.code) {
+          history.push(AuthRoutes.login);
+          return message.error(t(TOKEN_EXPIRED_MESSAGE));
+        }
       }
     }
     return e.onError();
