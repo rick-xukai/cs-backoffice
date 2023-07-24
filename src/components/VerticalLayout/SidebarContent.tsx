@@ -19,6 +19,7 @@ const SideBarContent = ({ sidebarTheme }: { sidebarTheme: SiderTheme }) => {
       mode="inline"
       defaultOpenKeys={[...openKeys]}
       defaultSelectedKeys={[...selectedKeys]}
+      selectedKeys={[...selectedKeys]}
     >
       {MenuRender(MenuList())}
     </Menu>
