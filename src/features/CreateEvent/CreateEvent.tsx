@@ -153,7 +153,7 @@ const CreateEvent = () => {
   const formatRequestPayload = (type: number) => {
     const payload: CreateEventFormValueProps = {
       ...createEventFormValue,
-      status: type,
+      publish: type,
       startTime: moment(createEventFormValue.startTime).format(),
       endTime: moment(createEventFormValue.endTime).format(),
       descriptionImages: createEventFormValue.descriptionImages.map(
