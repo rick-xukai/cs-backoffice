@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   defaultCurrentPage,
   defaultOrganizerPageSize,
+  DescriptionImagesSize,
   SetRefundKey,
   DescriptionImagesSize,
 } from '../../constants/General';
@@ -45,6 +46,7 @@ import {
   createEventSaveDraftAction,
   selectListTicketType,
   getListTicketTypeAction,
+  updateEventAction,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 import { getEventDetailAction } from '../EventDetail/EventDetail.slice';
@@ -238,11 +240,20 @@ const CreateEvent = () => {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
       } else {
-        const response = await dispatch(
-          createEventAction(
-            formatRequestPayload(CreateEventActionType.publish),
-          ),
-        );
+        let response = null;
+        if (isEdit) {
+          const payload: any = {
+            ...formatRequestPayload(CreateEventActionType.publish),
+            id: createEventFormValue.id,
+          };
+          response = await dispatch(updateEventAction(payload));
+        } else {
+          response = await dispatch(
+            createEventAction(
+              formatRequestPayload(CreateEventActionType.publish),
+            ),
+          );
+        }
         if (response.type === createEventAction.fulfilled.toString()) {
           message.success(
             t(
@@ -322,7 +333,7 @@ const CreateEvent = () => {
       open: showNotSaveConfirmModal,
       centered: true,
       closable: false,
-      okText: okText || t('Save as Draft'),
+      okText: okText || isEdit ? t('Save and Publish') : t('Save as Draft'),
       cancelText: cancelText || t('Leave'),
       title: title || (
         <div className="notSaveModalTitle">
@@ -336,6 +347,8 @@ const CreateEvent = () => {
       onOk() {
         if (onOk) {
           onOk();
+        } else if (isEdit) {
+          createEventPublish();
         } else {
           saveAsDraft('blockRouter');
         }
@@ -454,10 +467,12 @@ const CreateEvent = () => {
   }, [steps]);
 
   useEffect(() => {
-    setCreateEventFormValue({
-      ...createEventFormValue,
-      organizerId: checkOrganizerDefaultValue().defaultId,
-    });
+    if (!isEdit) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        organizerId: checkOrganizerDefaultValue().defaultId,
+      });
+    }
   }, [organizerData]);
 
   useEffect(() => {
@@ -510,11 +525,32 @@ const CreateEvent = () => {
           const { data } = response.payload;
           setCreateEventFormValue({
             ...data,
+            descriptionImages: data.descriptionImages.map((item: any) => ({
+              column: DescriptionImagesSize.find(
+                (size) => size.text === item.size,
+              )?.key,
+              response: item.image,
+              type: 'image/jpeg',
+              size: 1,
+            })),
           });
         }
       })();
     }
   }, []);
+
+  const handleCancel = () => {};
+
+  const showSaveAndPublishCondition =
+    (isEdit && steps === ComponentSteps.eventInfo) ||
+    (isEdit && steps === ComponentSteps.publish);
+  const hideBottomCondition =
+    (steps === ComponentSteps.createTicket &&
+      (createTicketStatus === CreateTicketStatus.add ||
+        createTicketStatus === CreateTicketStatus.edit)) ||
+    (steps === ComponentSteps.settings &&
+      (createPromoStatus === CreatePromoStatus.add ||
+        createPromoStatus === CreatePromoStatus.edit));
   return (
     <>
       <Prompt when={blockRouter} message={handleRouterHoldUp} />
@@ -545,20 +581,7 @@ const CreateEvent = () => {
               blockStep={blockStep}
             />
             <div className="page-main">
-              <Form
-                name="create_event"
-                initialValues={{
-                  ...createEventFormValue,
-                  organizerId: checkOrganizerDefaultValue().defaultValue,
-                  eventTime:
-                    (createEventFormValue.startTime &&
-                      createEventFormValue.endTime && [
-                        moment(createEventFormValue.startTime),
-                        moment(createEventFormValue.endTime),
-                      ]) ||
-                    null,
-                }}
-              >
+              <Form name="create_event">
                 {steps === ComponentSteps.eventInfo && (
                   <EventInfo
                     organizerData={organizerData}
@@ -575,6 +598,7 @@ const CreateEvent = () => {
                     ticketFormEdit={ticketFormEdit}
                     setTicketFormEdit={setTicketFormEdit}
                     listTicketType={listTicketType}
+                    isEdit={isEdit}
                   />
                 )}
                 {steps === ComponentSteps.settings && (
@@ -587,6 +611,7 @@ const CreateEvent = () => {
                     setSettingsFormEdit={setSettingsFormEdit}
                     setCreatePromoType={setCreatePromoType}
                     createPromoType={createPromoType}
+                    isEdit={isEdit}
                   />
                 )}
                 {steps === ComponentSteps.publish && (
@@ -597,38 +622,12 @@ const CreateEvent = () => {
                 )}
               </Form>
             </div>
-            {(steps !== ComponentSteps.publish && (
-              <>
-                {(steps === ComponentSteps.createTicket &&
-                  (createTicketStatus === CreateTicketStatus.add ||
-                    createTicketStatus === CreateTicketStatus.edit)) ||
-                (steps === ComponentSteps.settings &&
-                  (createPromoStatus === CreatePromoStatus.add ||
-                    createPromoStatus === CreatePromoStatus.edit)) ? null : (
-                  <div className="page-bottom">
-                    <div className="bottom-btn">
-                      <Button onClick={() => saveAsDraft()}>
-                        {t('Save as Draft')}
-                      </Button>
-                      <Button
-                        type="primary"
-                        onClick={() => setSteps(steps + 1)}
-                      >
-                        {t('Next')}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </>
-            )) || (
+            {showSaveAndPublishCondition ? (
               <div className="page-bottom">
                 <div className="bottom-btn">
-                  <Button
-                    onClick={() => saveAsDraft()}
-                    disabled={saveDraftLoading}
-                  >
+                  <Button onClick={handleCancel} disabled={saveDraftLoading}>
                     {saveDraftLoading && <LoadingOutlined spin />}
-                    {t('Save as Draft')}
+                    {t('Cancel')}
                   </Button>
                   <Button
                     type="primary"
@@ -636,10 +635,52 @@ const CreateEvent = () => {
                     disabled={publishLoading}
                   >
                     {publishLoading && <LoadingOutlined spin />}
-                    {t('Publish')}
+                    {steps === ComponentSteps.publish
+                      ? t('Publish')
+                      : t('Save and Publish')}
                   </Button>
                 </div>
               </div>
+            ) : (
+              (steps !== ComponentSteps.publish && (
+                <>
+                  {hideBottomCondition ? null : (
+                    <div className="page-bottom">
+                      <div className="bottom-btn">
+                        <Button onClick={() => saveAsDraft()}>
+                          {t('Save as Draft')}
+                        </Button>
+                        <Button
+                          type="primary"
+                          onClick={() => setSteps(steps + 1)}
+                        >
+                          {t('Next')}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )) || (
+                <div className="page-bottom">
+                  <div className="bottom-btn">
+                    <Button
+                      onClick={() => saveAsDraft()}
+                      disabled={saveDraftLoading}
+                    >
+                      {saveDraftLoading && <LoadingOutlined spin />}
+                      {t('Save as Draft')}
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={createEventPublish}
+                      disabled={publishLoading}
+                    >
+                      {publishLoading && <LoadingOutlined spin />}
+                      {t('Publish')}
+                    </Button>
+                  </div>
+                </div>
+              )
             )}
           </>
         )}

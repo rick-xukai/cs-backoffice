@@ -64,6 +64,7 @@ const Settings = ({
   createPromoType,
   settingsFormEdit,
   setSettingsFormEdit,
+  isEdit,
 }: {
   createPromoStatus: CreatePromoStatus;
   setCreatePromoStatus: any;
@@ -73,6 +74,7 @@ const Settings = ({
   createPromoType: CreatePromoType;
   settingsFormEdit: boolean;
   setSettingsFormEdit: (status: boolean) => void;
+  isEdit: boolean;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -196,16 +198,20 @@ const Settings = ({
         'discounts',
       );
     }
-    setCreatePromoStatus(CreatePromoStatus.list);
+    if (isEdit) {
+      console.log(1);
+    } else {
+      setCreatePromoStatus(CreatePromoStatus.list);
+    }
   };
 
-  const handleCancelCreateTicket = () => {
+  const handleCancelCreatePromo = () => {
     if (settingsFormEdit) {
       Modal.confirm({
         className: 'notSaveConfirmModal',
         centered: true,
         closable: false,
-        okText: t('Save'),
+        okText: isEdit ? t('Save and Publish') : t('Save'),
         cancelText: t('Leave'),
         title: t('Unsaved Content'),
         icon: <ExclamationCircleOutlined />,
@@ -233,9 +239,12 @@ const Settings = ({
     setOnSave(false);
   }, [createPromoStatus]);
 
-  useEffect(() => {
-    setCreatePromoStatus(CreatePromoStatus.list);
-  }, []);
+  useEffect(
+    () => () => {
+      setCreatePromoStatus(CreatePromoStatus.list);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (
@@ -314,19 +323,34 @@ const Settings = ({
             setTicketListData={setTicketListData}
             createPromoType={createPromoType}
           />
-          <div className="page-bottom">
-            {createPromoStatus === CreatePromoStatus.add ||
-            createPromoStatus === CreatePromoStatus.edit ? (
+          {isEdit ? (
+            <div className="page-bottom">
               <div className="bottom-btn">
-                <Button onClick={handleCancelCreateTicket}>
+                <Button onClick={handleCancelCreatePromo}>
+                  {/* {saveDraftLoading && <LoadingOutlined spin />} */}
                   {t('Cancel')}
                 </Button>
                 <Button type="primary" onClick={handleSave}>
-                  {t('Save')}
+                  {/* {publishLoading && <LoadingOutlined spin />} */}
+                  {t('Save and Publish')}
                 </Button>
               </div>
-            ) : null}
-          </div>
+            </div>
+          ) : (
+            <div className="page-bottom">
+              {createPromoStatus === CreatePromoStatus.add ||
+              createPromoStatus === CreatePromoStatus.edit ? (
+                <div className="bottom-btn">
+                  <Button onClick={handleCancelCreatePromo}>
+                    {t('Cancel')}
+                  </Button>
+                  <Button type="primary" onClick={handleSave}>
+                    {t('Save')}
+                  </Button>
+                </div>
+              ) : null}
+            </div>
+          )}
         </>
       );
     }
