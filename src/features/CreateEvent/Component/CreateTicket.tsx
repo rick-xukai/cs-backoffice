@@ -658,9 +658,11 @@ const CreateTicket = ({
                         ticketValue.sellStartTime
                           ? moment(ticketValue.sellStartTime)
                           : moment(),
-                        ticketValue.sellEndTime
-                          ? moment(ticketValue.sellEndTime)
-                          : null,
+                        formValue.startTime
+                          ? moment(formValue.startTime)
+                          : (ticketValue.sellEndTime &&
+                              moment(ticketValue.sellEndTime)) ||
+                            null,
                       ]}
                       disabledDate={(currentDate) =>
                         currentDate &&
