@@ -23,6 +23,7 @@ export const UserRoutes = {
   },
   events: '/events',
   createEvent: '/create-event',
+  editEvent: '/edit-event/:id',
   eventDetail: '/event-detail/:id',
   users: '/users',
   userDetail: '/user/:userId',
