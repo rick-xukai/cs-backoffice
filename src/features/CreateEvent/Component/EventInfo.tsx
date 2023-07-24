@@ -360,7 +360,7 @@ const EventInfo = ({
                   </Form.Item>
                 </>
               )) || (
-                <Form.Item label="Location">
+                <Form.Item required label="Location">
                   <Input
                     className="addMyLocation"
                     prefix={<img src={Images.LocationIcon} alt="" />}

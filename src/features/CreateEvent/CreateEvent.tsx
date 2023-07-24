@@ -110,7 +110,7 @@ const CreateEvent = () => {
       description: '',
       descriptionImages: [],
       ticketTypes: [],
-      refundPolicy: SetRefundKey.nonRefund,
+      refundPolicy: SetRefundKey.nonRefundable,
       discounts: [],
       descriptionImagesFileList: [],
     });
@@ -145,33 +145,48 @@ const CreateEvent = () => {
     CreatePromoType.bundle,
   );
 
+  const formatRequestPayload = (type: number) => {
+    const payload: CreateEventFormValueProps = {
+      ...createEventFormValue,
+      status: type,
+      startTime: moment(createEventFormValue.startTime).format(),
+      endTime: moment(createEventFormValue.endTime).format(),
+    };
+    const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
+      const types = {
+        ...item,
+        price: Number(item.price),
+        stock: Number(item.stock),
+        ceilingPrice: Number(item.ceilingPrice),
+        royaltiesFee: Number(item.royaltiesFee),
+        sellStartTime: moment(item.sellStartTime).format(),
+        sellEndTime: moment(item.sellEndTime).format(),
+        connectedTickets: item.connectedTickets.map((connectedTicket: any) => ({
+          ticketTypeId: connectedTicket.id,
+        })),
+      };
+      return types;
+    });
+    if (!createEventFormValue.startTime) {
+      delete payload.startTime;
+    }
+    if (!createEventFormValue.endTime) {
+      delete payload.endTime;
+    }
+    delete payload.descriptionImagesFileList;
+    return { ...payload, ticketTypes };
+  };
+
   const saveAsDraft = async (type?: string) => {
     if (!createEventFormValue.name) {
       message.error(
         t('Please enter a name for your event before saving as a draft.'),
       );
     } else {
-      const payload = {
-        ...createEventFormValue,
-        status: CreateEventActionType.saveAsDraft,
-        startTime: moment(createEventFormValue.startTime).format(),
-        endTime: moment(createEventFormValue.endTime).format(),
-      };
-      const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
-        const types = {
-          ...item,
-          price: Number(item.price),
-          stock: Number(item.stock),
-          ceilingPrice: Number(item.ceilingPrice),
-          royaltiesFee: Number(item.royaltiesFee),
-          sellStartTime: moment(item.sellStartTime).format(),
-          sellEndTime: moment(item.sellEndTime).format(),
-        };
-        return types;
-      });
-      delete payload.descriptionImagesFileList;
       const response = await dispatch(
-        createEventSaveDraftAction({ ...payload, ticketTypes }),
+        createEventSaveDraftAction(
+          formatRequestPayload(CreateEventActionType.saveAsDraft),
+        ),
       );
       if (response.type === createEventSaveDraftAction.fulfilled.toString()) {
         message.success(t('Draft Saved Successfully!'));
@@ -180,6 +195,50 @@ const CreateEvent = () => {
         }
         setEventInfoFormEdit(false);
       }
+    }
+  };
+
+  const createEventPublish = async () => {
+    const currentTime = new Date().getTime();
+    const endTime = new Date(createEventFormValue.endTime || '').getTime();
+    if (validatUnfinishedSteps(createEventFormValue) === '') {
+      if (currentTime > endTime) {
+        message.error(t('Event end time can not be in the past.'));
+      } else {
+        const response = await dispatch(
+          createEventAction(
+            formatRequestPayload(CreateEventActionType.publish),
+          ),
+        );
+        if (response.type === createEventAction.fulfilled.toString()) {
+          message.success(
+            t(
+              `Congrats! You have successfully published your event. Let's rock n rol!`,
+            ),
+          );
+          setWhichPathUrlWillTo(UserRoutes.events);
+          setBlockRouter(false);
+          setShowNotSaveConfirmModal(false);
+          setEventInfoFormEdit(false);
+        }
+      }
+    } else {
+      confirm({
+        open: showMissingFieldsModal,
+        centered: true,
+        closable: false,
+        okText: t('Go Complete'),
+        cancelText: t('Cancel'),
+        title: t('Missing Fields'),
+        icon: <ExclamationCircleOutlined />,
+        content: t('Please complete all required fields before publishing.'),
+        onOk() {
+          setSteps(Number(validatUnfinishedSteps(createEventFormValue)));
+        },
+        onCancel() {
+          setShowMissingFieldsModal(false);
+        },
+      });
     }
   };
 
@@ -305,67 +364,6 @@ const CreateEvent = () => {
     return { defaultValue, defaultId };
   };
 
-  const createEventPublish = async () => {
-    const currentTime = new Date().getTime();
-    const endTime = new Date(createEventFormValue.endTime).getTime();
-    if (validatUnfinishedSteps(createEventFormValue) === '') {
-      if (currentTime > endTime) {
-        message.error(t('Event end time can not be in the past.'));
-      } else {
-        const payload = {
-          ...createEventFormValue,
-          status: CreateEventActionType.publish,
-          startTime: moment(createEventFormValue.startTime).format(),
-          endTime: moment(createEventFormValue.endTime).format(),
-        };
-        const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
-          const types = {
-            ...item,
-            price: Number(item.price),
-            stock: Number(item.stock),
-            ceilingPrice: Number(item.ceilingPrice),
-            royaltiesFee: Number(item.royaltiesFee),
-            sellStartTime: moment(item.sellStartTime).format(),
-            sellEndTime: moment(item.sellEndTime).format(),
-          };
-          return types;
-        });
-        delete payload.descriptionImagesFileList;
-        const response = await dispatch(
-          createEventAction({ ...payload, ticketTypes }),
-        );
-        if (response.type === createEventAction.fulfilled.toString()) {
-          message.success(
-            t(
-              `Congrats! You have successfully published your event. Let's rock n rol!`,
-            ),
-          );
-          setWhichPathUrlWillTo(UserRoutes.events);
-          setBlockRouter(false);
-          setShowNotSaveConfirmModal(false);
-          setEventInfoFormEdit(false);
-        }
-      }
-    } else {
-      confirm({
-        open: showMissingFieldsModal,
-        centered: true,
-        closable: false,
-        okText: t('Go Complete'),
-        cancelText: t('Cancel'),
-        title: t('Missing Fields'),
-        icon: <ExclamationCircleOutlined />,
-        content: t('Please complete all required fields before publishing.'),
-        onOk() {
-          setSteps(Number(validatUnfinishedSteps(createEventFormValue)));
-        },
-        onCancel() {
-          setShowMissingFieldsModal(false);
-        },
-      });
-    }
-  };
-
   useEffect(() => {
     if (clickConfirmModalCloseIcon) {
       setShowNotSaveConfirmModal(false);
@@ -405,8 +403,6 @@ const CreateEvent = () => {
       } else if (previousStep === ComponentSteps.createTicket) {
         if (createEventFormValue.ticketTypes.length) {
           currentIcon = Images.SuccessIcon;
-        } else {
-          currentIcon = Images.NotFinishedIcon;
         }
         items[ComponentSteps.createTicket].icon = (
           <StatusImage src={currentIcon} />
@@ -414,8 +410,6 @@ const CreateEvent = () => {
       } else if (previousStep === ComponentSteps.settings) {
         if (createEventFormValue.discounts.length) {
           currentIcon = Images.SuccessIcon;
-        } else {
-          currentIcon = Images.NotFinishedIcon;
         }
         items[ComponentSteps.settings].icon = <StatusImage src={currentIcon} />;
       } else {

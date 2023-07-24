@@ -250,7 +250,7 @@ const ProfileContainer = styled.div`
     }
   }
   @media (max-width: 996px) {
-    padding: calc(70px + 15px) 15px 73px;
+    padding: calc(98px + 15px) 15px 85px;
     .page-main {
       .profile-tips {
         padding-left: 20px;
