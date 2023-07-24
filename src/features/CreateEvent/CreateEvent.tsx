@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, Prompt } from 'react-router-dom';
+import { useHistory, Prompt, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, message, Modal, Spin } from 'antd';
 import _ from 'lodash';
@@ -46,6 +46,7 @@ import {
   getListTicketTypeAction,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
+import { getEventDetailAction } from '../EventDetail/EventDetail.slice';
 
 const { confirm } = Modal;
 
@@ -144,6 +145,10 @@ const CreateEvent = () => {
   const [createPromoType, setCreatePromoType] = useState(
     CreatePromoType.bundle,
   );
+
+  const params: { id: string } = useParams();
+  const { id } = params;
+  const isEdit = !!id;
 
   const formatRequestPayload = (type: number) => {
     const payload: CreateEventFormValueProps = {
@@ -465,7 +470,22 @@ const CreateEvent = () => {
 
     return false;
   };
-
+  useEffect(() => {
+    if (isEdit) {
+      (async () => {
+        const response: any = await dispatch(getEventDetailAction(id));
+        if (
+          response.type === getEventDetailAction.fulfilled.toString() &&
+          response.payload?.data
+        ) {
+          const { data } = response.payload;
+          setCreateEventFormValue({
+            ...data,
+          });
+        }
+      })();
+    }
+  }, []);
   return (
     <>
       <Prompt when={blockRouter} message={handleRouterHoldUp} />

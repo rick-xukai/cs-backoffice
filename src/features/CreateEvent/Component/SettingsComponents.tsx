@@ -568,7 +568,7 @@ export const AddEditForm = ({
                       onBlur={(e) => {
                         const val = e.target.value;
                         if (promoValue.discount.type === DiscountType.amount) {
-                          if (val && Number(val) <= 0)
+                          if (val && Number(val) < 0)
                             return changePromoValues(
                               {
                                 ...promoValue.discount,

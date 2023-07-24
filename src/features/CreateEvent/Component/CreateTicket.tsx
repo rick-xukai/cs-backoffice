@@ -602,7 +602,7 @@ const CreateTicket = ({
                       }}
                       onBlur={(e) => {
                         const val = e.target.value;
-                        if (Number(val) <= 0)
+                        if (Number(val) < 0)
                           return changeTicketValues('', 'price');
                         return changeTicketValues(
                           thousandsSeparator(val),
@@ -757,7 +757,7 @@ const CreateTicket = ({
                           }}
                           onBlur={(e) => {
                             const val = e.target.value;
-                            if (val && Number(val) <= 0)
+                            if (val && Number(val) < 0)
                               return changeTicketValues('', 'ceilingPrice');
                             return changeTicketValues(
                               thousandsSeparator(val),

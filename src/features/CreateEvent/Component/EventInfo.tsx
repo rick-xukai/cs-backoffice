@@ -286,15 +286,17 @@ const EventInfo = ({
                   showCount
                   maxLength={100}
                   onChange={(e) => fieldEdit(e.target.value, 'name')}
+                  value={formValue.name}
                 />
               </Form.Item>
               <Form.Item required label="Organizer" name="organizerId">
                 <Select
                   options={organizerData.map((item: OrganizerData) => ({
                     label: item.name,
-                    value: item.id,
+                    value: Number(item.id),
                   }))}
                   onChange={(value) => fieldEdit(value, 'organizerId')}
+                  value={Number(formValue.organizerId)}
                 />
               </Form.Item>
               {(!showAddMyLocationInput && (
@@ -378,6 +380,7 @@ const EventInfo = ({
                   <Input
                     className="address"
                     onChange={(e) => fieldEdit(e.target.value, 'address')}
+                    value={formValue.address}
                   />
                 </Form.Item>
               )}

@@ -191,6 +191,9 @@ const Events = () => {
           {
             label: t('Edit'),
             key: 'Edit',
+            onClick: () => {
+              history.push(UserRoutes.editEvent.replace(':id', record.id));
+            },
           },
           {
             label: t('Copy Link'),

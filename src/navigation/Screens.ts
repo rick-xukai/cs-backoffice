@@ -63,6 +63,19 @@ export const UserScreens = {
       UserRoleKeys.organizerUser,
     ],
   },
+  EditEvent: {
+    title: 'Edit Event - CrowdServe BO',
+    path: UserRoutes.editEvent,
+    component: CreateEvent,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
   EventInfo: {
     title: 'Event Info - CrowdServe BO',
     path: UserRoutes.eventInfo,
