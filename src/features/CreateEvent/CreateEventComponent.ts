@@ -885,7 +885,7 @@ const PublishComponentContainer = styled(Row)`
         cursor: pointer;
       }
       > :last-child {
-        margin-left: 5px;
+        margin-left: 10px;
       }
     }
     .set-refund-title {
@@ -1001,6 +1001,12 @@ const EventInfoCard = styled(Col)`
           border-bottom: 0.6px solid ${Colors.grey8};
         }
       }
+    }
+  }
+  @media (max-width: 992px) {
+    .info-detail {
+      padding-left: 0;
+      padding-top: 20px;
     }
   }
 `;

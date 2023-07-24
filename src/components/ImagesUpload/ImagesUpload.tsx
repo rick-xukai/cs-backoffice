@@ -14,10 +14,7 @@ import {
   UploadText,
 } from './ImagesUpload.components';
 import { Colors, Images } from '../../theme';
-import {
-  UploadFileAcceptType,
-  DescriptionImagesSize,
-} from '../../constants/General';
+import { UploadFileAcceptType } from '../../constants/General';
 import { useAppDispatch } from '../../app/hooks';
 import { uploadFileAction } from './ImageUpload.slice';
 
@@ -31,16 +28,13 @@ const IMAGE_UPLOAD_MAX_COUNT = 10;
 const ImagesUpload = ({
   name,
   onChange,
-  fieldEdit,
   value,
 }: {
   name?: string;
-  fieldEdit?: (value: any) => void;
   onChange?: (files: any) => void;
   value?: any[];
 }) => {
   const [imageList, setImageList] = useState<any>(value || []);
-  const [imageListPayload, setImageListPayload] = useState<any>([]);
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const fileLimit = (size: number, type: string) => {
@@ -86,27 +80,18 @@ const ImagesUpload = ({
 
   const handleRemoveImage = (index: number) => () => {
     imageList.splice(index, 1);
-    const newImageListPayload = imageListPayload.splice(index, 1);
-    if (fieldEdit) {
-      fieldEdit(newImageListPayload);
-    }
     setImageList([...imageList]);
-    setImageListPayload(newImageListPayload);
+    if (onChange) {
+      onChange([...imageList]);
+    }
   };
 
   const handleUpOrderImage = (index: number) => () => {
     if (!index) return;
     const newImageList = [...imageList];
-    const newImageListPayload = [...imageListPayload];
     newImageList.splice(index, 1);
     newImageList.splice(index - 1, 0, imageList[index]);
-    newImageListPayload.splice(index, 1);
-    newImageListPayload.splice(index - 1, 0, imageListPayload[index]);
-    if (fieldEdit) {
-      fieldEdit(newImageListPayload);
-    }
     setImageList(newImageList);
-    setImageListPayload(newImageListPayload);
     if (onChange) {
       onChange(newImageList);
     }
@@ -122,15 +107,7 @@ const ImagesUpload = ({
       newSize = ImageSizes.large;
     }
     const newImageList = [...imageList];
-    const newImageListPayload = [...imageListPayload];
     newImageList[index].column = newSize;
-    newImageListPayload[index].size = DescriptionImagesSize.find(
-      (item) => item.key === newSize,
-    )?.text;
-    if (fieldEdit) {
-      fieldEdit(newImageListPayload);
-    }
-    setImageListPayload(newImageListPayload);
     setImageList([...newImageList]);
   };
 
@@ -139,17 +116,6 @@ const ImagesUpload = ({
     formData.append('file', e.file);
     const response: any = await dispatch(uploadFileAction(formData));
     if (response.type === uploadFileAction.fulfilled.toString()) {
-      const newImageListPayload = imageListPayload;
-      newImageListPayload.push({
-        image: response.payload.url,
-        size: DescriptionImagesSize.find(
-          (item) => item.key === ImageSizes.large,
-        )?.text,
-      });
-      setImageListPayload(newImageListPayload);
-      if (fieldEdit) {
-        fieldEdit(newImageListPayload);
-      }
       e.onSuccess(response.payload.url);
     } else {
       e.onError();

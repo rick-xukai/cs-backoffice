@@ -15,6 +15,7 @@ import {
   defaultCurrentPage,
   defaultOrganizerPageSize,
   SetRefundKey,
+  DescriptionImagesSize,
 } from '../../constants/General';
 import { useCookie } from '../../hooks';
 import { Images } from '../../theme';
@@ -113,7 +114,6 @@ const CreateEvent = () => {
       ticketTypes: [],
       refundPolicy: SetRefundKey.nonRefundable,
       discounts: [],
-      descriptionImagesFileList: [],
     });
 
   const [progressItems, setProgressItems] = useState([
@@ -156,6 +156,26 @@ const CreateEvent = () => {
       status: type,
       startTime: moment(createEventFormValue.startTime).format(),
       endTime: moment(createEventFormValue.endTime).format(),
+      descriptionImages: createEventFormValue.descriptionImages.map(
+        (item: any) => ({
+          image: item.response,
+          size:
+            DescriptionImagesSize.find((sizes) => sizes.key === item.column)
+              ?.text || '',
+        }),
+      ),
+      discounts: createEventFormValue.discounts.map((discount) => {
+        const applyItems = {
+          ...discount,
+          apply: {
+            ...discount.apply,
+            ticketTypeIds: discount.apply.ticketTypeIds.map(
+              (ticketTypeId) => ticketTypeId.id,
+            ),
+          },
+        };
+        return applyItems;
+      }),
     };
     const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
       const types = {
@@ -178,7 +198,6 @@ const CreateEvent = () => {
     if (!createEventFormValue.endTime) {
       delete payload.endTime;
     }
-    delete payload.descriptionImagesFileList;
     return { ...payload, ticketTypes };
   };
 
@@ -470,6 +489,7 @@ const CreateEvent = () => {
 
     return false;
   };
+
   useEffect(() => {
     if (isEdit) {
       (async () => {

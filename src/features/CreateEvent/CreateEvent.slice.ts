@@ -79,7 +79,7 @@ export interface TicketListProps {
   connectedTickets: {
     ticketTypeId: number;
     eventName?: string;
-    ticketName?: string;
+    name?: string;
   }[];
   imageName: string;
   thumbnailName: string;
@@ -106,7 +106,6 @@ export interface CreateEventFormValueProps {
   startTime?: string;
   endTime?: string;
   status?: number;
-  descriptionImagesFileList?: any[];
 }
 
 export interface TicketTypes {

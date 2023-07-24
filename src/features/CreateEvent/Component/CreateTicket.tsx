@@ -290,7 +290,6 @@ const CreateTicket = ({
       setTicketValue({ ...initialValues });
       setFileList([]);
       setThumbnaiFileList([]);
-      setTicketFormEdit(false);
     }
     setOnSave(false);
   }, [createTicketStatus]);
@@ -801,19 +800,21 @@ const CreateTicket = ({
                         </span>
                       </ConnectTicketsTitle>
                       <ConnectTicketsList>
-                        {ticketValue.connectedTickets.map((item, index) => (
-                          <ConnectTicketItem key={item.ticketTypeId}>
-                            <div>
-                              <p className="title">{item.eventName}</p>
-                              <p className="sub-title">{item.ticketName}</p>
-                            </div>
-                            <img
-                              src={Images.DeleteOutlinedIcon}
-                              alt=""
-                              onClick={() => handleDeleteEvent(index)}
-                            />
-                          </ConnectTicketItem>
-                        ))}
+                        {ticketValue.connectedTickets.map(
+                          (item: any, index) => (
+                            <ConnectTicketItem key={item.id}>
+                              <div>
+                                <p className="title">{item.eventName}</p>
+                                <p className="sub-title">{item.name}</p>
+                              </div>
+                              <img
+                                src={Images.DeleteOutlinedIcon}
+                                alt=""
+                                onClick={() => handleDeleteEvent(index)}
+                              />
+                            </ConnectTicketItem>
+                          ),
+                        )}
                       </ConnectTicketsList>
                     </FoldingPanel.Panel>
                   </FoldingPanel>

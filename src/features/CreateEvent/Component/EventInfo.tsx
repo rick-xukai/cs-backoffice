@@ -507,9 +507,8 @@ const EventInfo = ({
                 </>
               </Form.Item>
               <ImagesUpload
-                fieldEdit={(value) => fieldEdit(value, 'descriptionImages')}
-                onChange={(e) => fieldEdit(e, 'descriptionImagesFileList')}
-                value={formValue.descriptionImagesFileList}
+                onChange={(e) => fieldEdit(e, 'descriptionImages')}
+                value={formValue.descriptionImages}
               />
               <Modal
                 open={showCropImageModal}
