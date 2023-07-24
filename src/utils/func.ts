@@ -325,9 +325,7 @@ export const calculatePrice = (price: any, type: boolean) => {
   if (type)
     return {
       userPay: thousandsSeparator(`${price}`),
-      takeHome: thousandsSeparator(
-        `${Number(price) - Number(price) * 0.05 - 0.5}`,
-      ),
+      takeHome: thousandsSeparator(`${Number(price) - Number(price) * 0.05}`),
     };
 
   return {
