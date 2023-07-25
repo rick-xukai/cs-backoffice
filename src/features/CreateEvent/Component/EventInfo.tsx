@@ -265,6 +265,12 @@ const EventInfo = ({
   }, [formValue]);
 
   useEffect(() => {
+    if (!formValue.location) {
+      fieldEdit('', 'locationCoord');
+    }
+  }, [formValue.location]);
+
+  useEffect(() => {
     if (formValue.location) {
       setShowAddressInput(true);
     }
@@ -368,7 +374,10 @@ const EventInfo = ({
                     className="addMyLocation"
                     prefix={<img src={Images.LocationIcon} alt="" />}
                     value={formValue.location}
-                    onChange={(e) => fieldEdit(e.target.value, 'location')}
+                    onChange={(e) => {
+                      setMapLatLng({ lat: 0, lng: 0 });
+                      fieldEdit(e.target.value, 'location');
+                    }}
                   />
                 </Form.Item>
               )}

@@ -50,16 +50,16 @@ export const DataEncryptionKeys = {
 };
 export const FilterEventStatus = [
   {
-    text: 'Draft',
-    key: 0,
-    color: Colors.navy1,
-    background: Colors.navy,
-  },
-  {
     text: 'Upcoming',
     key: 1,
     color: Colors.orange3,
     background: Colors.orange2,
+  },
+  {
+    text: 'Draft',
+    key: 0,
+    color: Colors.navy1,
+    background: Colors.navy,
   },
   {
     text: 'Ended',

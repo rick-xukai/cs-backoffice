@@ -111,6 +111,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '20221126',
@@ -125,6 +126,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '20221127',
@@ -139,6 +141,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '20221128',
@@ -153,6 +156,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '20221129',
@@ -167,6 +171,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211210',
@@ -181,6 +186,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '2022112111',
@@ -195,6 +201,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '2022112122',
@@ -209,6 +216,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '2022112133',
@@ -223,6 +231,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211214',
@@ -237,6 +246,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211215',
@@ -251,6 +261,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211216',
@@ -265,6 +276,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211217',
@@ -279,6 +291,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211218',
@@ -293,6 +306,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211219',
@@ -307,6 +321,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211220',
@@ -321,6 +336,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211211',
@@ -335,6 +351,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211212',
@@ -349,6 +366,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '202211213',
@@ -363,6 +381,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
       {
         id: '2022112144',
@@ -377,6 +396,7 @@ const MockAPI = () => {
         soldTotal: 0,
         total: 0,
         image: '',
+        slug: 'test2-clkgnd4qd0016qfybhgfdkxs2',
       },
     ];
 

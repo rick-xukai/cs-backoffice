@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import {
@@ -22,6 +22,8 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import qs from 'qs';
+import copy from 'copy-to-clipboard';
+import { debounce } from 'lodash';
 
 import {
   priceUnit,
@@ -29,6 +31,7 @@ import {
   defaultCurrentPage,
   TokenExpireResponseCode,
 } from '../../constants/General';
+import { constructUrlGetParameters } from '../../utils/requestClient';
 import {
   CookieKeys,
   UserRoleKeys,
@@ -59,10 +62,20 @@ import {
   setFilterStatus,
   selectFilterStatus,
   selectSearchKeyword,
+  cancelEventAction,
+  deleteEventAction,
+  EventListRequestProps,
 } from './Events.slice';
 
 const { Option } = Select;
 const { confirm } = Modal;
+
+export enum EventStatusKeys {
+  upcoming = 1,
+  draft = 0,
+  ended = 2,
+  cancelled = 3,
+}
 
 const Events = () => {
   const { t } = useTranslation();
@@ -83,6 +96,10 @@ const Events = () => {
     currentPage: defaultCurrentPage,
     currentPageSize: defaultPageSize,
   });
+  const [currentFilterKey, setCurrentFilterKey] = useState<number>(
+    EventStatusKeys.upcoming,
+  );
+  const [currentFilterText, setCurrentFilterText] = useState<string>('');
 
   const columns = [
     {
@@ -105,7 +122,17 @@ const Events = () => {
           </Col>
           <Col span={18} className="table-event">
             <Row>
-              <Col span={24} className="event-name">
+              <Col
+                span={24}
+                className="event-name"
+                onClick={() =>
+                  history.push(
+                    (record.status === EventStatusKeys.draft &&
+                      UserRoutes.editEvent.replace(':id', record.id)) ||
+                      `${UserRoutes.dashboard}/${record.id}`,
+                  )
+                }
+              >
                 {record.name}
               </Col>
               <Col span={24} className="event-date">
@@ -181,12 +208,31 @@ const Events = () => {
       render: (_: any, record: EventsListDataType) => {
         const items: MenuProps['items'] = [
           {
-            label: t('View Dashboard'),
-            key: 'View Dashboard',
+            label: t('Dashboard'),
+            key: 'Dashboard',
+            style: {
+              display:
+                (record.status !== EventStatusKeys.draft && 'block') || 'none',
+            },
+            onClick: () => {
+              history.push(`${UserRoutes.dashboard}/${record.id}`);
+            },
           },
           {
-            label: t('View on CrowdServe'),
+            label: (
+              <a
+                href={`${process.env.REACT_APP_WEB_APP_LINK}/events/${record.slug}`}
+                target="_blank"
+              >
+                {t('View on CrowdServe')}
+              </a>
+            ),
             key: 'View on CrowdServe',
+            style: {
+              display:
+                (record.status === EventStatusKeys.upcoming && 'block') ||
+                'none',
+            },
           },
           {
             label: t('Edit'),
@@ -194,14 +240,69 @@ const Events = () => {
             onClick: () => {
               history.push(UserRoutes.editEvent.replace(':id', record.id));
             },
+            style: {
+              display:
+                ((record.status === EventStatusKeys.upcoming ||
+                  record.status === EventStatusKeys.draft) &&
+                  'block') ||
+                'none',
+            },
+          },
+          {
+            label: t('Delete'),
+            key: 'Delete',
+            style: {
+              display:
+                (record.status === EventStatusKeys.draft && 'block') || 'none',
+            },
+            onClick: () => {
+              confirm({
+                centered: true,
+                closable: false,
+                okText: t('Delete'),
+                cancelText: t('Cancel'),
+                title: t('Delete Event'),
+                icon: <ExclamationCircleOutlined />,
+                content: t('Are you sure you want to delete this event?'),
+                onOk: async () => {
+                  const response = await dispatch(deleteEventAction(record.id));
+                  if (
+                    response.type === deleteEventAction.fulfilled.toString()
+                  ) {
+                    message.success(t('Deleted successfully'));
+                    dispatch(
+                      getEventsListAction({
+                        page: currentPaginationConfig.currentPage,
+                        size: currentPaginationConfig.currentPageSize,
+                      }),
+                    );
+                  }
+                },
+              });
+            },
           },
           {
             label: t('Copy Link'),
             key: 'Copy Link',
+            style: {
+              display:
+                (record.status !== EventStatusKeys.draft && 'block') || 'none',
+            },
+            onClick: () => {
+              copy(
+                `${process.env.REACT_APP_WEB_APP_LINK}/events/${record.slug}`,
+              );
+              message.success(t('Link copied.'));
+            },
           },
           {
             label: t('Cancel Event'),
             key: 'Cancel Event',
+            style: {
+              display:
+                (record.status === EventStatusKeys.upcoming && 'block') ||
+                'none',
+            },
             onClick: () => {
               confirm({
                 centered: true,
@@ -213,6 +314,20 @@ const Events = () => {
                 content: t(
                   'Are you sure you want to cancel this event? All the user tickets will be refunded',
                 ),
+                onOk: async () => {
+                  const response = await dispatch(cancelEventAction(record.id));
+                  if (
+                    response.type === cancelEventAction.fulfilled.toString()
+                  ) {
+                    message.success(t('Canceled successfully'));
+                    dispatch(
+                      getEventsListAction({
+                        page: currentPaginationConfig.currentPage,
+                        size: currentPaginationConfig.currentPageSize,
+                      }),
+                    );
+                  }
+                },
               });
             },
           },
@@ -226,23 +341,23 @@ const Events = () => {
 
         return (
           <div className="event-list-action">
-            <Tooltip
-              title={t('Edit')}
-              overlayClassName={`${
-                (actionIcon === Images.EditorDisable && 'event-edit disable') ||
-                'event-edit'
-              }`}
-              placement="bottom"
-            >
-              <div
-                className={`${
-                  (actionIcon === Images.Editor && 'icon-content') ||
-                  'icon-content-disable'
-                }`}
-              >
+            {(actionIcon === Images.EditorDisable && (
+              <div className="icon-content-disable">
                 <img src={actionIcon} alt="" />
               </div>
-            </Tooltip>
+            )) || (
+              <Tooltip
+                title={t('Edit')}
+                overlayClassName="event-edit"
+                placement="bottom"
+              >
+                <Link to={UserRoutes.editEvent.replace(':id', record.id)}>
+                  <div className="icon-content">
+                    <img src={actionIcon} alt="" />
+                  </div>
+                </Link>
+              </Tooltip>
+            )}
             <div className="icon-content">
               <Dropdown
                 menu={{ items }}
@@ -259,10 +374,27 @@ const Events = () => {
   ];
 
   const handleStatusChange = (status: string) => {
-    let currentStatus: number | null = null;
-    currentStatus =
-      FilterEventStatus.find((item) => item.text === status)?.key || null;
-    dispatch(setFilterStatus(currentStatus));
+    setCurrentFilterText(status);
+    dispatch(
+      setFilterStatus(
+        FilterEventStatus.find((item) => item.text === status)?.key,
+      ),
+    );
+    const payload: EventListRequestProps = {
+      page: defaultCurrentPage,
+      pageSize: defaultPageSize,
+    };
+    if (searchKeyword) {
+      payload.keyword = searchKeyword;
+    }
+    if (status !== 'All') {
+      payload.status = FilterEventStatus.find(
+        (item) => item.text === status,
+      )?.key?.toString();
+    } else {
+      payload.status = null;
+    }
+    history.push(constructUrlGetParameters(UserRoutes.events, payload));
   };
 
   useEffect(() => {
@@ -290,20 +422,48 @@ const Events = () => {
   }, [error]);
 
   useEffect(() => {
-    const { page, pageSize } = qs.parse(location.search.slice(1));
+    const { page, pageSize, keyword, status } = qs.parse(
+      location.search.slice(1),
+    ) as any;
+    const payload: EventListRequestProps = {
+      page: page || currentPaginationConfig.currentPage,
+      pageSize: pageSize || currentPaginationConfig.currentPageSize,
+      status:
+        (!currentFilterText && EventStatusKeys.upcoming.toString()) || null,
+    };
     if (page && pageSize) {
       setCurrentPaginationConfig({
         currentPage: Number(page),
         currentPageSize: Number(pageSize),
       });
     }
-    dispatch(
-      getEventsListAction({
-        page: Number(page) || currentPaginationConfig.currentPage,
-        size: Number(pageSize) || currentPaginationConfig.currentPageSize,
-      }),
-    );
+    if (keyword) {
+      dispatch(setSearchKeyword(keyword));
+      payload.keyword = keyword;
+    }
+    if (status) {
+      setCurrentFilterKey(Number(status));
+      if (currentFilterText !== 'All') {
+        payload.status = status;
+      }
+    }
+    dispatch(getEventsListAction(payload));
   }, [location.search]);
+
+  const handleSearchEvent = (value: string) => {
+    const payload: EventListRequestProps = {
+      page: defaultCurrentPage,
+      pageSize: defaultPageSize,
+      keyword: value.replace(/\s*/g, ''),
+      status: filterStatus?.toString(),
+    };
+    history.push(constructUrlGetParameters(UserRoutes.events, payload));
+  };
+
+  const searchInputChange = useCallback(
+    debounce((e) => handleSearchEvent(e.target.value), 300),
+    [],
+  );
 
   return (
     <EventsContainer>
@@ -325,16 +485,21 @@ const Events = () => {
                     placeholder={t('Search event')}
                     allowClear={{ clearIcon: <CloseOutlined /> }}
                     suffix={!searchKeyword && <SearchOutlined />}
-                    onChange={(e) => dispatch(setSearchKeyword(e.target.value))}
+                    onChange={(e) => {
+                      dispatch(setSearchKeyword(e.target.value));
+                      searchInputChange(e);
+                    }}
                   />
                 </Col>
                 <Col span={10} className="filter-status">
                   <span>{t('Status')}:</span>
                   <Select
                     defaultValue={
-                      FilterEventStatus.find(
-                        (item) => item.key === filterStatus,
-                      )?.text
+                      (currentFilterText !== 'All' &&
+                        FilterEventStatus.find(
+                          (item) => item.key === currentFilterKey,
+                        )?.text) ||
+                      currentFilterText
                     }
                     onChange={handleStatusChange}
                     defaultActiveFirstOption={false}

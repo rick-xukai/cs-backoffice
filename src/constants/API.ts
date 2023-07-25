@@ -75,6 +75,12 @@ const API = {
   getListTicketType: {
     get: '/admin/event/ticketType',
   },
+  cancelEvent: {
+    put: '/admin/event/:eventId/cancel',
+  },
+  deleteEvent: {
+    put: '/admin/event/:eventId/delete',
+  },
 };
 
 export default API;
