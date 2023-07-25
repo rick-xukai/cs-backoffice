@@ -296,7 +296,7 @@ const CreateEventFormContainer = styled.div`
       }
     }
     .content-preview {
-      height: 340px;
+      height: 338px;
     }
     &.ticket-tab {
       min-height: unset;
@@ -931,6 +931,7 @@ const EventInfoCard = styled(Col)`
   background: ${Colors.white};
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
   .event-image {
+    max-height: 120px;
     img {
       width: 100%;
       height: 100%;
