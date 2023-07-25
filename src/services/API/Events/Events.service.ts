@@ -84,6 +84,26 @@ const getListTicketType = async () => {
   return response;
 };
 
+const cancelEvent = async (id: string) => {
+  const uri = API.cancelEvent.put.replace(':eventId', id);
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload({})
+    .setAuthorizationStatus()
+    .doPut();
+  return response;
+};
+
+const deleteEvent = async (id: string) => {
+  const uri = API.deleteEvent.put.replace(':eventId', id);
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload({})
+    .setAuthorizationStatus()
+    .doPut();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -93,4 +113,6 @@ export default {
   updateEvent,
   openAiGenerator,
   getListTicketType,
+  cancelEvent,
+  deleteEvent,
 };

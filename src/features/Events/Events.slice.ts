@@ -23,6 +23,14 @@ export interface EventsListDataType {
   soldTotal: number;
   total: number;
   time: string;
+  slug: string;
+}
+
+export interface EventListRequestProps {
+  page?: number | string;
+  pageSize?: number | string;
+  keyword?: string;
+  status?: string | null;
 }
 
 /**
@@ -54,12 +62,71 @@ export const getEventsListAction = createAsyncThunk<
   }
 });
 
+/**
+ *  Cancel Events
+ */
+export const cancelEventAction = createAsyncThunk<
+  {},
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>('cancelEvent/cancelEventAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await EventsService.cancelEvent(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
+/**
+ *  Delete Events
+ */
+export const deleteEventAction = createAsyncThunk<
+  {},
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>('deleteEvent/deleteEventAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await EventsService.deleteEvent(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
 interface EventsState {
   loading: boolean;
   data: [];
   total: number;
   searchKeyword: string;
   filterStatus: number | null;
+  filterStatusText: string;
   error:
     | {
         code: number | undefined;
@@ -73,6 +140,7 @@ const initialState: EventsState = {
   loading: false,
   searchKeyword: '',
   filterStatus: 0,
+  filterStatusText: '',
   data: [],
   total: 0,
   error: null,
@@ -88,6 +156,9 @@ export const eventsSlice = createSlice({
     },
     setFilterStatus: (state, action) => {
       state.filterStatus = action.payload;
+    },
+    setFilterStatusText: (state, action) => {
+      state.filterStatusText = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -108,11 +179,26 @@ export const eventsSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(cancelEventAction.rejected, (state, action) => {
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(deleteEventAction.rejected, (state, action) => {
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
       });
   },
 });
 
-export const { reset, setSearchKeyword, setFilterStatus } = eventsSlice.actions;
+export const { reset, setSearchKeyword, setFilterStatus, setFilterStatusText } =
+  eventsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.events.loading;
 export const selectError = (state: RootState) => state.events.error;
@@ -120,6 +206,8 @@ export const selectData = (state: RootState) => state.events.data;
 export const selectDataTotal = (state: RootState) => state.events.total;
 export const selectFilterStatus = (state: RootState) =>
   state.events.filterStatus;
+export const selectFilterStatusText = (state: RootState) =>
+  state.events.filterStatusText;
 export const selectSearchKeyword = (state: RootState) =>
   state.events.searchKeyword;
 

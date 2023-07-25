@@ -101,6 +101,7 @@ const EventsContainer = styled.div`
   }
   .event-list-action {
     display: flex;
+    float: right;
     > :first-child {
       margin-right: 20px;
     }
