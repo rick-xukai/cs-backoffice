@@ -253,6 +253,7 @@ const EventInfo = ({
       setBannerFile(formValue.image);
     }
     if (currentLat !== 0 && currentLng !== 0) {
+      setMapLatLng({ lat: currentLat, lng: currentLng });
       setShowLocationMap(true);
     }
     if (!formValue.location) {
