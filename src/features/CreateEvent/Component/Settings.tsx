@@ -238,6 +238,7 @@ const Settings = ({
         },
         onCancel: () => {
           setCreatePromoStatus(CreatePromoStatus.list);
+          setSettingsFormEdit(false);
         },
       });
     } else {

@@ -369,6 +369,7 @@ const CreateTicket = ({
         },
         onCancel: () => {
           setCreateTicketStatus(CreateTicketStatus.list);
+          setTicketFormEdit(false);
         },
       });
     } else {
