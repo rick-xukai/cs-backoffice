@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   Button,
   Row,
   Col,
   message,
-  Spin,
   Input,
   Select,
   Tooltip,
@@ -15,23 +14,19 @@ import {
 } from 'antd';
 import type { MenuProps } from 'antd';
 import {
-  LoadingOutlined,
   CloseOutlined,
   SearchOutlined,
   PlusOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
-import qs from 'qs';
 import copy from 'copy-to-clipboard';
 import { debounce } from 'lodash';
 
 import {
   priceUnit,
-  defaultPageSize,
   defaultCurrentPage,
   TokenExpireResponseCode,
 } from '../../constants/General';
-import { constructUrlGetParameters } from '../../utils/requestClient';
 import {
   CookieKeys,
   UserRoleKeys,
@@ -51,8 +46,12 @@ import {
   EventStatusBadge,
 } from './EventsComponent';
 import {
-  reset,
+  resetState,
   selectError,
+  setPage,
+  setPageSize,
+  selectPage,
+  selectPageSize,
   getEventsListAction,
   selectLoading,
   selectData,
@@ -64,42 +63,29 @@ import {
   selectSearchKeyword,
   cancelEventAction,
   deleteEventAction,
-  EventListRequestProps,
+  EventStatusKeys,
 } from './Events.slice';
 
 const { Option } = Select;
 const { confirm } = Modal;
 
-export enum EventStatusKeys {
-  upcoming = 1,
-  draft = 0,
-  ended = 2,
-  cancelled = 3,
-}
-
 const Events = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const location = useLocation();
   const cookie = useCookie([CookieKeys.authUserRole]);
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
   const eventsListData = useAppSelector(selectData);
   const eventsListDataTotal = useAppSelector(selectDataTotal);
+  const page = useAppSelector(selectPage);
+  const pageSize = useAppSelector(selectPageSize);
   const filterStatus = useAppSelector(selectFilterStatus);
   const searchKeyword = useAppSelector(selectSearchKeyword);
 
   const [tableColumns, setTableColumns] = useState([]);
-  const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
-    currentPage: defaultCurrentPage,
-    currentPageSize: defaultPageSize,
-  });
-  const [currentFilterKey, setCurrentFilterKey] = useState<number>(
-    EventStatusKeys.upcoming,
-  );
-  const [currentFilterText, setCurrentFilterText] = useState<string>('');
+  const [showAddEvent, setShowAddEvent] = useState<boolean>(false);
 
   const columns = [
     {
@@ -270,12 +256,7 @@ const Events = () => {
                     response.type === deleteEventAction.fulfilled.toString()
                   ) {
                     message.success(t('Deleted successfully'));
-                    dispatch(
-                      getEventsListAction({
-                        page: currentPaginationConfig.currentPage,
-                        size: currentPaginationConfig.currentPageSize,
-                      }),
-                    );
+                    dispatch(getEventsListAction({ page, pageSize }));
                   }
                 },
               });
@@ -320,12 +301,7 @@ const Events = () => {
                     response.type === cancelEventAction.fulfilled.toString()
                   ) {
                     message.success(t('Canceled successfully'));
-                    dispatch(
-                      getEventsListAction({
-                        page: currentPaginationConfig.currentPage,
-                        size: currentPaginationConfig.currentPageSize,
-                      }),
-                    );
+                    dispatch(getEventsListAction({ page, pageSize }));
                   }
                 },
               });
@@ -374,27 +350,12 @@ const Events = () => {
   ];
 
   const handleStatusChange = (status: string) => {
-    setCurrentFilterText(status);
     dispatch(
       setFilterStatus(
         FilterEventStatus.find((item) => item.text === status)?.key,
       ),
     );
-    const payload: EventListRequestProps = {
-      page: defaultCurrentPage,
-      pageSize: defaultPageSize,
-    };
-    if (searchKeyword) {
-      payload.keyword = searchKeyword;
-    }
-    if (status !== 'All') {
-      payload.status = FilterEventStatus.find(
-        (item) => item.text === status,
-      )?.key?.toString();
-    } else {
-      payload.status = null;
-    }
-    history.push(constructUrlGetParameters(UserRoutes.events, payload));
+    dispatch(setPage(defaultCurrentPage));
   };
 
   useEffect(() => {
@@ -406,7 +367,7 @@ const Events = () => {
     });
     setTableColumns(roleColumns);
     return () => {
-      dispatch(reset());
+      dispatch(resetState());
     };
   }, []);
 
@@ -421,151 +382,144 @@ const Events = () => {
     }
   }, [error]);
 
-  useEffect(() => {
-    const { page, pageSize, keyword, status } = qs.parse(
-      location.search.slice(1),
-    ) as any;
-    const payload: EventListRequestProps = {
-      page: page || currentPaginationConfig.currentPage,
-      pageSize: pageSize || currentPaginationConfig.currentPageSize,
-      status:
-        (!currentFilterText && EventStatusKeys.upcoming.toString()) || null,
-    };
-    if (page && pageSize) {
-      setCurrentPaginationConfig({
-        currentPage: Number(page),
-        currentPageSize: Number(pageSize),
-      });
-    }
-    if (keyword) {
-      dispatch(setSearchKeyword(keyword));
-      payload.keyword = keyword;
-    }
-    if (status) {
-      setCurrentFilterKey(Number(status));
-      if (currentFilterText !== 'All') {
-        payload.status = status;
+  const requestEventsList = async () => {
+    const response: any = await dispatch(
+      getEventsListAction({
+        page,
+        pageSize,
+        status: filterStatus,
+        keyword: searchKeyword,
+      }),
+    );
+    if (response.type === getEventsListAction.fulfilled.toString()) {
+      if (response.payload) {
+        if (
+          (!searchKeyword || filterStatus === null) &&
+          !response.payload.list.length
+        ) {
+          setShowAddEvent(true);
+        } else {
+          setShowAddEvent(false);
+        }
       }
     }
-    dispatch(getEventsListAction(payload));
-  }, [location.search]);
+  };
 
-  const handleSearchEvent = (value: string) => {
-    const payload: EventListRequestProps = {
-      page: defaultCurrentPage,
-      pageSize: defaultPageSize,
-      keyword: value.replace(/\s*/g, ''),
-      status: filterStatus?.toString(),
-    };
-    history.push(constructUrlGetParameters(UserRoutes.events, payload));
+  useEffect(() => {
+    if (page !== 0) {
+      requestEventsList();
+    }
+  }, [page, pageSize, filterStatus]);
+
+  const handleSearchEvent = (keyword: string, status: number | null) => {
+    dispatch(setPage(defaultCurrentPage));
+    if (!keyword) {
+      dispatch(
+        getEventsListAction({
+          page,
+          pageSize,
+          status,
+        }),
+      );
+    }
   };
 
   const searchInputChange = useCallback(
-    debounce((e) => handleSearchEvent(e.target.value), 300),
+    debounce((e, status) => handleSearchEvent(e.target.value, status), 300),
     [],
   );
 
   return (
     <EventsContainer>
       <PageHeaderComponent title={t('Events')} />
-      {(loading && (
-        <Spin
-          spinning={loading}
-          indicator={<LoadingOutlined spin />}
-          size="large"
-        />
-      )) || (
-        <div className="page-main">
-          <Row className="event-filter-container">
-            <Col span={24} lg={14}>
-              <Row className="content">
-                <Col span={14}>
-                  <Input
-                    value={searchKeyword}
-                    placeholder={t('Search event')}
-                    allowClear={{ clearIcon: <CloseOutlined /> }}
-                    suffix={!searchKeyword && <SearchOutlined />}
-                    onChange={(e) => {
-                      dispatch(setSearchKeyword(e.target.value));
-                      searchInputChange(e);
-                    }}
-                  />
-                </Col>
-                <Col span={10} className="filter-status">
-                  <span>{t('Status')}:</span>
-                  <Select
-                    defaultValue={
-                      (currentFilterText !== 'All' &&
-                        FilterEventStatus.find(
-                          (item) => item.key === currentFilterKey,
-                        )?.text) ||
-                      currentFilterText
-                    }
-                    onChange={handleStatusChange}
-                    defaultActiveFirstOption={false}
-                  >
-                    {FilterEventStatus.map((item) => (
-                      <Option key={item.text} value={item.text}>
-                        {item.text}
-                      </Option>
-                    ))}
-                  </Select>
-                </Col>
-              </Row>
-            </Col>
-            {(eventsListData.length && (
-              <Col span={10}>
-                <Link to={UserRoutes.createEvent}>
-                  <Button type="primary" className="create-new-event">
-                    <PlusOutlined />
-                    {t('Create New Event')}
-                  </Button>
-                </Link>
+      <div className="page-main">
+        <Row className="event-filter-container">
+          <Col span={24} lg={14}>
+            <Row className="content">
+              <Col span={14}>
+                <Input
+                  defaultValue={searchKeyword}
+                  placeholder={t('Search event')}
+                  allowClear={{ clearIcon: <CloseOutlined /> }}
+                  suffix={!searchKeyword && <SearchOutlined />}
+                  onChange={(e) => {
+                    dispatch(setPage(0));
+                    dispatch(setSearchKeyword(e.target.value));
+                    searchInputChange(e, filterStatus);
+                  }}
+                />
               </Col>
-            )) ||
-              null}
-          </Row>
-          {(eventsListData.length && (
-            <EventListTableContainer>
-              <TableComponent
-                loading={false}
-                currentPage={currentPaginationConfig.currentPage}
-                currentPageSize={currentPaginationConfig.currentPageSize}
-                columns={tableColumns}
-                tableData={eventsListData}
-                tableDataTotal={eventsListDataTotal}
-                paginationChange={(page, pageSize) =>
-                  history.push(
-                    `${UserRoutes.events}?page=${
-                      (pageSize === currentPaginationConfig.currentPageSize &&
-                        page) ||
-                      defaultCurrentPage
-                    }&pageSize=${pageSize}`,
-                  )
-                }
-              />
-            </EventListTableContainer>
-          )) || (
-            <AddNewEventContainer>
-              <div>
-                <img src={Images.AddNewEventIcon} alt="" />
-                <p className="title">{t('Create New Event')}</p>
-                <p className="description">
-                  {t(
-                    'Be the catalyst for extraordinary moments. Create your event and captivate your audience now!',
-                  )}
-                </p>
-                <Link to={UserRoutes.createEvent}>
-                  <Button type="primary">
-                    <PlusOutlined />
-                    {t('Create New Event')}
-                  </Button>
-                </Link>
-              </div>
-            </AddNewEventContainer>
-          )}
-        </div>
-      )}
+              <Col span={10} className="filter-status">
+                <span>{t('Status')}:</span>
+                <Select
+                  defaultValue={
+                    FilterEventStatus.find((item) => item.key === filterStatus)
+                      ?.text
+                  }
+                  onChange={handleStatusChange}
+                  defaultActiveFirstOption={false}
+                >
+                  {FilterEventStatus.map((item) => (
+                    <Option key={item.text} value={item.text}>
+                      {item.text}
+                    </Option>
+                  ))}
+                </Select>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={10}>
+            {!showAddEvent && (
+              <Link to={UserRoutes.createEvent}>
+                <Button type="primary" className="create-new-event">
+                  <PlusOutlined />
+                  {t('Create New Event')}
+                </Button>
+              </Link>
+            )}
+          </Col>
+        </Row>
+        {(!showAddEvent && (
+          <EventListTableContainer>
+            <TableComponent
+              loading={loading}
+              currentPage={page}
+              currentPageSize={pageSize}
+              columns={tableColumns}
+              tableData={eventsListData}
+              tableDataTotal={eventsListDataTotal}
+              emptyText={
+                <div className="table-empty-text">
+                  <img src={Images.NoDataIcon} alt="" />
+                  <p>No data</p>
+                </div>
+              }
+              paginationChange={(currentPage, currentPageSize) => {
+                dispatch(setPage(currentPage));
+                dispatch(setPageSize(currentPageSize));
+              }}
+            />
+          </EventListTableContainer>
+        )) || (
+          <AddNewEventContainer>
+            <div>
+              <img src={Images.AddNewEventIcon} alt="" />
+              <p className="title">{t('Create New Event')}</p>
+              <p className="description">
+                {t(
+                  'Be the catalyst for extraordinary moments. Create your event and captivate your audience now!',
+                )}
+              </p>
+              <Link to={UserRoutes.createEvent}>
+                <Button type="primary">
+                  <PlusOutlined />
+                  {t('Create New Event')}
+                </Button>
+              </Link>
+            </div>
+          </AddNewEventContainer>
+        )}
+      </div>
     </EventsContainer>
   );
 };

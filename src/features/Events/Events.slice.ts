@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { defaultCurrentPage, defaultPageSize } from '../../constants/General';
 import { verificationApi } from '../../utils/func';
 import { RootState } from '../../app/store';
 import EventsService from '../../services/API/Events';
@@ -31,6 +32,13 @@ export interface EventListRequestProps {
   pageSize?: number | string;
   keyword?: string;
   status?: string | null;
+}
+
+export enum EventStatusKeys {
+  upcoming = 1,
+  draft = 0,
+  ended = 2,
+  cancelled = 3,
 }
 
 /**
@@ -124,6 +132,8 @@ interface EventsState {
   loading: boolean;
   data: [];
   total: number;
+  page: number;
+  pageSize: number;
   searchKeyword: string;
   filterStatus: number | null;
   filterStatusText: string;
@@ -138,8 +148,10 @@ interface EventsState {
 
 const initialState: EventsState = {
   loading: false,
+  page: defaultCurrentPage,
+  pageSize: defaultPageSize,
   searchKeyword: '',
-  filterStatus: 0,
+  filterStatus: EventStatusKeys.upcoming,
   filterStatusText: '',
   data: [],
   total: 0,
@@ -151,6 +163,18 @@ export const eventsSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    resetState: (state) => {
+      state.loading = initialState.loading;
+      state.data = initialState.data;
+      state.total = initialState.total;
+      state.error = initialState.error;
+    },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+    setPageSize: (state, action) => {
+      state.pageSize = action.payload;
+    },
     setSearchKeyword: (state, action) => {
       state.searchKeyword = action.payload;
     },
@@ -197,8 +221,15 @@ export const eventsSlice = createSlice({
   },
 });
 
-export const { reset, setSearchKeyword, setFilterStatus, setFilterStatusText } =
-  eventsSlice.actions;
+export const {
+  reset,
+  resetState,
+  setSearchKeyword,
+  setFilterStatus,
+  setFilterStatusText,
+  setPage,
+  setPageSize,
+} = eventsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.events.loading;
 export const selectError = (state: RootState) => state.events.error;
@@ -210,5 +241,7 @@ export const selectFilterStatusText = (state: RootState) =>
   state.events.filterStatusText;
 export const selectSearchKeyword = (state: RootState) =>
   state.events.searchKeyword;
+export const selectPage = (state: RootState) => state.events.page;
+export const selectPageSize = (state: RootState) => state.events.pageSize;
 
 export default eventsSlice.reducer;
