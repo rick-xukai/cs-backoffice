@@ -96,7 +96,6 @@ export interface CreateEventFormValueProps {
   name: string;
   location: string;
   locationCoord: string;
-  organizerId: string;
   address: string;
   image: string;
   descriptionShort: string;
@@ -105,6 +104,7 @@ export interface CreateEventFormValueProps {
   ticketTypes: TicketListProps[];
   discounts: PromoListProps[];
   refundPolicy: SetRefundKey.nonRefundable;
+  organizerId?: string;
   startTime?: string;
   endTime?: string;
   publish?: number;
@@ -355,6 +355,7 @@ interface CreateEventState {
   listTicketTypeLoading: boolean;
   publishLoading: boolean;
   saveDraftLoading: boolean;
+  needUpdateEventId: string;
   data: { id: number | string };
   listTicketType: ListTicketType[];
   organizerData: OrganizerData[];
@@ -372,6 +373,7 @@ const initialState: CreateEventState = {
   listTicketTypeLoading: false,
   publishLoading: false,
   saveDraftLoading: false,
+  needUpdateEventId: '',
   data: { id: '' },
   listTicketType: [],
   organizerData: [],
@@ -391,6 +393,7 @@ export const createEventSlice = createSlice({
         state.publishLoading = true;
       })
       .addCase(createEventAction.fulfilled, (state, action: any) => {
+        state.needUpdateEventId = '';
         state.publishLoading = false;
         state.data = action.payload;
       })
@@ -403,12 +406,11 @@ export const createEventSlice = createSlice({
         }
       })
       .addCase(createEventSaveDraftAction.pending, (state) => {
-        state.data = { id: 0 };
         state.saveDraftLoading = true;
       })
       .addCase(createEventSaveDraftAction.fulfilled, (state, action: any) => {
         state.saveDraftLoading = false;
-        state.data = action.payload;
+        state.needUpdateEventId = action.payload.id;
       })
       .addCase(createEventSaveDraftAction.rejected, (state, action) => {
         state.saveDraftLoading = false;
@@ -436,14 +438,26 @@ export const createEventSlice = createSlice({
       })
       .addCase(updateEventAction.pending, (state) => {
         state.data = { id: 0 };
-        state.publishLoading = true;
+        if (state.needUpdateEventId) {
+          state.saveDraftLoading = true;
+        } else {
+          state.publishLoading = true;
+        }
       })
       .addCase(updateEventAction.fulfilled, (state, action: any) => {
-        state.publishLoading = false;
+        if (state.needUpdateEventId) {
+          state.saveDraftLoading = false;
+        } else {
+          state.publishLoading = false;
+        }
         state.data = action.payload;
       })
       .addCase(updateEventAction.rejected, (state, action) => {
-        state.publishLoading = false;
+        if (state.needUpdateEventId) {
+          state.saveDraftLoading = false;
+        } else {
+          state.publishLoading = false;
+        }
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
@@ -482,5 +496,7 @@ export const selectOrganizerData = (state: RootState) =>
 export const selectError = (state: RootState) => state.createEvent.error;
 export const selectListTicketType = (state: RootState) =>
   state.createEvent.listTicketType;
+export const selectNeedUpdateEventId = (state: RootState) =>
+  state.createEvent.needUpdateEventId;
 
 export default createEventSlice.reducer;

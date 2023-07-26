@@ -29,6 +29,10 @@ const EventsContainer = styled.div`
         height: 100%;
         display: flex;
         align-items: center;
+        .ant-input-affix-wrapper {
+          padding-top: 8px;
+          padding-bottom: 8px;
+        }
       }
       .ant-input-affix-wrapper {
         height: 36px;
