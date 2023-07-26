@@ -56,7 +56,7 @@ export interface PromoListProps {
   id: string;
   apply: {
     type: ApplyCodeToType;
-    ticketTypeIds: { name: string; price: any; id: any }[];
+    ticketTypeIds: string[];
   };
 }
 
@@ -83,6 +83,7 @@ export interface TicketListProps {
   }[];
   imageName: string;
   thumbnailName: string;
+  soldTotal: number;
 }
 
 export interface DescriptionImagesProps {
@@ -106,6 +107,8 @@ export interface CreateEventFormValueProps {
   startTime?: string;
   endTime?: string;
   publish?: number;
+  status?: number;
+  id?: any;
 }
 
 export interface TicketTypes {
@@ -242,7 +245,7 @@ export const getListTicketTypeAction = createAsyncThunk<
  */
 export const updateEventAction = createAsyncThunk<
   { id: number },
-  { payload: CreateEventPayloadType; id: string },
+  { payload: CreateEventFormValueProps; id: string },
   {
     rejectValue: ErrorType;
   }

@@ -26,11 +26,9 @@ export enum ImageSizes {
 const IMAGE_UPLOAD_MAX_COUNT = 10;
 
 const ImagesUpload = ({
-  name,
   onChange,
   value,
 }: {
-  name?: string;
   onChange?: (files: any) => void;
   value?: any[];
 }) => {
@@ -164,11 +162,9 @@ const ImagesUpload = ({
         <Col span={24}>
           <DraggetForm
             label=""
-            name={name}
             hidden={imageList.length >= IMAGE_UPLOAD_MAX_COUNT}
           >
             <ImageDragger
-              name={name}
               multiple
               onChange={handleUploadImagesChange}
               customRequest={uploadImageRequest}

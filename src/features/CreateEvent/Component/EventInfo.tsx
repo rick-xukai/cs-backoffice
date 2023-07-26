@@ -288,7 +288,7 @@ const EventInfo = ({
         <Row>
           <Col lg={(pageTipsShow && 14) || 21} span={24} className="left-form">
             <div className="main-box">
-              <Form.Item required label="Event Name" name="name">
+              <Form.Item required label="Event Name">
                 <Input
                   showCount
                   maxLength={100}
@@ -296,14 +296,14 @@ const EventInfo = ({
                   value={formValue.name}
                 />
               </Form.Item>
-              <Form.Item required label="Organizer" name="organizerId">
+              <Form.Item required label="Organizer">
                 <Select
                   options={organizerData.map((item: OrganizerData) => ({
                     label: item.name,
-                    value: Number(item.id),
+                    value: item.id,
                   }))}
                   onChange={(value) => fieldEdit(value, 'organizerId')}
-                  value={Number(formValue.organizerId)}
+                  value={formValue.organizerId}
                 />
               </Form.Item>
               {(!showAddMyLocationInput && (
@@ -382,11 +382,7 @@ const EventInfo = ({
                 </Form.Item>
               )}
               {showAddressInput && (
-                <Form.Item
-                  label="Address"
-                  name="address"
-                  className="no-required"
-                >
+                <Form.Item label="Address" className="no-required">
                   <Input
                     className="address"
                     onChange={(e) => fieldEdit(e.target.value, 'address')}
@@ -394,7 +390,7 @@ const EventInfo = ({
                   />
                 </Form.Item>
               )}
-              <Form.Item required label="Event Time" name="eventTime">
+              <Form.Item required label="Event Time">
                 <RangePicker
                   inputReadOnly
                   showTime={{ format: 'HH:mm' }}
@@ -409,6 +405,11 @@ const EventInfo = ({
                   placeholder={[
                     t('Select event start time'),
                     t('Select event end time'),
+                  ]}
+                  value={[
+                    (formValue.startTime && moment(formValue.startTime)) ||
+                      null,
+                    (formValue.endTime && moment(formValue.endTime)) || null,
                   ]}
                 />
               </Form.Item>
@@ -465,7 +466,6 @@ const EventInfo = ({
               <Form.Item
                 required
                 label="Event Short Description"
-                name="eventShortDescription"
                 className="eventShortDescription"
               >
                 <TextArea
@@ -476,6 +476,7 @@ const EventInfo = ({
                   onChange={(e) =>
                     fieldEdit(e.target.value, 'descriptionShort')
                   }
+                  value={formValue.descriptionShort}
                 />
               </Form.Item>
               <Form.Item

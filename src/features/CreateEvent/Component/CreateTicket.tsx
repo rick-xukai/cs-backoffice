@@ -73,6 +73,7 @@ const initialValues = {
   thumbnailType: '',
   thumbnailName: '',
   id: '',
+  soldTotal: 0,
 };
 
 const getTicketListItemStatus: any = (startTime: string, endTime: string) => {
@@ -105,6 +106,8 @@ const CreateTicket = ({
   listTicketType,
   fieldEdit,
   setTicketFormEdit,
+  isEdit,
+  createEventPublish,
 }: {
   createTicketStatus: CreateTicketStatus;
   setCreateTicketStatus: any;
@@ -113,6 +116,8 @@ const CreateTicket = ({
   listTicketType: ListTicketType[];
   fieldEdit: (value: any, field: string) => void;
   setTicketFormEdit: (status: boolean) => void;
+  isEdit: boolean;
+  createEventPublish: any;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -281,9 +286,13 @@ const CreateTicket = ({
   const handleAddTicket = () => {
     setCreateTicketStatus(CreateTicketStatus.add);
   };
-  useEffect(() => {
-    setCreateTicketStatus(CreateTicketStatus.list);
-  }, []);
+  useEffect(
+    () => () => {
+      setCreateTicketStatus(CreateTicketStatus.list);
+      setTicketFormEdit(false);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (createTicketStatus === CreateTicketStatus.list) {
@@ -317,6 +326,11 @@ const CreateTicket = ({
       );
       newTicketList[findIndex] = { ...ticketValue };
       fieldEdit(newTicketList, 'ticketTypes');
+      if (isEdit) {
+        createEventPublish({
+          ticketTypes: newTicketList,
+        });
+      }
     } else {
       fieldEdit(
         [
@@ -325,8 +339,18 @@ const CreateTicket = ({
         ],
         'ticketTypes',
       );
+      if (isEdit) {
+        createEventPublish({
+          ticketTypes: [
+            ...formValue.ticketTypes,
+            { ...ticketValue, id: `add_${new Date().getTime()}` },
+          ],
+        });
+      }
     }
-    setCreateTicketStatus(CreateTicketStatus.list);
+    if (!isEdit) {
+      setCreateTicketStatus(CreateTicketStatus.list);
+    }
   };
 
   const handleCancelCreateTicket = () => {
@@ -335,7 +359,7 @@ const CreateTicket = ({
         className: 'notSaveConfirmModal',
         centered: true,
         closable: false,
-        okText: t('Save'),
+        okText: isEdit ? t('Save and Publish') : t('Save'),
         cancelText: t('Leave'),
         title: t('Unsaved Content'),
         icon: <ExclamationCircleOutlined />,
@@ -447,9 +471,11 @@ const CreateTicket = ({
                     : item.image
                 }
                 title={item.name}
-                stock={`0 / ${item.stock}`}
+                stock={`${item.soldTotal} / ${item.stock}`}
                 price={item.price}
-                sellingTime={`${item.sellStartTime} - ${item.sellEndTime}`}
+                sellingTime={`${moment(item.sellStartTime).format(
+                  MMM_DD_YYYY_HH_MM,
+                )} - ${moment(item.sellEndTime).format(MMM_DD_YYYY_HH_MM)}`}
                 key={item.id}
                 onDelete={onDelete}
                 onEdit={onEdit}
@@ -833,19 +859,34 @@ const CreateTicket = ({
               hanldleCheckAll={hanldleCheckAll}
             />
           </CreateEventFormContainer>
-          <div className="page-bottom">
-            {createTicketStatus === CreateTicketStatus.add ||
-            createTicketStatus === CreateTicketStatus.edit ? (
+          {isEdit ? (
+            <div className="page-bottom">
               <div className="bottom-btn">
                 <Button onClick={handleCancelCreateTicket}>
+                  {/* {saveDraftLoading && <LoadingOutlined spin />} */}
                   {t('Cancel')}
                 </Button>
                 <Button type="primary" onClick={handleSave}>
-                  {t('Save')}
+                  {/* {publishLoading && <LoadingOutlined spin />} */}
+                  {t('Save and Publish')}
                 </Button>
               </div>
-            ) : null}
-          </div>
+            </div>
+          ) : (
+            <div className="page-bottom">
+              {createTicketStatus === CreateTicketStatus.add ||
+              createTicketStatus === CreateTicketStatus.edit ? (
+                <div className="bottom-btn">
+                  <Button onClick={handleCancelCreateTicket}>
+                    {t('Cancel')}
+                  </Button>
+                  <Button type="primary" onClick={handleSave}>
+                    {t('Save')}
+                  </Button>
+                </div>
+              ) : null}
+            </div>
+          )}
         </>
       );
     }

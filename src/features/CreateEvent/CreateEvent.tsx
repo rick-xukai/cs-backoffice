@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, Prompt, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, message, Modal, Spin } from 'antd';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import moment from 'moment';
 import {
   ExclamationCircleOutlined,
@@ -45,6 +45,7 @@ import {
   createEventSaveDraftAction,
   selectListTicketType,
   getListTicketTypeAction,
+  updateEventAction,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 import { getEventDetailAction } from '../EventDetail/EventDetail.slice';
@@ -150,7 +151,17 @@ const CreateEvent = () => {
   const { id } = params;
   const isEdit = !!id;
 
-  const formatRequestPayload = (type: number) => {
+  const formatRequestPayload = (
+    type: number,
+    anotherPayload?: {
+      discounts?: CreateEventFormValueProps['discounts'];
+      ticketTypes?: CreateEventFormValueProps['ticketTypes'];
+    },
+  ) => {
+    const discounts =
+      anotherPayload?.discounts || createEventFormValue.discounts;
+    const originTicketTypes =
+      anotherPayload?.ticketTypes || createEventFormValue.ticketTypes;
     const payload: CreateEventFormValueProps = {
       ...createEventFormValue,
       publish: type,
@@ -164,7 +175,7 @@ const CreateEvent = () => {
               ?.text || '',
         }),
       ),
-      discounts: createEventFormValue.discounts.map((discount) => {
+      discounts: discounts.map((discount) => {
         const applyItems = {
           ...discount,
           discount: {
@@ -178,12 +189,21 @@ const CreateEvent = () => {
           },
           apply: {
             ...discount.apply,
-            ticketTypeIds: discount.apply.ticketTypeIds.map(
-              (ticketTypeId) => ticketTypeId.id,
-            ),
+            ticketTypeIds: discount.apply.ticketTypeIds
+              .map((ticketTypeId) => ticketTypeId)
+              .filter((item) => !!item),
           },
         };
         return applyItems;
+      }),
+      ticketTypes: originTicketTypes.map((ticket) => {
+        const items = {
+          ...ticket,
+          connectedTickets: ticket.connectedTickets.filter(
+            (item) => !isEmpty(item),
+          ),
+        };
+        return items;
       }),
     };
     const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
@@ -231,12 +251,35 @@ const CreateEvent = () => {
     }
   };
 
-  const createEventPublish = async () => {
+  const createEventPublish = async (anotherPayload?: {
+    discounts?: CreateEventFormValueProps['discounts'];
+    ticketTypes?: CreateEventFormValueProps['ticketTypes'];
+  }) => {
     const currentTime = new Date().getTime();
     const endTime = new Date(createEventFormValue.endTime || '').getTime();
     if (validatUnfinishedSteps(createEventFormValue) === '') {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
+      } else if (isEdit) {
+        const payload: any = {
+          ...formatRequestPayload(
+            CreateEventActionType.publish,
+            anotherPayload,
+          ),
+          id: createEventFormValue.id,
+        };
+        const response = await dispatch(updateEventAction(payload));
+        if (response.type === updateEventAction.fulfilled.toString()) {
+          message.success(
+            t(
+              `Congrats! You have successfully published your event. Let's rock n rol!`,
+            ),
+          );
+          setWhichPathUrlWillTo(UserRoutes.events);
+          setBlockRouter(false);
+          setShowNotSaveConfirmModal(false);
+          setEventInfoFormEdit(false);
+        }
       } else {
         const response = await dispatch(
           createEventAction(
@@ -317,12 +360,21 @@ const CreateEvent = () => {
     title?: string,
     content?: string,
   ) => {
+    const getOkText = () => {
+      if (okText) return okText;
+      if (isEdit) {
+        return steps !== ComponentSteps.publish
+          ? t('Save and Publish')
+          : t('Publish');
+      }
+      return t('Save as Draft');
+    };
     confirm({
       className: 'notSaveConfirmModal',
       open: showNotSaveConfirmModal,
       centered: true,
       closable: false,
-      okText: okText || t('Save as Draft'),
+      okText: getOkText(),
       cancelText: cancelText || t('Leave'),
       title: title || (
         <div className="notSaveModalTitle">
@@ -334,20 +386,22 @@ const CreateEvent = () => {
       content:
         content || t('Leaving this page will result in losing your content.'),
       onOk() {
+        setShowNotSaveConfirmModal(false);
         if (onOk) {
           onOk();
+        } else if (isEdit) {
+          createEventPublish();
         } else {
           saveAsDraft('blockRouter');
         }
-        setShowNotSaveConfirmModal(false);
       },
       onCancel() {
+        setShowNotSaveConfirmModal(false);
         if (onCancel) {
           onCancel();
         } else {
           setBlockRouter(false);
         }
-        setShowNotSaveConfirmModal(false);
       },
     });
   };
@@ -454,10 +508,12 @@ const CreateEvent = () => {
   }, [steps]);
 
   useEffect(() => {
-    setCreateEventFormValue({
-      ...createEventFormValue,
-      organizerId: checkOrganizerDefaultValue().defaultId,
-    });
+    if (!isEdit) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        organizerId: checkOrganizerDefaultValue().defaultId,
+      });
+    }
   }, [organizerData]);
 
   useEffect(() => {
@@ -510,11 +566,36 @@ const CreateEvent = () => {
           const { data } = response.payload;
           setCreateEventFormValue({
             ...data,
+            descriptionImages: data.descriptionImages.map((item: any) => ({
+              column: DescriptionImagesSize.find(
+                (size) => size.text === item.size,
+              )?.key,
+              response: item.image,
+              type: 'image/jpeg',
+              size: 1,
+            })),
           });
         }
       })();
     }
   }, []);
+
+  const handleCancel = () => {
+    notSaveConfirm('', () => {
+      history.push(UserRoutes.events);
+    });
+  };
+
+  const showSaveAndPublishCondition =
+    (isEdit && steps === ComponentSteps.eventInfo) ||
+    (isEdit && steps === ComponentSteps.publish);
+  const hideBottomCondition =
+    (steps === ComponentSteps.createTicket &&
+      (createTicketStatus === CreateTicketStatus.add ||
+        createTicketStatus === CreateTicketStatus.edit)) ||
+    (steps === ComponentSteps.settings &&
+      (createPromoStatus === CreatePromoStatus.add ||
+        createPromoStatus === CreatePromoStatus.edit));
   return (
     <>
       <Prompt when={blockRouter} message={handleRouterHoldUp} />
@@ -545,20 +626,7 @@ const CreateEvent = () => {
               blockStep={blockStep}
             />
             <div className="page-main">
-              <Form
-                name="create_event"
-                initialValues={{
-                  ...createEventFormValue,
-                  organizerId: checkOrganizerDefaultValue().defaultValue,
-                  eventTime:
-                    (createEventFormValue.startTime &&
-                      createEventFormValue.endTime && [
-                        moment(createEventFormValue.startTime),
-                        moment(createEventFormValue.endTime),
-                      ]) ||
-                    null,
-                }}
-              >
+              <Form name="create_event">
                 {steps === ComponentSteps.eventInfo && (
                   <EventInfo
                     organizerData={organizerData}
@@ -575,6 +643,8 @@ const CreateEvent = () => {
                     ticketFormEdit={ticketFormEdit}
                     setTicketFormEdit={setTicketFormEdit}
                     listTicketType={listTicketType}
+                    isEdit={isEdit}
+                    createEventPublish={createEventPublish}
                   />
                 )}
                 {steps === ComponentSteps.settings && (
@@ -587,6 +657,8 @@ const CreateEvent = () => {
                     setSettingsFormEdit={setSettingsFormEdit}
                     setCreatePromoType={setCreatePromoType}
                     createPromoType={createPromoType}
+                    isEdit={isEdit}
+                    createEventPublish={createEventPublish}
                   />
                 )}
                 {steps === ComponentSteps.publish && (
@@ -597,49 +669,69 @@ const CreateEvent = () => {
                 )}
               </Form>
             </div>
-            {(steps !== ComponentSteps.publish && (
-              <>
-                {(steps === ComponentSteps.createTicket &&
-                  (createTicketStatus === CreateTicketStatus.add ||
-                    createTicketStatus === CreateTicketStatus.edit)) ||
-                (steps === ComponentSteps.settings &&
-                  (createPromoStatus === CreatePromoStatus.add ||
-                    createPromoStatus === CreatePromoStatus.edit)) ? null : (
-                  <div className="page-bottom">
-                    <div className="bottom-btn">
-                      <Button onClick={() => saveAsDraft()}>
-                        {t('Save as Draft')}
-                      </Button>
-                      <Button
-                        type="primary"
-                        onClick={() => setSteps(steps + 1)}
-                      >
-                        {t('Next')}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </>
-            )) || (
+            {showSaveAndPublishCondition ? (
               <div className="page-bottom">
                 <div className="bottom-btn">
-                  <Button
-                    onClick={() => saveAsDraft()}
-                    disabled={saveDraftLoading}
-                  >
+                  <Button onClick={handleCancel} disabled={saveDraftLoading}>
                     {saveDraftLoading && <LoadingOutlined spin />}
-                    {t('Save as Draft')}
+                    {t('Cancel')}
                   </Button>
                   <Button
                     type="primary"
-                    onClick={createEventPublish}
+                    onClick={() => createEventPublish()}
                     disabled={publishLoading}
                   >
                     {publishLoading && <LoadingOutlined spin />}
-                    {t('Publish')}
+                    {steps === ComponentSteps.publish
+                      ? t('Publish')
+                      : t('Save and Publish')}
                   </Button>
                 </div>
               </div>
+            ) : (
+              (steps !== ComponentSteps.publish && (
+                <>
+                  {hideBottomCondition ? null : (
+                    <div className="page-bottom">
+                      <div className="bottom-btn">
+                        <Button
+                          onClick={() =>
+                            isEdit ? handleCancel() : saveAsDraft()
+                          }
+                        >
+                          {isEdit ? t('Cancel') : t('Save as Draft')}
+                        </Button>
+                        <Button
+                          type="primary"
+                          onClick={() => setSteps(steps + 1)}
+                        >
+                          {t('Next')}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )) || (
+                <div className="page-bottom">
+                  <div className="bottom-btn">
+                    <Button
+                      onClick={() => (isEdit ? handleCancel() : saveAsDraft())}
+                      disabled={saveDraftLoading}
+                    >
+                      {saveDraftLoading && <LoadingOutlined spin />}
+                      {isEdit ? t('Cancel') : t('Save as Draft')}
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={() => createEventPublish()}
+                      disabled={publishLoading}
+                    >
+                      {publishLoading && <LoadingOutlined spin />}
+                      {t('Publish')}
+                    </Button>
+                  </div>
+                </div>
+              )
             )}
           </>
         )}
