@@ -885,7 +885,11 @@ const PublishComponentContainer = styled(Row)`
         cursor: pointer;
       }
       > :last-child {
-        margin-left: 10px;
+        margin-left: 8px;
+        cursor: pointer;
+        img {
+          margin-top: -2px;
+        }
       }
     }
     .set-refund-title {
@@ -935,7 +939,7 @@ const EventInfoCard = styled(Col)`
     img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       border-radius: 2px;
     }
   }

@@ -167,6 +167,15 @@ const CreateEvent = () => {
       discounts: createEventFormValue.discounts.map((discount) => {
         const applyItems = {
           ...discount,
+          discount: {
+            ...discount.discount,
+            value:
+              (discount.discount.value &&
+                Number(
+                  discount.discount.value.toString().replaceAll(',', ''),
+                )) ||
+              undefined,
+          },
           apply: {
             ...discount.apply,
             ticketTypeIds: discount.apply.ticketTypeIds.map(
