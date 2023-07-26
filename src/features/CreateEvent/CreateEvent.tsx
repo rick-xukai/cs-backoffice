@@ -46,6 +46,7 @@ import {
   selectListTicketType,
   getListTicketTypeAction,
   updateEventAction,
+  selectNeedUpdateEventId,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 import { getEventDetailAction } from '../EventDetail/EventDetail.slice';
@@ -82,6 +83,7 @@ const CreateEvent = () => {
   const error = useAppSelector(selectError);
   const organizerData = useAppSelector(selectOrganizerData);
   const listTicketType = useAppSelector(selectListTicketType);
+  const needUpdateEventId = useAppSelector(selectNeedUpdateEventId);
 
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
@@ -256,12 +258,27 @@ const CreateEvent = () => {
         t('Please enter a name for your event before saving as a draft.'),
       );
     } else {
-      const response = await dispatch(
-        createEventSaveDraftAction(
-          formatRequestPayload(CreateEventActionType.saveAsDraft),
-        ),
-      );
-      if (response.type === createEventSaveDraftAction.fulfilled.toString()) {
+      let response: any = {};
+      if (needUpdateEventId) {
+        const payload: any = {
+          ...formatRequestPayload(CreateEventActionType.saveAsDraft),
+          id: needUpdateEventId,
+        };
+        response = await dispatch(updateEventAction(payload));
+      } else {
+        response = await dispatch(
+          createEventSaveDraftAction(
+            formatRequestPayload(CreateEventActionType.saveAsDraft),
+          ),
+        );
+      }
+      if (
+        response.type ===
+        (
+          (needUpdateEventId && updateEventAction) ||
+          createEventSaveDraftAction
+        ).fulfilled.toString()
+      ) {
         message.success(t('Draft Saved Successfully!'));
         if (type && type === 'blockRouter') {
           setBlockRouter(false);
@@ -344,12 +361,27 @@ const CreateEvent = () => {
         }
         handleUpdate();
       } else {
-        const response = await dispatch(
-          createEventAction(
-            formatRequestPayload(CreateEventActionType.publish),
-          ),
-        );
-        if (response.type === createEventAction.fulfilled.toString()) {
+        let response: any = {};
+        if (needUpdateEventId) {
+          const payload: any = {
+            ...formatRequestPayload(CreateEventActionType.publish),
+            id: needUpdateEventId,
+          };
+          response = await dispatch(updateEventAction(payload));
+        } else {
+          response = await dispatch(
+            createEventAction(
+              formatRequestPayload(CreateEventActionType.publish),
+            ),
+          );
+        }
+        if (
+          response.type ===
+          (
+            (needUpdateEventId && updateEventAction) ||
+            createEventAction
+          ).fulfilled.toString()
+        ) {
           message.success(
             t(
               `Congrats! You have successfully published your event. Let's rock n rol!`,
@@ -739,10 +771,12 @@ const CreateEvent = () => {
                     <div className="page-bottom">
                       <div className="bottom-btn">
                         <Button
+                          disabled={saveDraftLoading}
                           onClick={() =>
                             isEdit ? handleCancel() : saveAsDraft()
                           }
                         >
+                          {saveDraftLoading && <LoadingOutlined spin />}
                           {isEdit ? t('Cancel') : t('Save as Draft')}
                         </Button>
                         <Button

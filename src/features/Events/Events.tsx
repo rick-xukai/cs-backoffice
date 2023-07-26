@@ -86,6 +86,8 @@ const Events = () => {
 
   const [tableColumns, setTableColumns] = useState([]);
   const [showAddEvent, setShowAddEvent] = useState<boolean>(false);
+  const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
+  const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
 
   const columns = [
     {
@@ -242,6 +244,8 @@ const Events = () => {
                 (record.status === EventStatusKeys.draft && 'block') || 'none',
             },
             onClick: () => {
+              setCancelSuccess(false);
+              setDeleteSuccess(false);
               confirm({
                 centered: true,
                 closable: false,
@@ -256,7 +260,7 @@ const Events = () => {
                     response.type === deleteEventAction.fulfilled.toString()
                   ) {
                     message.success(t('Deleted successfully'));
-                    dispatch(getEventsListAction({ page, pageSize }));
+                    setDeleteSuccess(true);
                   }
                 },
               });
@@ -285,6 +289,8 @@ const Events = () => {
                 'none',
             },
             onClick: () => {
+              setCancelSuccess(false);
+              setDeleteSuccess(false);
               confirm({
                 centered: true,
                 closable: false,
@@ -301,7 +307,7 @@ const Events = () => {
                     response.type === cancelEventAction.fulfilled.toString()
                   ) {
                     message.success(t('Canceled successfully'));
-                    dispatch(getEventsListAction({ page, pageSize }));
+                    setCancelSuccess(true);
                   }
                 },
               });
@@ -361,6 +367,47 @@ const Events = () => {
     dispatch(setPage(defaultCurrentPage));
   };
 
+  const requestEventsList = async () => {
+    const response: any = await dispatch(
+      getEventsListAction({
+        page,
+        pageSize,
+        status: filterStatus,
+        keyword: searchKeyword,
+      }),
+    );
+    if (response.type === getEventsListAction.fulfilled.toString()) {
+      if (response.payload) {
+        if (
+          (!searchKeyword || filterStatus === null) &&
+          !response.payload.list.length
+        ) {
+          setShowAddEvent(true);
+        } else {
+          setShowAddEvent(false);
+        }
+      }
+    }
+  };
+
+  const handleSearchEvent = (keyword: string, status: number | null) => {
+    dispatch(setPage(defaultCurrentPage));
+    if (!keyword) {
+      dispatch(
+        getEventsListAction({
+          page,
+          pageSize,
+          status,
+        }),
+      );
+    }
+  };
+
+  const searchInputChange = useCallback(
+    debounce((e, status) => handleSearchEvent(e.target.value, status), 300),
+    [],
+  );
+
   useEffect(() => {
     const roleColumns: any = [];
     columns.forEach((item) => {
@@ -385,52 +432,24 @@ const Events = () => {
     }
   }, [error]);
 
-  const requestEventsList = async () => {
-    const response: any = await dispatch(
-      getEventsListAction({
-        page,
-        pageSize,
-        status: filterStatus,
-        keyword: searchKeyword,
-      }),
-    );
-    if (response.type === getEventsListAction.fulfilled.toString()) {
-      if (response.payload) {
-        if (
-          (!searchKeyword || filterStatus === null) &&
-          !response.payload.list.length
-        ) {
-          setShowAddEvent(true);
-        } else {
-          setShowAddEvent(false);
-        }
-      }
-    }
-  };
-
   useEffect(() => {
     if (page !== 0) {
       requestEventsList();
     }
   }, [page, pageSize, filterStatus]);
 
-  const handleSearchEvent = (keyword: string, status: number | null) => {
-    dispatch(setPage(defaultCurrentPage));
-    if (!keyword) {
+  useEffect(() => {
+    if (deleteSuccess || cancelSuccess) {
       dispatch(
         getEventsListAction({
           page,
           pageSize,
-          status,
+          status: filterStatus,
+          keyword: searchKeyword,
         }),
       );
     }
-  };
-
-  const searchInputChange = useCallback(
-    debounce((e, status) => handleSearchEvent(e.target.value, status), 300),
-    [],
-  );
+  }, [deleteSuccess, cancelSuccess]);
 
   return (
     <EventsContainer>
