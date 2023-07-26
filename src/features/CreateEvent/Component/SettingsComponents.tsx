@@ -397,6 +397,7 @@ export const AddEditForm = ({
   createPromoType,
   setOnSave,
   formValue,
+  disabled,
 }: {
   changePromoValues: any;
   promoValue: PromoListProps;
@@ -408,6 +409,7 @@ export const AddEditForm = ({
   createPromoType: CreatePromoType;
   setOnSave: any;
   formValue: CreateEventFormValueProps;
+  disabled: boolean;
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -656,6 +658,7 @@ export const AddEditForm = ({
                         }}
                         value={promoValue.method}
                         style={{ marginTop: 5 }}
+                        disabled={disabled}
                       >
                         <Space size="small" direction="vertical">
                           <Radio name="method" value={MethodType.auto}>

@@ -57,7 +57,6 @@ const Publish = ({
       ),
     },
   ];
-  console.log(formValue.ticketTypes);
 
   return (
     <Row>

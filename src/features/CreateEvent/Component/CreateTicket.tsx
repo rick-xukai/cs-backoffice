@@ -9,6 +9,7 @@ import {
   DatePicker,
   Select,
   Modal,
+  message,
 } from 'antd';
 
 import { useTranslation } from 'react-i18next';
@@ -271,9 +272,21 @@ const CreateTicket = ({
     );
   }, [formValue]);
   const handleDeleteEvent = (index: number) => {
-    ticketValue.connectedTickets.splice(index, 1);
-    changeTicketValues({
-      connectedTickets: [...ticketValue.connectedTickets],
+    Modal.confirm({
+      className: 'notSaveConfirmModal',
+      centered: true,
+      closable: false,
+      okText: 'Delete',
+      cancelText: 'Cancel',
+      title: 'Delete Connected Tickets',
+      icon: <ExclamationCircleOutlined />,
+      content: `Are you sure you want to delete it?`,
+      onOk: () => {
+        ticketValue.connectedTickets.splice(index, 1);
+        changeTicketValues({
+          connectedTickets: [...ticketValue.connectedTickets],
+        });
+      },
     });
   };
 
@@ -318,6 +331,12 @@ const CreateTicket = ({
       if (!ticketValue.sellEndTime && ticketValue.sellStartTime) {
         setShowNoEndTimeError(true);
       }
+      return;
+    }
+    if (Number(ticketValue.stock) < ticketValue.soldTotal) {
+      message.error(
+        t('Ticket Available Quantity can’t be less than the sold tickets.'),
+      );
       return;
     }
     setCreateTicketStatus(CreateTicketStatus.edit);
@@ -654,6 +673,9 @@ const CreateTicket = ({
                         changeTicketValues(e.target.checked, 'absorbFees')
                       }
                       checked={ticketValue.absorbFees}
+                      disabled={
+                        isEdit && createTicketStatus === CreateTicketStatus.edit
+                      }
                     >
                       {t('Absorb fees')}:{' '}
                       {t(

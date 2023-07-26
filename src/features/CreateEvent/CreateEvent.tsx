@@ -116,6 +116,23 @@ const CreateEvent = () => {
       refundPolicy: SetRefundKey.nonRefundable,
       discounts: [],
     });
+  const [originDetailData, setOriginDetailData] =
+    useState<CreateEventFormValueProps>({
+      name: '',
+      location: '',
+      locationCoord: '',
+      organizerId: '',
+      address: '',
+      startTime: '',
+      endTime: '',
+      image: '',
+      descriptionShort: '',
+      description: '',
+      descriptionImages: [],
+      ticketTypes: [],
+      refundPolicy: SetRefundKey.nonRefundable,
+      discounts: [],
+    });
 
   const [progressItems, setProgressItems] = useState([
     {
@@ -251,6 +268,28 @@ const CreateEvent = () => {
     }
   };
 
+  const fetchDetailData = async () => {
+    const response: any = await dispatch(getEventDetailAction(id));
+    if (
+      response.type === getEventDetailAction.fulfilled.toString() &&
+      response.payload?.data
+    ) {
+      const { data } = response.payload;
+      const payload = {
+        ...data,
+        descriptionImages: data.descriptionImages.map((item: any) => ({
+          column: DescriptionImagesSize.find((size) => size.text === item.size)
+            ?.key,
+          response: item.image,
+          type: 'image/jpeg',
+          size: 1,
+        })),
+      };
+      setCreateEventFormValue(payload);
+      setOriginDetailData(payload);
+    }
+  };
+
   const createEventPublish = async (anotherPayload?: {
     discounts?: CreateEventFormValueProps['discounts'];
     ticketTypes?: CreateEventFormValueProps['ticketTypes'];
@@ -268,14 +307,39 @@ const CreateEvent = () => {
           ),
           id: createEventFormValue.id,
         };
-        const response = await dispatch(updateEventAction(payload));
-        if (response.type === updateEventAction.fulfilled.toString()) {
-          message.success(t(`Event is successfully updated.`));
-          setShowNotSaveConfirmModal(false);
-          setEventInfoFormEdit(false);
-          setTicketFormEdit(false);
-          setSettingsFormEdit(false);
+        const handleUpdate = async () => {
+          const response = await dispatch(updateEventAction(payload));
+          fetchDetailData();
+          if (response.type === updateEventAction.fulfilled.toString()) {
+            message.success(t(`Event is successfully updated.`));
+            setShowNotSaveConfirmModal(false);
+            setEventInfoFormEdit(false);
+            setTicketFormEdit(false);
+            setSettingsFormEdit(false);
+          }
+        };
+        if (
+          originDetailData.address !== createEventFormValue.address ||
+          originDetailData.startTime !== createEventFormValue.startTime ||
+          originDetailData.endTime !== createEventFormValue.endTime ||
+          originDetailData.location !== createEventFormValue.location ||
+          originDetailData.locationCoord !== createEventFormValue.locationCoord
+        ) {
+          confirm({
+            className: 'notSaveConfirmModal',
+            onOk: handleUpdate,
+            okText: t('Save and Publish'),
+            title: t('Key Info Changed'),
+            content: t(
+              'Are you sure you gonna change the event key info? Make sure you have informed your attendees.',
+            ),
+            icon: <ExclamationCircleOutlined />,
+            centered: true,
+            closable: false,
+          });
+          return;
         }
+        handleUpdate();
       } else {
         const response = await dispatch(
           createEventAction(
@@ -553,26 +617,7 @@ const CreateEvent = () => {
 
   useEffect(() => {
     if (isEdit) {
-      (async () => {
-        const response: any = await dispatch(getEventDetailAction(id));
-        if (
-          response.type === getEventDetailAction.fulfilled.toString() &&
-          response.payload?.data
-        ) {
-          const { data } = response.payload;
-          setCreateEventFormValue({
-            ...data,
-            descriptionImages: data.descriptionImages.map((item: any) => ({
-              column: DescriptionImagesSize.find(
-                (size) => size.text === item.size,
-              )?.key,
-              response: item.image,
-              type: 'image/jpeg',
-              size: 1,
-            })),
-          });
-        }
-      })();
+      fetchDetailData();
     }
   }, []);
 

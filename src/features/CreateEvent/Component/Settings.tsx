@@ -155,6 +155,13 @@ const Settings = ({
     ) {
       return;
     }
+    if (promoValue?.quantity && promoValue.quantity < promoValue.usageCount) {
+      message.error({
+        content: t('Quantity must be greater than usage count.'),
+        key: 'error',
+      });
+      return;
+    }
     if (createPromoStatus === CreatePromoStatus.edit) {
       if (
         formValue.discounts.find(
@@ -347,6 +354,7 @@ const Settings = ({
             setTicketListData={setTicketListData}
             createPromoType={createPromoType}
             formValue={formValue}
+            disabled={isEdit && createPromoStatus === CreatePromoStatus.edit}
           />
           {isEdit ? (
             <div className="page-bottom">
