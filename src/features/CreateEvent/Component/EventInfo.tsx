@@ -300,10 +300,10 @@ const EventInfo = ({
                 <Select
                   options={organizerData.map((item: OrganizerData) => ({
                     label: item.name,
-                    value: item.id,
+                    value: Number(item.id),
                   }))}
                   onChange={(value) => fieldEdit(value, 'organizerId')}
-                  value={formValue.organizerId}
+                  value={Number(formValue.organizerId)}
                 />
               </Form.Item>
               {(!showAddMyLocationInput && (
