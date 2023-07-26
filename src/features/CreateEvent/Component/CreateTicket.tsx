@@ -9,12 +9,13 @@ import {
   DatePicker,
   Select,
   Modal,
+  message,
 } from 'antd';
 
 import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Images } from '../../../theme';
 import {
   ConnectTicketItem,
@@ -28,6 +29,7 @@ import {
   CreateEventFormValueProps,
   TicketListProps,
   ListTicketType,
+  selectPublishLoading,
 } from '../CreateEvent.slice';
 import {
   MMM_DD_YYYY_HH_MM,
@@ -51,6 +53,7 @@ import {
   thousandsSeparator,
 } from '../../../utils/func';
 import { UploadFileAcceptType } from '../../../constants/General';
+import { useAppSelector } from '../../../app/hooks';
 
 const { RangePicker } = DatePicker;
 
@@ -138,7 +141,7 @@ const CreateTicket = ({
   }, [formValue.startTime, createTicketStatus]);
   const [onSave, setOnSave] = useState(false);
   const [showNoEndTimeError, setShowNoEndTimeError] = useState<boolean>(false);
-
+  const publishLoading = useAppSelector(selectPublishLoading);
   const changeTicketValues = (value: any, field?: string) => {
     setTicketFormEdit(true);
     if (field) {
@@ -269,9 +272,21 @@ const CreateTicket = ({
     );
   }, [formValue]);
   const handleDeleteEvent = (index: number) => {
-    ticketValue.connectedTickets.splice(index, 1);
-    changeTicketValues({
-      connectedTickets: [...ticketValue.connectedTickets],
+    Modal.confirm({
+      className: 'notSaveConfirmModal',
+      centered: true,
+      closable: false,
+      okText: 'Delete',
+      cancelText: 'Cancel',
+      title: 'Delete Connected Tickets',
+      icon: <ExclamationCircleOutlined />,
+      content: `Are you sure you want to delete it?`,
+      onOk: () => {
+        ticketValue.connectedTickets.splice(index, 1);
+        changeTicketValues({
+          connectedTickets: [...ticketValue.connectedTickets],
+        });
+      },
     });
   };
 
@@ -318,6 +333,12 @@ const CreateTicket = ({
       }
       return;
     }
+    if (Number(ticketValue.stock) < ticketValue.soldTotal) {
+      message.error(
+        t('Ticket Available Quantity can’t be less than the sold tickets.'),
+      );
+      return;
+    }
     setCreateTicketStatus(CreateTicketStatus.edit);
     if (createTicketStatus === CreateTicketStatus.edit) {
       const newTicketList = [...formValue.ticketTypes];
@@ -330,6 +351,7 @@ const CreateTicket = ({
         createEventPublish({
           ticketTypes: newTicketList,
         });
+        setOnSave(false);
       }
     } else {
       fieldEdit(
@@ -564,7 +586,7 @@ const CreateTicket = ({
                   >
                     <Row gutter={6} align="middle" wrap={false}>
                       <Col style={{ flexShrink: 0 }}>
-                        <b>0</b> Sold /
+                        <b>{ticketValue.soldTotal || 0}</b> Sold /
                       </Col>
                       <Col flex="auto">
                         <Input
@@ -651,6 +673,9 @@ const CreateTicket = ({
                         changeTicketValues(e.target.checked, 'absorbFees')
                       }
                       checked={ticketValue.absorbFees}
+                      disabled={
+                        isEdit && createTicketStatus === CreateTicketStatus.edit
+                      }
                     >
                       {t('Absorb fees')}:{' '}
                       {t(
@@ -864,11 +889,10 @@ const CreateTicket = ({
             <div className="page-bottom">
               <div className="bottom-btn">
                 <Button onClick={handleCancelCreateTicket}>
-                  {/* {saveDraftLoading && <LoadingOutlined spin />} */}
                   {t('Cancel')}
                 </Button>
                 <Button type="primary" onClick={handleSave}>
-                  {/* {publishLoading && <LoadingOutlined spin />} */}
+                  {publishLoading && <LoadingOutlined spin />}
                   {t('Save and Publish')}
                 </Button>
               </div>

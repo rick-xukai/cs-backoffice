@@ -186,6 +186,7 @@ export const PromoListItem = ({
     gift,
     discount,
     code,
+    usageCount,
   } = item;
   const findTicket = (id: any) =>
     formValue.ticketTypes.find((ticket) => `${ticket.id}` === `${id}`);
@@ -235,7 +236,9 @@ export const PromoListItem = ({
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Promocode Available Quantity')}</div>
-          <div className="value">0 / {quantity || 'Unlimited'}</div>
+          <div className="value">
+            {usageCount || 0} / {quantity || 'Unlimited'}
+          </div>
         </LabelAndValue>
 
         <LabelAndValue span={24}>
@@ -286,7 +289,9 @@ export const PromoListItem = ({
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Promocode Available Quantity')}</div>
-          <div className="value">0 / {quantity || 'Unlimited'}</div>
+          <div className="value">
+            {usageCount || 0} / {quantity || 'Unlimited'}
+          </div>
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Customer Buys')}</div>
@@ -392,6 +397,7 @@ export const AddEditForm = ({
   createPromoType,
   setOnSave,
   formValue,
+  disabled,
 }: {
   changePromoValues: any;
   promoValue: PromoListProps;
@@ -403,6 +409,7 @@ export const AddEditForm = ({
   createPromoType: CreatePromoType;
   setOnSave: any;
   formValue: CreateEventFormValueProps;
+  disabled: boolean;
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -651,6 +658,7 @@ export const AddEditForm = ({
                         }}
                         value={promoValue.method}
                         style={{ marginTop: 5 }}
+                        disabled={disabled}
                       >
                         <Space size="small" direction="vertical">
                           <Radio name="method" value={MethodType.auto}>
@@ -803,19 +811,12 @@ export const AddEditForm = ({
             <Form.Item label="Promocode Available Quantity">
               <Row gutter={6} align="middle" wrap={false}>
                 <Col style={{ flexShrink: 0 }}>
-                  <b>0</b> Used /
+                  <b>{promoValue.usageCount || 0}</b> Used /
                 </Col>
                 <Col flex="auto">
                   <Input
                     onChange={(e) => {
                       const val = e.target.value;
-                      // if (
-                      //   Number.isNaN(Number(val)) ||
-                      //   val.includes('.') ||
-                      //   Number(val) < 0
-                      // ) {
-                      //   return;
-                      // }
                       changePromoValues(
                         `${Number(val.replace(/[^0-9]/g, '')) || ''}`,
                         'quantity',
