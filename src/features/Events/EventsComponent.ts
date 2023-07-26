@@ -46,16 +46,17 @@ const EventsContainer = styled.div`
       }
       .filter-status {
         padding-left: 24px;
-        > :first-child {
-          margin-right: 16px;
-          font-size: 15px;
-          font-weight: 500;
-          line-height: 21px;
-          color: ${Colors.black6};
+        .filter-select-content {
+          align-items: center;
+          > :last-child {
+            padding-left: 16px;
+          }
+        }
+        .ant-select {
+          width: 100%;
         }
         .ant-select-selector {
           height: 32px;
-          width: 150px;
           border-radius: 2px;
           border: 1px solid ${Colors.grey8};
           background: ${Colors.white};
@@ -134,11 +135,19 @@ const EventsContainer = styled.div`
     .page-main {
       padding: calc(98px + 24px) 24px 24px;
       .event-filter-container {
+        padding: 20px;
         .filter-status {
+          padding-left: 0;
+          margin-top: 16px;
+          margin-bottom: 20px;
           .ant-select-selector {
             width: 100%;
           }
         }
+      }
+      .create-new-event {
+        width: 100%;
+        border-radius: 2px;
       }
     }
   }

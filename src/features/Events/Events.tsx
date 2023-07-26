@@ -309,17 +309,20 @@ const Events = () => {
           },
         ];
 
-        const actionIcon =
-          (record.status ===
-            FilterEventStatus.find((item) => item.text === 'Upcoming')?.key &&
-            Images.Editor) ||
-          Images.EditorDisable;
+        let iconDisable = false;
+
+        if (
+          record.status !== EventStatusKeys.upcoming &&
+          record.status !== EventStatusKeys.draft
+        ) {
+          iconDisable = true;
+        }
 
         return (
           <div className="event-list-action">
-            {(actionIcon === Images.EditorDisable && (
+            {(iconDisable && (
               <div className="icon-content-disable">
-                <img src={actionIcon} alt="" />
+                <img src={Images.EditorDisable} alt="" />
               </div>
             )) || (
               <Tooltip
@@ -329,7 +332,7 @@ const Events = () => {
               >
                 <Link to={UserRoutes.editEvent.replace(':id', record.id)}>
                   <div className="icon-content">
-                    <img src={actionIcon} alt="" />
+                    <img src={Images.Editor} alt="" />
                   </div>
                 </Link>
               </Tooltip>
@@ -436,7 +439,7 @@ const Events = () => {
         <Row className="event-filter-container">
           <Col span={24} lg={14}>
             <Row className="content">
-              <Col span={14}>
+              <Col lg={14} span={24}>
                 <Input
                   defaultValue={searchKeyword}
                   placeholder={t('Search event')}
@@ -449,26 +452,33 @@ const Events = () => {
                   }}
                 />
               </Col>
-              <Col span={10} className="filter-status">
-                <span>{t('Status')}:</span>
-                <Select
-                  defaultValue={
-                    FilterEventStatus.find((item) => item.key === filterStatus)
-                      ?.text
-                  }
-                  onChange={handleStatusChange}
-                  defaultActiveFirstOption={false}
-                >
-                  {FilterEventStatus.map((item) => (
-                    <Option key={item.text} value={item.text}>
-                      {item.text}
-                    </Option>
-                  ))}
-                </Select>
+              <Col lg={10} span={24} className="filter-status">
+                <Row className="filter-select-content">
+                  <Col span={4}>
+                    <span>{t('Status')}:</span>
+                  </Col>
+                  <Col span={20}>
+                    <Select
+                      defaultValue={
+                        FilterEventStatus.find(
+                          (item) => item.key === filterStatus,
+                        )?.text
+                      }
+                      onChange={handleStatusChange}
+                      defaultActiveFirstOption={false}
+                    >
+                      {FilterEventStatus.map((item) => (
+                        <Option key={item.text} value={item.text}>
+                          {item.text}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </Col>
-          <Col span={10}>
+          <Col lg={10} span={24}>
             {!showAddEvent && (
               <Link to={UserRoutes.createEvent}>
                 <Button type="primary" className="create-new-event">
