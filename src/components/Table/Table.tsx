@@ -114,6 +114,15 @@ const TableContainer = styled.div`
       }
     }
   }
+  .table-empty-text {
+    p {
+      margin-top: 10px;
+      color: ${Colors.grey7};
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
+    }
+  }
 `;
 
 const TableComponent = ({
@@ -129,12 +138,14 @@ const TableComponent = ({
   tableDataTotal,
   scrollY = 'calc(100vh - 254px)',
   showCustomPagination = true,
+  emptyText = null,
   paginationChange,
   onChange,
 }: {
   loading: boolean;
   columns: ColumnsType<any>;
   tableData: object[];
+  emptyText?: any;
   rowKey?: string;
   rowSelection?: object;
   showHeader?: boolean;
@@ -160,7 +171,7 @@ const TableComponent = ({
         columns={columns}
         dataSource={tableData}
         pagination={false}
-        locale={{ emptyText: loading ? <div /> : null }}
+        locale={{ emptyText: loading ? <div /> : emptyText }}
         rowSelection={rowSelection}
         showHeader={showHeader}
         onChange={onChange}
