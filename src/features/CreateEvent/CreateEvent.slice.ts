@@ -96,7 +96,6 @@ export interface CreateEventFormValueProps {
   name: string;
   location: string;
   locationCoord: string;
-  organizerId: string;
   address: string;
   image: string;
   descriptionShort: string;
@@ -105,6 +104,7 @@ export interface CreateEventFormValueProps {
   ticketTypes: TicketListProps[];
   discounts: PromoListProps[];
   refundPolicy: SetRefundKey.nonRefundable;
+  organizerId?: string;
   startTime?: string;
   endTime?: string;
   publish?: number;

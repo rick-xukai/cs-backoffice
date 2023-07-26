@@ -97,7 +97,11 @@ const Publish = ({
                       <span>
                         <img src={Images.LocationRedIcon} alt="" />
                       </span>
-                      <span>{formValue.location || '-'}</span>
+                      <span>
+                        {(formValue.location &&
+                          `${formValue.location}, ${formValue.address}`) ||
+                          '-'}
+                      </span>
                     </Col>
                   </Col>
                 </Row>

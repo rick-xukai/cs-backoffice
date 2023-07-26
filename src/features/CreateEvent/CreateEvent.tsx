@@ -244,6 +244,9 @@ const CreateEvent = () => {
     if (!createEventFormValue.endTime) {
       delete payload.endTime;
     }
+    if (!createEventFormValue.organizerId) {
+      delete payload.organizerId;
+    }
     return { ...payload, ticketTypes };
   };
 

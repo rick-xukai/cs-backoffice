@@ -303,7 +303,10 @@ const EventInfo = ({
                     value: Number(item.id),
                   }))}
                   onChange={(value) => fieldEdit(value, 'organizerId')}
-                  value={Number(formValue.organizerId)}
+                  value={
+                    (organizerData.length && Number(formValue.organizerId)) ||
+                    ''
+                  }
                 />
               </Form.Item>
               {(!showAddMyLocationInput && (
