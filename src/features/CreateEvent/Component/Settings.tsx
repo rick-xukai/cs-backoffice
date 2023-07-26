@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, Modal, message } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 // eslint-disable-next-line import/no-cycle
 import {
   AddDiscountDropDown,
@@ -17,7 +17,9 @@ import {
   MethodType,
   PromoListProps,
   PromoType,
+  selectPublishLoading,
 } from '../CreateEvent.slice';
+import { useAppSelector } from '../../../app/hooks';
 
 export enum CreatePromoStatus {
   list = 1,
@@ -53,6 +55,7 @@ const initialValues = {
     type: ApplyCodeToType.all,
     ticketTypeIds: [],
   },
+  usageCount: 0,
 };
 
 const Settings = ({
@@ -84,6 +87,7 @@ const Settings = ({
   const [promoValue, setPromoValue] = useState<PromoListProps>({
     ...initialValues,
   });
+  const publishLoading = useAppSelector(selectPublishLoading);
   const changePromoValues = (value: any, field?: string) => {
     setSettingsFormEdit(true);
     if (field) {
@@ -178,6 +182,7 @@ const Settings = ({
         createEventPublish({
           discounts: newPromoList,
         });
+        setOnSave(false);
       }
     } else {
       if (
@@ -346,12 +351,9 @@ const Settings = ({
           {isEdit ? (
             <div className="page-bottom">
               <div className="bottom-btn">
-                <Button onClick={handleCancelCreatePromo}>
-                  {/* {saveDraftLoading && <LoadingOutlined spin />} */}
-                  {t('Cancel')}
-                </Button>
+                <Button onClick={handleCancelCreatePromo}>{t('Cancel')}</Button>
                 <Button type="primary" onClick={handleSave}>
-                  {/* {publishLoading && <LoadingOutlined spin />} */}
+                  {publishLoading && <LoadingOutlined spin />}
                   {t('Save and Publish')}
                 </Button>
               </div>

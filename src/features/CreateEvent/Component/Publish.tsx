@@ -52,9 +52,12 @@ const Publish = ({
       title: 'Quantity',
       dataIndex: 'stock',
       key: 'stock',
-      render: (stock: string) => <div>{(stock && `0 / ${stock}`) || '-'}</div>,
+      render: (stock: string, record: any) => (
+        <div>{(stock && `${record.soldTotal || 0} / ${stock}`) || '-'}</div>
+      ),
     },
   ];
+  console.log(formValue.ticketTypes);
 
   return (
     <Row>

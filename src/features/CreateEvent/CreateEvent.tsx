@@ -270,15 +270,11 @@ const CreateEvent = () => {
         };
         const response = await dispatch(updateEventAction(payload));
         if (response.type === updateEventAction.fulfilled.toString()) {
-          message.success(
-            t(
-              `Congrats! You have successfully published your event. Let's rock n rol!`,
-            ),
-          );
-          setWhichPathUrlWillTo(UserRoutes.events);
-          setBlockRouter(false);
+          message.success(t(`Event is successfully updated.`));
           setShowNotSaveConfirmModal(false);
           setEventInfoFormEdit(false);
+          setTicketFormEdit(false);
+          setSettingsFormEdit(false);
         }
       } else {
         const response = await dispatch(

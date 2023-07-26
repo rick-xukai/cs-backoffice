@@ -58,6 +58,7 @@ export interface PromoListProps {
     type: ApplyCodeToType;
     ticketTypeIds: string[];
   };
+  usageCount: number;
 }
 
 export interface TicketListProps {
@@ -435,14 +436,14 @@ export const createEventSlice = createSlice({
       })
       .addCase(updateEventAction.pending, (state) => {
         state.data = { id: 0 };
-        state.loading = true;
+        state.publishLoading = true;
       })
       .addCase(updateEventAction.fulfilled, (state, action: any) => {
-        state.loading = false;
+        state.publishLoading = false;
         state.data = action.payload;
       })
       .addCase(updateEventAction.rejected, (state, action) => {
-        state.loading = false;
+        state.publishLoading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
