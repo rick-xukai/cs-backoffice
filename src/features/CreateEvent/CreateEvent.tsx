@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, Prompt, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, message, Modal, Spin } from 'antd';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import moment from 'moment';
 import {
   ExclamationCircleOutlined,
@@ -14,7 +14,6 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   defaultCurrentPage,
   defaultOrganizerPageSize,
-  DescriptionImagesSize,
   SetRefundKey,
   DescriptionImagesSize,
 } from '../../constants/General';
@@ -152,7 +151,17 @@ const CreateEvent = () => {
   const { id } = params;
   const isEdit = !!id;
 
-  const formatRequestPayload = (type: number) => {
+  const formatRequestPayload = (
+    type: number,
+    anotherPayload?: {
+      discounts?: CreateEventFormValueProps['discounts'];
+      ticketTypes?: CreateEventFormValueProps['ticketTypes'];
+    },
+  ) => {
+    const discounts =
+      anotherPayload?.discounts || createEventFormValue.discounts;
+    const originTicketTypes =
+      anotherPayload?.ticketTypes || createEventFormValue.ticketTypes;
     const payload: CreateEventFormValueProps = {
       ...createEventFormValue,
       publish: type,
@@ -166,7 +175,7 @@ const CreateEvent = () => {
               ?.text || '',
         }),
       ),
-      discounts: createEventFormValue.discounts.map((discount) => {
+      discounts: discounts.map((discount) => {
         const applyItems = {
           ...discount,
           discount: {
@@ -180,12 +189,21 @@ const CreateEvent = () => {
           },
           apply: {
             ...discount.apply,
-            ticketTypeIds: discount.apply.ticketTypeIds.map(
-              (ticketTypeId) => ticketTypeId.id,
-            ),
+            ticketTypeIds: discount.apply.ticketTypeIds
+              .map((ticketTypeId) => ticketTypeId)
+              .filter((item) => !!item),
           },
         };
         return applyItems;
+      }),
+      ticketTypes: originTicketTypes.map((ticket) => {
+        const items = {
+          ...ticket,
+          connectedTickets: ticket.connectedTickets.filter(
+            (item) => !isEmpty(item),
+          ),
+        };
+        return items;
       }),
     };
     const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
@@ -233,27 +251,41 @@ const CreateEvent = () => {
     }
   };
 
-  const createEventPublish = async () => {
+  const createEventPublish = async (anotherPayload?: {
+    discounts?: CreateEventFormValueProps['discounts'];
+    ticketTypes?: CreateEventFormValueProps['ticketTypes'];
+  }) => {
     const currentTime = new Date().getTime();
     const endTime = new Date(createEventFormValue.endTime || '').getTime();
     if (validatUnfinishedSteps(createEventFormValue) === '') {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
-      } else {
-        let response = null;
-        if (isEdit) {
-          const payload: any = {
-            ...formatRequestPayload(CreateEventActionType.publish),
-            id: createEventFormValue.id,
-          };
-          response = await dispatch(updateEventAction(payload));
-        } else {
-          response = await dispatch(
-            createEventAction(
-              formatRequestPayload(CreateEventActionType.publish),
+      } else if (isEdit) {
+        const payload: any = {
+          ...formatRequestPayload(
+            CreateEventActionType.publish,
+            anotherPayload,
+          ),
+          id: createEventFormValue.id,
+        };
+        const response = await dispatch(updateEventAction(payload));
+        if (response.type === updateEventAction.fulfilled.toString()) {
+          message.success(
+            t(
+              `Congrats! You have successfully published your event. Let's rock n rol!`,
             ),
           );
+          setWhichPathUrlWillTo(UserRoutes.events);
+          setBlockRouter(false);
+          setShowNotSaveConfirmModal(false);
+          setEventInfoFormEdit(false);
         }
+      } else {
+        const response = await dispatch(
+          createEventAction(
+            formatRequestPayload(CreateEventActionType.publish),
+          ),
+        );
         if (response.type === createEventAction.fulfilled.toString()) {
           message.success(
             t(
@@ -328,12 +360,21 @@ const CreateEvent = () => {
     title?: string,
     content?: string,
   ) => {
+    const getOkText = () => {
+      if (okText) return okText;
+      if (isEdit) {
+        return steps !== ComponentSteps.publish
+          ? t('Save and Publish')
+          : t('Publish');
+      }
+      return t('Save as Draft');
+    };
     confirm({
       className: 'notSaveConfirmModal',
       open: showNotSaveConfirmModal,
       centered: true,
       closable: false,
-      okText: okText || isEdit ? t('Save and Publish') : t('Save as Draft'),
+      okText: getOkText(),
       cancelText: cancelText || t('Leave'),
       title: title || (
         <div className="notSaveModalTitle">
@@ -345,6 +386,7 @@ const CreateEvent = () => {
       content:
         content || t('Leaving this page will result in losing your content.'),
       onOk() {
+        setShowNotSaveConfirmModal(false);
         if (onOk) {
           onOk();
         } else if (isEdit) {
@@ -352,15 +394,14 @@ const CreateEvent = () => {
         } else {
           saveAsDraft('blockRouter');
         }
-        setShowNotSaveConfirmModal(false);
       },
       onCancel() {
+        setShowNotSaveConfirmModal(false);
         if (onCancel) {
           onCancel();
         } else {
           setBlockRouter(false);
         }
-        setShowNotSaveConfirmModal(false);
       },
     });
   };
@@ -539,7 +580,11 @@ const CreateEvent = () => {
     }
   }, []);
 
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    notSaveConfirm('', () => {
+      history.push(UserRoutes.events);
+    });
+  };
 
   const showSaveAndPublishCondition =
     (isEdit && steps === ComponentSteps.eventInfo) ||
@@ -599,6 +644,7 @@ const CreateEvent = () => {
                     setTicketFormEdit={setTicketFormEdit}
                     listTicketType={listTicketType}
                     isEdit={isEdit}
+                    createEventPublish={createEventPublish}
                   />
                 )}
                 {steps === ComponentSteps.settings && (
@@ -612,6 +658,7 @@ const CreateEvent = () => {
                     setCreatePromoType={setCreatePromoType}
                     createPromoType={createPromoType}
                     isEdit={isEdit}
+                    createEventPublish={createEventPublish}
                   />
                 )}
                 {steps === ComponentSteps.publish && (
@@ -631,7 +678,7 @@ const CreateEvent = () => {
                   </Button>
                   <Button
                     type="primary"
-                    onClick={createEventPublish}
+                    onClick={() => createEventPublish()}
                     disabled={publishLoading}
                   >
                     {publishLoading && <LoadingOutlined spin />}
@@ -647,8 +694,12 @@ const CreateEvent = () => {
                   {hideBottomCondition ? null : (
                     <div className="page-bottom">
                       <div className="bottom-btn">
-                        <Button onClick={() => saveAsDraft()}>
-                          {t('Save as Draft')}
+                        <Button
+                          onClick={() =>
+                            isEdit ? handleCancel() : saveAsDraft()
+                          }
+                        >
+                          {isEdit ? t('Cancel') : t('Save as Draft')}
                         </Button>
                         <Button
                           type="primary"
@@ -664,15 +715,15 @@ const CreateEvent = () => {
                 <div className="page-bottom">
                   <div className="bottom-btn">
                     <Button
-                      onClick={() => saveAsDraft()}
+                      onClick={() => (isEdit ? handleCancel() : saveAsDraft())}
                       disabled={saveDraftLoading}
                     >
                       {saveDraftLoading && <LoadingOutlined spin />}
-                      {t('Save as Draft')}
+                      {isEdit ? t('Cancel') : t('Save as Draft')}
                     </Button>
                     <Button
                       type="primary"
-                      onClick={createEventPublish}
+                      onClick={() => createEventPublish()}
                       disabled={publishLoading}
                     >
                       {publishLoading && <LoadingOutlined spin />}

@@ -65,6 +65,7 @@ const Settings = ({
   settingsFormEdit,
   setSettingsFormEdit,
   isEdit,
+  createEventPublish,
 }: {
   createPromoStatus: CreatePromoStatus;
   setCreatePromoStatus: any;
@@ -75,6 +76,7 @@ const Settings = ({
   settingsFormEdit: boolean;
   setSettingsFormEdit: (status: boolean) => void;
   isEdit: boolean;
+  createEventPublish: any;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -172,6 +174,11 @@ const Settings = ({
       );
       newPromoList[findIndex] = { ...promoValue };
       fieldEdit(newPromoList, 'discounts');
+      if (isEdit) {
+        createEventPublish({
+          discounts: newPromoList,
+        });
+      }
     } else {
       if (
         formValue.discounts.find(
@@ -197,10 +204,20 @@ const Settings = ({
         ],
         'discounts',
       );
+      if (isEdit) {
+        createEventPublish({
+          discounts: [
+            ...formValue.discounts,
+            {
+              ...promoValue,
+              id: `add_${new Date().getTime()}`,
+              type: createPromoType,
+            },
+          ],
+        });
+      }
     }
-    if (isEdit) {
-      console.log(1);
-    } else {
+    if (!isEdit) {
       setCreatePromoStatus(CreatePromoStatus.list);
     }
   };
@@ -242,6 +259,7 @@ const Settings = ({
   useEffect(
     () => () => {
       setCreatePromoStatus(CreatePromoStatus.list);
+      setSettingsFormEdit(false);
     },
     [],
   );
@@ -322,6 +340,7 @@ const Settings = ({
             ticketsListData={formValue.ticketTypes}
             setTicketListData={setTicketListData}
             createPromoType={createPromoType}
+            formValue={formValue}
           />
           {isEdit ? (
             <div className="page-bottom">

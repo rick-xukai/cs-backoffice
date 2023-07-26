@@ -29,7 +29,6 @@ const ImagesUpload = ({
   onChange,
   value,
 }: {
-  fieldEdit?: (value: any) => void;
   onChange?: (files: any) => void;
   value?: any[];
 }) => {

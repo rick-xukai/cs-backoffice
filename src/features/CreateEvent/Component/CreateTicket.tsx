@@ -107,6 +107,7 @@ const CreateTicket = ({
   fieldEdit,
   setTicketFormEdit,
   isEdit,
+  createEventPublish,
 }: {
   createTicketStatus: CreateTicketStatus;
   setCreateTicketStatus: any;
@@ -116,6 +117,7 @@ const CreateTicket = ({
   fieldEdit: (value: any, field: string) => void;
   setTicketFormEdit: (status: boolean) => void;
   isEdit: boolean;
+  createEventPublish: any;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -287,6 +289,7 @@ const CreateTicket = ({
   useEffect(
     () => () => {
       setCreateTicketStatus(CreateTicketStatus.list);
+      setTicketFormEdit(false);
     },
     [],
   );
@@ -323,6 +326,11 @@ const CreateTicket = ({
       );
       newTicketList[findIndex] = { ...ticketValue };
       fieldEdit(newTicketList, 'ticketTypes');
+      if (isEdit) {
+        createEventPublish({
+          ticketTypes: newTicketList,
+        });
+      }
     } else {
       fieldEdit(
         [
@@ -331,8 +339,18 @@ const CreateTicket = ({
         ],
         'ticketTypes',
       );
+      if (isEdit) {
+        createEventPublish({
+          ticketTypes: [
+            ...formValue.ticketTypes,
+            { ...ticketValue, id: `add_${new Date().getTime()}` },
+          ],
+        });
+      }
     }
-    setCreateTicketStatus(CreateTicketStatus.list);
+    if (!isEdit) {
+      setCreateTicketStatus(CreateTicketStatus.list);
+    }
   };
 
   const handleCancelCreateTicket = () => {

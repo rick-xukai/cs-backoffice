@@ -35,12 +35,12 @@ const createEvent = async (payload: CreateEventFormValueProps) => {
   return response;
 };
 
-const updateEvent = async ({ payload, id }: { payload: any; id: string }) => {
+const updateEvent = async ({ id, ...opt }: any) => {
   const uri = API.updateEvent.put.replace('{eventId}', id);
   const response = await requestClient()
     .setUri(uri)
     .setAuthorizationStatus()
-    .setPayload(payload)
+    .setPayload(opt)
     .doPut();
   return response;
 };

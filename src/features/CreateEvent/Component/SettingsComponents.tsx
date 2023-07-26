@@ -187,7 +187,8 @@ export const PromoListItem = ({
     discount,
     code,
   } = item;
-
+  const findTicket = (id: any) =>
+    formValue.ticketTypes.find((ticket) => `${ticket.id}` === `${id}`);
   const more = (
     <MoreIcon
       trigger={['click']}
@@ -246,11 +247,11 @@ export const PromoListItem = ({
                   <div className="head-item">{t('Ticket Name')}</div>
                   <div className="head-item">{t('Price')}</div>
                 </div>
-                {apply.ticketTypeIds.map((ticket) => (
-                  <div className="body" key={ticket.id}>
-                    <div className="body-item">{ticket.name}</div>
+                {apply.ticketTypeIds.map((id) => (
+                  <div className="body" key={findTicket(id)?.id}>
+                    <div className="body-item">{findTicket(id)?.name}</div>
                     <div className="body-item">
-                      {ticket.price} {SGD_UNIT}
+                      {findTicket(id)?.price} {SGD_UNIT}
                     </div>
                   </div>
                 ))}
@@ -390,6 +391,7 @@ export const AddEditForm = ({
   setTicketListData,
   createPromoType,
   setOnSave,
+  formValue,
 }: {
   changePromoValues: any;
   promoValue: PromoListProps;
@@ -400,6 +402,7 @@ export const AddEditForm = ({
   setTicketListData: any;
   createPromoType: CreatePromoType;
   setOnSave: any;
+  formValue: CreateEventFormValueProps;
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -412,7 +415,9 @@ export const AddEditForm = ({
     changePromoValues({
       apply: {
         ...promoValue.apply,
-        ticketTypeIds: ticketsList.filter((item) => item.checked),
+        ticketTypeIds: ticketsList
+          .filter((item) => item.checked)
+          .map((item) => item.id),
       },
     });
     setOpen(false);
@@ -427,6 +432,9 @@ export const AddEditForm = ({
     );
   };
 
+  const findTicket = (id: any) =>
+    formValue.ticketTypes.find((ticket) => `${ticket.id}` === `${id}`);
+
   const handleDeleteTicket = (index: number) => {
     Modal.confirm({
       className: 'notSaveConfirmModal',
@@ -436,7 +444,9 @@ export const AddEditForm = ({
       cancelText: 'Cancel',
       title: 'Remove Ticket',
       icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to remove ${promoValue.apply.ticketTypeIds[index].name}?`,
+      content: `Are you sure you want to remove ${
+        findTicket(promoValue.apply.ticketTypeIds[index])?.name
+      }?`,
       onOk: () => {
         promoValue.apply.ticketTypeIds.splice(index, 1);
         changePromoValues({
@@ -453,7 +463,7 @@ export const AddEditForm = ({
       ticketsListData.map((item: any) => ({
         ...item,
         checked: !!promoValue.apply.ticketTypeIds.find(
-          (ticket) => item.id === ticket.id,
+          (ticket: any) => `${item.id}` === `${ticket}`,
         ),
       })),
     );
@@ -873,11 +883,11 @@ export const AddEditForm = ({
             {promoValue.apply.type === ApplyCodeToType.certain && (
               <ConnectTicketsList>
                 {promoValue.apply.ticketTypeIds.map((item, index) => (
-                  <ConnectTicketItem key={item.id}>
+                  <ConnectTicketItem key={item}>
                     <div>
-                      <p className="title">{item.name}</p>
+                      <p className="title">{findTicket(item)?.name}</p>
                       <p className="sub-title">
-                        {item.price} {SGD_UNIT}
+                        {findTicket(item)?.price} {SGD_UNIT}
                       </p>
                     </div>
                     <img
