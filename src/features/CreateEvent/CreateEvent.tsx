@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { useHistory, Prompt, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -175,10 +174,6 @@ const CreateEvent = () => {
   const { id } = params;
   const isEdit = !!id;
 
-  useEffect(() => {
-    console.log(needUpdateTicketsId);
-  }, [needUpdateTicketsId]);
-
   const formatRequestPayload = (
     type: number,
     anotherPayload?: {
@@ -210,7 +205,8 @@ const CreateEvent = () => {
             ...discount.discount,
             id:
               (!needUpdateDiscountsId.length && discount.id) ||
-              (needUpdateDiscountsId[index] && needUpdateDiscountsId[index].id) ||
+              (needUpdateDiscountsId[index] &&
+                needUpdateDiscountsId[index].id) ||
               discount.id,
             value:
               (discount.discount.value &&
