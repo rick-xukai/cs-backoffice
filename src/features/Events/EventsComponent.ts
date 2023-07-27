@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { Row } from 'antd';
+
 import { Colors, BreakPoints } from '../../theme';
 
 interface EventStatusBadgeProps {
@@ -249,6 +251,9 @@ const EventListTableContainer = styled.div`
       line-height: 21px;
     }
   }
+  .responsive-card-container {
+    padding: 20px;
+  }
 `;
 
 const EventStatusBadge = styled.span`
@@ -262,9 +267,29 @@ const EventStatusBadge = styled.span`
   background: ${(props: EventStatusBadgeProps) => props.background};
 `;
 
+const EventInfoCardResponsive = styled(Row)`
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 0.6px solid ${Colors.grey8};
+  .event-list-action {
+    > :first-child {
+      margin-right: 15px;
+    }
+    .icon-content {
+      width: 20px;
+      height: 20px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+`;
+
 export {
   EventsContainer,
   AddNewEventContainer,
   EventListTableContainer,
   EventStatusBadge,
+  EventInfoCardResponsive,
 };

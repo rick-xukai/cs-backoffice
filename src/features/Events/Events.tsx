@@ -44,6 +44,7 @@ import {
   AddNewEventContainer,
   EventListTableContainer,
   EventStatusBadge,
+  EventInfoCardResponsive,
 } from './EventsComponent';
 import {
   resetState,
@@ -88,6 +89,161 @@ const Events = () => {
   const [showAddEvent, setShowAddEvent] = useState<boolean>(false);
   const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
   const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
+
+  const renderListItemAction = (record: EventsListDataType) => {
+    const items: MenuProps['items'] = [
+      {
+        label: t('Dashboard'),
+        key: 'Dashboard',
+        style: {
+          display:
+            (record.status !== EventStatusKeys.draft && 'block') || 'none',
+        },
+        onClick: () => {
+          history.push(`${UserRoutes.dashboard}/${record.id}`);
+        },
+      },
+      {
+        label: (
+          <a
+            href={`${process.env.REACT_APP_WEB_APP_LINK}/events/${record.slug}`}
+            target="_blank"
+          >
+            {t('View on CrowdServe')}
+          </a>
+        ),
+        key: 'View on CrowdServe',
+        style: {
+          display:
+            (record.status === EventStatusKeys.upcoming && 'block') || 'none',
+        },
+      },
+      {
+        label: t('Edit'),
+        key: 'Edit',
+        onClick: () => {
+          history.push(UserRoutes.editEvent.replace(':id', record.id));
+        },
+        style: {
+          display:
+            ((record.status === EventStatusKeys.upcoming ||
+              record.status === EventStatusKeys.draft) &&
+              'block') ||
+            'none',
+        },
+      },
+      {
+        label: t('Delete'),
+        key: 'Delete',
+        style: {
+          display:
+            (record.status === EventStatusKeys.draft && 'block') || 'none',
+        },
+        onClick: () => {
+          setCancelSuccess(false);
+          setDeleteSuccess(false);
+          confirm({
+            centered: true,
+            closable: false,
+            okText: t('Delete'),
+            cancelText: t('Cancel'),
+            title: t('Delete Event'),
+            icon: <ExclamationCircleOutlined />,
+            content: t('Are you sure you want to delete this event?'),
+            onOk: async () => {
+              const response = await dispatch(deleteEventAction(record.id));
+              if (response.type === deleteEventAction.fulfilled.toString()) {
+                message.success(t('Deleted successfully'));
+                setDeleteSuccess(true);
+              }
+            },
+          });
+        },
+      },
+      {
+        label: t('Copy Link'),
+        key: 'Copy Link',
+        style: {
+          display:
+            (record.status !== EventStatusKeys.draft && 'block') || 'none',
+        },
+        onClick: () => {
+          copy(`${process.env.REACT_APP_WEB_APP_LINK}/events/${record.slug}`);
+          message.success(t('Link copied.'));
+        },
+      },
+      {
+        label: t('Cancel Event'),
+        key: 'Cancel Event',
+        style: {
+          display:
+            (record.status === EventStatusKeys.upcoming && 'block') || 'none',
+        },
+        onClick: () => {
+          setCancelSuccess(false);
+          setDeleteSuccess(false);
+          confirm({
+            centered: true,
+            closable: false,
+            okText: t('Cancel Event'),
+            cancelText: t('Back'),
+            title: t('Cancel Event'),
+            icon: <ExclamationCircleOutlined />,
+            content: t(
+              'Are you sure you want to cancel this event? All the user tickets will be refunded',
+            ),
+            onOk: async () => {
+              const response = await dispatch(cancelEventAction(record.id));
+              if (response.type === cancelEventAction.fulfilled.toString()) {
+                message.success(t('Canceled successfully'));
+                setCancelSuccess(true);
+              }
+            },
+          });
+        },
+      },
+    ];
+
+    let iconDisable = false;
+
+    if (
+      record.status !== EventStatusKeys.upcoming &&
+      record.status !== EventStatusKeys.draft
+    ) {
+      iconDisable = true;
+    }
+
+    return (
+      <div className="event-list-action">
+        {(iconDisable && (
+          <div className="icon-content-disable">
+            <img src={Images.EditorDisable} alt="" />
+          </div>
+        )) || (
+          <Tooltip
+            title={t('Edit')}
+            overlayClassName="event-edit"
+            placement="bottom"
+          >
+            <Link to={UserRoutes.editEvent.replace(':id', record.id)}>
+              <div className="icon-content">
+                <img src={Images.Editor} alt="" />
+              </div>
+            </Link>
+          </Tooltip>
+        )}
+        <div className="icon-content">
+          <Dropdown
+            menu={{ items }}
+            trigger={['click']}
+            overlayClassName="event-more-action"
+          >
+            <img src={Images.MoreOutlinedIcon} alt="" />
+          </Dropdown>
+        </div>
+      </div>
+    );
+  };
 
   const columns = [
     {
@@ -193,168 +349,8 @@ const Events = () => {
         UserRoleKeys.partnerAdmin,
         UserRoleKeys.superAdmin,
       ],
-      render: (_: any, record: EventsListDataType) => {
-        const items: MenuProps['items'] = [
-          {
-            label: t('Dashboard'),
-            key: 'Dashboard',
-            style: {
-              display:
-                (record.status !== EventStatusKeys.draft && 'block') || 'none',
-            },
-            onClick: () => {
-              history.push(`${UserRoutes.dashboard}/${record.id}`);
-            },
-          },
-          {
-            label: (
-              <a
-                href={`${process.env.REACT_APP_WEB_APP_LINK}/events/${record.slug}`}
-                target="_blank"
-              >
-                {t('View on CrowdServe')}
-              </a>
-            ),
-            key: 'View on CrowdServe',
-            style: {
-              display:
-                (record.status === EventStatusKeys.upcoming && 'block') ||
-                'none',
-            },
-          },
-          {
-            label: t('Edit'),
-            key: 'Edit',
-            onClick: () => {
-              history.push(UserRoutes.editEvent.replace(':id', record.id));
-            },
-            style: {
-              display:
-                ((record.status === EventStatusKeys.upcoming ||
-                  record.status === EventStatusKeys.draft) &&
-                  'block') ||
-                'none',
-            },
-          },
-          {
-            label: t('Delete'),
-            key: 'Delete',
-            style: {
-              display:
-                (record.status === EventStatusKeys.draft && 'block') || 'none',
-            },
-            onClick: () => {
-              setCancelSuccess(false);
-              setDeleteSuccess(false);
-              confirm({
-                centered: true,
-                closable: false,
-                okText: t('Delete'),
-                cancelText: t('Cancel'),
-                title: t('Delete Event'),
-                icon: <ExclamationCircleOutlined />,
-                content: t('Are you sure you want to delete this event?'),
-                onOk: async () => {
-                  const response = await dispatch(deleteEventAction(record.id));
-                  if (
-                    response.type === deleteEventAction.fulfilled.toString()
-                  ) {
-                    message.success(t('Deleted successfully'));
-                    setDeleteSuccess(true);
-                  }
-                },
-              });
-            },
-          },
-          {
-            label: t('Copy Link'),
-            key: 'Copy Link',
-            style: {
-              display:
-                (record.status !== EventStatusKeys.draft && 'block') || 'none',
-            },
-            onClick: () => {
-              copy(
-                `${process.env.REACT_APP_WEB_APP_LINK}/events/${record.slug}`,
-              );
-              message.success(t('Link copied.'));
-            },
-          },
-          {
-            label: t('Cancel Event'),
-            key: 'Cancel Event',
-            style: {
-              display:
-                (record.status === EventStatusKeys.upcoming && 'block') ||
-                'none',
-            },
-            onClick: () => {
-              setCancelSuccess(false);
-              setDeleteSuccess(false);
-              confirm({
-                centered: true,
-                closable: false,
-                okText: t('Cancel Event'),
-                cancelText: t('Back'),
-                title: t('Cancel Event'),
-                icon: <ExclamationCircleOutlined />,
-                content: t(
-                  'Are you sure you want to cancel this event? All the user tickets will be refunded',
-                ),
-                onOk: async () => {
-                  const response = await dispatch(cancelEventAction(record.id));
-                  if (
-                    response.type === cancelEventAction.fulfilled.toString()
-                  ) {
-                    message.success(t('Canceled successfully'));
-                    setCancelSuccess(true);
-                  }
-                },
-              });
-            },
-          },
-        ];
-
-        let iconDisable = false;
-
-        if (
-          record.status !== EventStatusKeys.upcoming &&
-          record.status !== EventStatusKeys.draft
-        ) {
-          iconDisable = true;
-        }
-
-        return (
-          <div className="event-list-action">
-            {(iconDisable && (
-              <div className="icon-content-disable">
-                <img src={Images.EditorDisable} alt="" />
-              </div>
-            )) || (
-              <Tooltip
-                title={t('Edit')}
-                overlayClassName="event-edit"
-                placement="bottom"
-              >
-                <Link to={UserRoutes.editEvent.replace(':id', record.id)}>
-                  <div className="icon-content">
-                    <img src={Images.Editor} alt="" />
-                  </div>
-                </Link>
-              </Tooltip>
-            )}
-            <div className="icon-content">
-              <Dropdown
-                menu={{ items }}
-                trigger={['click']}
-                overlayClassName="event-more-action"
-              >
-                <img src={Images.MoreOutlinedIcon} alt="" />
-              </Dropdown>
-            </div>
-          </div>
-        );
-      },
+      render: (_: any, record: EventsListDataType) =>
+        renderListItemAction(record),
     },
   ];
 
@@ -510,24 +506,38 @@ const Events = () => {
         </Row>
         {(!showAddEvent && (
           <EventListTableContainer>
-            <TableComponent
-              loading={loading}
-              currentPage={page}
-              currentPageSize={pageSize}
-              columns={tableColumns}
-              tableData={eventsListData}
-              tableDataTotal={eventsListDataTotal}
-              emptyText={
-                <div className="table-empty-text">
-                  <img src={Images.NoDataIcon} alt="" />
-                  <p>No data</p>
-                </div>
-              }
-              paginationChange={(currentPage, currentPageSize) => {
-                dispatch(setPage(currentPage));
-                dispatch(setPageSize(currentPageSize));
-              }}
-            />
+            <Col lg={24} span={0}>
+              <TableComponent
+                loading={loading}
+                currentPage={page}
+                currentPageSize={pageSize}
+                columns={tableColumns}
+                tableData={eventsListData}
+                tableDataTotal={eventsListDataTotal}
+                emptyText={
+                  <div className="table-empty-text">
+                    <img src={Images.NoDataIcon} alt="" />
+                    <p>No data</p>
+                  </div>
+                }
+                paginationChange={(currentPage, currentPageSize) => {
+                  dispatch(setPage(currentPage));
+                  dispatch(setPageSize(currentPageSize));
+                }}
+              />
+            </Col>
+            <Col lg={0} span={24} className="responsive-card-container">
+              {eventsListData.map((item: EventsListDataType) => (
+                <EventInfoCardResponsive key={item.id}>
+                  <Col span={24}>
+                    <Row>
+                      <Col span={12}>123</Col>
+                      <Col span={12}>{renderListItemAction(item)}</Col>
+                    </Row>
+                  </Col>
+                </EventInfoCardResponsive>
+              ))}
+            </Col>
           </EventListTableContainer>
         )) || (
           <AddNewEventContainer>
