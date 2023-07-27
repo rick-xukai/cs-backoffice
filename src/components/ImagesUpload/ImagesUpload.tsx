@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Spin, message } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +32,12 @@ const ImagesUpload = ({
   onChange?: (files: any) => void;
   value?: any[];
 }) => {
-  const [imageList, setImageList] = useState<any>(value || []);
+  const [imageList, setImageList] = useState<any>([]);
+
+  useEffect(() => {
+    setImageList(value);
+  }, [value]);
+
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const fileLimit = (size: number, type: string) => {
