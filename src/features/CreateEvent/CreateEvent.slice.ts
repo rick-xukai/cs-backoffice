@@ -356,6 +356,8 @@ interface CreateEventState {
   publishLoading: boolean;
   saveDraftLoading: boolean;
   needUpdateEventId: string;
+  needUpdateTicketsId: [];
+  needUpdateDiscountsId: [];
   data: { id: number | string };
   listTicketType: ListTicketType[];
   organizerData: OrganizerData[];
@@ -374,6 +376,8 @@ const initialState: CreateEventState = {
   publishLoading: false,
   saveDraftLoading: false,
   needUpdateEventId: '',
+  needUpdateTicketsId: [],
+  needUpdateDiscountsId: [],
   data: { id: '' },
   listTicketType: [],
   organizerData: [],
