@@ -112,6 +112,9 @@ const ImagesUpload = ({
     const newImageList = [...imageList];
     newImageList[index].column = newSize;
     setImageList([...newImageList]);
+    if (onChange) {
+      onChange(newImageList);
+    }
   };
 
   const uploadImageRequest = async (e: any) => {

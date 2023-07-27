@@ -119,6 +119,16 @@ const EventsContainer = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
+      @media (max-width: ${BreakPoints.lg}px) {
+        position: relative;
+        top: -3px;
+      }
+    }
+    .icon-content-disable {
+      @media (max-width: ${BreakPoints.lg}px) {
+        position: relative;
+        top: -6px;
+      }
     }
     .icon-content {
       :hover {
@@ -198,6 +208,9 @@ const AddNewEventContainer = styled.div`
 const EventListTableContainer = styled.div`
   width: 100%;
   height: calc(100vh - 184px);
+  @media (max-width: ${BreakPoints.lg}px) {
+    height: auto;
+  }
   border-radius: 2px;
   background: ${Colors.white};
   margin-top: 16px;
@@ -253,6 +266,7 @@ const EventListTableContainer = styled.div`
   }
   .responsive-card-container {
     padding: 20px;
+    min-height: 220px;
   }
 `;
 
@@ -283,6 +297,37 @@ const EventInfoCardResponsive = styled(Row)`
         height: 100%;
       }
     }
+  }
+  .image {
+    width: 88px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+  .title {
+    font-size: 15px;
+    color: ${Colors.black7};
+    height: 21px;
+    line-height: 21px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .date {
+    font-size: 13px;
+    color: ${Colors.black6};
+    height: 19px;
+    line-height: 19px;
+    font-weight: 400;
+    margin-bottom: 0px;
+  }
+  .stock,
+  .price {
+    font-size: 15px;
+    color: ${Colors.black7};
+    height: 21px;
+    line-height: 21px;
+    font-weight: 400;
+    margin-bottom: 0px;
   }
 `;
 

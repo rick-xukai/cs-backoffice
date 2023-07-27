@@ -463,6 +463,7 @@ const CreateEvent = () => {
       });
     }
   };
+  console.log(isEdit && steps !== ComponentSteps.publish);
 
   const notSaveConfirm = (
     onOk?: any,
@@ -476,14 +477,13 @@ const CreateEvent = () => {
       if (okText) return okText;
       if (isEdit) {
         return steps !== ComponentSteps.publish
-          ? t('Save and Publish')
+          ? t('Save and Leave')
           : t('Publish');
       }
       return t('Save as Draft');
     };
     confirm({
       className: 'notSaveConfirmModal',
-      // open: showNotSaveConfirmModal,
       centered: true,
       closable: false,
       okText: getOkText(),
@@ -503,6 +503,12 @@ const CreateEvent = () => {
           onOk();
         } else if (isEdit) {
           createEventPublish();
+          if (steps !== ComponentSteps.publish) {
+            setEventInfoFormEdit(false);
+            setTicketFormEdit(false);
+            setSettingsFormEdit(false);
+            window.history.go(-1);
+          }
         } else {
           saveAsDraft('blockRouter');
         }
@@ -723,6 +729,7 @@ const CreateEvent = () => {
                     organizerData={organizerData}
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
+                    isEdit={isEdit}
                   />
                 )}
                 {steps === ComponentSteps.createTicket && (

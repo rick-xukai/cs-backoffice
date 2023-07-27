@@ -11,6 +11,8 @@ import {
   Tooltip,
   Dropdown,
   Modal,
+  Spin,
+  Pagination,
 } from 'antd';
 import type { MenuProps } from 'antd';
 import {
@@ -18,6 +20,7 @@ import {
   SearchOutlined,
   PlusOutlined,
   ExclamationCircleOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 import copy from 'copy-to-clipboard';
 import { debounce } from 'lodash';
@@ -66,6 +69,7 @@ import {
   deleteEventAction,
   EventStatusKeys,
 } from './Events.slice';
+import { SGD_UNIT } from '../../constants/constants';
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -245,6 +249,20 @@ const Events = () => {
     );
   };
 
+  const getBadge = (status: number) => {
+    const background =
+      FilterEventStatus.find((item) => item.key === status)?.background ||
+      Colors.orange2;
+    const color =
+      FilterEventStatus.find((item) => item.key === status)?.color ||
+      Colors.orange3;
+    return (
+      <EventStatusBadge color={color} background={background}>
+        {checkEventStatus(status)}
+      </EventStatusBadge>
+    );
+  };
+
   const columns = [
     {
       title: 'Event',
@@ -325,19 +343,7 @@ const Events = () => {
         UserRoleKeys.partnerAdmin,
         UserRoleKeys.superAdmin,
       ],
-      render: (status: number) => {
-        const background =
-          FilterEventStatus.find((item) => item.key === status)?.background ||
-          Colors.orange2;
-        const color =
-          FilterEventStatus.find((item) => item.key === status)?.color ||
-          Colors.orange3;
-        return (
-          <EventStatusBadge color={color} background={background}>
-            {checkEventStatus(status)}
-          </EventStatusBadge>
-        );
-      },
+      render: (status: number) => getBadge(status),
     },
     {
       title: '',
@@ -446,7 +452,25 @@ const Events = () => {
       );
     }
   }, [deleteSuccess, cancelSuccess]);
-
+  const createNewEventPlaceholder = (
+    <AddNewEventContainer>
+      <div>
+        <img src={Images.AddNewEventIcon} alt="" />
+        <p className="title">{t('Create New Event')}</p>
+        <p className="description">
+          {t(
+            'Be the catalyst for extraordinary moments. Create your event and captivate your audience now!',
+          )}
+        </p>
+        <Link to={UserRoutes.createEvent}>
+          <Button type="primary">
+            <PlusOutlined />
+            {t('Create New Event')}
+          </Button>
+        </Link>
+      </div>
+    </AddNewEventContainer>
+  );
   return (
     <EventsContainer>
       <PageHeaderComponent title={t('Events')} />
@@ -527,37 +551,64 @@ const Events = () => {
               />
             </Col>
             <Col lg={0} span={24} className="responsive-card-container">
+              {loading && (
+                <Spin
+                  spinning
+                  indicator={<LoadingOutlined spin />}
+                  size="large"
+                  style={{ margin: 'auto' }}
+                />
+              )}
+              {!loading && !eventsListData.length && createNewEventPlaceholder}
               {eventsListData.map((item: EventsListDataType) => (
-                <EventInfoCardResponsive key={item.id}>
+                <EventInfoCardResponsive key={item.id} gutter={[0, 8]}>
                   <Col span={24}>
                     <Row>
-                      <Col span={12}>123</Col>
+                      <Col span={12}>
+                        <img
+                          className="image"
+                          src={item.image || Images.NoEventBanner}
+                          alt={item.name}
+                        />
+                      </Col>
                       <Col span={12}>{renderListItemAction(item)}</Col>
                     </Row>
                   </Col>
+                  <Col span={24}>
+                    <h4 className="title">{item.name}</h4>
+                    <p className="date">{item.time}</p>
+                  </Col>
+                  <Col span={24}>
+                    <p className="stock">
+                      {item.soldTotal} / {item.total}
+                    </p>
+                    <p className="price">
+                      {item.revenue.toLocaleString()} {SGD_UNIT}
+                    </p>
+                  </Col>
+                  <Col span={24}>{getBadge(item.status)}</Col>
                 </EventInfoCardResponsive>
               ))}
+              <Row justify="end">
+                <Col>
+                  <Pagination
+                    size="small"
+                    current={page}
+                    pageSize={pageSize}
+                    total={eventsListDataTotal}
+                    hideOnSinglePage
+                    showTotal={(total) => `Total ${total} items`}
+                    showSizeChanger={false}
+                    onChange={(currentPage) => {
+                      dispatch(setPage(currentPage));
+                    }}
+                  />
+                </Col>
+              </Row>
             </Col>
           </EventListTableContainer>
-        )) || (
-          <AddNewEventContainer>
-            <div>
-              <img src={Images.AddNewEventIcon} alt="" />
-              <p className="title">{t('Create New Event')}</p>
-              <p className="description">
-                {t(
-                  'Be the catalyst for extraordinary moments. Create your event and captivate your audience now!',
-                )}
-              </p>
-              <Link to={UserRoutes.createEvent}>
-                <Button type="primary">
-                  <PlusOutlined />
-                  {t('Create New Event')}
-                </Button>
-              </Link>
-            </div>
-          </AddNewEventContainer>
-        )}
+        )) ||
+          createNewEventPlaceholder}
       </div>
     </EventsContainer>
   );
