@@ -419,7 +419,11 @@ const CreateEvent = () => {
    * @param field Field name, required!
    */
   const handleFieldChange = (value: any, field: string) => {
-    if (field !== 'ticketTypes' && field !== 'discounts') {
+    if (
+      field !== 'ticketTypes' &&
+      field !== 'discounts' &&
+      field !== 'locationCoord'
+    ) {
       setEventInfoFormEdit(true);
     }
     if (field === 'eventTime') {
@@ -466,7 +470,7 @@ const CreateEvent = () => {
     };
     confirm({
       className: 'notSaveConfirmModal',
-      open: showNotSaveConfirmModal,
+      // open: showNotSaveConfirmModal,
       centered: true,
       closable: false,
       okText: getOkText(),
