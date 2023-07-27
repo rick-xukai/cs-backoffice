@@ -47,6 +47,8 @@ import {
   getListTicketTypeAction,
   updateEventAction,
   selectNeedUpdateEventId,
+  selectNeedUpdateTicketsId,
+  selectNeedUpdateDiscountsId,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 import { getEventDetailAction } from '../EventDetail/EventDetail.slice';
@@ -84,6 +86,8 @@ const CreateEvent = () => {
   const organizerData = useAppSelector(selectOrganizerData);
   const listTicketType = useAppSelector(selectListTicketType);
   const needUpdateEventId = useAppSelector(selectNeedUpdateEventId);
+  const needUpdateDiscountsId = useAppSelector(selectNeedUpdateDiscountsId);
+  const needUpdateTicketsId = useAppSelector(selectNeedUpdateTicketsId);
 
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
@@ -194,11 +198,16 @@ const CreateEvent = () => {
               ?.text || '',
         }),
       ),
-      discounts: discounts.map((discount) => {
+      discounts: discounts.map((discount, index) => {
         const applyItems = {
           ...discount,
           discount: {
             ...discount.discount,
+            id:
+              (!needUpdateDiscountsId.length && discount.id) ||
+              (needUpdateDiscountsId[index] &&
+                needUpdateDiscountsId[index].id) ||
+              discount.id,
             value:
               (discount.discount.value &&
                 Number(
@@ -225,9 +234,13 @@ const CreateEvent = () => {
         return items;
       }),
     };
-    const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
+    const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item, index) => {
       const types = {
         ...item,
+        id:
+          (!needUpdateTicketsId.length && item.id) ||
+          (needUpdateTicketsId[index] && needUpdateTicketsId[index].id) ||
+          item.id,
         price: Number(item.price),
         stock: Number(item.stock),
         ceilingPrice: Number(item.ceilingPrice),

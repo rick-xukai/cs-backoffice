@@ -244,7 +244,9 @@ export const SelectEventsModal = ({
                   checked={item.checked}
                 />
               </Col>
-              <Col span={15}>{item.eventName}</Col>
+              <Col span={15} style={{ paddingRight: 20 }}>
+                {item.eventName}
+              </Col>
               <Col span={7}>{item.name}</Col>
             </Row>
           </Col>

@@ -145,6 +145,11 @@ export interface OrganizerData {
   name: string;
 }
 
+export interface ResponseUpdateId {
+  id: string;
+  idFlag: string;
+}
+
 export const verificationApi = (response: any) =>
   response.code === 200 && response.message === 'OK';
 
@@ -356,6 +361,8 @@ interface CreateEventState {
   publishLoading: boolean;
   saveDraftLoading: boolean;
   needUpdateEventId: string;
+  needUpdateTicketsId: ResponseUpdateId[];
+  needUpdateDiscountsId: ResponseUpdateId[];
   data: { id: number | string };
   listTicketType: ListTicketType[];
   organizerData: OrganizerData[];
@@ -374,6 +381,8 @@ const initialState: CreateEventState = {
   publishLoading: false,
   saveDraftLoading: false,
   needUpdateEventId: '',
+  needUpdateTicketsId: [],
+  needUpdateDiscountsId: [],
   data: { id: '' },
   listTicketType: [],
   organizerData: [],
@@ -394,6 +403,8 @@ export const createEventSlice = createSlice({
       })
       .addCase(createEventAction.fulfilled, (state, action: any) => {
         state.needUpdateEventId = '';
+        state.needUpdateTicketsId = [];
+        state.needUpdateDiscountsId = [];
         state.publishLoading = false;
         state.data = action.payload;
       })
@@ -410,6 +421,8 @@ export const createEventSlice = createSlice({
       })
       .addCase(createEventSaveDraftAction.fulfilled, (state, action: any) => {
         state.saveDraftLoading = false;
+        state.needUpdateTicketsId = action.payload.ticketTypes;
+        state.needUpdateDiscountsId = action.payload.discounts;
         state.needUpdateEventId = action.payload.id;
       })
       .addCase(createEventSaveDraftAction.rejected, (state, action) => {
@@ -450,6 +463,8 @@ export const createEventSlice = createSlice({
         } else {
           state.publishLoading = false;
         }
+        state.needUpdateTicketsId = action.payload.ticketTypes;
+        state.needUpdateDiscountsId = action.payload.discounts;
         state.data = action.payload;
       })
       .addCase(updateEventAction.rejected, (state, action) => {
@@ -498,5 +513,9 @@ export const selectListTicketType = (state: RootState) =>
   state.createEvent.listTicketType;
 export const selectNeedUpdateEventId = (state: RootState) =>
   state.createEvent.needUpdateEventId;
+export const selectNeedUpdateTicketsId = (state: RootState) =>
+  state.createEvent.needUpdateTicketsId;
+export const selectNeedUpdateDiscountsId = (state: RootState) =>
+  state.createEvent.needUpdateDiscountsId;
 
 export default createEventSlice.reducer;
