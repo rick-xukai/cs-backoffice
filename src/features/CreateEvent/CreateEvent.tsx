@@ -657,9 +657,7 @@ const CreateEvent = () => {
   }, []);
 
   const handleCancel = () => {
-    notSaveConfirm('', () => {
-      history.push(UserRoutes.events);
-    });
+    history.push(UserRoutes.events);
   };
 
   const showSaveAndPublishCondition =

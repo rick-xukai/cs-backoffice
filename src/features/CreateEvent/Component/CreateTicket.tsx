@@ -390,8 +390,8 @@ const CreateTicket = ({
           handleSave();
         },
         onCancel: () => {
-          setCreateTicketStatus(CreateTicketStatus.list);
           setTicketFormEdit(false);
+          setCreateTicketStatus(CreateTicketStatus.list);
         },
       });
     } else {
