@@ -85,7 +85,7 @@ const Events = () => {
   const eventsListData = useAppSelector(selectData);
   const eventsListDataTotal = useAppSelector(selectDataTotal);
   const page = useAppSelector(selectPage);
-  const pageSize = useAppSelector(selectPageSize);
+  const size = useAppSelector(selectPageSize);
   const filterStatus = useAppSelector(selectFilterStatus);
   const searchKeyword = useAppSelector(selectSearchKeyword);
 
@@ -278,7 +278,12 @@ const Events = () => {
       render: (_: string, record: EventsListDataType) => (
         <Row>
           <Col span={6}>
-            <div className="event-img">
+            <div
+              className={
+                (record.image.includes('.gif') && 'event-img type-gif') ||
+                'event-img'
+              }
+            >
               <img src={record.image || Images.NoEventBanner} alt="" />
             </div>
           </Col>
@@ -373,7 +378,7 @@ const Events = () => {
     const response: any = await dispatch(
       getEventsListAction({
         page,
-        pageSize,
+        size,
         status: filterStatus,
         keyword: searchKeyword,
       }),
@@ -398,7 +403,7 @@ const Events = () => {
       dispatch(
         getEventsListAction({
           page,
-          pageSize,
+          size,
           status,
         }),
       );
@@ -440,14 +445,14 @@ const Events = () => {
     if (page !== 0) {
       requestEventsList();
     }
-  }, [page, pageSize, filterStatus]);
+  }, [page, size, filterStatus]);
 
   useEffect(() => {
     if (deleteSuccess || cancelSuccess) {
       dispatch(
         getEventsListAction({
           page,
-          pageSize,
+          size,
           status: filterStatus,
           keyword: searchKeyword,
         }),
@@ -557,7 +562,7 @@ const Events = () => {
                     <TableComponent
                       loading={loading}
                       currentPage={page}
-                      currentPageSize={pageSize}
+                      currentPageSize={size}
                       columns={tableColumns}
                       tableData={eventsListData}
                       tableDataTotal={eventsListDataTotal}
@@ -602,7 +607,7 @@ const Events = () => {
                         <Pagination
                           size="small"
                           current={page}
-                          pageSize={pageSize}
+                          pageSize={size}
                           total={eventsListDataTotal}
                           hideOnSinglePage
                           showTotal={(total) => `Total ${total} items`}

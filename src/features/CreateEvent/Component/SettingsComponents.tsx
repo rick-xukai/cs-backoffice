@@ -230,7 +230,7 @@ export const PromoListItem = ({
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Discount Value')}</div>
           <div className="value">
-            {discount.value?.toFixed(2)}{' '}
+            {discount.value && Number(discount.value).toFixed(2)}{' '}
             {discount.type === DiscountType.amount ? SGD_UNIT : '%'}
           </div>
         </LabelAndValue>

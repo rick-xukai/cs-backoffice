@@ -133,7 +133,7 @@ interface EventsState {
   data: [];
   total: number;
   page: number;
-  pageSize: number;
+  size: number;
   searchKeyword: string;
   filterStatus: number | null;
   filterStatusText: string;
@@ -149,7 +149,7 @@ interface EventsState {
 const initialState: EventsState = {
   loading: false,
   page: defaultCurrentPage,
-  pageSize: defaultPageSize,
+  size: defaultPageSize,
   searchKeyword: '',
   filterStatus: EventStatusKeys.upcoming,
   filterStatusText: '',
@@ -173,7 +173,7 @@ export const eventsSlice = createSlice({
       state.page = action.payload;
     },
     setPageSize: (state, action) => {
-      state.pageSize = action.payload;
+      state.size = action.payload;
     },
     setSearchKeyword: (state, action) => {
       state.searchKeyword = action.payload;
@@ -242,6 +242,6 @@ export const selectFilterStatusText = (state: RootState) =>
 export const selectSearchKeyword = (state: RootState) =>
   state.events.searchKeyword;
 export const selectPage = (state: RootState) => state.events.page;
-export const selectPageSize = (state: RootState) => state.events.pageSize;
+export const selectPageSize = (state: RootState) => state.events.size;
 
 export default eventsSlice.reducer;

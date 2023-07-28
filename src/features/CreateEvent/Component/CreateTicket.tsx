@@ -436,7 +436,39 @@ const CreateTicket = ({
         } else {
           newTicketTypes.splice(index, 1);
         }
-        fieldEdit(newTicketTypes, 'ticketTypes');
+        const updateDiscounts = formValue.discounts;
+        fieldEdit(
+          {
+            ticketTypes: newTicketTypes,
+            discounts: updateDiscounts.map((discountItem) => {
+              const newDiscounts = {
+                ...discountItem,
+                condition: {
+                  ...discountItem.condition,
+                  ticketTypeId:
+                    (discountItem.condition.ticketTypeId !== item.id &&
+                      discountItem.condition.ticketTypeId) ||
+                    undefined,
+                },
+                gift: {
+                  ...discountItem.gift,
+                  ticketTypeId:
+                    (discountItem.gift.ticketTypeId !== item.id &&
+                      discountItem.gift.ticketTypeId) ||
+                    undefined,
+                },
+                apply: {
+                  ...item.apply,
+                  ticketTypeIds: discountItem.apply.ticketTypeIds.filter(
+                    (ticketTypeId) => ticketTypeId !== item.id,
+                  ),
+                },
+              };
+              return newDiscounts;
+            }),
+          },
+          'ticketTypesAndDiscount',
+        );
         if (isEdit && !isDraft) {
           createEventPublish({
             ticketTypes: newTicketTypes,
