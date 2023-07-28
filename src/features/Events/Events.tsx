@@ -502,7 +502,11 @@ const Events = () => {
                 <Input
                   defaultValue={searchKeyword}
                   placeholder={t('Search event')}
-                  allowClear={{ clearIcon: <CloseOutlined /> }}
+                  allowClear={{
+                    clearIcon: (
+                      <CloseOutlined onClick={(e) => e.preventDefault()} />
+                    ),
+                  }}
                   suffix={!searchKeyword && <SearchOutlined />}
                   onChange={(e) => {
                     dispatch(setPage(0));

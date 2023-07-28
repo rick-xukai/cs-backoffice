@@ -314,10 +314,15 @@ const EventInfoCardResponsive = styled(Row)`
   .title {
     font-size: 15px;
     color: ${Colors.black7};
-    height: 21px;
+    min-height: 21px;
     line-height: 21px;
     font-weight: 500;
     margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
   .date {
     font-size: 13px;
