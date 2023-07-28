@@ -90,7 +90,7 @@ const Events = () => {
   const searchKeyword = useAppSelector(selectSearchKeyword);
 
   const [tableColumns, setTableColumns] = useState([]);
-  const [showAddEvent, setShowAddEvent] = useState<boolean>(false);
+  const [showNoSearchData, setShowNoSearchData] = useState<boolean>(false);
   const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
   const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
 
@@ -378,22 +378,22 @@ const Events = () => {
         keyword: searchKeyword,
       }),
     );
-    if (response.type === getEventsListAction.fulfilled.toString()) {
-      if (response.payload) {
-        if (
-          (!searchKeyword || filterStatus === null) &&
-          !response.payload.list.length
-        ) {
-          setShowAddEvent(true);
-        } else {
-          setShowAddEvent(false);
-        }
+    if (
+      response.type === getEventsListAction.fulfilled.toString() &&
+      response.payload
+    ) {
+      if (
+        (searchKeyword || filterStatus !== null) &&
+        !response.payload.list.length
+      ) {
+        setShowNoSearchData(true);
+      } else {
+        setShowNoSearchData(false);
       }
     }
   };
 
   const handleSearchEvent = (keyword: string, status: number | null) => {
-    dispatch(setPage(defaultCurrentPage));
     if (!keyword) {
       dispatch(
         getEventsListAction({
@@ -402,6 +402,8 @@ const Events = () => {
           status,
         }),
       );
+    } else {
+      dispatch(setPage(defaultCurrentPage));
     }
   };
 
@@ -452,16 +454,28 @@ const Events = () => {
       );
     }
   }, [deleteSuccess, cancelSuccess]);
+
   const createNewEventPlaceholder = (
     <AddNewEventContainer>
       <div>
-        <img src={Images.AddNewEventIcon} alt="" />
-        <p className="title">{t('Create New Event')}</p>
-        <p className="description">
-          {t(
-            'Be the catalyst for extraordinary moments. Create your event and captivate your audience now!',
-          )}
+        <img
+          src={
+            (!showNoSearchData && Images.AddNewEventIcon) ||
+            Images.NoSearchDataIcon
+          }
+          alt=""
+        />
+        <p className="title">
+          {(!showNoSearchData && t('Create New Event')) ||
+            t('No Matching Results')}
         </p>
+        {!showNoSearchData && (
+          <p className="description">
+            {t(
+              'Be the catalyst for extraordinary moments. Create your event and captivate your audience now!',
+            )}
+          </p>
+        )}
         <Link to={UserRoutes.createEvent}>
           <Button type="primary">
             <PlusOutlined />
@@ -471,6 +485,7 @@ const Events = () => {
       </div>
     </AddNewEventContainer>
   );
+
   return (
     <EventsContainer>
       <PageHeaderComponent title={t('Events')} />
@@ -518,97 +533,93 @@ const Events = () => {
             </Row>
           </Col>
           <Col lg={10} span={24}>
-            {!showAddEvent && (
-              <Link to={UserRoutes.createEvent}>
-                <Button type="primary" className="create-new-event">
-                  <PlusOutlined />
-                  {t('Create New Event')}
-                </Button>
-              </Link>
-            )}
+            <Link to={UserRoutes.createEvent}>
+              <Button type="primary" className="create-new-event">
+                <PlusOutlined />
+                {t('Create New Event')}
+              </Button>
+            </Link>
           </Col>
         </Row>
-        {(!showAddEvent && (
-          <EventListTableContainer>
-            <Col lg={24} span={0}>
-              <TableComponent
-                loading={loading}
-                currentPage={page}
-                currentPageSize={pageSize}
-                columns={tableColumns}
-                tableData={eventsListData}
-                tableDataTotal={eventsListDataTotal}
-                emptyText={
-                  <div className="table-empty-text">
-                    <img src={Images.NoDataIcon} alt="" />
-                    <p>No data</p>
-                  </div>
-                }
-                paginationChange={(currentPage, currentPageSize) => {
-                  dispatch(setPage(currentPage));
-                  dispatch(setPageSize(currentPageSize));
-                }}
-              />
-            </Col>
-            <Col lg={0} span={24} className="responsive-card-container">
-              {loading && (
-                <Spin
-                  spinning
-                  indicator={<LoadingOutlined spin />}
-                  size="large"
-                  style={{ margin: 'auto' }}
-                />
-              )}
-              {!loading && !eventsListData.length && createNewEventPlaceholder}
-              {eventsListData.map((item: EventsListDataType) => (
-                <EventInfoCardResponsive key={item.id} gutter={[0, 8]}>
-                  <Col span={24}>
-                    <Row>
-                      <Col span={12}>
-                        <img
-                          className="image"
-                          src={item.image || Images.NoEventBanner}
-                          alt={item.name}
+        <EventListTableContainer>
+          {(loading && (
+            <Spin
+              spinning
+              indicator={<LoadingOutlined spin />}
+              size="large"
+              style={{ margin: 'auto' }}
+            />
+          )) || (
+            <>
+              {(eventsListData.length && (
+                <>
+                  <Col lg={24} span={0}>
+                    <TableComponent
+                      loading={loading}
+                      currentPage={page}
+                      currentPageSize={pageSize}
+                      columns={tableColumns}
+                      tableData={eventsListData}
+                      tableDataTotal={eventsListDataTotal}
+                      paginationChange={(currentPage, currentPageSize) => {
+                        dispatch(setPage(currentPage));
+                        dispatch(setPageSize(currentPageSize));
+                      }}
+                    />
+                  </Col>
+                  <Col lg={0} span={24} className="responsive-card-container">
+                    {eventsListData.map((item: EventsListDataType) => (
+                      <EventInfoCardResponsive key={item.id} gutter={[0, 8]}>
+                        <Col span={24}>
+                          <Row>
+                            <Col span={12}>
+                              <img
+                                className="image"
+                                src={item.image || Images.NoEventBanner}
+                                alt={item.name}
+                              />
+                            </Col>
+                            <Col span={12}>{renderListItemAction(item)}</Col>
+                          </Row>
+                        </Col>
+                        <Col span={24}>
+                          <h4 className="title">{item.name}</h4>
+                          <p className="date">{item.time}</p>
+                        </Col>
+                        <Col span={24}>
+                          <p className="stock">
+                            {item.soldTotal} / {item.total}
+                          </p>
+                          <p className="price">
+                            {item.revenue.toLocaleString()} {SGD_UNIT}
+                          </p>
+                        </Col>
+                        <Col span={24}>{getBadge(item.status)}</Col>
+                      </EventInfoCardResponsive>
+                    ))}
+                    <Row justify="end">
+                      <Col>
+                        <Pagination
+                          size="small"
+                          current={page}
+                          pageSize={pageSize}
+                          total={eventsListDataTotal}
+                          hideOnSinglePage
+                          showTotal={(total) => `Total ${total} items`}
+                          showSizeChanger={false}
+                          onChange={(currentPage) => {
+                            dispatch(setPage(currentPage));
+                          }}
                         />
                       </Col>
-                      <Col span={12}>{renderListItemAction(item)}</Col>
                     </Row>
                   </Col>
-                  <Col span={24}>
-                    <h4 className="title">{item.name}</h4>
-                    <p className="date">{item.time}</p>
-                  </Col>
-                  <Col span={24}>
-                    <p className="stock">
-                      {item.soldTotal} / {item.total}
-                    </p>
-                    <p className="price">
-                      {item.revenue.toLocaleString()} {SGD_UNIT}
-                    </p>
-                  </Col>
-                  <Col span={24}>{getBadge(item.status)}</Col>
-                </EventInfoCardResponsive>
-              ))}
-              <Row justify="end">
-                <Col>
-                  <Pagination
-                    size="small"
-                    current={page}
-                    pageSize={pageSize}
-                    total={eventsListDataTotal}
-                    hideOnSinglePage
-                    showTotal={(total) => `Total ${total} items`}
-                    showSizeChanger={false}
-                    onChange={(currentPage) => {
-                      dispatch(setPage(currentPage));
-                    }}
-                  />
-                </Col>
-              </Row>
-            </Col>
-          </EventListTableContainer>
-        )) ||
-          createNewEventPlaceholder}
+                </>
+              )) ||
+                createNewEventPlaceholder}
+            </>
+          )}
+        </EventListTableContainer>
       </div>
     </EventsContainer>
   );

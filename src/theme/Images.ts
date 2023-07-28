@@ -57,6 +57,7 @@ import NoDataIcon from '../assets/images/icons/no-data.svg';
 import AddNewEventIcon from '../assets/images/icons/add-new-event.svg';
 import Editor from '../assets/images/icons/editor.svg';
 import EditorDisable from '../assets/images/icons/editor-disable.svg';
+import NoSearchDataIcon from '../assets/images/icons/no-search-data.svg';
 
 const Images = {
   Logo,
@@ -120,6 +121,7 @@ const Images = {
   AddNewEventIcon,
   Editor,
   EditorDisable,
+  NoSearchDataIcon,
 };
 
 export default Images;
