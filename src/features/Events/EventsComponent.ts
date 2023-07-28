@@ -32,8 +32,8 @@ const EventsContainer = styled.div`
         display: flex;
         align-items: center;
         .ant-input-affix-wrapper {
-          padding-top: 8px;
-          padding-bottom: 8px;
+          padding-top: 6px;
+          padding-bottom: 6px;
         }
       }
       .ant-input-affix-wrapper {
@@ -230,13 +230,12 @@ const EventListTableContainer = styled.div`
     .event-img {
       height: 44px;
       img {
-        width: 100%;
         height: 100%;
         object-fit: cover;
+        border-radius: 4px;
       }
     }
     .table-event {
-      padding-left: 15px;
       .event-name {
         font-size: 15px;
         font-weight: 500;
@@ -299,9 +298,8 @@ const EventInfoCardResponsive = styled(Row)`
     }
   }
   .image {
-    width: 88px;
     height: 44px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 2px;
   }
   .title {

@@ -201,13 +201,12 @@ const CreateEvent = () => {
       discounts: discounts.map((discount, index) => {
         const applyItems = {
           ...discount,
+          id:
+            (!needUpdateDiscountsId.length && discount.id) ||
+            (needUpdateDiscountsId[index] && needUpdateDiscountsId[index].id) ||
+            discount.id,
           discount: {
             ...discount.discount,
-            id:
-              (!needUpdateDiscountsId.length && discount.id) ||
-              (needUpdateDiscountsId[index] &&
-                needUpdateDiscountsId[index].id) ||
-              discount.id,
             value:
               (discount.discount.value &&
                 Number(
