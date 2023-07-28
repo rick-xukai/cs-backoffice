@@ -402,7 +402,7 @@ const EventInfo = ({
                 <RangePicker
                   inputReadOnly
                   showTime={{ format: 'HH:mm' }}
-                  format="MMM DD YYYY, HH:mm"
+                  format="MMM DD, YYYY, HH:mm"
                   disabledDate={(currentDate) =>
                     currentDate &&
                     currentDate < moment().subtract(1, 'days').endOf('day')
