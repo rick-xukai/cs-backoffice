@@ -197,13 +197,9 @@ const CreateEvent = () => {
               ?.text || '',
         }),
       ),
-      discounts: discounts.map((discount, index) => {
+      discounts: discounts.map((discount) => {
         const applyItems = {
           ...discount,
-          id:
-            (!needUpdateDiscountsId.length && discount.id) ||
-            (needUpdateDiscountsId[index] && needUpdateDiscountsId[index].id) ||
-            discount.id,
           discount: {
             ...discount.discount,
             value:
@@ -232,13 +228,9 @@ const CreateEvent = () => {
         return items;
       }),
     };
-    const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item, index) => {
+    const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
       const types = {
         ...item,
-        id:
-          (!needUpdateTicketsId.length && item.id) ||
-          (needUpdateTicketsId[index] && needUpdateTicketsId[index].id) ||
-          item.id,
         price: Number(item.price),
         stock: Number(item.stock),
         ceilingPrice: Number(item.ceilingPrice),
@@ -262,6 +254,30 @@ const CreateEvent = () => {
     }
     return { ...payload, ticketTypes };
   };
+
+  useEffect(() => {
+    if (needUpdateTicketsId.length) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        ticketTypes: createEventFormValue.ticketTypes.map((item, index) => ({
+          ...item,
+          id: needUpdateTicketsId[index].id,
+        })),
+      });
+    }
+  }, [needUpdateTicketsId]);
+
+  useEffect(() => {
+    if (needUpdateDiscountsId.length) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        discounts: createEventFormValue.discounts.map((item, index) => ({
+          ...item,
+          id: needUpdateDiscountsId[index].id,
+        })),
+      });
+    }
+  }, [needUpdateDiscountsId]);
 
   const saveAsDraft = async (type?: string) => {
     if (!createEventFormValue.name) {
@@ -485,6 +501,12 @@ const CreateEvent = () => {
         ...createEventFormValue,
         locationCoord: `${value.lat},${value.lng}`,
         location: value.location,
+      });
+    } else if (field === 'ticketTypesAndDiscount') {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        ticketTypes: value.ticketTypes,
+        discounts: value.discounts,
       });
     } else if (field) {
       setCreateEventFormValue({

@@ -99,7 +99,10 @@ const Publish = ({
                       </span>
                       <span>
                         {(formValue.location &&
-                          `${formValue.location}, ${formValue.address}`) ||
+                          `${formValue.location}${
+                            (formValue.address && `, ${formValue.address}`) ||
+                            ''
+                          }`) ||
                           '-'}
                       </span>
                     </Col>

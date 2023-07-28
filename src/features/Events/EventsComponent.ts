@@ -229,6 +229,15 @@ const EventListTableContainer = styled.div`
   tbody {
     .event-img {
       height: 44px;
+      &.type-gif {
+        background: ${Colors.black};
+        text-align: center;
+        border-radius: 4px;
+        width: 88px;
+        img {
+          border-radius: 0px;
+        }
+      }
       img {
         height: 100%;
         object-fit: cover;
