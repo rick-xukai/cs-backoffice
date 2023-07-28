@@ -49,9 +49,12 @@ import {
   selectNeedUpdateEventId,
   selectNeedUpdateTicketsId,
   selectNeedUpdateDiscountsId,
+  CreateEventActionType,
+  updateNeedUpdateEventId,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 import { getEventDetailAction } from '../EventDetail/EventDetail.slice';
+import { EventStatusKeys } from '../Events/Events.slice';
 
 const { confirm } = Modal;
 
@@ -60,11 +63,6 @@ export enum ComponentSteps {
   createTicket = 1,
   settings = 2,
   publish = 3,
-}
-
-export enum CreateEventActionType {
-  publish = 1,
-  saveAsDraft = 0,
 }
 
 export const StatusImage = ({ src }: { src: string }) => (
@@ -173,6 +171,7 @@ const CreateEvent = () => {
   const params: { id: string } = useParams();
   const { id } = params;
   const isEdit = !!id;
+  const isDraft = createEventFormValue.status === EventStatusKeys.draft;
 
   const formatRequestPayload = (
     type: number,
@@ -212,7 +211,7 @@ const CreateEvent = () => {
                 Number(
                   discount.discount.value.toString().replaceAll(',', ''),
                 )) ||
-              undefined,
+              0,
           },
           apply: {
             ...discount.apply,
@@ -271,10 +270,10 @@ const CreateEvent = () => {
       );
     } else {
       let response: any = {};
-      if (needUpdateEventId) {
+      if (needUpdateEventId || createEventFormValue.id) {
         const payload: any = {
           ...formatRequestPayload(CreateEventActionType.saveAsDraft),
-          id: needUpdateEventId,
+          id: needUpdateEventId || createEventFormValue.id,
         };
         response = await dispatch(updateEventAction(payload));
       } else {
@@ -284,6 +283,7 @@ const CreateEvent = () => {
           ),
         );
       }
+
       if (
         response.type ===
         (
@@ -300,7 +300,10 @@ const CreateEvent = () => {
     }
   };
 
-  const fetchDetailData = async () => {
+  const fetchDetailData = async (
+    afterPublish?: boolean,
+    redirectTo?: () => void,
+  ) => {
     const response: any = await dispatch(getEventDetailAction(id));
     if (
       response.type === getEventDetailAction.fulfilled.toString() &&
@@ -315,34 +318,62 @@ const CreateEvent = () => {
           response: item.image,
           type: 'image/jpeg',
           size: 1,
+          name: item.image,
+        })),
+        ticketTypes: data.ticketTypes.map((item: any) => ({
+          ...item,
+          connectedTickets: item.connectedTickets.map((ticket: any) => ({
+            ...ticket,
+            ...listTicketType.find((type) => type.id === ticket.ticketTypeId),
+          })),
         })),
       };
       setCreateEventFormValue(payload);
       setOriginDetailData(payload);
+      if (data.status === EventStatusKeys.draft) {
+        dispatch(updateNeedUpdateEventId(data.id));
+      }
+      if (steps !== ComponentSteps.publish && afterPublish) {
+        if (redirectTo) {
+          redirectTo();
+        } else {
+          history.push(UserRoutes.events);
+        }
+      }
     }
   };
 
   const createEventPublish = async (anotherPayload?: {
     discounts?: CreateEventFormValueProps['discounts'];
     ticketTypes?: CreateEventFormValueProps['ticketTypes'];
+    redirectTo?: () => void;
+    publish?: CreateEventActionType;
   }) => {
     const currentTime = new Date().getTime();
     const endTime = new Date(createEventFormValue.endTime || '').getTime();
-    if (validatUnfinishedSteps(createEventFormValue) === '') {
+    if (
+      validatUnfinishedSteps(createEventFormValue) === '' ||
+      (isDraft && !anotherPayload?.publish)
+    ) {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
       } else if (isEdit) {
         const payload: any = {
           ...formatRequestPayload(
-            CreateEventActionType.publish,
+            isDraft
+              ? CreateEventActionType.saveAsDraft
+              : CreateEventActionType.publish,
             anotherPayload,
           ),
           id: createEventFormValue.id,
         };
         const handleUpdate = async () => {
           const response = await dispatch(updateEventAction(payload));
-          fetchDetailData();
           if (response.type === updateEventAction.fulfilled.toString()) {
+            fetchDetailData(true, anotherPayload?.redirectTo);
+            if (anotherPayload?.redirectTo) {
+              anotherPayload.redirectTo();
+            }
             message.success(t(`Event is successfully updated.`));
             setShowNotSaveConfirmModal(false);
             setEventInfoFormEdit(false);
@@ -360,7 +391,7 @@ const CreateEvent = () => {
           confirm({
             className: 'notSaveConfirmModal',
             onOk: handleUpdate,
-            okText: t('Save and Publish'),
+            okText: isDraft ? t('Save') : t('Save and Publish'),
             title: t('Key Info Changed'),
             content: t(
               'Are you sure you gonna change the event key info? Make sure you have informed your attendees.',
@@ -399,7 +430,12 @@ const CreateEvent = () => {
               `Congrats! You have successfully published your event. Let's rock n rol!`,
             ),
           );
-          setWhichPathUrlWillTo(UserRoutes.events);
+
+          if (anotherPayload?.redirectTo) {
+            anotherPayload.redirectTo();
+          } else {
+            setWhichPathUrlWillTo(UserRoutes.events);
+          }
           setBlockRouter(false);
           setShowNotSaveConfirmModal(false);
           setEventInfoFormEdit(false);
@@ -473,7 +509,7 @@ const CreateEvent = () => {
   ) => {
     const getOkText = () => {
       if (okText) return okText;
-      if (isEdit) {
+      if (isEdit && !isDraft) {
         return steps !== ComponentSteps.publish
           ? t('Save and Leave')
           : t('Publish');
@@ -499,13 +535,12 @@ const CreateEvent = () => {
         setShowNotSaveConfirmModal(false);
         if (onOk) {
           onOk();
-        } else if (isEdit) {
+        } else if (isEdit && !isDraft) {
           createEventPublish();
           if (steps !== ComponentSteps.publish) {
             setEventInfoFormEdit(false);
             setTicketFormEdit(false);
             setSettingsFormEdit(false);
-            window.history.go(-1);
           }
         } else {
           saveAsDraft('blockRouter');
@@ -675,7 +710,7 @@ const CreateEvent = () => {
     if (isEdit) {
       fetchDetailData();
     }
-  }, []);
+  }, [listTicketType]);
 
   const handleCancel = () => {
     history.push(UserRoutes.events);
@@ -691,6 +726,13 @@ const CreateEvent = () => {
     (steps === ComponentSteps.settings &&
       (createPromoStatus === CreatePromoStatus.add ||
         createPromoStatus === CreatePromoStatus.edit));
+
+  const showSaveAndPublishButtonText = () => {
+    if (steps === ComponentSteps.publish) return t('Publish');
+    if (isDraft) return t('Next');
+    return t('Save and Publish');
+  };
+
   return (
     <>
       <Prompt when={blockRouter} message={handleRouterHoldUp} />
@@ -728,6 +770,7 @@ const CreateEvent = () => {
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
                     isEdit={isEdit}
+                    isDraft={isDraft}
                   />
                 )}
                 {steps === ComponentSteps.createTicket && (
@@ -741,6 +784,7 @@ const CreateEvent = () => {
                     listTicketType={listTicketType}
                     isEdit={isEdit}
                     createEventPublish={createEventPublish}
+                    isDraft={isDraft}
                   />
                 )}
                 {steps === ComponentSteps.settings && (
@@ -755,6 +799,7 @@ const CreateEvent = () => {
                     createPromoType={createPromoType}
                     isEdit={isEdit}
                     createEventPublish={createEventPublish}
+                    isDraft={isDraft}
                   />
                 )}
                 {steps === ComponentSteps.publish && (
@@ -768,19 +813,26 @@ const CreateEvent = () => {
             {showSaveAndPublishCondition ? (
               <div className="page-bottom">
                 <div className="bottom-btn">
-                  <Button onClick={handleCancel} disabled={saveDraftLoading}>
-                    {saveDraftLoading && <LoadingOutlined spin />}
-                    {t('Cancel')}
+                  <Button
+                    onClick={() => (isDraft ? saveAsDraft() : handleCancel())}
+                    disabled={saveDraftLoading}
+                    loading={saveDraftLoading}
+                  >
+                    {isDraft ? t('Save as Draft') : t('Cancel')}
                   </Button>
                   <Button
                     type="primary"
-                    onClick={() => createEventPublish()}
-                    disabled={publishLoading}
+                    onClick={() =>
+                      isDraft && steps !== ComponentSteps.publish
+                        ? setSteps(steps + 1)
+                        : createEventPublish({
+                            redirectTo: () => history.push(UserRoutes.events),
+                            publish: CreateEventActionType.publish,
+                          })
+                    }
+                    loading={publishLoading}
                   >
-                    {publishLoading && <LoadingOutlined spin />}
-                    {steps === ComponentSteps.publish
-                      ? t('Publish')
-                      : t('Save and Publish')}
+                    {showSaveAndPublishButtonText()}
                   </Button>
                 </div>
               </div>
@@ -793,11 +845,13 @@ const CreateEvent = () => {
                         <Button
                           disabled={saveDraftLoading}
                           onClick={() =>
-                            isEdit ? handleCancel() : saveAsDraft()
+                            isEdit && !isDraft ? handleCancel() : saveAsDraft()
                           }
                         >
                           {saveDraftLoading && <LoadingOutlined spin />}
-                          {isEdit ? t('Cancel') : t('Save as Draft')}
+                          {isEdit && !isDraft
+                            ? t('Cancel')
+                            : t('Save as Draft')}
                         </Button>
                         <Button
                           type="primary"
@@ -817,7 +871,7 @@ const CreateEvent = () => {
                       disabled={saveDraftLoading}
                     >
                       {saveDraftLoading && <LoadingOutlined spin />}
-                      {isEdit ? t('Cancel') : t('Save as Draft')}
+                      {isEdit && !isDraft ? t('Cancel') : t('Save as Draft')}
                     </Button>
                     <Button
                       type="primary"

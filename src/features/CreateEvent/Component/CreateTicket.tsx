@@ -111,6 +111,7 @@ const CreateTicket = ({
   setTicketFormEdit,
   isEdit,
   createEventPublish,
+  isDraft,
 }: {
   createTicketStatus: CreateTicketStatus;
   setCreateTicketStatus: any;
@@ -121,6 +122,7 @@ const CreateTicket = ({
   setTicketFormEdit: (status: boolean) => void;
   isEdit: boolean;
   createEventPublish: any;
+  isDraft: boolean;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -197,7 +199,11 @@ const CreateTicket = ({
   };
 
   const handleThumbnaiUploadChange = (info: any) => {
-    if (imageBeforeUpload(info.file) || !info.fileList.length)
+    if (!info.fileList.length) {
+      setThumbnaiFileList([]);
+      return;
+    }
+    if (imageBeforeUpload(info.file))
       setThumbnaiFileList([
         {
           ...info.fileList[0],
@@ -243,12 +249,7 @@ const CreateTicket = ({
     }
   }, [thumbnaiFileList]);
 
-  const [eventsListData, setEventsListData] = useState(
-    listTicketType.map((item) => {
-      const listTicket = { ...item, checked: false };
-      return listTicket;
-    }),
-  );
+  const [eventsListData, setEventsListData] = useState<ListTicketType[]>([]);
 
   const handleSelectEvents = (checked: boolean, index: number) => {
     eventsListData[index].checked = checked;
@@ -263,14 +264,14 @@ const CreateTicket = ({
 
   useEffect(() => {
     setEventsListData(
-      eventsListData.map((item) => ({
+      listTicketType.map((item) => ({
         ...item,
         checked: !!ticketValue.connectedTickets.find(
-          (ticket) => item.id === ticket.ticketTypeId,
+          (ticket) => item.id === ticket.ticketTypeId || item.id === ticket.id,
         ),
       })),
     );
-  }, [formValue]);
+  }, [ticketValue.connectedTickets, listTicketType]);
   const handleDeleteEvent = (index: number) => {
     Modal.confirm({
       className: 'notSaveConfirmModal',
@@ -339,7 +340,6 @@ const CreateTicket = ({
       );
       return;
     }
-    setCreateTicketStatus(CreateTicketStatus.edit);
     if (createTicketStatus === CreateTicketStatus.edit) {
       const newTicketList = [...formValue.ticketTypes];
       const findIndex = formValue.ticketTypes.findIndex(
@@ -347,9 +347,12 @@ const CreateTicket = ({
       );
       newTicketList[findIndex] = { ...ticketValue };
       fieldEdit(newTicketList, 'ticketTypes');
-      if (isEdit) {
+      if (isEdit && !isDraft) {
         createEventPublish({
           ticketTypes: newTicketList,
+          redirectTo: () => {
+            setCreateTicketStatus(CreateTicketStatus.list);
+          },
         });
         setOnSave(false);
       }
@@ -361,16 +364,19 @@ const CreateTicket = ({
         ],
         'ticketTypes',
       );
-      if (isEdit) {
+      if (isEdit && !isDraft) {
         createEventPublish({
           ticketTypes: [
             ...formValue.ticketTypes,
             { ...ticketValue, id: `add_${new Date().getTime()}` },
           ],
+          redirectTo: () => {
+            setCreateTicketStatus(CreateTicketStatus.list);
+          },
         });
       }
     }
-    if (!isEdit) {
+    if (!isEdit || isDraft) {
       setCreateTicketStatus(CreateTicketStatus.list);
     }
   };
@@ -381,7 +387,7 @@ const CreateTicket = ({
         className: 'notSaveConfirmModal',
         centered: true,
         closable: false,
-        okText: isEdit ? t('Save and Publish') : t('Save'),
+        okText: isEdit && !isDraft ? t('Save and Publish') : t('Save'),
         cancelText: t('Leave'),
         title: t('Unsaved Content'),
         icon: <ExclamationCircleOutlined />,
@@ -398,8 +404,22 @@ const CreateTicket = ({
       setCreateTicketStatus(CreateTicketStatus.list);
     }
   };
+  const validTicketTypes = formValue.ticketTypes.filter((item) => !item.delete);
 
   const onDelete = (index: any, item: any) => {
+    if (validTicketTypes.length <= 1 && !isDraft && isEdit) {
+      Modal.confirm({
+        className: 'notSaveConfirmModal',
+        centered: true,
+        closable: false,
+        okText: 'OK',
+        cancelButtonProps: { style: { display: 'none' } },
+        title: 'Unable to Delete Ticket',
+        icon: <ExclamationCircleOutlined />,
+        content: `You cannot delete the last ticket while your event is live. Please go to add another new ticket first.`,
+      });
+      return;
+    }
     Modal.confirm({
       className: 'notSaveConfirmModal',
       centered: true,
@@ -410,8 +430,19 @@ const CreateTicket = ({
       icon: <ExclamationCircleOutlined />,
       content: `Are you sure you want to delete ${item.name}?`,
       onOk: () => {
-        formValue.ticketTypes.splice(index, 1);
-        fieldEdit(formValue.ticketTypes, 'ticketTypes');
+        const newTicketTypes = [...formValue.ticketTypes];
+        if (isEdit && typeof newTicketTypes[index].id !== 'string') {
+          newTicketTypes[index].delete = true;
+        } else {
+          newTicketTypes.splice(index, 1);
+        }
+        fieldEdit(newTicketTypes, 'ticketTypes');
+        if (isEdit && !isDraft) {
+          createEventPublish({
+            ticketTypes: newTicketTypes,
+            redirectTo: () => {},
+          });
+        }
       },
     });
   };
@@ -464,7 +495,7 @@ const CreateTicket = ({
 
   const renderContent = () => {
     if (createTicketStatus === CreateTicketStatus.list) {
-      if (!formValue.ticketTypes.length)
+      if (!validTicketTypes.length)
         return <EmptyState handleAddTicket={handleAddTicket} />;
       return (
         <>
@@ -486,7 +517,7 @@ const CreateTicket = ({
             </Col>
           </Row>
           <TicketList>
-            {formValue.ticketTypes.map((item, index) => (
+            {validTicketTypes.map((item, index) => (
               <TicketListItem
                 image={
                   item.imageType.includes('video')
@@ -731,7 +762,8 @@ const CreateTicket = ({
                     defaultActiveKey={
                       ticketValue.description ||
                       ticketValue.royaltiesFee ||
-                      ticketValue.ceilingPrice
+                      ticketValue.ceilingPrice ||
+                      ticketValue.connectedTickets.length
                         ? [1]
                         : [] || ticketValue.connectedTickets.length
                     }
@@ -893,7 +925,7 @@ const CreateTicket = ({
                 </Button>
                 <Button type="primary" onClick={handleSave}>
                   {publishLoading && <LoadingOutlined spin />}
-                  {t('Save and Publish')}
+                  {!isDraft ? t('Save and Publish') : t('Save')}
                 </Button>
               </div>
             </div>

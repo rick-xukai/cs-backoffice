@@ -41,7 +41,6 @@ import {
 import TipsComponent from '../../../components/Tips';
 import ImagesUpload from '../../../components/ImagesUpload/ImagesUpload';
 import { OPEN_AI_TEMPLATE } from '../../../constants/constants';
-import { EventStatusKeys } from '../../Events/Events.slice';
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -59,11 +58,13 @@ const EventInfo = ({
   formValue,
   fieldEdit,
   isEdit,
+  isDraft,
 }: {
   organizerData: OrganizerData[];
   formValue: CreateEventFormValueProps;
   fieldEdit: (value: any, field: string) => void;
   isEdit: boolean;
+  isDraft: boolean;
 }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -310,9 +311,7 @@ const EventInfo = ({
                     (organizerData.length && Number(formValue.organizerId)) ||
                     ''
                   }
-                  disabled={
-                    isEdit && formValue.status !== EventStatusKeys.draft
-                  }
+                  disabled={isEdit && !isDraft}
                 />
               </Form.Item>
               {(!showAddMyLocationInput && (
