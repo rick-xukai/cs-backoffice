@@ -463,7 +463,6 @@ const CreateEvent = () => {
       });
     }
   };
-  console.log(isEdit && steps !== ComponentSteps.publish);
 
   const notSaveConfirm = (
     onOk?: any,

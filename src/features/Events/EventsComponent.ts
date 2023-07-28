@@ -187,15 +187,15 @@ const AddNewEventContainer = styled.div`
       line-height: 28px;
       color: ${Colors.black4};
       margin-top: 16px;
-      margin-bottom: 0;
+      margin-bottom: 16px;
     }
     .description {
       font-size: 17px;
       font-weight: 400;
       line-height: 24px;
       color: ${Colors.grey6};
-      margin-bottom: 16px;
       margin-top: 10px;
+      margin-bottom: 16px;
     }
   }
   @media (max-width: ${BreakPoints.lg}px) {
