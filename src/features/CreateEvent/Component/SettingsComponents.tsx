@@ -230,7 +230,7 @@ export const PromoListItem = ({
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Discount Value')}</div>
           <div className="value">
-            {discount.value}{' '}
+            {discount.value?.toFixed(2)}{' '}
             {discount.type === DiscountType.amount ? SGD_UNIT : '%'}
           </div>
         </LabelAndValue>
@@ -244,7 +244,7 @@ export const PromoListItem = ({
         <LabelAndValue span={24}>
           <div className="label">{t('Apply Code To')}</div>
           <div className="value">
-            {apply.ticketTypeIds.length ? (
+            {apply.type === ApplyCodeToType.certain ? (
               <div className="table">
                 <div className="head">
                   <div className="head-item">{t('Ticket Name')}</div>
@@ -254,7 +254,7 @@ export const PromoListItem = ({
                   <div className="body" key={findTicket(id)?.id}>
                     <div className="body-item">{findTicket(id)?.name}</div>
                     <div className="body-item">
-                      {findTicket(id)?.price} {SGD_UNIT}
+                      {findTicket(id)?.price.toLocaleString()} {SGD_UNIT}
                     </div>
                   </div>
                 ))}
@@ -455,11 +455,12 @@ export const AddEditForm = ({
         findTicket(promoValue.apply.ticketTypeIds[index])?.name
       }?`,
       onOk: () => {
-        promoValue.apply.ticketTypeIds.splice(index, 1);
+        const newTicketTypeIds = [...promoValue.apply.ticketTypeIds];
+        newTicketTypeIds.splice(index, 1);
         changePromoValues({
           apply: {
             ...promoValue.apply,
-            ticketTypeIds: [...promoValue.apply.ticketTypeIds],
+            ticketTypeIds: [...newTicketTypeIds],
           },
         });
       },

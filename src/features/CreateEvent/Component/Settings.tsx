@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, Modal, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+import { cloneDeep } from 'lodash';
 // eslint-disable-next-line import/no-cycle
 import {
   AddDiscountDropDown,
@@ -69,6 +70,7 @@ const Settings = ({
   setSettingsFormEdit,
   isEdit,
   createEventPublish,
+  isDraft,
 }: {
   createPromoStatus: CreatePromoStatus;
   setCreatePromoStatus: any;
@@ -80,6 +82,7 @@ const Settings = ({
   setSettingsFormEdit: (status: boolean) => void;
   isEdit: boolean;
   createEventPublish: any;
+  isDraft: boolean;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -88,6 +91,7 @@ const Settings = ({
     ...initialValues,
   });
   const publishLoading = useAppSelector(selectPublishLoading);
+  const okButtonText = isEdit && !isDraft ? t('Save and Publish') : t('Save');
   const changePromoValues = (value: any, field?: string) => {
     setSettingsFormEdit(true);
     if (field) {
@@ -102,6 +106,9 @@ const Settings = ({
       });
     }
   };
+
+  const validPromos = formValue.discounts.filter((item) => !item.delete);
+
   const onDelete = (index: any) => {
     Modal.confirm({
       className: 'notSaveConfirmModal',
@@ -113,8 +120,19 @@ const Settings = ({
       icon: <ExclamationCircleOutlined />,
       content: `Are you sure you want to delete this discount?`,
       onOk: () => {
-        formValue.discounts.splice(index, 1);
-        fieldEdit(formValue.discounts, 'discounts');
+        const newDiscount = cloneDeep(formValue.discounts);
+        if (isEdit && !newDiscount[index].id.includes('add_')) {
+          newDiscount[index].delete = true;
+        } else {
+          newDiscount.splice(index, 1);
+        }
+        fieldEdit(newDiscount, 'discounts');
+        if (isEdit && !isDraft) {
+          createEventPublish({
+            discounts: newDiscount,
+            redirectTo: () => {},
+          });
+        }
       },
     });
   };
@@ -185,9 +203,12 @@ const Settings = ({
       );
       newPromoList[findIndex] = { ...promoValue };
       fieldEdit(newPromoList, 'discounts');
-      if (isEdit) {
+      if (isEdit && !isDraft) {
         createEventPublish({
           discounts: newPromoList,
+          redirectTo: () => {
+            setCreatePromoStatus(CreatePromoStatus.list);
+          },
         });
         setOnSave(false);
       }
@@ -216,7 +237,7 @@ const Settings = ({
         ],
         'discounts',
       );
-      if (isEdit) {
+      if (isEdit && !isDraft) {
         createEventPublish({
           discounts: [
             ...formValue.discounts,
@@ -226,10 +247,13 @@ const Settings = ({
               type: createPromoType,
             },
           ],
+          redirectTo: () => {
+            setCreatePromoStatus(CreatePromoStatus.list);
+          },
         });
       }
     }
-    if (!isEdit) {
+    if (!isEdit || isDraft) {
       setCreatePromoStatus(CreatePromoStatus.list);
     }
   };
@@ -240,7 +264,7 @@ const Settings = ({
         className: 'notSaveConfirmModal',
         centered: true,
         closable: false,
-        okText: isEdit ? t('Save and Publish') : t('Save'),
+        okText: okButtonText,
         cancelText: t('Leave'),
         title: t('Unsaved Content'),
         icon: <ExclamationCircleOutlined />,
@@ -288,7 +312,7 @@ const Settings = ({
 
   const renderContent = () => {
     if (createPromoStatus === CreatePromoStatus.list) {
-      if (!formValue.discounts.length) {
+      if (!validPromos.length) {
         return <EmptyState codeClick={codeClick} bundleClick={bundleClick} />;
       }
       return (
@@ -316,7 +340,7 @@ const Settings = ({
             </Col>
           </Row>
           <PromoList>
-            {formValue.discounts.map((item, index: number) => (
+            {validPromos.map((item, index: number) => (
               <PromoListItem
                 onDelete={onDelete}
                 onEdit={onEdit}
@@ -362,7 +386,7 @@ const Settings = ({
                 <Button onClick={handleCancelCreatePromo}>{t('Cancel')}</Button>
                 <Button type="primary" onClick={handleSave}>
                   {publishLoading && <LoadingOutlined spin />}
-                  {t('Save and Publish')}
+                  {okButtonText}
                 </Button>
               </div>
             </div>

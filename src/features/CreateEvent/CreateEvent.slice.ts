@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import EventsService from '../../services/API/Events';
 import { SetRefundKey } from '../../constants/General';
+// eslint-disable-next-line import/no-cycle
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -28,6 +29,10 @@ export enum MethodType {
   discount = 1,
 }
 
+export enum CreateEventActionType {
+  publish = 1,
+  saveAsDraft = 0,
+}
 export interface ListTicketType {
   id: number | string;
   name: string;
@@ -59,6 +64,7 @@ export interface PromoListProps {
     ticketTypeIds: string[];
   };
   usageCount: number;
+  delete?: boolean;
 }
 
 export interface TicketListProps {
@@ -81,10 +87,13 @@ export interface TicketListProps {
     ticketTypeId: number;
     eventName?: string;
     name?: string;
+    delete?: boolean;
+    id?: any;
   }[];
   imageName: string;
   thumbnailName: string;
   soldTotal: number;
+  delete?: boolean;
 }
 
 export interface DescriptionImagesProps {
@@ -394,6 +403,9 @@ export const createEventSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    updateNeedUpdateEventId: (state, action) => {
+      state.needUpdateEventId = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -467,7 +479,7 @@ export const createEventSlice = createSlice({
         state.needUpdateDiscountsId = action.payload.discounts;
         state.data = action.payload;
       })
-      .addCase(updateEventAction.rejected, (state, action) => {
+      .addCase(updateEventAction.rejected, (state, action: any) => {
         if (state.needUpdateEventId) {
           state.saveDraftLoading = false;
         } else {
@@ -498,7 +510,7 @@ export const createEventSlice = createSlice({
   },
 });
 
-export const { reset } = createEventSlice.actions;
+export const { reset, updateNeedUpdateEventId } = createEventSlice.actions;
 
 export const selectLoading = (state: RootState) => state.createEvent.loading;
 export const selectSaveDraftLoading = (state: RootState) =>
