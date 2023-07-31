@@ -409,6 +409,21 @@ const CreateTicket = ({
   const validTicketTypes = formValue.ticketTypes.filter((item) => !item.delete);
 
   const onDelete = (index: any, item: any) => {
+    if (item.soldTotal) {
+      Modal.confirm({
+        className: 'notSaveConfirmModal',
+        centered: true,
+        closable: false,
+        okText: 'OK',
+        cancelButtonProps: { style: { display: 'none' } },
+        title: t('Unable to Delete Ticket'),
+        icon: <ExclamationCircleOutlined />,
+        content: t(
+          `As there are some attendees who have purchased this ticket type, you are unable to delete this ticket type.`,
+        ),
+      });
+      return;
+    }
     if (validTicketTypes.length <= 1 && !isDraft && isEdit) {
       Modal.confirm({
         className: 'notSaveConfirmModal',
@@ -416,9 +431,11 @@ const CreateTicket = ({
         closable: false,
         okText: 'OK',
         cancelButtonProps: { style: { display: 'none' } },
-        title: 'Unable to Delete Ticket',
+        title: t('Unable to Delete Ticket'),
         icon: <ExclamationCircleOutlined />,
-        content: `You cannot delete the last ticket while your event is live. Please go to add another new ticket first.`,
+        content: t(
+          `You cannot delete the last ticket while your event is live. Please go to add another new ticket first.`,
+        ),
       });
       return;
     }

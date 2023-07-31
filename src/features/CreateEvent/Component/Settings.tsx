@@ -111,16 +111,31 @@ const Settings = ({
 
   const validPromos = formValue.discounts.filter((item) => !item.delete);
 
-  const onDelete = (index: any) => {
+  const onDelete = (index: any, item: any) => {
+    if (item.usageCount) {
+      Modal.confirm({
+        className: 'notSaveConfirmModal',
+        centered: true,
+        closable: false,
+        okText: 'OK',
+        cancelButtonProps: { style: { display: 'none' } },
+        title: t('Unable to Delete Discount'),
+        icon: <ExclamationCircleOutlined />,
+        content: t(
+          `This Discount has been used by an attendee before and cannot be deleted.`,
+        ),
+      });
+      return;
+    }
     Modal.confirm({
       className: 'notSaveConfirmModal',
       centered: true,
       closable: false,
       okText: 'Delete',
       cancelText: 'Cancel',
-      title: 'Delete Discount',
+      title: t('Delete Discount'),
       icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to delete this discount?`,
+      content: t(`Are you sure you want to delete this discount?`),
       onOk: () => {
         const newDiscount = cloneDeep(formValue.discounts);
         if (isEdit && !newDiscount[index].id.includes('add_')) {
