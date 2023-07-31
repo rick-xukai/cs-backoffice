@@ -295,15 +295,21 @@ export const PromoListItem = ({
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Customer Buys')}</div>
-          <div className="value">
-            {condition.quantity} <span>X</span> {conditionName}
-          </div>
+          {(condition.quantity && conditionName && (
+            <div className="value">
+              {condition.quantity} <span>X</span> {conditionName}
+            </div>
+          )) ||
+            '-'}
         </LabelAndValue>
         <LabelAndValue {...labelAndValueColumn}>
           <div className="label">{t('Customer Gets')}</div>
-          <div className="value">
-            {gift.quantity} <span>X</span> {giftName}
-          </div>
+          {(gift.quantity && giftName && (
+            <div className="value">
+              {gift.quantity} <span>X</span> {giftName}
+            </div>
+          )) ||
+            '-'}
         </LabelAndValue>
       </LabelAndValueArea>
     </PromoListBundle>

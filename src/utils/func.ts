@@ -9,7 +9,10 @@ import {
   FullScreenDocument,
   FullScreenDocumentElement,
 } from '../constants/types';
-import { CreateEventFormValueProps } from '../features/CreateEvent/CreateEvent.slice';
+import {
+  CreateEventFormValueProps,
+  ApplyCodeToType,
+} from '../features/CreateEvent/CreateEvent.slice';
 
 const OneMin = 60;
 const OneHour = 3600;
@@ -348,6 +351,31 @@ export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
   }
   if (!source.ticketTypes.length) {
     return 1;
+  }
+  if (!source.discounts.length) {
+    return 2;
+  }
+  if (source.discounts.length) {
+    let isUnrelatedTickets: string | number = '';
+    source.discounts.some((item) => {
+      if (item.condition.quantity && !item.condition.ticketTypeId) {
+        isUnrelatedTickets = 2;
+        return true;
+      }
+      if (item.gift.quantity && !item.gift.ticketTypeId) {
+        isUnrelatedTickets = 2;
+        return true;
+      }
+      if (
+        item.apply.type === ApplyCodeToType.certain &&
+        !item.apply.ticketTypeIds.length
+      ) {
+        isUnrelatedTickets = 2;
+        return true;
+      }
+      return false;
+    });
+    return isUnrelatedTickets;
   }
   return '';
 };
