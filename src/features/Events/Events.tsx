@@ -506,9 +506,7 @@ const Events = () => {
                   defaultValue={searchKeyword}
                   placeholder={t('Search event')}
                   allowClear={{
-                    clearIcon: (
-                      <CloseOutlined onClick={(e) => e.preventDefault()} />
-                    ),
+                    clearIcon: <CloseOutlined />,
                   }}
                   suffix={!searchKeyword && <SearchOutlined />}
                   onChange={(e) => {

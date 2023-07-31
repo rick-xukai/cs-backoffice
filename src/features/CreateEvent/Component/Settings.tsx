@@ -39,7 +39,7 @@ const initialValues = {
   type: PromoType.code,
   name: '',
   quantity: undefined,
-  method: MethodType.auto,
+  method: MethodType.discount,
   condition: {
     ticketTypeId: undefined,
     quantity: undefined,
@@ -91,6 +91,8 @@ const Settings = ({
     ...initialValues,
   });
   const publishLoading = useAppSelector(selectPublishLoading);
+  const okButtonTextConfirm =
+    isEdit && !isDraft ? t('Save and Leave') : t('Save');
   const okButtonText = isEdit && !isDraft ? t('Save and Publish') : t('Save');
   const changePromoValues = (value: any, field?: string) => {
     setSettingsFormEdit(true);
@@ -264,7 +266,7 @@ const Settings = ({
         className: 'notSaveConfirmModal',
         centered: true,
         closable: false,
-        okText: okButtonText,
+        okText: okButtonTextConfirm,
         cancelText: t('Leave'),
         title: t('Unsaved Content'),
         icon: <ExclamationCircleOutlined />,
@@ -378,7 +380,9 @@ const Settings = ({
             setTicketListData={setTicketListData}
             createPromoType={createPromoType}
             formValue={formValue}
-            disabled={isEdit && createPromoStatus === CreatePromoStatus.edit}
+            disabled={
+              isEdit && !isDraft && createPromoStatus === CreatePromoStatus.edit
+            }
           />
           {isEdit ? (
             <div className="page-bottom">

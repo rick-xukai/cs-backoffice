@@ -278,7 +278,13 @@ const EventInfo = ({
     if (formValue.location) {
       setShowAddressInput(true);
     }
-  }, []);
+  }, [formValue]);
+
+  useEffect(() => {
+    if (!bannerFile) {
+      fieldEdit('', 'image');
+    }
+  }, [bannerFile]);
 
   return (
     <>

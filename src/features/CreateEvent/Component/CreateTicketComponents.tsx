@@ -327,7 +327,7 @@ export const TicketImageUpload = ({
       return e.onSuccess({
         image: response.payload.url,
         imageType: e.file.type,
-        thumbnailUrl: response.payload.url,
+        thumbnailUrl: e.file.type.includes('video') ? '' : response.payload.url,
         thumbnailType: e.file.type,
         imageName: e.file.name,
       });

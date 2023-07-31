@@ -327,7 +327,9 @@ const CreateTicket = ({
       !`${ticketValue.price}` ||
       !`${ticketValue.stock}` ||
       !ticketValue.sellStartTime ||
-      !ticketValue.sellEndTime
+      !ticketValue.sellEndTime ||
+      !ticketValue.thumbnailUrl ||
+      ticketValue.thumbnailType.includes('video')
     ) {
       if (!ticketValue.sellEndTime && ticketValue.sellStartTime) {
         setShowNoEndTimeError(true);
@@ -387,7 +389,7 @@ const CreateTicket = ({
         className: 'notSaveConfirmModal',
         centered: true,
         closable: false,
-        okText: isEdit && !isDraft ? t('Save and Publish') : t('Save'),
+        okText: isEdit && !isDraft ? t('Save and Leave') : t('Save'),
         cancelText: t('Leave'),
         title: t('Unsaved Content'),
         icon: <ExclamationCircleOutlined />,
