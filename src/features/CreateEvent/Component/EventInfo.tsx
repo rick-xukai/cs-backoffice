@@ -281,7 +281,7 @@ const EventInfo = ({
   }, [formValue]);
 
   useEffect(() => {
-    if (!bannerFile) {
+    if (formValue.image && !bannerFile) {
       fieldEdit('', 'image');
     }
   }, [bannerFile]);
