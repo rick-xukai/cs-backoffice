@@ -874,8 +874,8 @@ const CreateTicket = ({
                           }}
                           onBlur={(e) => {
                             const val = e.target.value;
-                            if (val && Number(val) < 0)
-                              return changeTicketValues('', 'ceilingPrice');
+                            if (val && Number(val) <= 0)
+                              return changeTicketValues(0, 'ceilingPrice');
                             return changeTicketValues(
                               thousandsSeparator(val),
                               'ceilingPrice',
@@ -887,7 +887,7 @@ const CreateTicket = ({
                               'ceilingPrice',
                             );
                           }}
-                          value={ticketValue.ceilingPrice}
+                          value={ticketValue.ceilingPrice || ''}
                           suffix={SGD_UNIT}
                         />
                       </Form.Item>
