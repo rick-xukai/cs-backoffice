@@ -460,7 +460,7 @@ const CreateTicket = ({
                     undefined,
                 },
                 apply: {
-                  ...item.apply,
+                  ...discountItem.apply,
                   ticketTypeIds: discountItem.apply.ticketTypeIds.filter(
                     (ticketTypeId) => ticketTypeId !== item.id,
                   ),

@@ -368,10 +368,8 @@ const CreateEvent = () => {
   }) => {
     const currentTime = new Date().getTime();
     const endTime = new Date(createEventFormValue.endTime || '').getTime();
-    if (
-      validatUnfinishedSteps(createEventFormValue) === '' ||
-      (isDraft && !anotherPayload?.publish)
-    ) {
+    const unfinishedSteps = validatUnfinishedSteps(createEventFormValue);
+    if (unfinishedSteps === '' || (isDraft && !anotherPayload?.publish)) {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
       } else if (isEdit) {
@@ -452,7 +450,6 @@ const CreateEvent = () => {
               `Congrats! You have successfully published your event. Let's rock n rol!`,
             ),
           );
-
           if (anotherPayload?.redirectTo) {
             anotherPayload.redirectTo();
           } else {
@@ -470,11 +467,21 @@ const CreateEvent = () => {
         closable: false,
         okText: t('Go Complete'),
         cancelText: t('Cancel'),
-        title: t('Missing Fields'),
+        title:
+          (createEventFormValue.discounts.length &&
+            unfinishedSteps === 2 &&
+            t('Discount Field Missing')) ||
+          t('Missing Fields'),
         icon: <ExclamationCircleOutlined />,
-        content: t('Please complete all required fields before publishing.'),
+        content:
+          (createEventFormValue.discounts.length &&
+            unfinishedSteps === 2 &&
+            t('Please select [type] tickets for the discount.', {
+              type: `"Apply To"`,
+            })) ||
+          t('Please complete all required fields before publishing.'),
         onOk() {
-          setSteps(Number(validatUnfinishedSteps(createEventFormValue)));
+          setSteps(Number(unfinishedSteps));
         },
         onCancel() {
           setShowMissingFieldsModal(false);

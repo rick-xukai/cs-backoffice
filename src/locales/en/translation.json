@@ -383,5 +383,7 @@
   "Ticket Available Quantity can’t be less than the sold tickets.": "Ticket Available Quantity can’t be less than the sold tickets.",
   "Key Info Changed": "Key Info Changed",
   "Are you sure you gonna change the event key info? Make sure you have informed your attendees.": "Are you sure you gonna change the event key info? Make sure you have informed your attendees.",
-  "No Matching Results": "No Matching Results"
+  "No Matching Results": "No Matching Results",
+  "Discount Field Missing": "Discount Field Missing",
+  "Please select [type] tickets for the discount.": "Please select {{type}} tickets for the discount"
 }
