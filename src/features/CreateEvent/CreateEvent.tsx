@@ -377,7 +377,7 @@ const CreateEvent = () => {
       } else if (isEdit) {
         const payload: any = {
           ...formatRequestPayload(
-            isDraft
+            isDraft && !anotherPayload?.publish
               ? CreateEventActionType.saveAsDraft
               : CreateEventActionType.publish,
             anotherPayload,
@@ -389,6 +389,7 @@ const CreateEvent = () => {
           setEventInfoFormEdit(false);
           setTicketFormEdit(false);
           setSettingsFormEdit(false);
+          dispatch(updateNeedUpdateEventId(''));
           const response = await dispatch(updateEventAction(payload));
           if (response.type === updateEventAction.fulfilled.toString()) {
             fetchDetailData(true, anotherPayload?.redirectTo);
