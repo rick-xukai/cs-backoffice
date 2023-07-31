@@ -662,8 +662,8 @@ export const AddEditForm = ({
                         disabled={disabled}
                       >
                         <Space size="small" direction="vertical">
-                          <Radio name="method" value={MethodType.auto}>
-                            {t('Automatic discount')}
+                          <Radio name="method" value={MethodType.auto} disabled>
+                            {t('Automatic discount(coming soon)')}
                           </Radio>
                           <Radio name="method" value={MethodType.discount}>
                             {t('Discount code')}
@@ -823,7 +823,7 @@ export const AddEditForm = ({
                         'quantity',
                       );
                     }}
-                    value={promoValue.quantity}
+                    value={promoValue.quantity || ''}
                     placeholder="Unlimiteded"
                   />
                 </Col>

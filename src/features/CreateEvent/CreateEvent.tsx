@@ -209,6 +209,7 @@ const CreateEvent = () => {
                 )) ||
               0,
           },
+          quantity: discount.quantity || 0,
           apply: {
             ...discount.apply,
             ticketTypeIds: discount.apply.ticketTypeIds
@@ -384,6 +385,10 @@ const CreateEvent = () => {
           id: createEventFormValue.id,
         };
         const handleUpdate = async () => {
+          setShowNotSaveConfirmModal(false);
+          setEventInfoFormEdit(false);
+          setTicketFormEdit(false);
+          setSettingsFormEdit(false);
           const response = await dispatch(updateEventAction(payload));
           if (response.type === updateEventAction.fulfilled.toString()) {
             fetchDetailData(true, anotherPayload?.redirectTo);
@@ -391,10 +396,6 @@ const CreateEvent = () => {
               anotherPayload.redirectTo();
             }
             message.success(t(`Event is successfully updated.`));
-            setShowNotSaveConfirmModal(false);
-            setEventInfoFormEdit(false);
-            setTicketFormEdit(false);
-            setSettingsFormEdit(false);
           }
         };
         if (
@@ -404,6 +405,10 @@ const CreateEvent = () => {
           originDetailData.location !== createEventFormValue.location ||
           originDetailData.locationCoord !== createEventFormValue.locationCoord
         ) {
+          setShowNotSaveConfirmModal(false);
+          setEventInfoFormEdit(false);
+          setTicketFormEdit(false);
+          setSettingsFormEdit(false);
           confirm({
             className: 'notSaveConfirmModal',
             onOk: handleUpdate,
@@ -679,6 +684,39 @@ const CreateEvent = () => {
     setProgressItems(items);
     setPreviousStep(steps);
   }, [steps]);
+
+  useEffect(() => {
+    const items = _.cloneDeep(progressItems);
+    items[steps].icon = <StatusImage src={Images.EditingIcon} />;
+    if (
+      steps !== ComponentSteps.eventInfo &&
+      createEventFormValue.organizerId &&
+      createEventFormValue.name &&
+      createEventFormValue.startTime &&
+      createEventFormValue.endTime &&
+      createEventFormValue.location &&
+      createEventFormValue.locationCoord &&
+      createEventFormValue.locationCoord &&
+      createEventFormValue.image &&
+      createEventFormValue.descriptionShort
+    ) {
+      items[0].icon = <StatusImage src={Images.SuccessIcon} />;
+    }
+    if (
+      steps !== ComponentSteps.createTicket &&
+      createEventFormValue.ticketTypes.length
+    ) {
+      items[1].icon = <StatusImage src={Images.SuccessIcon} />;
+    }
+    if (
+      steps !== ComponentSteps.settings &&
+      createEventFormValue.discounts.length
+    ) {
+      items[2].icon = <StatusImage src={Images.SuccessIcon} />;
+    }
+    setProgressItems(items);
+    setPreviousStep(steps);
+  }, [createEventFormValue]);
 
   useEffect(() => {
     if (!isEdit) {
