@@ -110,6 +110,23 @@ const Events = () => {
       {
         label: (
           <a
+            href={`${process.env.REACT_APP_WEB_APP_LINK}/scan-qr-code/${
+              record.slug.split('-')[1]
+            }`}
+            target="_blank"
+          >
+            {t('Scanner Link')}
+          </a>
+        ),
+        key: 'Scanner Link',
+        style: {
+          display:
+            (record.status === EventStatusKeys.upcoming && 'block') || 'none',
+        },
+      },
+      {
+        label: (
+          <a
             href={`${process.env.REACT_APP_WEB_APP_LINK}/events/${record.slug}`}
             target="_blank"
           >
@@ -120,20 +137,6 @@ const Events = () => {
         style: {
           display:
             (record.status === EventStatusKeys.upcoming && 'block') || 'none',
-        },
-      },
-      {
-        label: t('Edit'),
-        key: 'Edit',
-        onClick: () => {
-          history.push(UserRoutes.editEvent.replace(':id', record.id));
-        },
-        style: {
-          display:
-            ((record.status === EventStatusKeys.upcoming ||
-              record.status === EventStatusKeys.draft) &&
-              'block') ||
-            'none',
         },
       },
       {
