@@ -111,7 +111,7 @@ const Events = () => {
         label: (
           <a
             href={`${process.env.REACT_APP_WEB_APP_LINK}/scan-qr-code/${
-              record.slug.split('-')[1]
+              record.slug.split('-')[record.slug.split('-').length - 1]
             }`}
             target="_blank"
           >
