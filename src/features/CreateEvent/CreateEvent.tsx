@@ -935,7 +935,13 @@ const CreateEvent = () => {
                           })
                     }
                     loading={publishLoading}
-                    disabled={isEdit && !isDraft && !eventInfoFormEdit}
+                    disabled={
+                      isEdit &&
+                      !isDraft &&
+                      !eventInfoFormEdit &&
+                      !ticketFormEdit &&
+                      !settingsFormEdit
+                    }
                   >
                     {showSaveAndPublishButtonText()}
                   </Button>
