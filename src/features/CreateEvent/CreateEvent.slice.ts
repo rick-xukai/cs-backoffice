@@ -352,9 +352,33 @@ export const openAiGeneratorAction = createAsyncThunk<
   {
     rejectValue: ErrorType;
   }
->('uploadFile/uploadFileAction', async (payload) => {
+>('createEvent/openAiGeneratorAction', async (payload) => {
   try {
     const response = await EventsService.openAiGenerator(payload);
+    return response;
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return err.response;
+  }
+});
+
+/**
+ * check discount code
+ */
+export const checkDiscountCodeAction = createAsyncThunk<
+  any,
+  {
+    code: string;
+    eventId: number;
+  },
+  {
+    rejectValue: ErrorType;
+  }
+>('createEvent/checkDiscountCodeAction', async (payload) => {
+  try {
+    const response = await EventsService.checkDiscountCode(payload);
     return response;
   } catch (err: any) {
     if (!err.response) {
@@ -505,6 +529,21 @@ export const createEventSlice = createSlice({
           state.error = action.payload as ErrorType;
         } else {
           state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(checkDiscountCodeAction.pending, (state) => {
+        state.data = { id: 0 };
+        if (state.needUpdateEventId) {
+          state.saveDraftLoading = true;
+        } else {
+          state.publishLoading = true;
+        }
+      })
+      .addCase(checkDiscountCodeAction.rejected, (state) => {
+        if (state.needUpdateEventId) {
+          state.saveDraftLoading = false;
+        } else {
+          state.publishLoading = false;
         }
       });
   },

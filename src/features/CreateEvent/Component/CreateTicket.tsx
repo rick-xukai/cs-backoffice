@@ -15,7 +15,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
-import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Images } from '../../../theme';
 import {
   ConnectTicketItem,
@@ -974,8 +974,11 @@ const CreateTicket = ({
                 <Button onClick={handleCancelCreateTicket}>
                   {t('Cancel')}
                 </Button>
-                <Button type="primary" onClick={handleSave}>
-                  {publishLoading && <LoadingOutlined spin />}
+                <Button
+                  type="primary"
+                  onClick={handleSave}
+                  loading={publishLoading}
+                >
                   {!isDraft ? t('Save and Publish') : t('Save')}
                 </Button>
               </div>

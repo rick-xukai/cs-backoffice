@@ -81,6 +81,9 @@ const API = {
   deleteEvent: {
     put: '/admin/event/:eventId/delete',
   },
+  checkDiscountCode: {
+    post: '/admin/event/discount/code/check',
+  },
 };
 
 export default API;

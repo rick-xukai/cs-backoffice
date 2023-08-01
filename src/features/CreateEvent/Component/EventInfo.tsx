@@ -59,12 +59,14 @@ const EventInfo = ({
   fieldEdit,
   isEdit,
   isDraft,
+  setCreateEventFormValue,
 }: {
   organizerData: OrganizerData[];
   formValue: CreateEventFormValueProps;
   fieldEdit: (value: any, field: string) => void;
   isEdit: boolean;
   isDraft: boolean;
+  setCreateEventFormValue: any;
 }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -282,7 +284,15 @@ const EventInfo = ({
 
   useEffect(() => {
     if (formValue.image && !bannerFile) {
-      fieldEdit('', 'image');
+      setCreateEventFormValue({
+        ...formValue,
+        image: '',
+      });
+    } else {
+      setCreateEventFormValue({
+        ...formValue,
+        image: bannerFile,
+      });
     }
   }, [bannerFile]);
 
