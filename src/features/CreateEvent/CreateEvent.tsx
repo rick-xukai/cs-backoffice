@@ -467,9 +467,19 @@ const CreateEvent = () => {
         closable: false,
         okText: t('Go Complete'),
         cancelText: t('Cancel'),
-        title: t('Missing Fields'),
+        title:
+          (createEventFormValue.discounts.length &&
+            unfinishedSteps === 2 &&
+            t('Discount Field Missing')) ||
+          t('Missing Fields'),
         icon: <ExclamationCircleOutlined />,
-        content: t('Please complete all required fields before publishing.'),
+        content:
+          (createEventFormValue.discounts.length &&
+            unfinishedSteps === 2 &&
+            t('Please select [type] tickets for the discount.', {
+              type: `"Apply To"`,
+            })) ||
+          t('Please complete all required fields before publishing.'),
         onOk() {
           setSteps(Number(unfinishedSteps));
         },
