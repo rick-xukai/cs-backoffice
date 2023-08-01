@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Modal, message } from 'antd';
+import { Row, Col, Button, Modal, message, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { cloneDeep } from 'lodash';
 // eslint-disable-next-line import/no-cycle
 import {
@@ -140,19 +140,23 @@ const Settings = ({
       title: t('Delete Discount'),
       icon: <ExclamationCircleOutlined />,
       content: t(`Are you sure you want to delete this discount?`),
-      onOk: () => {
+      okButtonProps: {
+        loading: publishLoading,
+      },
+      onOk: async () => {
         const newDiscount = cloneDeep(formValue.discounts);
         if (isEdit && !newDiscount[index].id.includes('add_')) {
           newDiscount[index].delete = true;
         } else {
           newDiscount.splice(index, 1);
         }
-        fieldEdit(newDiscount, 'discounts');
         if (isEdit && !isDraft) {
-          createEventPublish({
+          await createEventPublish({
             discounts: newDiscount,
             redirectTo: () => {},
           });
+        } else {
+          fieldEdit(newDiscount, 'discounts');
         }
       },
     });
@@ -177,32 +181,6 @@ const Settings = ({
   };
 
   const handleSave = async () => {
-    const checkResponse: any = await dispatch(
-      checkDiscountCodeAction({
-        code: promoValue.code,
-        eventId: Number(id) || 0,
-      }),
-    );
-    if (checkResponse.type === checkDiscountCodeAction.fulfilled.toString()) {
-      if (!checkResponse.payload?.data?.canUse) {
-        message.error({
-          content: t(
-            'This Discount Code already exists. Please use another name and try again.',
-          ),
-          key: 'error',
-        });
-        return;
-      }
-    } else {
-      message.error({
-        content: t(
-          'This Discount Code already exists. Please use another name and try again.',
-        ),
-        key: 'error',
-      });
-      return;
-    }
-
     setOnSave(true);
     if (
       (createPromoType === CreatePromoType.bundle &&
@@ -236,6 +214,31 @@ const Settings = ({
             item.code === promoValue.code,
         )
       ) {
+        message.error({
+          content: t(
+            'This Discount Code already exists. Please use another name and try again.',
+          ),
+          key: 'error',
+        });
+        return;
+      }
+      const checkResponse: any = await dispatch(
+        checkDiscountCodeAction({
+          code: promoValue.code,
+          eventId: Number(id) || 0,
+        }),
+      );
+      if (checkResponse.type === checkDiscountCodeAction.fulfilled.toString()) {
+        if (!checkResponse.payload?.data?.canUse) {
+          message.error({
+            content: t(
+              'This Discount Code already exists. Please use another name and try again.',
+            ),
+            key: 'error',
+          });
+          return;
+        }
+      } else {
         message.error({
           content: t(
             'This Discount Code already exists. Please use another name and try again.',
@@ -386,18 +389,24 @@ const Settings = ({
               </AddDiscountDropDown>
             </Col>
           </Row>
-          <PromoList>
-            {validPromos.map((item, index: number) => (
-              <PromoListItem
-                onDelete={onDelete}
-                onEdit={onEdit}
-                key={item.id}
-                index={index}
-                item={item}
-                formValue={formValue}
-              />
-            ))}
-          </PromoList>
+          <Spin
+            spinning={publishLoading}
+            indicator={<LoadingOutlined spin />}
+            size="large"
+          >
+            <PromoList>
+              {validPromos.map((item, index: number) => (
+                <PromoListItem
+                  onDelete={onDelete}
+                  onEdit={onEdit}
+                  key={item.id}
+                  index={index}
+                  item={item}
+                  formValue={formValue}
+                />
+              ))}
+            </PromoList>
+          </Spin>
         </>
       );
     }

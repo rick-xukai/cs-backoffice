@@ -10,12 +10,13 @@ import {
   Select,
   Modal,
   message,
+  Spin,
 } from 'antd';
 
 import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Images } from '../../../theme';
 import {
   ConnectTicketItem,
@@ -456,43 +457,44 @@ const CreateTicket = ({
           newTicketTypes.splice(index, 1);
         }
         const updateDiscounts = formValue.discounts;
-        fieldEdit(
-          {
-            ticketTypes: newTicketTypes,
-            discounts: updateDiscounts.map((discountItem) => {
-              const newDiscounts = {
-                ...discountItem,
-                condition: {
-                  ...discountItem.condition,
-                  ticketTypeId:
-                    (discountItem.condition.ticketTypeId !== item.id &&
-                      discountItem.condition.ticketTypeId) ||
-                    undefined,
-                },
-                gift: {
-                  ...discountItem.gift,
-                  ticketTypeId:
-                    (discountItem.gift.ticketTypeId !== item.id &&
-                      discountItem.gift.ticketTypeId) ||
-                    undefined,
-                },
-                apply: {
-                  ...discountItem.apply,
-                  ticketTypeIds: discountItem.apply.ticketTypeIds.filter(
-                    (ticketTypeId) => ticketTypeId !== item.id,
-                  ),
-                },
-              };
-              return newDiscounts;
-            }),
-          },
-          'ticketTypesAndDiscount',
-        );
         if (isEdit && !isDraft) {
           createEventPublish({
             ticketTypes: newTicketTypes,
             redirectTo: () => {},
           });
+        } else {
+          fieldEdit(
+            {
+              ticketTypes: newTicketTypes,
+              discounts: updateDiscounts.map((discountItem) => {
+                const newDiscounts = {
+                  ...discountItem,
+                  condition: {
+                    ...discountItem.condition,
+                    ticketTypeId:
+                      (discountItem.condition.ticketTypeId !== item.id &&
+                        discountItem.condition.ticketTypeId) ||
+                      undefined,
+                  },
+                  gift: {
+                    ...discountItem.gift,
+                    ticketTypeId:
+                      (discountItem.gift.ticketTypeId !== item.id &&
+                        discountItem.gift.ticketTypeId) ||
+                      undefined,
+                  },
+                  apply: {
+                    ...discountItem.apply,
+                    ticketTypeIds: discountItem.apply.ticketTypeIds.filter(
+                      (ticketTypeId) => ticketTypeId !== item.id,
+                    ),
+                  },
+                };
+                return newDiscounts;
+              }),
+            },
+            'ticketTypesAndDiscount',
+          );
         }
       },
     });
@@ -567,32 +569,38 @@ const CreateTicket = ({
               </Button>
             </Col>
           </Row>
-          <TicketList>
-            {validTicketTypes.map((item, index) => (
-              <TicketListItem
-                image={
-                  item.imageType.includes('video')
-                    ? item.thumbnailUrl
-                    : item.image
-                }
-                title={item.name}
-                stock={`${item.soldTotal} / ${item.stock}`}
-                price={item.price}
-                sellingTime={`${moment(item.sellStartTime).format(
-                  MMM_DD_YYYY_HH_MM,
-                )} - ${moment(item.sellEndTime).format(MMM_DD_YYYY_HH_MM)}`}
-                key={item.id}
-                onDelete={onDelete}
-                onEdit={onEdit}
-                item={item}
-                index={index}
-                {...getTicketListItemStatus(
-                  item.sellStartTime,
-                  item.sellEndTime,
-                )}
-              />
-            ))}
-          </TicketList>
+          <Spin
+            spinning={publishLoading}
+            indicator={<LoadingOutlined spin />}
+            size="large"
+          >
+            <TicketList>
+              {validTicketTypes.map((item, index) => (
+                <TicketListItem
+                  image={
+                    item.imageType.includes('video')
+                      ? item.thumbnailUrl
+                      : item.image
+                  }
+                  title={item.name}
+                  stock={`${item.soldTotal} / ${item.stock}`}
+                  price={item.price}
+                  sellingTime={`${moment(item.sellStartTime).format(
+                    MMM_DD_YYYY_HH_MM,
+                  )} - ${moment(item.sellEndTime).format(MMM_DD_YYYY_HH_MM)}`}
+                  key={item.id}
+                  onDelete={onDelete}
+                  onEdit={onEdit}
+                  item={item}
+                  index={index}
+                  {...getTicketListItemStatus(
+                    item.sellStartTime,
+                    item.sellEndTime,
+                  )}
+                />
+              ))}
+            </TicketList>
+          </Spin>
         </>
       );
     }

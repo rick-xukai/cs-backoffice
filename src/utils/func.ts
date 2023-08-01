@@ -352,9 +352,6 @@ export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
   if (!source.ticketTypes.length) {
     return 1;
   }
-  if (!source.discounts.length) {
-    return 2;
-  }
   if (source.discounts.length) {
     let isUnrelatedTickets: string | number = '';
     source.discounts.some((item) => {
