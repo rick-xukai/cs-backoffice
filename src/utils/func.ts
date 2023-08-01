@@ -338,6 +338,7 @@ export const calculatePrice = (price: any, type: boolean) => {
 };
 
 export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
+  let isUnrelatedTickets: string | number = '';
   if (
     !source.name ||
     !source.organizerId ||
@@ -347,13 +348,14 @@ export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
     !source.image ||
     !source.descriptionShort
   ) {
-    return 0;
+    isUnrelatedTickets = 0;
+    return isUnrelatedTickets;
   }
   if (!source.ticketTypes.length) {
-    return 1;
+    isUnrelatedTickets = 1;
+    return isUnrelatedTickets;
   }
   if (source.discounts.length) {
-    let isUnrelatedTickets: string | number = '';
     source.discounts.some((item) => {
       if (item.condition.quantity && !item.condition.ticketTypeId) {
         isUnrelatedTickets = 2;
@@ -372,9 +374,8 @@ export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
       }
       return false;
     });
-    return isUnrelatedTickets;
   }
-  return '';
+  return isUnrelatedTickets;
 };
 
 export const validatePromoCode = (code: string) => {
