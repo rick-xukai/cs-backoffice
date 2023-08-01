@@ -117,6 +117,25 @@ const checkDiscountCode = async (payload: {
   return response;
 };
 
+const checkConnectTicket = async ({
+  eventId,
+  ticketTypeId,
+  targetTypeId,
+}: {
+  ticketTypeId: number;
+  eventId: number;
+  targetTypeId: number;
+}) => {
+  const uri = API.checkConnectTicket.post
+    .replace(':eventId', `${eventId}`)
+    .replace(':ticketTypeId', `${ticketTypeId}`);
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload({ targetTypeId })
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
 export default {
   getEventsList,
   getEventDetail,
@@ -129,4 +148,5 @@ export default {
   cancelEvent,
   deleteEvent,
   checkDiscountCode,
+  checkConnectTicket,
 };
