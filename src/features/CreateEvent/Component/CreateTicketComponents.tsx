@@ -217,6 +217,7 @@ export const SelectEventsModal = ({
     centered
     onCancel={() => setOpen(false)}
     open={open}
+    bodyStyle={{ maxHeight: '80vh', overflow: 'auto' }}
   >
     {(!loading && (
       <SelectEventsTable>
