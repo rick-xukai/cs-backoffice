@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
 import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+
 import { Images } from '../../../theme';
 import {
   ConnectTicketItem,
@@ -32,6 +33,9 @@ import {
   ListTicketType,
   selectPublishLoading,
   checkConnectTicketAction,
+  getListTicketTypeAction,
+  selectListTicketType,
+  selectListTicketTypeLoading,
 } from '../CreateEvent.slice';
 import {
   MMM_DD_YYYY_HH_MM,
@@ -108,7 +112,6 @@ const CreateTicket = ({
   setCreateTicketStatus,
   formValue,
   ticketFormEdit,
-  listTicketType,
   fieldEdit,
   setTicketFormEdit,
   isEdit,
@@ -120,7 +123,6 @@ const CreateTicket = ({
   setCreateTicketStatus: any;
   formValue: CreateEventFormValueProps;
   ticketFormEdit: boolean;
-  listTicketType: ListTicketType[];
   fieldEdit: (value: any, field: string) => void;
   setTicketFormEdit: (status: boolean) => void;
   isEdit: boolean;
@@ -129,6 +131,10 @@ const CreateTicket = ({
   id: any;
 }) => {
   const { t } = useTranslation();
+
+  const listTicketType = useAppSelector(selectListTicketType);
+  const listTicketTypeLoading = useAppSelector(selectListTicketTypeLoading);
+
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
   const [fileList, setFileList] = useState<any>([]);
@@ -1000,7 +1006,13 @@ const CreateTicket = ({
                             Connected Tickets
                           </QuestionTooltip>
                         </p>
-                        <span className="action" onClick={() => setOpen(true)}>
+                        <span
+                          className="action"
+                          onClick={() => {
+                            setOpen(true);
+                            dispatch(getListTicketTypeAction());
+                          }}
+                        >
                           {ticketValue.connectedTickets.length
                             ? 'Edit'
                             : 'Select'}
@@ -1033,6 +1045,7 @@ const CreateTicket = ({
             </Row>
             <SelectEventsModal
               open={open}
+              loading={listTicketTypeLoading}
               setOpen={setOpen}
               doneHandle={doneHandle}
               eventsListData={eventsListData}

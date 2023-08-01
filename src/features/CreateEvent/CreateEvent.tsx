@@ -778,7 +778,7 @@ const CreateEvent = () => {
     if (isEdit) {
       fetchDetailData();
     }
-  }, [listTicketType]);
+  }, []);
 
   const handleCancel = () => {
     history.push(UserRoutes.events);
@@ -850,7 +850,6 @@ const CreateEvent = () => {
                     fieldEdit={handleFieldChange}
                     ticketFormEdit={ticketFormEdit}
                     setTicketFormEdit={setTicketFormEdit}
-                    listTicketType={listTicketType}
                     isEdit={isEdit}
                     createEventPublish={createEventPublish}
                     isDraft={isDraft}

@@ -517,11 +517,11 @@ const Events = () => {
                 />
               </Col>
               <Col lg={10} span={24} className="filter-status">
-                <Row className="filter-select-content">
-                  <Col span={4}>
+                <div className="filter-select-content">
+                  <div>
                     <span>{t('Status')}:</span>
-                  </Col>
-                  <Col span={20}>
+                  </div>
+                  <div>
                     <Select
                       defaultValue={
                         FilterEventStatus.find(
@@ -537,8 +537,8 @@ const Events = () => {
                         </Option>
                       ))}
                     </Select>
-                  </Col>
-                </Row>
+                  </div>
+                </div>
               </Col>
             </Row>
           </Col>

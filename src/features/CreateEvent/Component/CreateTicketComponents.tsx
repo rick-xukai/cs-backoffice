@@ -9,7 +9,9 @@ import {
   Modal,
   Form,
   message,
+  Spin,
 } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
@@ -196,12 +198,14 @@ export const SelectEventsModal = ({
   setOpen,
   open,
   handleSelectEvents,
+  loading = false,
 }: {
   doneHandle: any;
   eventsListData: ListTicketType[];
   setOpen: any;
   open: boolean;
   handleSelectEvents: any;
+  loading?: boolean;
 }) => (
   <Modal
     title="Select Events"
@@ -214,35 +218,46 @@ export const SelectEventsModal = ({
     onCancel={() => setOpen(false)}
     open={open}
   >
-    <SelectEventsTable>
-      <Col className="header" span={24}>
-        <Row>
-          <Col span={2} />
-          <Col span={15}>Event Name</Col>
-          <Col span={7}>Ticket Name</Col>
-        </Row>
-      </Col>
-      {eventsListData.length ? (
-        eventsListData.map((item, index) => (
-          <Col className="item" span={24} key={item.id}>
-            <Row>
-              <Col span={2}>
-                <Checkbox
-                  onChange={(e) => handleSelectEvents(e.target.checked, index)}
-                  checked={item.checked}
-                />
-              </Col>
-              <Col span={15} style={{ paddingRight: 20 }}>
-                {item.eventName}
-              </Col>
-              <Col span={7}>{item.name}</Col>
-            </Row>
-          </Col>
-        ))
-      ) : (
-        <NoData />
-      )}
-    </SelectEventsTable>
+    {(!loading && (
+      <SelectEventsTable>
+        <Col className="header" span={24}>
+          <Row>
+            <Col span={2} />
+            <Col span={15}>Event Name</Col>
+            <Col span={7}>Ticket Name</Col>
+          </Row>
+        </Col>
+        {eventsListData.length ? (
+          eventsListData.map((item, index) => (
+            <Col className="item" span={24} key={item.id}>
+              <Row>
+                <Col span={2}>
+                  <Checkbox
+                    onChange={(e) =>
+                      handleSelectEvents(e.target.checked, index)
+                    }
+                    checked={item.checked}
+                  />
+                </Col>
+                <Col span={15} style={{ paddingRight: 20 }}>
+                  {item.eventName}
+                </Col>
+                <Col span={7}>{item.name}</Col>
+              </Row>
+            </Col>
+          ))
+        ) : (
+          <NoData />
+        )}
+      </SelectEventsTable>
+    )) || (
+      <Spin
+        spinning={loading}
+        indicator={<LoadingOutlined spin />}
+        size="large"
+        style={{ width: '100%' }}
+      />
+    )}
   </Modal>
 );
 
