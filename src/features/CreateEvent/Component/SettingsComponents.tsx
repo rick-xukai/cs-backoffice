@@ -525,6 +525,7 @@ export const AddEditForm = ({
                   value={promoValue.code}
                   maxLength={100}
                   showCount
+                  disabled={disabled}
                 />
               </Form.Item>
             )}
