@@ -601,5 +601,7 @@ export const selectNeedUpdateTicketsId = (state: RootState) =>
   state.createEvent.needUpdateTicketsId;
 export const selectNeedUpdateDiscountsId = (state: RootState) =>
   state.createEvent.needUpdateDiscountsId;
+export const selectListTicketTypeLoading = (state: RootState) =>
+  state.createEvent.listTicketTypeLoading;
 
 export default createEventSlice.reducer;

@@ -53,8 +53,11 @@ const EventsContainer = styled.div`
       .filter-status {
         padding-left: 24px;
         .filter-select-content {
+          display: flex;
+          width: 100%;
           align-items: center;
           > :last-child {
+            width: 90%;
             padding-left: 16px;
           }
         }
