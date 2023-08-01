@@ -22,7 +22,6 @@ import {
   selectPublishLoading,
 } from '../CreateEvent.slice';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { RESUEST_SUCCESS_CODE } from '../../../constants/constants';
 
 export enum CreatePromoStatus {
   list = 1,
@@ -185,7 +184,7 @@ const Settings = ({
       }),
     );
     if (checkResponse.type === checkDiscountCodeAction.fulfilled.toString()) {
-      if (checkResponse.payload.code !== RESUEST_SUCCESS_CODE) {
+      if (!checkResponse.payload?.data?.canUse) {
         message.error({
           content: t(
             'This Discount Code already exists. Please use another name and try again.',

@@ -532,11 +532,19 @@ export const createEventSlice = createSlice({
         }
       })
       .addCase(checkDiscountCodeAction.pending, (state) => {
-        state.data = { id: 0 };
         if (state.needUpdateEventId) {
           state.saveDraftLoading = true;
         } else {
           state.publishLoading = true;
+        }
+      })
+      .addCase(checkDiscountCodeAction.fulfilled, (state, action) => {
+        if (!action.payload?.data?.canUse) {
+          if (state.needUpdateEventId) {
+            state.saveDraftLoading = false;
+          } else {
+            state.publishLoading = false;
+          }
         }
       })
       .addCase(checkDiscountCodeAction.rejected, (state) => {
