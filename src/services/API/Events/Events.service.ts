@@ -104,6 +104,19 @@ const deleteEvent = async (id: string) => {
   return response;
 };
 
+const checkDiscountCode = async (payload: {
+  code: string;
+  eventId: number;
+}) => {
+  const uri = API.checkDiscountCode.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -115,4 +128,5 @@ export default {
   getListTicketType,
   cancelEvent,
   deleteEvent,
+  checkDiscountCode,
 };

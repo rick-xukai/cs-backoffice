@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, Modal, message } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { cloneDeep } from 'lodash';
 // eslint-disable-next-line import/no-cycle
 import {
@@ -18,9 +18,11 @@ import {
   MethodType,
   PromoListProps,
   PromoType,
+  checkDiscountCodeAction,
   selectPublishLoading,
 } from '../CreateEvent.slice';
-import { useAppSelector } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { RESUEST_SUCCESS_CODE } from '../../../constants/constants';
 
 export enum CreatePromoStatus {
   list = 1,
@@ -71,6 +73,7 @@ const Settings = ({
   isEdit,
   createEventPublish,
   isDraft,
+  id,
 }: {
   createPromoStatus: CreatePromoStatus;
   setCreatePromoStatus: any;
@@ -83,6 +86,7 @@ const Settings = ({
   isEdit: boolean;
   createEventPublish: any;
   isDraft: boolean;
+  id: any;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -108,6 +112,7 @@ const Settings = ({
       });
     }
   };
+  const dispatch = useAppDispatch();
 
   const validPromos = formValue.discounts.filter((item) => !item.delete);
 
@@ -172,7 +177,33 @@ const Settings = ({
     setCreatePromoStatus(CreatePromoStatus.add);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    const checkResponse: any = await dispatch(
+      checkDiscountCodeAction({
+        code: promoValue.code,
+        eventId: Number(id) || 0,
+      }),
+    );
+    if (checkResponse.type === checkDiscountCodeAction.fulfilled.toString()) {
+      if (checkResponse.payload.code !== RESUEST_SUCCESS_CODE) {
+        message.error({
+          content: t(
+            'This Discount Code already exists. Please use another name and try again.',
+          ),
+          key: 'error',
+        });
+        return;
+      }
+    } else {
+      message.error({
+        content: t(
+          'This Discount Code already exists. Please use another name and try again.',
+        ),
+        key: 'error',
+      });
+      return;
+    }
+
     setOnSave(true);
     if (
       (createPromoType === CreatePromoType.bundle &&
@@ -403,8 +434,11 @@ const Settings = ({
             <div className="page-bottom">
               <div className="bottom-btn">
                 <Button onClick={handleCancelCreatePromo}>{t('Cancel')}</Button>
-                <Button type="primary" onClick={handleSave}>
-                  {publishLoading && <LoadingOutlined spin />}
+                <Button
+                  type="primary"
+                  onClick={handleSave}
+                  loading={publishLoading}
+                >
                   {okButtonText}
                 </Button>
               </div>

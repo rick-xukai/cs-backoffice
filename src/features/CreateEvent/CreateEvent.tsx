@@ -839,6 +839,7 @@ const CreateEvent = () => {
                     fieldEdit={handleFieldChange}
                     isEdit={isEdit}
                     isDraft={isDraft}
+                    setCreateEventFormValue={setCreateEventFormValue}
                   />
                 )}
                 {steps === ComponentSteps.createTicket && (
@@ -868,6 +869,7 @@ const CreateEvent = () => {
                     isEdit={isEdit}
                     createEventPublish={createEventPublish}
                     isDraft={isDraft}
+                    id={id}
                   />
                 )}
                 {steps === ComponentSteps.publish && (
@@ -915,8 +917,8 @@ const CreateEvent = () => {
                           onClick={() =>
                             isEdit && !isDraft ? handleCancel() : saveAsDraft()
                           }
+                          loading={saveDraftLoading}
                         >
-                          {saveDraftLoading && <LoadingOutlined spin />}
                           {isEdit && !isDraft
                             ? t('Cancel')
                             : t('Save as Draft')}
@@ -936,17 +938,15 @@ const CreateEvent = () => {
                   <div className="bottom-btn">
                     <Button
                       onClick={() => (isEdit ? handleCancel() : saveAsDraft())}
-                      disabled={saveDraftLoading}
+                      loading={saveDraftLoading}
                     >
-                      {saveDraftLoading && <LoadingOutlined spin />}
                       {isEdit && !isDraft ? t('Cancel') : t('Save as Draft')}
                     </Button>
                     <Button
                       type="primary"
                       onClick={() => createEventPublish()}
-                      disabled={publishLoading}
+                      loading={publishLoading}
                     >
-                      {publishLoading && <LoadingOutlined spin />}
                       {t('Publish')}
                     </Button>
                   </div>
