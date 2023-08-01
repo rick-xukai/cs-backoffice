@@ -276,7 +276,30 @@ const CreateTicket = ({
       ),
     });
   };
-  const handleSelectEvents = (checked: boolean, index: number) => {
+  const handleSelectEvents = async (checked: boolean, index: number) => {
+    if (
+      isEdit &&
+      !isDraft &&
+      createTicketStatus === CreateTicketStatus.edit &&
+      !checked
+    ) {
+      const response = await dispatch(
+        checkConnectTicketAction({
+          eventId: id,
+          targetTypeId: Number(eventsListData[index].id),
+          ticketTypeId: ticketValue.id,
+        }),
+      );
+      if (response.type === checkConnectTicketAction.fulfilled.toString()) {
+        if (!response.payload.data.canDelete) {
+          canNotDeleteConnectTicket();
+          return;
+        }
+      } else {
+        canNotDeleteConnectTicket();
+        return;
+      }
+    }
     Modal.confirm({
       className: 'notSaveConfirmModal',
       centered: true,
@@ -286,30 +309,7 @@ const CreateTicket = ({
       title: t('Delete Connected Tickets'),
       icon: <ExclamationCircleOutlined />,
       content: t(`Are you sure you want to delete it?`),
-      onOk: async () => {
-        if (
-          isEdit &&
-          !isDraft &&
-          createTicketStatus === CreateTicketStatus.edit &&
-          !checked
-        ) {
-          const response = await dispatch(
-            checkConnectTicketAction({
-              eventId: id,
-              targetTypeId: Number(eventsListData[index].id),
-              ticketTypeId: ticketValue.id,
-            }),
-          );
-          if (response.type === checkConnectTicketAction.fulfilled.toString()) {
-            if (!response.payload.data.canDelete) {
-              canNotDeleteConnectTicket();
-              return;
-            }
-          } else {
-            canNotDeleteConnectTicket();
-            return;
-          }
-        }
+      onOk: () => {
         eventsListData[index].checked = checked;
         setEventsListData([...eventsListData]);
       },
@@ -339,7 +339,25 @@ const CreateTicket = ({
     );
   }, [ticketValue.connectedTickets, listTicketType]);
 
-  const handleDeleteConnectTicket = (index: number) => {
+  const handleDeleteConnectTicket = async (index: number) => {
+    if (isEdit && !isDraft && createTicketStatus === CreateTicketStatus.edit) {
+      const response = await dispatch(
+        checkConnectTicketAction({
+          eventId: id,
+          targetTypeId: ticketValue.connectedTickets[index].id,
+          ticketTypeId: ticketValue.id,
+        }),
+      );
+      if (response.type === checkConnectTicketAction.fulfilled.toString()) {
+        if (!response.payload.data.canDelete) {
+          canNotDeleteConnectTicket();
+          return;
+        }
+      } else {
+        canNotDeleteConnectTicket();
+        return;
+      }
+    }
     Modal.confirm({
       className: 'notSaveConfirmModal',
       centered: true,
@@ -349,29 +367,7 @@ const CreateTicket = ({
       title: t('Delete Connected Tickets'),
       icon: <ExclamationCircleOutlined />,
       content: t(`Are you sure you want to delete it?`),
-      onOk: async () => {
-        if (
-          isEdit &&
-          !isDraft &&
-          createTicketStatus === CreateTicketStatus.edit
-        ) {
-          const response = await dispatch(
-            checkConnectTicketAction({
-              eventId: id,
-              targetTypeId: ticketValue.connectedTickets[index].id,
-              ticketTypeId: ticketValue.id,
-            }),
-          );
-          if (response.type === checkConnectTicketAction.fulfilled.toString()) {
-            if (!response.payload.data.canDelete) {
-              canNotDeleteConnectTicket();
-              return;
-            }
-          } else {
-            canNotDeleteConnectTicket();
-            return;
-          }
-        }
+      onOk: () => {
         ticketValue.connectedTickets.splice(index, 1);
         changeTicketValues({
           connectedTickets: [...ticketValue.connectedTickets],
