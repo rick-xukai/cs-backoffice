@@ -277,43 +277,47 @@ const CreateTicket = ({
     });
   };
   const handleSelectEvents = async (checked: boolean, index: number) => {
-    if (
-      isEdit &&
-      !isDraft &&
-      createTicketStatus === CreateTicketStatus.edit &&
-      !checked
-    ) {
-      const response = await dispatch(
-        checkConnectTicketAction({
-          eventId: id,
-          targetTypeId: Number(eventsListData[index].id),
-          ticketTypeId: ticketValue.id,
-        }),
-      );
-      if (response.type === checkConnectTicketAction.fulfilled.toString()) {
-        if (!response.payload.data.canDelete) {
+    if (!checked) {
+      if (
+        isEdit &&
+        !isDraft &&
+        createTicketStatus === CreateTicketStatus.edit
+      ) {
+        const response = await dispatch(
+          checkConnectTicketAction({
+            eventId: id,
+            targetTypeId: Number(eventsListData[index].id),
+            ticketTypeId: ticketValue.id,
+          }),
+        );
+        if (response.type === checkConnectTicketAction.fulfilled.toString()) {
+          if (!response.payload.data.canDelete) {
+            canNotDeleteConnectTicket();
+            return;
+          }
+        } else {
           canNotDeleteConnectTicket();
           return;
         }
-      } else {
-        canNotDeleteConnectTicket();
-        return;
       }
+      Modal.confirm({
+        className: 'notSaveConfirmModal',
+        centered: true,
+        closable: false,
+        okText: 'Delete',
+        cancelText: 'Cancel',
+        title: t('Delete Connected Tickets'),
+        icon: <ExclamationCircleOutlined />,
+        content: t(`Are you sure you want to delete it?`),
+        onOk: () => {
+          eventsListData[index].checked = checked;
+          setEventsListData([...eventsListData]);
+        },
+      });
+    } else {
+      eventsListData[index].checked = checked;
+      setEventsListData([...eventsListData]);
     }
-    Modal.confirm({
-      className: 'notSaveConfirmModal',
-      centered: true,
-      closable: false,
-      okText: 'Delete',
-      cancelText: 'Cancel',
-      title: t('Delete Connected Tickets'),
-      icon: <ExclamationCircleOutlined />,
-      content: t(`Are you sure you want to delete it?`),
-      onOk: () => {
-        eventsListData[index].checked = checked;
-        setEventsListData([...eventsListData]);
-      },
-    });
   };
   const doneHandle = () => {
     changeTicketValues({
@@ -344,7 +348,9 @@ const CreateTicket = ({
       const response = await dispatch(
         checkConnectTicketAction({
           eventId: id,
-          targetTypeId: ticketValue.connectedTickets[index].id,
+          targetTypeId:
+            ticketValue.connectedTickets[index].ticketTypeId ||
+            ticketValue.connectedTickets[index].id,
           ticketTypeId: ticketValue.id,
         }),
       );
@@ -621,6 +627,19 @@ const CreateTicket = ({
     Number(ticketValue.price.toString().replace(/,/g, '')),
     ticketValue.absorbFees,
   );
+
+  const matchConnectTickets = listTicketType
+    .filter((item) =>
+      ticketValue.connectedTickets.find(
+        (ticket) => ticket.ticketTypeId === item.id || ticket.id === item.id,
+      ),
+    )
+    .map((item) => ({
+      ...item,
+      ticketTypeId: item.id,
+    }));
+
+  console.log(ticketValue.connectedTickets, listTicketType);
 
   const renderContent = () => {
     if (createTicketStatus === CreateTicketStatus.list) {
@@ -1020,21 +1039,19 @@ const CreateTicket = ({
                         </span>
                       </ConnectTicketsTitle>
                       <ConnectTicketsList>
-                        {ticketValue.connectedTickets.map(
-                          (item: any, index) => (
-                            <ConnectTicketItem key={item.id}>
-                              <div>
-                                <p className="title">{item.eventName}</p>
-                                <p className="sub-title">{item.name}</p>
-                              </div>
-                              <img
-                                src={Images.DeleteOutlinedIcon}
-                                alt=""
-                                onClick={() => handleDeleteConnectTicket(index)}
-                              />
-                            </ConnectTicketItem>
-                          ),
-                        )}
+                        {matchConnectTickets.map((item: any, index) => (
+                          <ConnectTicketItem key={item.id}>
+                            <div>
+                              <p className="title">{item.eventName}</p>
+                              <p className="sub-title">{item.name}</p>
+                            </div>
+                            <img
+                              src={Images.DeleteOutlinedIcon}
+                              alt=""
+                              onClick={() => handleDeleteConnectTicket(index)}
+                            />
+                          </ConnectTicketItem>
+                        ))}
                       </ConnectTicketsList>
                     </FoldingPanel.Panel>
                   </FoldingPanel>
