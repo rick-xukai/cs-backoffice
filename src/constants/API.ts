@@ -84,6 +84,9 @@ const API = {
   checkDiscountCode: {
     post: '/admin/event/discount/code/check',
   },
+  checkConnectTicket: {
+    post: '/admin/event/:eventId/:ticketTypeId/check',
+  },
 };
 
 export default API;

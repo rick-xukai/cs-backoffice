@@ -31,6 +31,7 @@ import {
   TicketListProps,
   ListTicketType,
   selectPublishLoading,
+  checkConnectTicketAction,
 } from '../CreateEvent.slice';
 import {
   MMM_DD_YYYY_HH_MM,
@@ -54,7 +55,7 @@ import {
   thousandsSeparator,
 } from '../../../utils/func';
 import { UploadFileAcceptType } from '../../../constants/General';
-import { useAppSelector } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 
 const { RangePicker } = DatePicker;
 
@@ -113,6 +114,7 @@ const CreateTicket = ({
   isEdit,
   createEventPublish,
   isDraft,
+  id,
 }: {
   createTicketStatus: CreateTicketStatus;
   setCreateTicketStatus: any;
@@ -124,6 +126,7 @@ const CreateTicket = ({
   isEdit: boolean;
   createEventPublish: any;
   isDraft: boolean;
+  id: any;
 }) => {
   const { t } = useTranslation();
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
@@ -134,6 +137,11 @@ const CreateTicket = ({
     ...initialValues,
     sellEndTime: formValue.startTime || '',
   });
+  const [onSave, setOnSave] = useState(false);
+  const [showNoEndTimeError, setShowNoEndTimeError] = useState<boolean>(false);
+  const publishLoading = useAppSelector(selectPublishLoading);
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     setTicketValue({
       ...ticketValue,
@@ -142,9 +150,6 @@ const CreateTicket = ({
         ticketValue.sellStartTime || moment().format(MMM_DD_YYYY_HH_MM),
     });
   }, [formValue.startTime, createTicketStatus]);
-  const [onSave, setOnSave] = useState(false);
-  const [showNoEndTimeError, setShowNoEndTimeError] = useState<boolean>(false);
-  const publishLoading = useAppSelector(selectPublishLoading);
   const changeTicketValues = (value: any, field?: string) => {
     setTicketFormEdit(true);
     if (field) {
@@ -265,25 +270,66 @@ const CreateTicket = ({
 
   useEffect(() => {
     setEventsListData(
-      listTicketType.map((item) => ({
-        ...item,
-        checked: !!ticketValue.connectedTickets.find(
-          (ticket) => item.id === ticket.ticketTypeId || item.id === ticket.id,
-        ),
-      })),
+      listTicketType
+        .filter(
+          (item) =>
+            !formValue.ticketTypes.find((ticket: any) => ticket.id === item.id),
+        )
+        .map((item) => ({
+          ...item,
+          checked: !!ticketValue.connectedTickets.find(
+            (ticket) =>
+              item.id === ticket.ticketTypeId || item.id === ticket.id,
+          ),
+        })),
     );
   }, [ticketValue.connectedTickets, listTicketType]);
-  const handleDeleteEvent = (index: number) => {
+  const canNotDeleteConnectTicket = () => {
+    Modal.confirm({
+      className: 'notSaveConfirmModal',
+      centered: true,
+      closable: false,
+      okText: 'Ok',
+      cancelButtonProps: {
+        style: { display: 'none' },
+      },
+      title: t('Unable to Delete Connected Tickets'),
+      icon: <ExclamationCircleOutlined />,
+      content: t(
+        'This Ticket has been used by an attendee before and cannot be deleted.',
+      ),
+    });
+  };
+  const handleDeleteConnectTicket = (index: number) => {
     Modal.confirm({
       className: 'notSaveConfirmModal',
       centered: true,
       closable: false,
       okText: 'Delete',
       cancelText: 'Cancel',
-      title: 'Delete Connected Tickets',
+      title: t('Delete Connected Tickets'),
       icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to delete it?`,
-      onOk: () => {
+      content: t(`Are you sure you want to delete it?`),
+      onOk: async () => {
+        if (isEdit && !isDraft) {
+          const response = await dispatch(
+            checkConnectTicketAction({
+              eventId: id,
+              targetTypeId: ticketValue.connectedTickets[index].id,
+              ticketTypeId: ticketValue.id,
+            }),
+          );
+          if (response.type === checkConnectTicketAction.fulfilled.toString()) {
+            if (!response.payload.data.canDelete) {
+              canNotDeleteConnectTicket();
+              return;
+            }
+          } else {
+            canNotDeleteConnectTicket();
+            return;
+          }
+        }
+
         ticketValue.connectedTickets.splice(index, 1);
         changeTicketValues({
           connectedTickets: [...ticketValue.connectedTickets],
@@ -953,7 +999,7 @@ const CreateTicket = ({
                               <img
                                 src={Images.DeleteOutlinedIcon}
                                 alt=""
-                                onClick={() => handleDeleteEvent(index)}
+                                onClick={() => handleDeleteConnectTicket(index)}
                               />
                             </ConnectTicketItem>
                           ),

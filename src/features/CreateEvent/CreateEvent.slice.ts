@@ -388,6 +388,31 @@ export const checkDiscountCodeAction = createAsyncThunk<
   }
 });
 
+/**
+ * check connect ticket
+ */
+export const checkConnectTicketAction = createAsyncThunk<
+  any,
+  {
+    ticketTypeId: any;
+    eventId: number;
+    targetTypeId: number;
+  },
+  {
+    rejectValue: ErrorType;
+  }
+>('createEvent/checkConnectTicketAction', async (payload) => {
+  try {
+    const response = await EventsService.checkConnectTicket(payload);
+    return response;
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return err.response;
+  }
+});
+
 interface CreateEventState {
   loading: boolean;
   listTicketTypeLoading: boolean;

@@ -844,6 +844,7 @@ const CreateEvent = () => {
                     isEdit={isEdit}
                     createEventPublish={createEventPublish}
                     isDraft={isDraft}
+                    id={id}
                   />
                 )}
                 {steps === ComponentSteps.settings && (

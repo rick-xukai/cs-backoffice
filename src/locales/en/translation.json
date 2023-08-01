@@ -392,5 +392,9 @@
   "Are you sure you want to delete this discount?": "Are you sure you want to delete this discount?",
   "Unable to Delete Ticket": "Unable to Delete Ticket",
   "As there are some attendees who have purchased this ticket type, you are unable to delete this ticket type.": "As there are some attendees who have purchased this ticket type, you are unable to delete this ticket type.",
-  "You cannot delete the last ticket while your event is live. Please go to add another new ticket first.": "You cannot delete the last ticket while your event is live. Please go to add another new ticket first."
+  "You cannot delete the last ticket while your event is live. Please go to add another new ticket first.": "You cannot delete the last ticket while your event is live. Please go to add another new ticket first.",
+  "Unable to Delete Connected Tickets": "Unable to Delete Connected Tickets",
+  "This Ticket has been used by an attendee before and cannot be deleted.": "This Ticket has been used by an attendee before and cannot be deleted.",
+  "Delete Connected Tickets": "Delete Connected Tickets",
+  "Are you sure you want to delete it?": "Are you sure you want to delete it?"
 }
