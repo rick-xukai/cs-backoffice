@@ -24,7 +24,7 @@ import { validatUnfinishedSteps } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import ProgressBarComponent from '../../components/ProgressBar';
 import PageHeaderComponent from '../../components/PageHeader';
-import { CreateEventContainer } from './CreateEventComponent';
+import { CreateEventContainer, LoadingContainer } from './CreateEventComponent';
 import EventInfo from './Component/EventInfo';
 import CreateTicket from './Component/CreateTicket';
 import Settings, {
@@ -309,6 +309,9 @@ const CreateEvent = () => {
         ).fulfilled.toString()
       ) {
         message.success(t('Draft Saved Successfully!'));
+        setEventInfoFormEdit(false);
+        setTicketFormEdit(false);
+        setSettingsFormEdit(false);
         if (type && type === 'blockRouter') {
           setBlockRouter(false);
         }
@@ -801,6 +804,23 @@ const CreateEvent = () => {
     return t('Save and Publish');
   };
 
+  const Loading = (
+    <LoadingContainer>
+      <Spin
+        spinning
+        indicator={<LoadingOutlined spin style={{ marginTop: 0 }} />}
+        size="large"
+        style={{
+          position: 'fixed',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 99,
+        }}
+      />
+    </LoadingContainer>
+  );
+
   return (
     <>
       <Prompt when={blockRouter} message={handleRouterHoldUp} />
@@ -810,6 +830,7 @@ const CreateEvent = () => {
         clickBack={() => history.push(UserRoutes.events)}
       />
       <CreateEventContainer>
+        {publishLoading ? Loading : null}
         {(loading && (
           <Spin
             spinning={loading}
@@ -885,7 +906,6 @@ const CreateEvent = () => {
                 <div className="bottom-btn">
                   <Button
                     onClick={() => (isDraft ? saveAsDraft() : handleCancel())}
-                    disabled={saveDraftLoading}
                     loading={saveDraftLoading}
                   >
                     {isDraft ? t('Save as Draft') : t('Cancel')}
@@ -896,11 +916,12 @@ const CreateEvent = () => {
                       isDraft && steps !== ComponentSteps.publish
                         ? setSteps(steps + 1)
                         : createEventPublish({
-                            redirectTo: () => history.push(UserRoutes.events),
+                            redirectTo: () => {},
                             publish: CreateEventActionType.publish,
                           })
                     }
                     loading={publishLoading}
+                    disabled={isEdit && !isDraft && !eventInfoFormEdit}
                   >
                     {showSaveAndPublishButtonText()}
                   </Button>

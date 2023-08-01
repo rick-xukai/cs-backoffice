@@ -10,14 +10,12 @@ import {
   Select,
   Modal,
   message,
-  Spin,
 } from 'antd';
 
 import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
-import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
-
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Images } from '../../../theme';
 import {
   ConnectTicketItem,
@@ -639,38 +637,33 @@ const CreateTicket = ({
               </Button>
             </Col>
           </Row>
-          <Spin
-            spinning={publishLoading}
-            indicator={<LoadingOutlined spin />}
-            size="large"
-          >
-            <TicketList>
-              {validTicketTypes.map((item, index) => (
-                <TicketListItem
-                  image={
-                    item.imageType.includes('video')
-                      ? item.thumbnailUrl
-                      : item.image
-                  }
-                  title={item.name}
-                  stock={`${item.soldTotal} / ${item.stock}`}
-                  price={item.price}
-                  sellingTime={`${moment(item.sellStartTime).format(
-                    MMM_DD_YYYY_HH_MM,
-                  )} - ${moment(item.sellEndTime).format(MMM_DD_YYYY_HH_MM)}`}
-                  key={item.id}
-                  onDelete={onDelete}
-                  onEdit={onEdit}
-                  item={item}
-                  index={index}
-                  {...getTicketListItemStatus(
-                    item.sellStartTime,
-                    item.sellEndTime,
-                  )}
-                />
-              ))}
-            </TicketList>
-          </Spin>
+
+          <TicketList>
+            {validTicketTypes.map((item, index) => (
+              <TicketListItem
+                image={
+                  item.imageType.includes('video')
+                    ? item.thumbnailUrl
+                    : item.image
+                }
+                title={item.name}
+                stock={`${item.soldTotal} / ${item.stock}`}
+                price={item.price}
+                sellingTime={`${moment(item.sellStartTime).format(
+                  MMM_DD_YYYY_HH_MM,
+                )} - ${moment(item.sellEndTime).format(MMM_DD_YYYY_HH_MM)}`}
+                key={item.id}
+                onDelete={onDelete}
+                onEdit={onEdit}
+                item={item}
+                index={index}
+                {...getTicketListItemStatus(
+                  item.sellStartTime,
+                  item.sellEndTime,
+                )}
+              />
+            ))}
+          </TicketList>
         </>
       );
     }
@@ -1062,6 +1055,7 @@ const CreateTicket = ({
                   type="primary"
                   onClick={handleSave}
                   loading={publishLoading}
+                  disabled={isEdit && !isDraft && !ticketFormEdit}
                 >
                   {!isDraft ? t('Save and Publish') : t('Save')}
                 </Button>

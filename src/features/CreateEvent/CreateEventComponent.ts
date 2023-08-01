@@ -95,9 +95,9 @@ const CreateEventContainer = styled.div`
       background: ${Colors.white};
     }
     .ant-btn-primary[disabled] {
-      background: ${Colors.branding};
+      background: ${Colors.grey8};
       border: none;
-      color: ${Colors.white};
+      color: ${Colors.grey};
     }
   }
   .end-date-error {
@@ -1125,6 +1125,16 @@ export const ActionTextButton = styled.span`
   line-height: 21px;
   cursor: pointer;
   margin-bottom: 0;
+`;
+
+export const LoadingContainer = styled.div`
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(255, 255, 255, 0.7);
+  width: 100vw;
+  height: 100vh;
+  z-index: 11;
 `;
 
 export {
