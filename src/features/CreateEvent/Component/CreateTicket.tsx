@@ -628,18 +628,15 @@ const CreateTicket = ({
     ticketValue.absorbFees,
   );
 
-  const matchConnectTickets = listTicketType
-    .filter((item) =>
-      ticketValue.connectedTickets.find(
-        (ticket) => ticket.ticketTypeId === item.id || ticket.id === item.id,
-      ),
-    )
-    .map((item) => ({
-      ...item,
-      ticketTypeId: item.id,
-    }));
-
-  console.log(ticketValue.connectedTickets, listTicketType);
+  const matchConnectTickets = ticketValue.connectedTickets.map((item) => {
+    const findTicket = listTicketType.find(
+      (ticket) => ticket.id === item.id || ticket.id === item.ticketTypeId,
+    );
+    return {
+      ...findTicket,
+      ticketTypeId: findTicket?.id,
+    };
+  });
 
   const renderContent = () => {
     if (createTicketStatus === CreateTicketStatus.list) {
