@@ -256,8 +256,46 @@ const CreateTicket = ({
   }, [thumbnaiFileList]);
 
   const [eventsListData, setEventsListData] = useState<ListTicketType[]>([]);
-
-  const handleSelectEvents = (checked: boolean, index: number) => {
+  const canNotDeleteConnectTicket = () => {
+    Modal.confirm({
+      className: 'notSaveConfirmModal',
+      centered: true,
+      closable: false,
+      okText: 'Ok',
+      cancelButtonProps: {
+        style: { display: 'none' },
+      },
+      title: t('Unable to Delete Connected Tickets'),
+      icon: <ExclamationCircleOutlined />,
+      content: t(
+        'This Ticket has been used by an attendee before and cannot be deleted.',
+      ),
+    });
+  };
+  const handleSelectEvents = async (checked: boolean, index: number) => {
+    if (
+      isEdit &&
+      !isDraft &&
+      createTicketStatus === CreateTicketStatus.edit &&
+      !checked
+    ) {
+      const response = await dispatch(
+        checkConnectTicketAction({
+          eventId: id,
+          targetTypeId: Number(eventsListData[index].id),
+          ticketTypeId: ticketValue.id,
+        }),
+      );
+      if (response.type === checkConnectTicketAction.fulfilled.toString()) {
+        if (!response.payload.data.canDelete) {
+          canNotDeleteConnectTicket();
+          return;
+        }
+      } else {
+        canNotDeleteConnectTicket();
+        return;
+      }
+    }
     eventsListData[index].checked = checked;
     setEventsListData([...eventsListData]);
   };
@@ -284,22 +322,7 @@ const CreateTicket = ({
         })),
     );
   }, [ticketValue.connectedTickets, listTicketType]);
-  const canNotDeleteConnectTicket = () => {
-    Modal.confirm({
-      className: 'notSaveConfirmModal',
-      centered: true,
-      closable: false,
-      okText: 'Ok',
-      cancelButtonProps: {
-        style: { display: 'none' },
-      },
-      title: t('Unable to Delete Connected Tickets'),
-      icon: <ExclamationCircleOutlined />,
-      content: t(
-        'This Ticket has been used by an attendee before and cannot be deleted.',
-      ),
-    });
-  };
+
   const handleDeleteConnectTicket = (index: number) => {
     Modal.confirm({
       className: 'notSaveConfirmModal',
@@ -311,7 +334,11 @@ const CreateTicket = ({
       icon: <ExclamationCircleOutlined />,
       content: t(`Are you sure you want to delete it?`),
       onOk: async () => {
-        if (isEdit && !isDraft) {
+        if (
+          isEdit &&
+          !isDraft &&
+          createTicketStatus === CreateTicketStatus.edit
+        ) {
           const response = await dispatch(
             checkConnectTicketAction({
               eventId: id,
@@ -329,7 +356,6 @@ const CreateTicket = ({
             return;
           }
         }
-
         ticketValue.connectedTickets.splice(index, 1);
         changeTicketValues({
           connectedTickets: [...ticketValue.connectedTickets],
@@ -338,14 +364,6 @@ const CreateTicket = ({
     });
   };
 
-  const hanldleCheckAll = (value: boolean) => {
-    setEventsListData(
-      eventsListData.map((item) => ({
-        ...item,
-        checked: value,
-      })),
-    );
-  };
   const handleAddTicket = () => {
     setCreateTicketStatus(CreateTicketStatus.add);
   };
@@ -1019,7 +1037,6 @@ const CreateTicket = ({
               doneHandle={doneHandle}
               eventsListData={eventsListData}
               handleSelectEvents={handleSelectEvents}
-              hanldleCheckAll={hanldleCheckAll}
             />
           </CreateEventFormContainer>
           {isEdit ? (

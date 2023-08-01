@@ -195,14 +195,12 @@ export const SelectEventsModal = ({
   eventsListData,
   setOpen,
   open,
-  hanldleCheckAll,
   handleSelectEvents,
 }: {
   doneHandle: any;
   eventsListData: ListTicketType[];
   setOpen: any;
   open: boolean;
-  hanldleCheckAll: any;
   handleSelectEvents: any;
 }) => (
   <Modal
@@ -219,17 +217,7 @@ export const SelectEventsModal = ({
     <SelectEventsTable>
       <Col className="header" span={24}>
         <Row>
-          <Col span={2}>
-            <Checkbox
-              checked={
-                !!eventsListData.length &&
-                eventsListData.length ===
-                  eventsListData.filter((item) => item.checked).length
-              }
-              disabled={!eventsListData.length}
-              onChange={(e) => hanldleCheckAll(e.target.checked)}
-            />
-          </Col>
+          <Col span={2} />
           <Col span={15}>Event Name</Col>
           <Col span={7}>Ticket Name</Col>
         </Row>
