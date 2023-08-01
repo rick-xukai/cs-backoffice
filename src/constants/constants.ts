@@ -9,4 +9,3 @@ export const TOKEN_EXPIRED_MESSAGE =
   'User token is deprecated, please login again.';
 export const PRICE_LIMIT = 100000000;
 export const PERCENT_LIMIT = 100;
-export const RESUEST_SUCCESS_CODE = 200;
