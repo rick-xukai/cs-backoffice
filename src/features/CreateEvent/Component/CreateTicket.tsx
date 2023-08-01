@@ -276,32 +276,44 @@ const CreateTicket = ({
       ),
     });
   };
-  const handleSelectEvents = async (checked: boolean, index: number) => {
-    if (
-      isEdit &&
-      !isDraft &&
-      createTicketStatus === CreateTicketStatus.edit &&
-      !checked
-    ) {
-      const response = await dispatch(
-        checkConnectTicketAction({
-          eventId: id,
-          targetTypeId: Number(eventsListData[index].id),
-          ticketTypeId: ticketValue.id,
-        }),
-      );
-      if (response.type === checkConnectTicketAction.fulfilled.toString()) {
-        if (!response.payload.data.canDelete) {
-          canNotDeleteConnectTicket();
-          return;
+  const handleSelectEvents = (checked: boolean, index: number) => {
+    Modal.confirm({
+      className: 'notSaveConfirmModal',
+      centered: true,
+      closable: false,
+      okText: 'Delete',
+      cancelText: 'Cancel',
+      title: t('Delete Connected Tickets'),
+      icon: <ExclamationCircleOutlined />,
+      content: t(`Are you sure you want to delete it?`),
+      onOk: async () => {
+        if (
+          isEdit &&
+          !isDraft &&
+          createTicketStatus === CreateTicketStatus.edit &&
+          !checked
+        ) {
+          const response = await dispatch(
+            checkConnectTicketAction({
+              eventId: id,
+              targetTypeId: Number(eventsListData[index].id),
+              ticketTypeId: ticketValue.id,
+            }),
+          );
+          if (response.type === checkConnectTicketAction.fulfilled.toString()) {
+            if (!response.payload.data.canDelete) {
+              canNotDeleteConnectTicket();
+              return;
+            }
+          } else {
+            canNotDeleteConnectTicket();
+            return;
+          }
         }
-      } else {
-        canNotDeleteConnectTicket();
-        return;
-      }
-    }
-    eventsListData[index].checked = checked;
-    setEventsListData([...eventsListData]);
+        eventsListData[index].checked = checked;
+        setEventsListData([...eventsListData]);
+      },
+    });
   };
   const doneHandle = () => {
     changeTicketValues({
