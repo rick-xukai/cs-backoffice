@@ -58,7 +58,7 @@ import {
   requiredValidateForm,
   thousandsSeparator,
 } from '../../../utils/func';
-import { UploadFileAcceptType } from '../../../constants/General';
+import { UploadFileAcceptType, DeleteTicket } from '../../../constants/General';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 
 const { RangePicker } = DatePicker;
@@ -527,44 +527,43 @@ const CreateTicket = ({
           newTicketTypes.splice(index, 1);
         }
         const updateDiscounts = formValue.discounts;
+        const newUpdateDiscounts = {
+          ticketTypes: newTicketTypes,
+          discounts: updateDiscounts.map((discountItem) => {
+            const newDiscounts = {
+              ...discountItem,
+              condition: {
+                ...discountItem.condition,
+                ticketTypeId:
+                  (discountItem.condition.ticketTypeId !== item.id &&
+                    discountItem.condition.ticketTypeId) ||
+                  undefined,
+              },
+              gift: {
+                ...discountItem.gift,
+                ticketTypeId:
+                  (discountItem.gift.ticketTypeId !== item.id &&
+                    discountItem.gift.ticketTypeId) ||
+                  undefined,
+              },
+              apply: {
+                ...discountItem.apply,
+                ticketTypeIds: discountItem.apply.ticketTypeIds.filter(
+                  (ticketTypeId) => ticketTypeId !== item.id,
+                ),
+              },
+            };
+            return newDiscounts;
+          }),
+        };
+        fieldEdit(newUpdateDiscounts, 'ticketTypesAndDiscount');
         if (isEdit && !isDraft) {
           createEventPublish({
+            type: DeleteTicket,
             ticketTypes: newTicketTypes,
+            discounts: newUpdateDiscounts.discounts,
             redirectTo: () => {},
           });
-        } else {
-          fieldEdit(
-            {
-              ticketTypes: newTicketTypes,
-              discounts: updateDiscounts.map((discountItem) => {
-                const newDiscounts = {
-                  ...discountItem,
-                  condition: {
-                    ...discountItem.condition,
-                    ticketTypeId:
-                      (discountItem.condition.ticketTypeId !== item.id &&
-                        discountItem.condition.ticketTypeId) ||
-                      undefined,
-                  },
-                  gift: {
-                    ...discountItem.gift,
-                    ticketTypeId:
-                      (discountItem.gift.ticketTypeId !== item.id &&
-                        discountItem.gift.ticketTypeId) ||
-                      undefined,
-                  },
-                  apply: {
-                    ...discountItem.apply,
-                    ticketTypeIds: discountItem.apply.ticketTypeIds.filter(
-                      (ticketTypeId) => ticketTypeId !== item.id,
-                    ),
-                  },
-                };
-                return newDiscounts;
-              }),
-            },
-            'ticketTypesAndDiscount',
-          );
         }
       },
     });

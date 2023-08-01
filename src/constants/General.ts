@@ -99,3 +99,4 @@ export const DescriptionImagesSize = [
     text: 'large',
   },
 ];
+export const DeleteTicket = 'deleteTicket';

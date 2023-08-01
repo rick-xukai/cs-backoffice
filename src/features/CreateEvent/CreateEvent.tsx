@@ -16,6 +16,7 @@ import {
   defaultOrganizerPageSize,
   SetRefundKey,
   DescriptionImagesSize,
+  DeleteTicket,
 } from '../../constants/General';
 import { useCookie } from '../../hooks';
 import { Images } from '../../theme';
@@ -361,6 +362,7 @@ const CreateEvent = () => {
   };
 
   const createEventPublish = async (anotherPayload?: {
+    type?: string;
     discounts?: CreateEventFormValueProps['discounts'];
     ticketTypes?: CreateEventFormValueProps['ticketTypes'];
     redirectTo?: () => void;
@@ -368,7 +370,19 @@ const CreateEvent = () => {
   }) => {
     const currentTime = new Date().getTime();
     const endTime = new Date(createEventFormValue.endTime || '').getTime();
-    const unfinishedSteps = validatUnfinishedSteps(createEventFormValue);
+    const unfinishedSteps =
+      (anotherPayload?.type !== DeleteTicket &&
+        validatUnfinishedSteps(
+          (anotherPayload && {
+            ...createEventFormValue,
+            ticketTypes:
+              anotherPayload.ticketTypes || createEventFormValue.ticketTypes,
+            discounts:
+              anotherPayload.discounts || createEventFormValue.discounts,
+          }) ||
+            createEventFormValue,
+        )) ||
+      '';
     if (unfinishedSteps === '' || (isDraft && !anotherPayload?.publish)) {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
