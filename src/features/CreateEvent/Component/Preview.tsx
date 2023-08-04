@@ -1,14 +1,21 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Col, Divider, Row, Image } from 'antd';
+import { Col, Divider, Row, Image, Tooltip, Tabs } from 'antd';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import { CreateEventFormValueProps } from '../CreateEvent.slice';
+import {
+  DownOutlined,
+  UpOutlined,
+  QuestionCircleOutlined,
+} from '@ant-design/icons';
+import {
+  CreateEventFormValueProps,
+  TicketListProps,
+} from '../CreateEvent.slice';
 import {
   Container,
   EventDetailCard,
-  MyTicketItemContainer,
   MyTicketsEventDetailContainer,
   StatusContainer,
+  TicketTypeItem,
 } from './Preview.component';
 import { Colors, Images } from '../../../theme';
 import {
@@ -17,6 +24,7 @@ import {
 } from '../../../utils/func';
 import { FormatTimeKeys } from '../../../constants/Keys';
 import { getTicketListItemStatus } from './CreateTicket';
+import { SGD_UNIT } from '../../../constants/constants';
 
 const EventStatus = [
   {
@@ -41,50 +49,7 @@ const EventStatus = [
     icon: '',
   },
 ];
-const TicketStatus = [
-  {
-    text: 'UPCOMING',
-    key: 0,
-    bgColor: Colors.branding,
-    color: Colors.white,
-    icon: '',
-  },
-  {
-    text: 'USED',
-    key: 1,
-    bgColor: Colors.blueGray,
-    color: Colors.white,
-    icon: '',
-  },
-  {
-    text: 'CANCELLED',
-    key: 2,
-    bgColor: Colors.grayScale40,
-    color: Colors.grayScale50,
-    icon: '',
-  },
-  {
-    text: 'EXPIRED',
-    key: 3,
-    bgColor: Colors.grayScale90,
-    color: Colors.grayScale40,
-    icon: '',
-  },
-  {
-    text: 'UPCOMING',
-    key: 4,
-    bgColor: Colors.branding,
-    color: Colors.white,
-    icon: Images.OnSaleIcon,
-  },
-  {
-    text: '',
-    key: 5,
-    bgColor: Colors.branding,
-    color: Colors.white,
-    icon: Images.SoldIcon,
-  },
-];
+
 export const TicketSaleStatus = {
   unsale: {
     status: 0,
@@ -106,17 +71,9 @@ const libraries: (
   | 'localContext'
   | 'visualization'
 )[] = ['places'];
-const checkEventTicketsNameCol = (point: string, item: any) => {
-  let colNum = 24;
-  if (
-    TicketStatus.find((status) => status.text === 'UPCOMING')?.key === 0 ||
-    getTicketListItemStatus(item.sellStartTime, item.sellEndTime).code ===
-      TicketSaleStatus.onsale.status
-  ) {
-    colNum = (point === 'xs' && 20) || 18;
-  }
-  return colNum;
-};
+const checkIsOnSale = (item: TicketListProps) =>
+  getTicketListItemStatus(item.sellStartTime, item.sellEndTime).code ===
+  TicketSaleStatus.onsale.status;
 
 export const DescriptionImagesSize = [
   {
@@ -160,7 +117,7 @@ const Preview = ({
   show: boolean;
   onHide: any;
 }) => {
-  const { ticketTypes: ticketList } = eventDetail;
+  const { ticketTypes } = eventDetail;
   const [showMap, setShowMap] = useState<boolean>(false);
   const onMapLoad = useCallback((map: any) => {
     if (map) {
@@ -189,6 +146,21 @@ const Preview = ({
       }
     }
   }, [show]);
+  const tabsItem: any = [
+    {
+      key: 'Primary Market',
+      label: (
+        <div>
+          <span>Primary Market</span>
+          <Tooltip title="Official Issued Tickets">
+            <QuestionCircleOutlined />
+          </Tooltip>
+        </div>
+      ),
+      children: '',
+    },
+  ];
+
   return (
     <Container style={{ top: show ? 0 : '100%' }}>
       <div className="close" onClick={() => onHide(false)}>
@@ -272,7 +244,7 @@ const Preview = ({
                       style={{ marginTop: 2 }}
                     >
                       <Image
-                        src={Images.LocationIcon}
+                        src={Images.PreviewLocationIcon}
                         alt=""
                         className="info-item-icon"
                       />
@@ -402,6 +374,97 @@ const Preview = ({
                           </div>
                         </Col>
                       </Col>
+                      <div className="item-tabs">
+                        <Tabs
+                          defaultActiveKey="Primary Market"
+                          items={tabsItem}
+                        />
+                        <Row>
+                          <Col span={24} className="dividing-line" />
+                        </Row>
+                        <Row gutter={[16, 16]}>
+                          {(ticketTypes.length && (
+                            <>
+                              {ticketTypes.map((item) => (
+                                <TicketTypeItem
+                                  xs={24}
+                                  sm={12}
+                                  md={12}
+                                  xl={12}
+                                  lg={12}
+                                  key={item.id}
+                                >
+                                  <Row>
+                                    <Col className="type-img" xl={8} span={10}>
+                                      <img
+                                        src={item.thumbnailUrl}
+                                        alt=""
+                                        onError={(e: any) => {
+                                          e.target.onerror = null;
+                                          e.target.src = Images.BackgroundLogo;
+                                        }}
+                                      />
+                                      {!checkIsOnSale(item) && (
+                                        <div className="not-sale">
+                                          NOT ON SALE YET
+                                        </div>
+                                      )}
+                                      {!item.stock && (
+                                        <div className="out-stock-mask">
+                                          OUT OF STOCK
+                                        </div>
+                                      )}
+                                    </Col>
+                                    <Col
+                                      xl={16}
+                                      span={14}
+                                      className="type-info"
+                                    >
+                                      <div className="line">
+                                        <img
+                                          src={Images.VerticalLineIcon}
+                                          alt=""
+                                        />
+                                      </div>
+                                      <div className="type-info-content">
+                                        <div>
+                                          <Col
+                                            span={24}
+                                            title={item.name}
+                                            className="title"
+                                          >
+                                            {item.name}
+                                          </Col>
+                                          <Col
+                                            span={24}
+                                            className="description"
+                                          >
+                                            {item.description}
+                                          </Col>
+                                          <Col span={24} className="price">
+                                            {`${Number(item.price).toFixed(
+                                              2,
+                                            )} ${SGD_UNIT}`}
+                                          </Col>
+                                        </div>
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </TicketTypeItem>
+                              ))}
+                            </>
+                          )) || (
+                            <Col span={24} className="all-ticket-sold">
+                              <div
+                                style={{ textAlign: 'center', marginTop: 20 }}
+                              >
+                                <Image src={Images.AllTicketSold} alt="" />
+                                <p>All tickets are sold.</p>
+                              </div>
+                            </Col>
+                          )}
+                        </Row>
+                      </div>
                     </EventDetailCard>
                     <Col
                       span={24}
@@ -414,132 +477,7 @@ const Preview = ({
                     </Col>
                   </Row>
                 </div>
-                <div className="my-ticket-items">
-                  <Row>
-                    <Col span={24} className="title">
-                      MY TICKETS
-                    </Col>
-                  </Row>
-                  {(ticketList.length && (
-                    <Row className="items-row" gutter={[20, 20]}>
-                      {ticketList.map((item, index) => (
-                        <Col
-                          key={item.id + index}
-                          xs={24}
-                          sm={12}
-                          md={8}
-                          xl={6}
-                        >
-                          <MyTicketItemContainer>
-                            <div className="item-background">
-                              <img
-                                src={item.image || Images.BackgroundLogo}
-                                alt=""
-                                onError={(e: any) => {
-                                  e.target.onerror = null;
-                                  e.target.src = Images.BackgroundLogo;
-                                }}
-                              />
-                            </div>
-                            <div className="item-detail">
-                              <Row>
-                                <Col
-                                  xs={checkEventTicketsNameCol('xs', item)}
-                                  sm={checkEventTicketsNameCol('sm', item)}
-                                >
-                                  <p className="item-detail-name">
-                                    {item.name || '-'}
-                                  </p>
-                                  {TicketStatus.map((status) => {
-                                    if (status.key === 0 && status.text) {
-                                      return (
-                                        <StatusContainer
-                                          key={status.key}
-                                          bgColor={status.bgColor}
-                                          textColor={status.color}
-                                        >
-                                          {status.text}
-                                        </StatusContainer>
-                                      );
-                                    }
-                                    return null;
-                                  })}
-                                </Col>
-                                {(TicketStatus.find(
-                                  (status) => status.text === 'UPCOMING',
-                                )?.key === 0 ||
-                                  getTicketListItemStatus(
-                                    item.sellStartTime,
-                                    item.sellEndTime,
-                                  ) === TicketSaleStatus.onsale.status) && (
-                                  <>
-                                    <Col xs={4} sm={0}>
-                                      <div className="item-detail-status">
-                                        {getTicketListItemStatus(
-                                          item.sellStartTime,
-                                          item.sellEndTime,
-                                        ) ===
-                                          TicketSaleStatus.unsale.status && (
-                                          <div className="item-detail-icon">
-                                            <Image
-                                              src={Images.QrCodeButton}
-                                              alt=""
-                                            />
-                                          </div>
-                                        )}
-                                        {getTicketListItemStatus(
-                                          item.sellStartTime,
-                                          item.sellEndTime,
-                                        ) ===
-                                          TicketSaleStatus.onsale.status && (
-                                          <div className="item-detail-icon ticket-onsale">
-                                            <Image
-                                              src={Images.TicketsOnSaleIcon}
-                                              alt=""
-                                            />
-                                          </div>
-                                        )}
-                                      </div>
-                                    </Col>
-                                    <Col sm={6} xs={0}>
-                                      <div className="item-detail-status">
-                                        {getTicketListItemStatus(
-                                          item.sellStartTime,
-                                          item.sellEndTime,
-                                        ) ===
-                                          TicketSaleStatus.unsale.status && (
-                                          <div className="item-detail-icon">
-                                            <Image
-                                              src={Images.QrCodeButton}
-                                              alt=""
-                                            />
-                                          </div>
-                                        )}
-                                        {getTicketListItemStatus(
-                                          item.sellStartTime,
-                                          item.sellEndTime,
-                                        ) ===
-                                          TicketSaleStatus.onsale.status && (
-                                          <div className="item-detail-icon ticket-onsale">
-                                            <Image
-                                              src={Images.TicketsOnSaleIcon}
-                                              alt=""
-                                            />
-                                          </div>
-                                        )}
-                                      </div>
-                                    </Col>
-                                  </>
-                                )}
-                              </Row>
-                            </div>
-                          </MyTicketItemContainer>
-                        </Col>
-                      ))}
-                    </Row>
-                  )) ||
-                    null}
-                </div>
+                {/* //123 */}
               </div>
             </div>
           </div>
