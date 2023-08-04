@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Radio, Tooltip, Space } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import {
   PublishComponentContainer,
   EventInfoCard,
 } from '../CreateEventComponent';
+import Preview from './Preview';
 
 const initialTicketList = [
   {
@@ -32,7 +33,7 @@ const Publish = ({
   const { t } = useTranslation();
 
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
-
+  const [show, setShow] = useState(false);
   const columns = [
     {
       title: 'Ticket Type Name',
@@ -58,6 +59,14 @@ const Publish = ({
     },
   ];
 
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [show]);
+
   return (
     <Row>
       <Col span={24} className="main-title">
@@ -67,7 +76,11 @@ const Publish = ({
         <PublishComponentContainer>
           <Col lg={(pageTipsShow && 14) || 21} span={24}>
             <div className="main-box">
-              <Col span={24} className="preview-event">
+              <Col
+                span={24}
+                className="preview-event"
+                onClick={() => setShow(true)}
+              >
                 <span>{t('Preview your event')}</span>
                 <span>
                   <img src={Images.ExportIcon} alt="" />
@@ -183,6 +196,7 @@ const Publish = ({
           </Col>
         </PublishComponentContainer>
       </Col>
+      <Preview eventDetail={formValue} show={show} onHide={setShow} />
     </Row>
   );
 };
