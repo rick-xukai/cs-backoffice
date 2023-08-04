@@ -64,6 +64,9 @@ import SoldIcon from '../assets/images/sold-icon.png';
 import BackgroundLogo from '../assets/images/background-logo.png';
 import QrCodeButton from '../assets/images/qr-code-button.svg';
 import TicketsOnSaleIcon from '../assets/images/tickets-onsale.svg';
+import VerticalLineIcon from '../assets/images/vertical-line.svg';
+import AllTicketSold from '../assets/images/all-ticket-sold.svg';
+import PreviewLocationIcon from '../assets/images/location.png';
 
 const Images = {
   Logo,
@@ -134,6 +137,9 @@ const Images = {
   BackgroundLogo,
   QrCodeButton,
   TicketsOnSaleIcon,
+  VerticalLineIcon,
+  AllTicketSold,
+  PreviewLocationIcon,
 };
 
 export default Images;
