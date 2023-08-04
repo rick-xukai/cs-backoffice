@@ -383,3 +383,27 @@ export const validatePromoCode = (code: string) => {
   const reg = /^[A-Za-z0-9-_@]+$/;
   return reg.test(code);
 };
+
+export const formatTimeStrByTimeStringPreview = (
+  timeString: string,
+  formatType: string,
+) => {
+  try {
+    if (timeString) {
+      return format(new Date(timeString.replace(/-/g, '/')), formatType);
+    }
+  } catch (_) {
+    return '-';
+  }
+  return '-';
+};
+
+export const formatLocation = (location: string, address: string) => {
+  if (location && address) {
+    return `${location}, ${address}`;
+  }
+  if (location && !address) {
+    return location;
+  }
+  return '-';
+};

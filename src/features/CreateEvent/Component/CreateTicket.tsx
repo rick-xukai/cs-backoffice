@@ -83,7 +83,10 @@ const initialValues = {
   soldTotal: 0,
 };
 
-const getTicketListItemStatus: any = (startTime: string, endTime: string) => {
+export const getTicketListItemStatus: any = (
+  startTime: string,
+  endTime: string,
+) => {
   const today = moment().unix();
   const startTimeMoment = moment(startTime).unix();
   const endTimeMoment = moment(endTime).unix();
@@ -91,17 +94,20 @@ const getTicketListItemStatus: any = (startTime: string, endTime: string) => {
     return {
       status: 'success',
       statusText: 'On Sale',
+      code: 1,
     };
   }
   if (today < startTimeMoment) {
     return {
       status: 'warning',
       statusText: 'Scheduled',
+      code: 0,
     };
   }
   return {
     status: 'default',
     statusText: 'Ended',
+    code: 2,
   };
 };
 

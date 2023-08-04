@@ -119,6 +119,7 @@ export interface CreateEventFormValueProps {
   publish?: number;
   status?: number;
   id?: any;
+  organizerName?: string;
 }
 
 export interface TicketTypes {

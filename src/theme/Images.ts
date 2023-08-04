@@ -58,6 +58,12 @@ import AddNewEventIcon from '../assets/images/icons/add-new-event.svg';
 import Editor from '../assets/images/icons/editor.svg';
 import EditorDisable from '../assets/images/icons/editor-disable.svg';
 import NoSearchDataIcon from '../assets/images/icons/no-search-data.svg';
+import OrganiserIcon from '../assets/images/organiser.png';
+import OnSaleIcon from '../assets/images/on-sale.svg';
+import SoldIcon from '../assets/images/sold-icon.png';
+import BackgroundLogo from '../assets/images/background-logo.png';
+import QrCodeButton from '../assets/images/qr-code-button.svg';
+import TicketsOnSaleIcon from '../assets/images/tickets-onsale.svg';
 
 const Images = {
   Logo,
@@ -122,6 +128,12 @@ const Images = {
   Editor,
   EditorDisable,
   NoSearchDataIcon,
+  OrganiserIcon,
+  OnSaleIcon,
+  SoldIcon,
+  BackgroundLogo,
+  QrCodeButton,
+  TicketsOnSaleIcon,
 };
 
 export default Images;
