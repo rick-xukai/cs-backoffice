@@ -19,6 +19,7 @@ import {
 } from './Preview.component';
 import { Colors, Images } from '../../../theme';
 import {
+  calculatePrice,
   formatLocation,
   formatTimeStrByTimeStringPreview,
 } from '../../../utils/func';
@@ -403,77 +404,89 @@ const Preview = ({
                         <Row gutter={[16, 16]}>
                           {(ticketTypes.length && (
                             <>
-                              {ticketTypes.map((item) => (
-                                <TicketTypeItem
-                                  xs={24}
-                                  sm={12}
-                                  md={12}
-                                  xl={12}
-                                  lg={12}
-                                  key={item.id}
-                                >
-                                  <Row>
-                                    <Col className="type-img" xl={8} span={10}>
-                                      <img
-                                        src={item.thumbnailUrl}
-                                        alt=""
-                                        onError={(e: any) => {
-                                          e.target.onerror = null;
-                                          e.target.src = Images.BackgroundLogo;
-                                        }}
-                                      />
-                                      {!checkIsOnSale(item).unsale &&
-                                        item.visibility && (
-                                          <div className="not-sale">
-                                            NOT ON SALE YET
-                                          </div>
-                                        )}
-                                      {(checkIsOnSale(item).onsale &&
-                                        !item.stock) ||
-                                        (checkIsOnSale(item).sold &&
-                                          item.visibility && (
-                                            <div className="out-stock-mask">
-                                              OUT OF STOCK
-                                            </div>
-                                          ))}
-                                    </Col>
-                                    <Col
-                                      xl={16}
-                                      span={14}
-                                      className="type-info"
-                                    >
-                                      <div className="line">
+                              {ticketTypes.map((item) => {
+                                const calculatedPrice = calculatePrice(
+                                  Number(
+                                    item.price.toString().replace(/,/g, ''),
+                                  ),
+                                  item.absorbFees,
+                                );
+                                return (
+                                  <TicketTypeItem
+                                    xs={24}
+                                    sm={12}
+                                    md={12}
+                                    xl={12}
+                                    lg={12}
+                                    key={item.id}
+                                  >
+                                    <Row>
+                                      <Col
+                                        className="type-img"
+                                        xl={8}
+                                        span={10}
+                                      >
                                         <img
-                                          src={Images.VerticalLineIcon}
+                                          src={item.thumbnailUrl}
                                           alt=""
+                                          onError={(e: any) => {
+                                            e.target.onerror = null;
+                                            e.target.src =
+                                              Images.BackgroundLogo;
+                                          }}
                                         />
-                                      </div>
-                                      <div className="type-info-content">
-                                        <div>
-                                          <Col
-                                            span={24}
-                                            title={item.name}
-                                            className="title"
-                                          >
-                                            {item.name}
-                                          </Col>
-                                          <Col
-                                            span={24}
-                                            className="description"
-                                          >
-                                            {item.description}
-                                          </Col>
-                                          <Col span={24} className="price">
-                                            {`${Number(item.price).toFixed(
-                                              2,
-                                            )} ${SGD_UNIT}`}
-                                          </Col>
+                                        {!checkIsOnSale(item).unsale &&
+                                          item.visibility && (
+                                            <div className="not-sale">
+                                              NOT ON SALE YET
+                                            </div>
+                                          )}
+                                        {(checkIsOnSale(item).onsale &&
+                                          !item.stock) ||
+                                          (checkIsOnSale(item).sold &&
+                                            item.visibility && (
+                                              <div className="out-stock-mask">
+                                                OUT OF STOCK
+                                              </div>
+                                            ))}
+                                      </Col>
+                                      <Col
+                                        xl={16}
+                                        span={14}
+                                        className="type-info"
+                                      >
+                                        <div className="line">
+                                          <img
+                                            src={Images.VerticalLineIcon}
+                                            alt=""
+                                          />
                                         </div>
-                                      </div>
-                                    </Col>
-                                  </Row>
-                                </TicketTypeItem>
-                              ))}
+                                        <div className="type-info-content">
+                                          <div>
+                                            <Col
+                                              span={24}
+                                              title={item.name}
+                                              className="title"
+                                            >
+                                              {item.name}
+                                            </Col>
+                                            <Col
+                                              span={24}
+                                              className="description"
+                                            >
+                                              {item.description}
+                                            </Col>
+                                            <Col span={24} className="price">
+                                              {calculatedPrice.userPay}{' '}
+                                              {SGD_UNIT}
+                                            </Col>
+                                          </div>
+                                        </div>
+                                      </Col>
+                                    </Row>
+                                  </TicketTypeItem>
+                                );
+                              })}
                             </>
                           )) || (
                             <Col span={24} className="all-ticket-sold">
