@@ -655,12 +655,11 @@ export const TicketTypeItem = styled(Col)`
       text-align: center;
       font-size: 12px;
       font-weight: 700;
-      line-height: 21px;
+      line-height: 30px;
       height: 28px;
       width: calc(100% - 12px);
       bottom: 6px;
       display: flex;
-      align-items: center;
       justify-content: center;
     }
   }
@@ -695,6 +694,7 @@ export const TicketTypeItem = styled(Col)`
       display: -webkit-box;
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
+      font-weight: 500;
     }
     .description {
       color: ${Colors.grayScale40};
