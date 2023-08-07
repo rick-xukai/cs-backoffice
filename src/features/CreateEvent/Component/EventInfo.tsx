@@ -364,6 +364,7 @@ const EventInfo = ({
                                 onClick={() => {
                                   setShowAddMyLocationInput(true);
                                   setShowAddressInput(true);
+                                  fieldEdit('', 'locationCoord');
                                 }}
                               >
                                 {t('Add as my location.')}

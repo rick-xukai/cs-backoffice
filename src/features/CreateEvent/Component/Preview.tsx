@@ -71,10 +71,17 @@ const libraries: (
   | 'localContext'
   | 'visualization'
 )[] = ['places'];
-const checkIsOnSale = (item: TicketListProps) =>
-  getTicketListItemStatus(item.sellStartTime, item.sellEndTime).code ===
-  TicketSaleStatus.onsale.status;
-
+const checkIsOnSale = (item: TicketListProps) => {
+  const { code } = getTicketListItemStatus(
+    item.sellStartTime,
+    item.sellEndTime,
+  );
+  return {
+    onsale: code === TicketSaleStatus.onsale.status,
+    unsale: code === TicketSaleStatus.unsale.status,
+    sold: code === TicketSaleStatus.sold.status,
+  };
+};
 export const DescriptionImagesSize = [
   {
     key: 8,
@@ -144,6 +151,9 @@ const Preview = ({
       } else {
         setNeedShowMore(false);
       }
+    }
+    if (!eventDetail.description && !eventDetail.descriptionImages.length) {
+      setNeedShowMore(false);
     }
   }, [show]);
   const tabsItem: any = [
@@ -349,9 +359,15 @@ const Preview = ({
                             }
                           >
                             {eventDetail.description && (
-                              <p className="detail-description">
-                                {eventDetail.description}
-                              </p>
+                              <p
+                                className="detail-description"
+                                dangerouslySetInnerHTML={{
+                                  __html: eventDetail?.description?.replace(
+                                    /\n/g,
+                                    '<br/>',
+                                  ),
+                                }}
+                              />
                             )}
                             <ImageSizeLayoutComponent
                               images={eventDetail.descriptionImages}
@@ -404,16 +420,20 @@ const Preview = ({
                                           e.target.src = Images.BackgroundLogo;
                                         }}
                                       />
-                                      {!checkIsOnSale(item) && (
-                                        <div className="not-sale">
-                                          NOT ON SALE YET
-                                        </div>
-                                      )}
-                                      {!item.stock && (
-                                        <div className="out-stock-mask">
-                                          OUT OF STOCK
-                                        </div>
-                                      )}
+                                      {!checkIsOnSale(item).unsale &&
+                                        item.visibility && (
+                                          <div className="not-sale">
+                                            NOT ON SALE YET
+                                          </div>
+                                        )}
+                                      {(checkIsOnSale(item).onsale &&
+                                        !item.stock) ||
+                                        (checkIsOnSale(item).sold &&
+                                          item.visibility && (
+                                            <div className="out-stock-mask">
+                                              OUT OF STOCK
+                                            </div>
+                                          ))}
                                     </Col>
                                     <Col
                                       xl={16}
