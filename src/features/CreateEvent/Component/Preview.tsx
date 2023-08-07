@@ -144,6 +144,8 @@ const Preview = ({
   const [isExpanded, setExpanded] = useState<boolean>(false);
   const [needShowMore, setNeedShowMore] = useState<boolean>(false);
   const detailContentRef: any = useRef(null);
+  const hideMoreCondition =
+    !eventDetail.description && !eventDetail.descriptionImages.length;
   useEffect(() => {
     if (!show) {
       if (detailContentRef.current.clientHeight > 57) {
@@ -152,7 +154,7 @@ const Preview = ({
         setNeedShowMore(false);
       }
     }
-    if (!eventDetail.description && !eventDetail.descriptionImages.length) {
+    if (hideMoreCondition) {
       setNeedShowMore(false);
     }
   }, [show]);
@@ -355,7 +357,7 @@ const Preview = ({
                             className={
                               isExpanded
                                 ? 'content-area auto-height'
-                                : 'content-area'
+                                : `${needShowMore ? 'content-area' : ''}`
                             }
                           >
                             {eventDetail.description && (
