@@ -6,10 +6,9 @@ import {
   UpOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-import {
-  CreateEventFormValueProps,
-  TicketListProps,
-} from '../CreateEvent.slice';
+import _ from 'lodash';
+
+import { CreateEventFormValueProps } from '../CreateEvent.slice';
 import {
   Container,
   EventDetailCard,
@@ -26,7 +25,6 @@ import {
 import { FormatTimeKeys } from '../../../constants/Keys';
 import { getTicketListItemStatus } from './CreateTicket';
 import { SGD_UNIT } from '../../../constants/constants';
-
 const EventStatus = [
   {
     text: 'UPCOMING',
@@ -72,17 +70,9 @@ const libraries: (
   | 'localContext'
   | 'visualization'
 )[] = ['places'];
-const checkIsOnSale = (item: TicketListProps) => {
-  const { code } = getTicketListItemStatus(
-    item.sellStartTime,
-    item.sellEndTime,
-  );
-  return {
-    onsale: code === TicketSaleStatus.onsale.status,
-    unsale: code === TicketSaleStatus.unsale.status,
-    sold: code === TicketSaleStatus.sold.status,
-  };
-};
+
+const { onsale, unsale, sold } = TicketSaleStatus;
+
 export const DescriptionImagesSize = [
   {
     key: 8,
@@ -173,6 +163,45 @@ const Preview = ({
       children: '',
     },
   ];
+  const mapTicketTypes = ticketTypes
+    .map((item) => {
+      const { userPay } = calculatePrice(
+        Number(item.price.toString().replace(/,/g, '')),
+        item.absorbFees,
+      );
+      const status = getTicketListItemStatus(
+        item.sellStartTime,
+        item.sellEndTime,
+      ).code;
+      const sort = () => {
+        if (status === onsale.status) {
+          return 1;
+        }
+        if (status === unsale.status) {
+          return 2;
+        }
+        return 3;
+      };
+      return {
+        ...item,
+        status,
+        userPay,
+        numberUserPay: Number(userPay),
+        sort: sort(),
+      };
+    })
+    .filter(
+      (item) =>
+        (item.status === sold.status && item.visibility) ||
+        item.status === onsale.status ||
+        (item.status === unsale.status && item.visibility),
+    );
+
+  const newTicketTypes = _.orderBy(
+    mapTicketTypes,
+    ['sort', 'numberUserPay'],
+    ['asc', 'asc'],
+  );
 
   return (
     <Container style={{ top: show ? 0 : '100%' }}>
@@ -402,91 +431,77 @@ const Preview = ({
                           <Col span={24} className="dividing-line" />
                         </Row>
                         <Row gutter={[16, 16]}>
-                          {(ticketTypes.length && (
+                          {(newTicketTypes.length && (
                             <>
-                              {ticketTypes.map((item) => {
-                                const calculatedPrice = calculatePrice(
-                                  Number(
-                                    item.price.toString().replace(/,/g, ''),
-                                  ),
-                                  item.absorbFees,
-                                );
-                                return (
-                                  <TicketTypeItem
-                                    xs={24}
-                                    sm={12}
-                                    md={12}
-                                    xl={12}
-                                    lg={12}
-                                    key={item.id}
-                                  >
-                                    <Row>
-                                      <Col
-                                        className="type-img"
-                                        xl={8}
-                                        span={10}
-                                      >
-                                        <img
-                                          src={item.thumbnailUrl}
-                                          alt=""
-                                          onError={(e: any) => {
-                                            e.target.onerror = null;
-                                            e.target.src =
-                                              Images.BackgroundLogo;
-                                          }}
-                                        />
-                                        {!checkIsOnSale(item).unsale &&
-                                          item.visibility && (
-                                            <div className="not-sale">
-                                              NOT ON SALE YET
-                                            </div>
-                                          )}
-                                        {(checkIsOnSale(item).onsale &&
-                                          !item.stock) ||
-                                          (checkIsOnSale(item).sold &&
-                                            item.visibility && (
-                                              <div className="out-stock-mask">
-                                                OUT OF STOCK
-                                              </div>
-                                            ))}
-                                      </Col>
-                                      <Col
-                                        xl={16}
-                                        span={14}
-                                        className="type-info"
-                                      >
-                                        <div className="line">
-                                          <img
-                                            src={Images.VerticalLineIcon}
-                                            alt=""
-                                          />
-                                        </div>
-                                        <div className="type-info-content">
-                                          <div>
-                                            <Col
-                                              span={24}
-                                              title={item.name}
-                                              className="title"
-                                            >
-                                              {item.name}
-                                            </Col>
-                                            <Col
-                                              span={24}
-                                              className="description"
-                                            >
-                                              {item.description}
-                                            </Col>
-                                            <Col span={24} className="price">
-                                              {calculatedPrice.userPay}{' '}
-                                              {SGD_UNIT}
-                                            </Col>
+                              {newTicketTypes.map((item) => (
+                                <TicketTypeItem
+                                  xs={24}
+                                  sm={12}
+                                  md={12}
+                                  xl={12}
+                                  lg={12}
+                                  key={item.id}
+                                >
+                                  <Row>
+                                    <Col className="type-img" xl={8} span={10}>
+                                      <img
+                                        src={item.thumbnailUrl}
+                                        alt=""
+                                        onError={(e: any) => {
+                                          e.target.onerror = null;
+                                          e.target.src = Images.BackgroundLogo;
+                                        }}
+                                      />
+                                      {item.status === unsale.status &&
+                                        item.visibility && (
+                                          <div className="not-sale">
+                                            NOT ON SALE YET
                                           </div>
+                                        )}
+                                      {(item.status === onsale.status &&
+                                        !item.stock) ||
+                                        (item.status === sold.status &&
+                                          item.visibility && (
+                                            <div className="out-stock-mask">
+                                              OUT OF STOCK
+                                            </div>
+                                          ))}
+                                    </Col>
+                                    <Col
+                                      xl={16}
+                                      span={14}
+                                      className="type-info"
+                                    >
+                                      <div className="line">
+                                        <img
+                                          src={Images.VerticalLineIcon}
+                                          alt=""
+                                        />
+                                      </div>
+                                      <div className="type-info-content">
+                                        <div>
+                                          <Col
+                                            span={24}
+                                            title={item.name}
+                                            className="title"
+                                          >
+                                            {item.name}
+                                          </Col>
+                                          <Col
+                                            span={24}
+                                            className="description"
+                                          >
+                                            {item.description}
+                                          </Col>
+                                          <Col span={24} className="price">
+                                            {item.userPay} {SGD_UNIT}
+                                          </Col>
                                         </div>
-                                      </Col>
-                                    </Row>
-                                  </TicketTypeItem>
-                                );
-                              })}
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </TicketTypeItem>
+                              ))}
                             </>
                           )) || (
                             <Col span={24} className="all-ticket-sold">
