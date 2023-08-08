@@ -248,9 +248,17 @@ const Preview = ({
                     <Col span={24} className="info-title">
                       {eventDetail.name || '-'}
                     </Col>
-                    <Col span={24} className="info-description-short">
-                      {eventDetail.descriptionShort}
-                    </Col>
+                    <Col
+                      span={24}
+                      className="info-description-short"
+                      dangerouslySetInnerHTML={{
+                        __html: eventDetail?.descriptionShort?.replace(
+                          /\n/g,
+                          '<br/>',
+                        ),
+                      }}
+                    />
+
                     <Col span={24} className="info-item">
                       <Image
                         className="info-item-icon"
