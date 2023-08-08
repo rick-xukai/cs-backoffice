@@ -84,9 +84,9 @@ export const MyTicketsEventDetailContainer = styled.div`
       }
       .info-description-short {
         color: ${Colors.grayScale40};
-        font-size: 13px;
-        font-weight: 300;
-        line-height: 19px;
+        font-size: 17px;
+        font-weight: 400;
+        line-height: 24px;
         margin-bottom: 12px;
       }
       .crowd-fund-link {
