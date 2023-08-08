@@ -100,3 +100,7 @@ export const DescriptionImagesSize = [
   },
 ];
 export const DeleteTicket = 'deleteTicket';
+export const SortKeys = {
+  descend: 'descend',
+  ascend: 'ascend',
+};

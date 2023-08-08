@@ -67,6 +67,7 @@ import TicketsOnSaleIcon from '../assets/images/tickets-onsale.svg';
 import VerticalLineIcon from '../assets/images/vertical-line.svg';
 import AllTicketSold from '../assets/images/all-ticket-sold.svg';
 import PreviewLocationIcon from '../assets/images/location.png';
+import MenuOrdersIcon from '../assets/images/icons/menu-orders.svg';
 
 const Images = {
   Logo,
@@ -140,6 +141,7 @@ const Images = {
   VerticalLineIcon,
   AllTicketSold,
   PreviewLocationIcon,
+  MenuOrdersIcon,
 };
 
 export default Images;

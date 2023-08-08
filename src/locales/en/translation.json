@@ -396,5 +396,9 @@
   "Unable to Delete Connected Tickets": "Unable to Delete Connected Tickets",
   "This Ticket has been used by an attendee before and cannot be deleted.": "This Ticket has been used by an attendee before and cannot be deleted.",
   "Delete Connected Tickets": "Delete Connected Tickets",
-  "Are you sure you want to delete it?": "Are you sure you want to delete it?"
+  "Are you sure you want to delete it?": "Are you sure you want to delete it?",
+  "Search buyer or event": "Search buyer or event",
+  "Export": "Export",
+  "Primary Orders": "Primary Orders",
+  "Secondary Transactions": "Secondary Transactions"
 }
