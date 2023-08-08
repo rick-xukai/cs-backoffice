@@ -9,4 +9,5 @@ export const MenuKeys = {
   profile: 'menu-profile',
   userAndPermissions: 'menu-userAndPermissions',
   transactions: 'menu-transactions',
+  orders: 'menu-orders',
 };

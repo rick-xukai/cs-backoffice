@@ -38,6 +38,7 @@ export const UserRoutes = {
   eventTicketsDetail: '/event-tickets-detail/:eventId/:ticketId',
   transactions: '/transactions',
   transactionsDetail: '/transactions-detail/:transactionsId',
+  orders: '/orders',
 };
 
 export const AuthRoutes = {

@@ -14,6 +14,7 @@ import UserDetail from '../features/UserDetail/Loadable';
 import CreateEvent from '../features/CreateEvent/Loadable';
 import Profile from '../features/Profile/Loadable';
 import UserAndPermissions from '../features/UserAndPermissions/Loadable';
+import Orders from '../features/Orders/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -56,6 +57,19 @@ export const UserScreens = {
     component: CreateEvent,
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
+  Orders: {
+    title: 'Orders - CrowdServe BO',
+    path: UserRoutes.orders,
+    component: Orders,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.orders],
     guard: true,
     role: [
       UserRoleKeys.superAdmin,
