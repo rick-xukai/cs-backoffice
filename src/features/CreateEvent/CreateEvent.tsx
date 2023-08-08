@@ -205,9 +205,7 @@ const CreateEvent = () => {
             ...discount.discount,
             value:
               (discount.discount.value &&
-                Number(
-                  discount.discount.value.toString().replaceAll(',', ''),
-                )) ||
+                Number(discount.discount.value.toString().replace(/,/g, ''))) ||
               0,
           },
           quantity: discount.quantity || 0,
