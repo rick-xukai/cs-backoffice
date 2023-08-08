@@ -174,7 +174,7 @@ const Preview = ({
         item.sellEndTime,
       ).code;
       const sort = () => {
-        if (status === onsale.status) {
+        if (status === onsale.status && item.stock) {
           return 1;
         }
         if (status === unsale.status) {
@@ -202,7 +202,9 @@ const Preview = ({
     ['sort', 'numberUserPay'],
     ['asc', 'asc'],
   );
-
+  const outOfStock = (item: any) =>
+    (item.status === onsale.status && !item.stock) ||
+    (item.status === sold.status && item.visibility);
   return (
     <Container style={{ top: show ? 0 : '100%' }}>
       <div className="close" onClick={() => onHide(false)}>
@@ -466,14 +468,11 @@ const Preview = ({
                                             NOT ON SALE YET
                                           </div>
                                         )}
-                                      {(item.status === onsale.status &&
-                                        !item.stock) ||
-                                        (item.status === sold.status &&
-                                          item.visibility && (
-                                            <div className="out-stock-mask">
-                                              OUT OF STOCK
-                                            </div>
-                                          ))}
+                                      {outOfStock(item) ? (
+                                        <div className="out-stock-mask">
+                                          OUT OF STOCK
+                                        </div>
+                                      ) : null}
                                     </Col>
                                     <Col
                                       xl={16}
@@ -487,7 +486,11 @@ const Preview = ({
                                         />
                                       </div>
                                       <div className="type-info-content">
-                                        <div>
+                                        <div
+                                          style={{
+                                            opacity: outOfStock(item) ? 0.6 : 1,
+                                          }}
+                                        >
                                           <Col
                                             span={24}
                                             title={item.name}
