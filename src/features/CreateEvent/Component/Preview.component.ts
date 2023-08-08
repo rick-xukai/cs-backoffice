@@ -130,7 +130,7 @@ export const MyTicketsEventDetailContainer = styled.div`
         }
       }
       .info-description {
-        font-weight: 300;
+        font-weight: 400;
         font-size: 15px;
         color: ${Colors.white};
         margin-left: 8px;
@@ -724,7 +724,6 @@ export const TicketTypeItem = styled(Col)`
     right: 0;
     margin: auto;
     background: rgba(0, 0, 0, 0.5);
-    border-radius: 6px;
     font-weight: 700;
     font-size: 20px;
     color: ${Colors.grayScale10};
