@@ -955,12 +955,12 @@ const CreateTicket = ({
                               Number(val) <= PERCENT_LIMIT
                             ) {
                               changeTicketValues(
-                                e.target.value,
+                                Number(val) / 100,
                                 'royaltiesFee',
                               );
                             }
                           }}
-                          value={ticketValue.royaltiesFee}
+                          value={Number(ticketValue.royaltiesFee) * 100}
                           suffix="%"
                         />
                       </Form.Item>
