@@ -160,6 +160,10 @@ const PageHeaderContainer = styled.div`
         }
       }
     }
+    .breadcrumb-container-mobile {
+      padding: 0 20px;
+      background: ${Colors.white};
+    }
   }
 `;
 
@@ -250,20 +254,27 @@ const PageHeaderComponent = ({
       {sidebarType !== 'default' && (
         <Row>
           <Col lg={0} span={24} style={{ background: Colors.grey5 }}>
-            <div className="title-content mobile">
-              <span>
-                {(showBackArrow && (
-                  <Col className="back-page" onClick={clickBack}>
-                    <LeftOutlined />
-                    <span className="title">{title}</span>
-                  </Col>
-                )) || (
-                  <span className="title no-back">
-                    {title?.toLocaleUpperCase()}
-                  </span>
-                )}
-              </span>
-            </div>
+            {breadcrumb ? (
+              <div className="breadcrumb-container-mobile">
+                <Breadcrumb breadcrumb={breadcrumb} />
+              </div>
+            ) : null}
+            {title ? (
+              <div className="title-content mobile">
+                <span>
+                  {(showBackArrow && (
+                    <Col className="back-page" onClick={clickBack}>
+                      <LeftOutlined />
+                      <span className="title">{title}</span>
+                    </Col>
+                  )) || (
+                    <span className="title no-back">
+                      {title?.toLocaleUpperCase()}
+                    </span>
+                  )}
+                </span>
+              </div>
+            ) : null}
           </Col>
         </Row>
       )}

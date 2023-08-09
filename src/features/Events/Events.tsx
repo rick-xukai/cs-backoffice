@@ -74,6 +74,19 @@ import { SGD_UNIT } from '../../constants/constants';
 const { Option } = Select;
 const { confirm } = Modal;
 
+export const getBadge = (status: number) => {
+  const background =
+    FilterEventStatus.find((item) => item.key === status)?.background ||
+    Colors.orange2;
+  const color =
+    FilterEventStatus.find((item) => item.key === status)?.color ||
+    Colors.orange3;
+  return (
+    <EventStatusBadge color={color} background={background}>
+      {checkEventStatus(status)}
+    </EventStatusBadge>
+  );
+};
 const Events = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -249,20 +262,6 @@ const Events = () => {
           </Dropdown>
         </div>
       </div>
-    );
-  };
-
-  const getBadge = (status: number) => {
-    const background =
-      FilterEventStatus.find((item) => item.key === status)?.background ||
-      Colors.orange2;
-    const color =
-      FilterEventStatus.find((item) => item.key === status)?.color ||
-      Colors.orange3;
-    return (
-      <EventStatusBadge color={color} background={background}>
-        {checkEventStatus(status)}
-      </EventStatusBadge>
     );
   };
 

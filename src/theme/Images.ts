@@ -68,6 +68,12 @@ import VerticalLineIcon from '../assets/images/vertical-line.svg';
 import AllTicketSold from '../assets/images/all-ticket-sold.svg';
 import PreviewLocationIcon from '../assets/images/location.png';
 import MenuOrdersIcon from '../assets/images/icons/menu-orders.svg';
+import ClockWhiteIcon from '../assets/images/icons/clock-white.svg';
+import CardArrowIcon from '../assets/images/icons/card-arrow.svg';
+import AlertCircleIcon from '../assets/images/icons/alert-circle.svg';
+import ChampionIcon from '../assets/images/icons/champion.svg';
+import RunnerUpIcon from '../assets/images/icons/runner-up.svg';
+import ThirdPlaceIcon from '../assets/images/icons/third-place.svg';
 
 const Images = {
   Logo,
@@ -142,6 +148,12 @@ const Images = {
   AllTicketSold,
   PreviewLocationIcon,
   MenuOrdersIcon,
+  ClockWhiteIcon,
+  CardArrowIcon,
+  AlertCircleIcon,
+  ChampionIcon,
+  RunnerUpIcon,
+  ThirdPlaceIcon,
 };
 
 export default Images;

@@ -61,6 +61,8 @@ const Colors = {
   brandingMask: '#9B2621',
   blueGray: '#056790',
   chartBg: '#0BFFFF',
+  red1: '#FFAEAF',
+  red2: '#FD262B',
 };
 
 export default Colors;
