@@ -20,6 +20,7 @@ import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
 import ForgotPassword from '../features/Authentication/ForgotPassword/Loadable';
 import ChangePassword from '../features/Authentication/ChangePassword/Loadable';
+import EventDashboard from '../features/EventDashboard/Loadable';
 
 import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
 import { UserRoleKeys } from '../constants/Keys';
@@ -233,6 +234,19 @@ export const UserScreens = {
     menuKeys: [vMenuKeys.transactions],
     guard: true,
     role: [UserRoleKeys.superAdmin],
+  },
+  EventDashboard: {
+    title: 'Event Dashboard - CrowdServe BO',
+    path: UserRoutes.eventDashbaord,
+    component: EventDashboard,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
 };
 

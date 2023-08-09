@@ -104,7 +104,7 @@ const Events = () => {
             (record.status !== EventStatusKeys.draft && 'block') || 'none',
         },
         onClick: () => {
-          history.push(`${UserRoutes.dashboard}/${record.id}`);
+          history.push(UserRoutes.eventDashbaord.replace(':id', record.id));
         },
       },
       {
@@ -299,7 +299,7 @@ const Events = () => {
                   history.push(
                     (record.status === EventStatusKeys.draft &&
                       UserRoutes.editEvent.replace(':id', record.id)) ||
-                      `${UserRoutes.dashboard}/${record.id}`,
+                      UserRoutes.eventDashbaord.replace(':id', record.id),
                   )
                 }
               >
