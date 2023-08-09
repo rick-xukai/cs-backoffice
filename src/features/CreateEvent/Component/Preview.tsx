@@ -205,6 +205,8 @@ const Preview = ({
   const outOfStock = (item: any) =>
     (item.status === onsale.status && !item.stock) ||
     (item.status === sold.status && item.visibility);
+  const notOnSale = (item: any) =>
+    item.status === unsale.status && item.visibility;
   return (
     <Container style={{ top: show ? 0 : '100%' }}>
       <div className="close" onClick={() => onHide(false)}>
@@ -462,12 +464,11 @@ const Preview = ({
                                           e.target.src = Images.BackgroundLogo;
                                         }}
                                       />
-                                      {item.status === unsale.status &&
-                                        item.visibility && (
-                                          <div className="out-stock-mask">
-                                            NOT ON SALE YET
-                                          </div>
-                                        )}
+                                      {notOnSale(item) && (
+                                        <div className="out-stock-mask">
+                                          NOT ON SALE YET
+                                        </div>
+                                      )}
                                       {outOfStock(item) ? (
                                         <div className="out-stock-mask">
                                           OUT OF STOCK
@@ -488,7 +489,11 @@ const Preview = ({
                                       <div className="type-info-content">
                                         <div
                                           style={{
-                                            opacity: outOfStock(item) ? 0.6 : 1,
+                                            opacity:
+                                              outOfStock(item) ||
+                                              notOnSale(item)
+                                                ? 0.6
+                                                : 1,
                                           }}
                                         >
                                           <Col
