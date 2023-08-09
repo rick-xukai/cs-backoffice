@@ -206,7 +206,7 @@ const PageHeaderComponent = ({
   return (
     <PageHeaderContainer className={`${(children && 'children-header') || ''}`}>
       <Row className="main-row">
-        <Col lg={12} span={24} style={{ marginBottom: children && 16 }}>
+        <Col lg={15} span={24} style={{ marginBottom: children && 16 }}>
           <Col lg={0} span={24} className="image-content">
             <Image
               src={Images.MenuTrigger}
@@ -242,7 +242,7 @@ const PageHeaderComponent = ({
             ) : null}
           </Col>
         </Col>
-        <Col lg={12} span={0}>
+        <Col lg={9} span={0}>
           <div className="content-text">
             <p>
               Welcome, <b>{userName}</b> user.

@@ -39,7 +39,7 @@ export const UserRoutes = {
   transactions: '/transactions',
   transactionsDetail: '/transactions-detail/:transactionsId',
   orders: '/orders',
-  eventDashbaord: '/event-dashbaord/:id',
+  eventDashbaord: '/event-dashbaord/:id/:name',
 };
 
 export const AuthRoutes = {

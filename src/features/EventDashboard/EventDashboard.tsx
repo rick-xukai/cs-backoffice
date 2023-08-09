@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Col, Row, Grid } from 'antd';
 
+import { useParams } from 'react-router-dom';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
 import {
@@ -24,6 +25,9 @@ const EventDashboard = () => {
   const dashbaordChartCard = (
     <DashbaordChartCard total={100} current={10} ticketsImported={10} />
   );
+  const params: any = useParams();
+  const { name } = params;
+
   const uniqueBuyers = (
     <NormalCard
       title="Unique Buyers"
@@ -60,7 +64,7 @@ const EventDashboard = () => {
             href: UserRoutes.events,
           },
           {
-            label: 'Escape to Paradise - Pool Party',
+            label: name,
           },
         ]}
       />
