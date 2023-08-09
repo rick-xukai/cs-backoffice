@@ -122,11 +122,6 @@ const CreateEventContainer = styled.div`
         }
       }
       .banner-image-dragger {
-        .dragger-content {
-          &.ant-upload-drag {
-            min-height: 153px;
-          }
-        }
         label {
           margin-bottom: 10px;
         }
@@ -205,7 +200,6 @@ const CreateEventContainer = styled.div`
   .dragger-content {
     position: relative;
     &.ant-upload-drag {
-      min-height: 123px;
       display: flex;
       align-items: center;
       .ant-upload-drag-icon {
@@ -227,7 +221,7 @@ const CreateEventContainer = styled.div`
     .content-preview {
       position: relative;
       width: 100%;
-      height: 123px;
+      aspect-ratio: 2 / 1;
       :hover {
         .content-action-icon {
           display: flex;
@@ -295,9 +289,6 @@ const CreateEventFormContainer = styled.div`
         height: 100%;
       }
     }
-    .content-preview {
-      height: 338px;
-    }
     &.ticket-tab {
       min-height: unset;
       border-top-left-radius: 0px;
@@ -354,9 +345,12 @@ const CreateEventFormContainer = styled.div`
     }
     .dragger-content {
       background: ${Colors.white};
+      aspect-ratio: 2 / 1;
+      .ant-upload-btn {
+        padding: 0;
+      }
       &.ant-upload-drag {
-        min-height: 340px;
-        max-height: 340px;
+        min-height: unset;
         min-width: 100%;
       }
       .ant-upload-drag-icon {
