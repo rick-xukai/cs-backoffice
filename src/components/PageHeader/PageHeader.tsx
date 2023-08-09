@@ -12,11 +12,12 @@ import { base64Decrypt } from '../../utils/func';
 import { CookieKeys } from '../../constants/Keys';
 import { Colors, Images } from '../../theme';
 import { useToggleMenu, useCookie } from '../../hooks';
+import Breadcrumb from './Breadcrumb.component';
 
 const PageHeaderContainer = styled.div`
   padding-right: 24px;
   padding-left: 24px;
-  height: 60px;
+  min-height: 60px;
   z-index: 11;
   &.children-header {
     padding-top: 16px;
@@ -167,11 +168,13 @@ const PageHeaderComponent = ({
   showBackArrow = false,
   clickBack,
   children,
+  breadcrumb,
 }: {
-  title: string;
+  title?: string;
   showBackArrow?: boolean;
   clickBack?: () => void;
   children?: React.ReactChild;
+  breadcrumb?: { label: string; href?: string }[];
 }) => {
   const { t } = useTranslation();
   const { toggleMenu } = useToggleMenu();
@@ -218,18 +221,21 @@ const PageHeaderComponent = ({
             />
           </Col>
           <Col lg={24} span={0}>
-            <div className="title-content">
-              <span>
-                {(showBackArrow && (
-                  <Col className="back-page" onClick={clickBack}>
-                    <LeftOutlined />
-                    <span className="title">{title}</span>
-                  </Col>
-                )) || (
-                  <span className="title">{title.toLocaleUpperCase()}</span>
-                )}
-              </span>
-            </div>
+            {breadcrumb ? <Breadcrumb breadcrumb={breadcrumb} /> : null}
+            {title ? (
+              <div className="title-content">
+                <span>
+                  {(showBackArrow && (
+                    <Col className="back-page" onClick={clickBack}>
+                      <LeftOutlined />
+                      <span className="title">{title}</span>
+                    </Col>
+                  )) || (
+                    <span className="title">{title.toLocaleUpperCase()}</span>
+                  )}
+                </span>
+              </div>
+            ) : null}
           </Col>
         </Col>
         <Col lg={12} span={0}>
@@ -253,7 +259,7 @@ const PageHeaderComponent = ({
                   </Col>
                 )) || (
                   <span className="title no-back">
-                    {title.toLocaleUpperCase()}
+                    {title?.toLocaleUpperCase()}
                   </span>
                 )}
               </span>
