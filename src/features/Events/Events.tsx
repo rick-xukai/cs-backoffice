@@ -106,7 +106,11 @@ const Events = () => {
   const [showNoSearchData, setShowNoSearchData] = useState<boolean>(false);
   const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
   const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
-
+  const goToDashboard = (id: any, name: any) => {
+    history.push(
+      UserRoutes.eventDashbaord.replace(':id', id).replace(':name', name),
+    );
+  };
   const renderListItemAction = (record: EventsListDataType) => {
     const items: MenuProps['items'] = [
       {
@@ -117,7 +121,7 @@ const Events = () => {
             (record.status !== EventStatusKeys.draft && 'block') || 'none',
         },
         onClick: () => {
-          history.push(UserRoutes.eventDashbaord.replace(':id', record.id));
+          goToDashboard(record.id, record.name);
         },
       },
       {
@@ -295,11 +299,11 @@ const Events = () => {
                 span={24}
                 className="event-name"
                 onClick={() =>
-                  history.push(
-                    (record.status === EventStatusKeys.draft &&
-                      UserRoutes.editEvent.replace(':id', record.id)) ||
-                      UserRoutes.eventDashbaord.replace(':id', record.id),
-                  )
+                  record.status === EventStatusKeys.draft
+                    ? history.push(
+                        UserRoutes.editEvent.replace(':id', record.id),
+                      )
+                    : goToDashboard(record.id, record.name)
                 }
               >
                 {record.name}

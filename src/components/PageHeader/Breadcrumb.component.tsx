@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Breadcrumb as AntdBreadcrumb } from 'antd';
+import { useHistory } from 'react-router-dom';
 import { Colors } from '../../theme';
 
 export type BreadcrumbItemProps = {
@@ -17,7 +18,7 @@ const BreadcrumbContainer = styled(AntdBreadcrumb)<{ length: number }>`
     display: flex;
     flex-wrap: nowrap;
     li {
-      max-width: ${(props) => 100 / props.length + 10}%;
+      max-width: ${(props) => 100 / props.length}%;
       display: flex;
       .ant-breadcrumb-link {
         overflow: hidden;
@@ -25,8 +26,9 @@ const BreadcrumbContainer = styled(AntdBreadcrumb)<{ length: number }>`
         width: 100%;
         white-space: nowrap;
         color: ${Colors.black};
-        a {
+        span {
           color: ${Colors.branding};
+          cursor: pointer;
         }
       }
       .ant-breadcrumb-separator {
@@ -36,14 +38,22 @@ const BreadcrumbContainer = styled(AntdBreadcrumb)<{ length: number }>`
   }
 `;
 
-const Breadcrumb = ({ breadcrumb }: { breadcrumb: BreadcrumbItemProps[] }) => (
-  <BreadcrumbContainer length={breadcrumb.length}>
-    {breadcrumb.map((item) => (
-      <AntdBreadcrumbItem key={item.label}>
-        {item.href ? <a href={item.href}>{item.label}</a> : item.label}
-      </AntdBreadcrumbItem>
-    ))}
-  </BreadcrumbContainer>
-);
+const Breadcrumb = ({ breadcrumb }: { breadcrumb: BreadcrumbItemProps[] }) => {
+  const history = useHistory();
+  return (
+    <BreadcrumbContainer length={breadcrumb.length}>
+      {breadcrumb.map((item) => (
+        <AntdBreadcrumbItem key={item.label}>
+          {(item.href && (
+            <span onClick={() => history.push(item.href || '')}>
+              {item.label}
+            </span>
+          )) ||
+            item.label}
+        </AntdBreadcrumbItem>
+      ))}
+    </BreadcrumbContainer>
+  );
+};
 
 export default Breadcrumb;
