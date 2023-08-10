@@ -238,7 +238,7 @@ const CreateEvent = () => {
         sellStartTime: moment(item.sellStartTime).format(),
         sellEndTime: moment(item.sellEndTime).format(),
         connectedTickets: item.connectedTickets.map((connectedTicket: any) => ({
-          ticketTypeId: connectedTicket.id,
+          ticketTypeId: connectedTicket.id || connectedTicket.ticketTypeId,
         })),
       };
       return types;

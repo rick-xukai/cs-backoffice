@@ -111,6 +111,17 @@ const Events = () => {
       UserRoutes.eventDashbaord.replace(':id', id).replace(':name', name),
     );
   };
+
+  const showHideEvent = (record: EventsListDataType) => ({
+    label: t('Hide Event'),
+    key: 'showHideEvent',
+    style: {
+      display: (record.status !== EventStatusKeys.draft && 'block') || 'none',
+    },
+    onClick: () => {
+      // goToDashboard(record.id, record.name);
+    },
+  });
   const renderListItemAction = (record: EventsListDataType) => {
     const items: MenuProps['items'] = [
       {
@@ -236,6 +247,8 @@ const Events = () => {
     ) {
       iconDisable = true;
     }
+    const authUserRole = cookie.getCookie(CookieKeys.authUserRole);
+    const isSuperAdmin = authUserRole === UserRoleKeys.superAdmin;
 
     return (
       <div className="event-list-action">
@@ -258,7 +271,9 @@ const Events = () => {
         )}
         <div className="icon-content">
           <Dropdown
-            menu={{ items }}
+            menu={{
+              items: isSuperAdmin ? [...items, showHideEvent(record)] : items,
+            }}
             trigger={['click']}
             overlayClassName="event-more-action"
           >
