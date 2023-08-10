@@ -371,20 +371,26 @@ const CreateEvent = () => {
   }) => {
     const currentTime = new Date().getTime();
     const endTime = new Date(createEventFormValue.endTime || '').getTime();
-    const unfinishedSteps =
-      (anotherPayload?.type !== DeleteTicket &&
-        validatUnfinishedSteps(
-          (anotherPayload && {
-            ...createEventFormValue,
-            ticketTypes:
-              anotherPayload.ticketTypes || createEventFormValue.ticketTypes,
-            discounts:
-              anotherPayload.discounts || createEventFormValue.discounts,
-          }) ||
-            createEventFormValue,
-        )) ||
-      '';
-    if (unfinishedSteps === '' || (isDraft && !anotherPayload?.publish)) {
+
+    const validate: any = validatUnfinishedSteps(
+      (anotherPayload && {
+        ...createEventFormValue,
+        ticketTypes:
+          anotherPayload.ticketTypes || createEventFormValue.ticketTypes,
+        discounts: anotherPayload.discounts || createEventFormValue.discounts,
+      }) ||
+        createEventFormValue,
+    );
+
+    const unfinishedSteps = () => {
+      if (anotherPayload?.type !== DeleteTicket) {
+        if (validate || validate === ComponentSteps.eventInfo) {
+          return validate;
+        }
+      }
+      return '';
+    };
+    if (unfinishedSteps() === '' || (isDraft && !anotherPayload?.publish)) {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
       } else if (isEdit) {
@@ -484,19 +490,19 @@ const CreateEvent = () => {
         cancelText: t('Cancel'),
         title:
           (createEventFormValue.discounts.length &&
-            unfinishedSteps === 2 &&
+            unfinishedSteps() === 2 &&
             t('Discount Field Missing')) ||
           t('Missing Fields'),
         icon: <ExclamationCircleOutlined />,
         content:
           (createEventFormValue.discounts.length &&
-            unfinishedSteps === 2 &&
+            unfinishedSteps() === 2 &&
             t('Please select [type] tickets for the discount.', {
               type: `"Apply To"`,
             })) ||
           t('Please complete all required fields before publishing.'),
         onOk() {
-          setSteps(Number(unfinishedSteps));
+          setSteps(Number(unfinishedSteps()));
         },
         onCancel() {
           setShowMissingFieldsModal(false);
