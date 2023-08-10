@@ -17,8 +17,10 @@ import Breadcrumb from './Breadcrumb.component';
 const PageHeaderContainer = styled.div`
   padding-right: 24px;
   padding-left: 24px;
-  min-height: 60px;
   z-index: 11;
+  @media (min-width: 996px) {
+    min-height: 60px;
+  }
   &.children-header {
     padding-top: 16px;
     height: unset;

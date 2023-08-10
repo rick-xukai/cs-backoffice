@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Row, Tooltip } from 'antd';
 import { CSSProperties } from 'styled-components';
 
-// import { Gauge } from '@ant-design/charts';
+import { Gauge } from '@ant-design/plots';
 import {
   BannerWrapper,
   BottomBar,
@@ -13,7 +13,7 @@ import {
   RankingListItemWrapper,
 } from './EventDashboard.component';
 import { getBadge } from '../Events/Events';
-import { Images } from '../../theme';
+import { Colors, Images } from '../../theme';
 
 export const Banner = ({
   title,
@@ -59,65 +59,65 @@ const Info = ({
   </InfoWrapper>
 );
 
-// export const DashbaordChartCard = ({
-//   total,
-//   current,
-//   ticketsImported,
-// }: {
-//   total: number;
-//   current: number;
-//   ticketsImported: number;
-// }) => {
-//   const config: any = {
-//     range: {
-//       color: `l(0) 0:${Colors.red1} 1:${Colors.red2}`,
-//     },
-//     innerRadius: 0.75,
-//     startAngle: Math.PI,
-//     endAngle: 2 * Math.PI,
-//     indicator: null,
-//     statistic: {
-//       title: {
-//         offsetY: -10,
-//         style: {
-//           fontSize: '24px',
-//           color: Colors.branding,
-//           fontWeight: 700,
-//         },
-//         formatter: (e: any) => `${e.percent * 100 || 0}%`,
-//       },
-//     },
-//   };
-//   return (
-//     <CardWrapper hoverable>
-//       <Row justify="end" style={{ marginBottom: 15 }}>
-//         <Col>
-//           <img src={Images.CardArrowIcon} alt="" />
-//         </Col>
-//       </Row>
-//       <Gauge
-//         {...config}
-//         percent={current / total}
-//         height={103}
-//         padding={0}
-//         width={137}
-//       />
-//       <div className="text-container">
-//         <span className="large-text">{current}</span>
-//         <span className="small-text"> / {total}</span>
-//       </div>
-//       <Info
-//         infoJustify="center"
-//         style={{ marginTop: 4 }}
-//         title="Tickets Sold"
-//       />
-//       <BottomBar style={{ marginTop: 24 }}>
-//         <div className="left">Tickets Imported</div>
-//         <div className="right">{ticketsImported}</div>
-//       </BottomBar>
-//     </CardWrapper>
-//   );
-// };
+export const DashbaordChartCard = ({
+  total,
+  current,
+  ticketsImported,
+}: {
+  total: number;
+  current: number;
+  ticketsImported: number;
+}) => {
+  const config: any = {
+    range: {
+      color: `l(0) 0:${Colors.red1} 1:${Colors.red2}`,
+    },
+    innerRadius: 0.75,
+    startAngle: Math.PI,
+    endAngle: 2 * Math.PI,
+    indicator: null,
+    statistic: {
+      title: {
+        offsetY: -10,
+        style: {
+          fontSize: '24px',
+          color: Colors.branding,
+          fontWeight: 700,
+        },
+        formatter: (e: any) => `${e.percent * 100 || 0}%`,
+      },
+    },
+  };
+  return (
+    <CardWrapper hoverable>
+      <Row justify="end" style={{ marginBottom: 15 }}>
+        <Col>
+          <img src={Images.CardArrowIcon} alt="" />
+        </Col>
+      </Row>
+      <Gauge
+        {...config}
+        percent={current / total}
+        height={103}
+        padding={0}
+        width={137}
+      />
+      <div className="text-container">
+        <span className="large-text">{current}</span>
+        <span className="small-text"> / {total}</span>
+      </div>
+      <Info
+        infoJustify="center"
+        style={{ marginTop: 4 }}
+        title="Tickets Sold"
+      />
+      <BottomBar style={{ marginTop: 24 }}>
+        <div className="left">Tickets Imported</div>
+        <div className="right">{ticketsImported}</div>
+      </BottomBar>
+    </CardWrapper>
+  );
+};
 
 export const NormalCard = ({
   href,
