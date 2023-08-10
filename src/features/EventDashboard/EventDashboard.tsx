@@ -7,7 +7,7 @@ import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
 import {
   Banner,
-  DashbaordChartCard,
+  // DashbaordChartCard,
   DashbaordListCard,
   NormalCard,
 } from './EventDashboard.components';
@@ -22,9 +22,10 @@ const { useBreakpoint } = Grid;
 const EventDashboard = () => {
   const { t } = useTranslation();
   const { lg } = useBreakpoint();
-  const dashbaordChartCard = (
-    <DashbaordChartCard total={100} current={10} ticketsImported={10} />
-  );
+  const dashbaordChartCard = null;
+  // (
+  //   <DashbaordChartCard total={100} current={10} ticketsImported={10} />,
+  // );
   const params: any = useParams();
   const { name } = params;
 
