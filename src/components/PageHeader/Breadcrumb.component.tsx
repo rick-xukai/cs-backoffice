@@ -30,6 +30,11 @@ const BreadcrumbContainer = styled(AntdBreadcrumb)<{ length: number }>`
           color: ${Colors.branding};
           cursor: pointer;
         }
+        :hover {
+          span {
+            text-decoration: underline;
+          }
+        }
       }
       .ant-breadcrumb-separator {
         color: ${Colors.grey7};

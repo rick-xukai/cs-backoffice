@@ -66,7 +66,7 @@ export const EmptyState = ({ handleAddTicket }: { handleAddTicket: any }) => {
             )}
             actions={
               <Button
-                style={{ width: 240 }}
+                style={{ width: 240, fontWeight: 500, fontSize: 15 }}
                 type="primary"
                 onClick={handleAddTicket}
               >

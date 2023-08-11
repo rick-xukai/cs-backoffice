@@ -381,6 +381,8 @@ const Settings = ({
                     height: 40,
                     borderRadius: 0,
                     lineHeight: '12px',
+                    fontWeight: 500,
+                    fontSize: 15,
                   }}
                   type="primary"
                 >

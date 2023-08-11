@@ -34,7 +34,7 @@ const TicketsContainer = styled.div`
   }
   @media (max-width: 992px) {
     .page-main {
-      padding: calc(98px + 24px) 24px 24px;
+      padding: calc(98px + 24px) 15px 15px;
     }
   }
 `;

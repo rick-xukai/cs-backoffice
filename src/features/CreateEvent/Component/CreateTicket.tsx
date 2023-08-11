@@ -659,6 +659,8 @@ const CreateTicket = ({
                   height: 40,
                   borderRadius: 0,
                   lineHeight: '12px',
+                  fontWeight: 500,
+                  fontSize: 15,
                 }}
                 type="primary"
               >
@@ -753,11 +755,6 @@ const CreateTicket = ({
                     />
                   </Form.Item>
                   <Form.Item
-                    style={{
-                      display: 'inline-block',
-                      width: 'calc(50% - 8px)',
-                      marginRight: 16,
-                    }}
                     label="Total Available Quantity"
                     required
                     {...requiredValidateForm(
@@ -765,6 +762,7 @@ const CreateTicket = ({
                       'Total Available Quantity',
                       onSave,
                     )}
+                    className="side-by-side side-by-side-left"
                   >
                     <Row gutter={6} align="middle" wrap={false}>
                       <Col style={{ flexShrink: 0 }}>
@@ -797,10 +795,6 @@ const CreateTicket = ({
                     </Row>
                   </Form.Item>
                   <Form.Item
-                    style={{
-                      display: 'inline-block',
-                      width: 'calc(50% - 8px)',
-                    }}
                     label="Ticket Price"
                     required
                     {...requiredValidateForm(
@@ -817,6 +811,7 @@ const CreateTicket = ({
                             onSave,
                           ).help
                     }
+                    className="ticket-price side-by-side"
                   >
                     <Input
                       style={{
@@ -849,7 +844,7 @@ const CreateTicket = ({
                       value={ticketValue.price}
                     />
                   </Form.Item>
-                  <Form.Item style={{ marginTop: -10, marginBottom: 0 }}>
+                  <Form.Item>
                     <Checkbox
                       onChange={(e) =>
                         changeTicketValues(e.target.checked, 'absorbFees')
@@ -941,11 +936,7 @@ const CreateTicket = ({
                             Royalty Fee
                           </QuestionTooltip>
                         }
-                        style={{
-                          display: 'inline-block',
-                          width: 'calc(50% - 8px)',
-                          marginRight: 16,
-                        }}
+                        className="side-by-side side-by-side-left"
                       >
                         <Input
                           onChange={(e) => {
@@ -974,10 +965,7 @@ const CreateTicket = ({
                             Ticket Ceiling Price
                           </QuestionTooltip>
                         }
-                        style={{
-                          display: 'inline-block',
-                          width: 'calc(50% - 8px)',
-                        }}
+                        className="side-by-side"
                       >
                         <Input
                           onChange={(e) => {
