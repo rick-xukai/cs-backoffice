@@ -115,7 +115,10 @@ export const EmptyState = ({
                 codeClick={codeClick}
                 bundleClick={bundleClick}
               >
-                <Button style={{ width: 240 }} type="primary">
+                <Button
+                  style={{ width: 240, fontWeight: 500, fontSize: 15 }}
+                  type="primary"
+                >
                   {t('Add Discount')}
                 </Button>
               </AddDiscountDropDown>

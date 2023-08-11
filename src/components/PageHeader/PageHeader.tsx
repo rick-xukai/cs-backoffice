@@ -79,10 +79,11 @@ const PageHeaderContainer = styled.div`
     align-items: center;
     &.mobile {
       margin-left: 0;
-      margin-top: 10px;
+      margin-top: 0px;
       padding-left: 15px;
       padding-right: 15px;
-      height: 45px;
+      height: 53px;
+      background: ${Colors.white};
       .title {
         font-size: 15px;
         font-family: Heebo;
@@ -159,6 +160,7 @@ const PageHeaderContainer = styled.div`
           font-weight: 700;
           line-height: 32px;
           text-transform: uppercase;
+          font-family: Oswald;
         }
       }
     }

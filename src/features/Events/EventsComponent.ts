@@ -152,7 +152,7 @@ const EventsContainer = styled.div`
   }
   @media (max-width: ${BreakPoints.lg}px) {
     .page-main {
-      padding: calc(98px + 24px) 24px 24px;
+      padding: calc(98px + 24px) 15px 15px;
       .event-filter-container {
         padding: 20px;
         .filter-status {
@@ -301,8 +301,8 @@ const EventInfoCardResponsive = styled(Row)`
       margin-right: 15px;
     }
     .icon-content {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       img {
         width: 100%;
         height: 100%;

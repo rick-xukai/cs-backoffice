@@ -182,6 +182,7 @@ const TableComponent = ({
           pageSize={currentPageSize}
           total={tableDataTotal}
           onChange={paginationChange}
+          hideOnSinglePage
         />
       )}
     </Spin>

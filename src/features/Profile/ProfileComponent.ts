@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Colors } from '../../theme';
+import { BreakPoints, Colors } from '../../theme';
 
 const ProfileContainer = styled.div`
   padding: calc(60px + 24px) 24px 24px;
@@ -22,6 +22,9 @@ const ProfileContainer = styled.div`
       font-weight: 700;
       color: ${Colors.black4};
       border-bottom: 0.6px solid ${Colors.grey8};
+      @media (max-width: ${BreakPoints.lg}px) {
+        font-size: 20px;
+      }
     }
     .profile-info-item {
       padding: 20px;

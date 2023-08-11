@@ -605,6 +605,8 @@ const EventInfo = ({
           title={t('Banner Image')}
           footer={null}
           onCancel={() => setShowPreviewBanner(false)}
+          width="80%"
+          centered
         >
           <img alt="" className="preview-img" src={bannerFile} />
         </Modal>

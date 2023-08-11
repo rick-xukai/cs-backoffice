@@ -27,6 +27,9 @@ const CreateEventContainer = styled.div`
     background: ${Colors.white};
     border-radius: 2px;
     margin-top: 20px;
+    @media (min-width: ${BreakPoints.lg}px) {
+      margin-top: 14px;
+    }
     height: 100%;
     form {
       height: 100%;
@@ -547,6 +550,11 @@ const CreateEventFormContainer = styled.div`
   .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder {
     line-height: 35px;
   }
+  .ticket-price {
+    .ant-form-item-explain {
+      min-height: 19px;
+    }
+  }
 `;
 
 const UploadIcon = styled.div`
@@ -929,7 +937,9 @@ const EventInfoCard = styled(Col)`
   background: ${Colors.white};
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
   .event-image {
-    max-height: 120px;
+    @media (max-width: ${BreakPoints.lg}px) {
+      height: calc(50vw - 39px);
+    }
     img {
       width: 100%;
       height: 100%;
