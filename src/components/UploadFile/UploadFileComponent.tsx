@@ -183,6 +183,8 @@ const UploadFileComponent = ({
         title={previewImageTitle}
         footer={null}
         onCancel={() => setPreviewImageOpen(false)}
+        width="80%"
+        centered
       >
         {(previewType.includes('image') && (
           <img alt="" style={{ width: '100%' }} src={previewImageUrl} />

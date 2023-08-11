@@ -234,7 +234,7 @@ export const RankingListItemWrapper = styled.li`
     }
   }
   border-bottom: 1px solid ${Colors.grey8};
-  padding: 6px 0 8px 0;
+  padding: 5px 0 9px 0;
   :last-child {
     border-bottom: none;
   }
