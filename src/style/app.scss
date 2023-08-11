@@ -19,11 +19,36 @@ body {
   border: none;
 }
 
-.ant-btn-primary:hover,
-.ant-btn-primary:focus {
+.ant-btn-primary:hover {
   background: #de0005;
   border-color: #de0005;
 }
+
+.ant-btn-default {
+  color: #717179;
+  border: 1px solid #717179;
+}
+
+.ant-btn-default:hover {
+  border: 1px solid #de0005;
+  color: #de0005;
+}
+.ant-btn[disabled] {
+  color: #717179;
+  border: 1px solid #717179;
+  background: #fff;
+}
+.ant-btn-primary[disabled] {
+  background: #dcdce1;
+  border: 1px solid #dcdce1;
+  color: #7d8d95;
+}
+.ant-btn-primary[disabled]:hover {
+  background: #dcdce1;
+  border: 1px solid #dcdce1;
+  color: #7d8d95;
+}
+
 .ant-layout-sider .ant-layout-sider-children {
   @media screen and (max-width: 992px) {
     padding-left: 15px;

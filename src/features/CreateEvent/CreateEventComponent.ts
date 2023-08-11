@@ -83,24 +83,9 @@ const CreateEventContainer = styled.div`
       border-radius: 2px;
       font-size: 15px;
       font-weight: 500;
-      color: ${Colors.grey6};
-      border: 1px solid ${Colors.grey6};
       &.ant-btn-primary {
-        background: ${Colors.branding};
-        border: none;
-        color: ${Colors.white};
         margin-left: 20px;
       }
-    }
-    .ant-btn[disabled] {
-      color: ${Colors.grey6};
-      border: 1px solid ${Colors.grey6};
-      background: ${Colors.white};
-    }
-    .ant-btn-primary[disabled] {
-      background: ${Colors.grey8};
-      border: none;
-      color: ${Colors.grey};
     }
   }
   .end-date-error {
