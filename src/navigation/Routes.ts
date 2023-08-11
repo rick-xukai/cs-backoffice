@@ -40,6 +40,7 @@ export const UserRoutes = {
   transactionsDetail: '/transactions-detail/:transactionsId',
   orders: '/orders',
   eventDashbaord: '/event-dashbaord/:id/:name',
+  ticketSold: '/ticket-sold/:id/:name',
 };
 
 export const AuthRoutes = {

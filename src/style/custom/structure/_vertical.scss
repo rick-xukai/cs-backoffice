@@ -474,3 +474,114 @@ body[data-sidebar='dark'] {
     color: $white;
   }
 }
+.fees-detail-modal {
+  .ant-modal-body {
+    padding: 12px !important;
+  }
+  .ant-modal-confirm-body {
+    .ant-modal-confirm-content {
+      margin-top: 0;
+    }
+    .anticon {
+      display: none;
+    }
+  }
+  .ant-modal-confirm-btns {
+    display: none;
+  }
+  .fees-detail-item {
+    margin-bottom: 8px;
+    &.item-total {
+      margin-bottom: 0px;
+      .value {
+        color: $red;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 21px;
+      }
+    }
+    .label {
+      color: $black700;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
+    }
+    .value {
+      color: $black800;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
+    }
+  }
+}
+.import-modal {
+  .ant-modal-header {
+    .ant-modal-title {
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 21px;
+    }
+  }
+  .ant-modal-body {
+    .import-info {
+      color: $black1000;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 21px;
+      cursor: pointer;
+      span {
+        color: $red;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 21px;
+      }
+    }
+    .import-content {
+      margin-top: 16px;
+      .ant-upload-drag {
+        border-radius: 2px;
+        border: 1px dashed $gray-50;
+        background: rgba(243, 243, 251, 0.45);
+      }
+      .ant-upload.ant-upload-drag:not(.ant-upload-disabled):hover {
+        border-color: $black900;
+      }
+      .ant-upload-drag-icon {
+        margin-bottom: 12px;
+        .anticon {
+          font-size: 24px;
+          color: $black700;
+        }
+      }
+      .ant-upload-text {
+        color: $black700;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 19px;
+      }
+      .ant-upload-list {
+        display: none;
+      }
+    }
+  }
+  .progress-content {
+    text-align: center;
+    .ant-progress {
+      width: 60%;
+    }
+    .ant-progress-inner {
+      background-color: $gray-100;
+    }
+    .file-name {
+      color: $black;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 21px;
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+  }
+}

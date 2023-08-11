@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Col, Row, Grid } from 'antd';
 
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
 import {
@@ -22,11 +22,12 @@ const { useBreakpoint } = Grid;
 const EventDashboard = () => {
   const { t } = useTranslation();
   const { lg } = useBreakpoint();
+  const history = useHistory();
   const dashbaordChartCard = (
     <DashbaordChartCard total={100} current={10} ticketsImported={10} />
   );
   const params: any = useParams();
-  const { name } = params;
+  const { name, id } = params;
 
   const uniqueBuyers = (
     <NormalCard
@@ -77,7 +78,18 @@ const EventDashboard = () => {
       <ContentWrapper>
         {lg ? (
           <Row gutter={[16, 16]}>
-            <Col span={8}>{dashbaordChartCard}</Col>
+            <Col
+              span={8}
+              onClick={() =>
+                history.push(
+                  UserRoutes.ticketSold
+                    .replace(':id', id)
+                    .replace(':name', name.toLowerCase()),
+                )
+              }
+            >
+              {dashbaordChartCard}
+            </Col>
             <Col span={16}>
               <Row gutter={[16, 19]}>
                 <Col span={12}>{uniqueBuyers}</Col>

@@ -119,6 +119,9 @@ const PageHeaderContainer = styled.div`
       height: 36px;
     }
   }
+  .ant-breadcrumb-link {
+    text-transform: capitalize;
+  }
   @media (max-width: 576px) {
     .content-text {
       justify-content: start;

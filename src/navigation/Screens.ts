@@ -15,6 +15,7 @@ import CreateEvent from '../features/CreateEvent/Loadable';
 import Profile from '../features/Profile/Loadable';
 import UserAndPermissions from '../features/UserAndPermissions/Loadable';
 import Orders from '../features/Orders/Loadable';
+import TicketsSold from '../features/TicketsSold/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -241,6 +242,14 @@ export const UserScreens = {
     component: EventDashboard,
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
+    guard: true,
+  },
+  TicketsSold: {
+    title: 'Tickets Sold - CrowdServe BO',
+    path: UserRoutes.ticketSold,
+    component: TicketsSold,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.ticketsSold],
     guard: true,
     role: [
       UserRoleKeys.superAdmin,

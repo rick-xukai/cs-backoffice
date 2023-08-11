@@ -104,3 +104,8 @@ export const SortKeys = {
   descend: 'descend',
   ascend: 'ascend',
 };
+export const UploadCSVType = 'text/csv';
+export const ImportTicketsTemplate = [
+  { label: 'Attendee Email', key: 'attendeeEmail' },
+  { label: 'Ticket Type', key: 'ticketType' },
+];
