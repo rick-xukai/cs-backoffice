@@ -249,7 +249,7 @@ export const UserScreens = {
     path: UserRoutes.ticketSold,
     component: TicketsSold,
     subMenuKeys: [],
-    menuKeys: [vMenuKeys.ticketsSold],
+    menuKeys: [vMenuKeys.events],
     guard: true,
     role: [
       UserRoleKeys.superAdmin,

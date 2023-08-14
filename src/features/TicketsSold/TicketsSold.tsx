@@ -48,7 +48,7 @@ const { Option } = Select;
 const { confirm } = Modal;
 const { Dragger } = Upload;
 
-const TicketsSold = () => {
+const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   const { t } = useTranslation();
   const params: any = useParams();
 
@@ -56,7 +56,7 @@ const TicketsSold = () => {
   const [showImportModal, setShowImportModal] = useState<boolean>(false);
   const [showImportProgress, setShowImportProgress] = useState<boolean>(false);
 
-  const data = [
+  let data = [
     {
       id: 1,
       attendee: 'Christine',
@@ -78,6 +78,40 @@ const TicketsSold = () => {
       id: 2,
       attendee: 'Rick',
       email: 'rick.xu@imaginato.com',
+      ticketType: 'VIP',
+      paidPrice: 8,
+      ticketPrice: 10,
+      discount: -2,
+      promoCode: 'Birthday',
+      fees: 0,
+      seatNumber: 'VIP-5',
+      ticketNumber: 'K0J2947294759284',
+      boughtAt: 'Jul 12, 2023',
+      time: '21:30',
+      source: 'Primary Market',
+      status: 'Live',
+    },
+    {
+      id: 3,
+      attendee: 'Jack',
+      email: 'jack.zhou@imaginato.com',
+      ticketType: 'VIP',
+      paidPrice: 8,
+      ticketPrice: 10,
+      discount: -2,
+      promoCode: 'Birthday',
+      fees: 0,
+      seatNumber: 'VIP-5',
+      ticketNumber: 'K0J2947294759284',
+      boughtAt: 'Jul 12, 2023',
+      time: '21:30',
+      source: 'Primary Market',
+      status: 'Live',
+    },
+    {
+      id: 4,
+      attendee: 'Simba',
+      email: 'simba.luo@imaginato.com',
       ticketType: 'VIP',
       paidPrice: 8,
       ticketPrice: 10,
@@ -404,7 +438,37 @@ const TicketsSold = () => {
     },
   };
 
-  return (
+  if (isComponent) {
+    data = data.slice(0, 4);
+  }
+
+  const table = (
+    <div
+      className="table-overflow"
+      style={{ minHeight: isComponent ? 'auto' : '250px' }}
+    >
+      <TableComponent
+        loading={false}
+        currentPage={defaultCurrentPage}
+        currentPageSize={defaultPageSize}
+        columns={columns}
+        tableData={data}
+        tableDataTotal={data.length}
+        paginationChange={() => {}}
+        emptyText={
+          <div className="table-empty-text">
+            <img src={Images.NoDataIcon} alt="" />
+            <p>{t('No data')}</p>
+          </div>
+        }
+        showCustomPagination={!isComponent}
+      />
+    </div>
+  );
+
+  return isComponent ? (
+    <ListTableContainer style={{ padding: 0 }}>{table}</ListTableContainer>
+  ) : (
     <>
       <PageHeaderComponent
         breadcrumb={[
@@ -510,23 +574,7 @@ const TicketsSold = () => {
                 </Button>
               </Col>
             </TableFilterContainer>
-            <div className="table-overflow">
-              <TableComponent
-                loading={false}
-                currentPage={defaultCurrentPage}
-                currentPageSize={defaultPageSize}
-                columns={columns}
-                tableData={data}
-                tableDataTotal={data.length}
-                paginationChange={() => {}}
-                emptyText={
-                  <div className="table-empty-text">
-                    <img src={Images.NoDataIcon} alt="" />
-                    <p>{t('No data')}</p>
-                  </div>
-                }
-              />
-            </div>
+            {table}
           </ListTableContainer>
           <Modal
             wrapClassName="import-modal"

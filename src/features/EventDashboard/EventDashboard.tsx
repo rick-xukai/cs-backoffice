@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Col, Row, Grid } from 'antd';
 
 import { useParams, useHistory } from 'react-router-dom';
+import { RightOutlined } from '@ant-design/icons';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
 import {
@@ -13,9 +14,12 @@ import {
 } from './EventDashboard.components';
 import {
   ContentWrapper,
+  DashbaordListCardWrapper,
   EventDsahboardContainer,
+  ExtraText,
 } from './EventDashboard.component';
 import { SGD_UNIT } from '../../constants/constants';
+import TicketsSold from '../TicketsSold/TicketsSold';
 
 const { useBreakpoint } = Grid;
 
@@ -56,6 +60,14 @@ const EventDashboard = () => {
     />
   );
 
+  const goToTicketSold = () => {
+    history.push(
+      UserRoutes.ticketSold
+        .replace(':id', id)
+        .replace(':name', name.toLowerCase()),
+    );
+  };
+
   return (
     <EventDsahboardContainer>
       <PageHeaderComponent
@@ -78,16 +90,7 @@ const EventDashboard = () => {
       <ContentWrapper>
         {lg ? (
           <Row gutter={[16, 16]}>
-            <Col
-              span={8}
-              onClick={() =>
-                history.push(
-                  UserRoutes.ticketSold
-                    .replace(':id', id)
-                    .replace(':name', name.toLowerCase()),
-                )
-              }
-            >
+            <Col span={8} onClick={goToTicketSold}>
               {dashbaordChartCard}
             </Col>
             <Col span={16}>
@@ -193,6 +196,17 @@ const EventDashboard = () => {
                 },
               ]}
             />
+          </Col>
+          <Col span={24}>
+            <DashbaordListCardWrapper>
+              <p className="title">
+                <span>Tickets Sold</span>
+                <ExtraText onClick={goToTicketSold}>
+                  View All <RightOutlined />
+                </ExtraText>
+              </p>
+              <TicketsSold isComponent />
+            </DashbaordListCardWrapper>
           </Col>
         </Row>
       </ContentWrapper>

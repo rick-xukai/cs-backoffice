@@ -142,6 +142,8 @@ export const DashbaordListCardWrapper = styled.div`
     font-weight: 700;
     line-height: 26px;
     margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
   }
   .list {
     height: 145px;
@@ -237,5 +239,22 @@ export const RankingListItemWrapper = styled.li`
   padding: 5px 0 9px 0;
   :last-child {
     border-bottom: none;
+  }
+`;
+
+export const ExtraText = styled.span`
+  color: ${Colors.branding};
+  font-size: 15px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: 0.3s;
+  .anticon {
+    font-size: 12px;
+    margin-left: 5px;
+    position: relative;
+    top: -1px;
+  }
+  :hover {
+    color: ${Colors.primaryHoverRed};
   }
 `;
