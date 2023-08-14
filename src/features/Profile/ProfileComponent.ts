@@ -73,6 +73,9 @@ const ProfileContainer = styled.div`
           .customUploadButtonContent {
             width: 100%;
             height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             img {
               object-fit: cover;
             }
