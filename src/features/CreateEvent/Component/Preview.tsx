@@ -89,8 +89,8 @@ export const DescriptionImagesSize = [
 ];
 
 export enum SetRefundKey {
-  refundable = 0,
-  nonRefundable = 1,
+  refundable = 1,
+  nonRefundable = 0,
 }
 
 const ImageSizeLayoutComponent = ({ images }: { images: any[] }) => (

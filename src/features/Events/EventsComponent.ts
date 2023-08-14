@@ -248,6 +248,7 @@ const EventListTableContainer = styled.div`
       }
     }
     .table-event {
+      padding-left: 10px;
       .event-name {
         font-size: 15px;
         font-weight: 500;
