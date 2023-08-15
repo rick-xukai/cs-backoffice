@@ -209,11 +209,25 @@ const EventDashboard = () => {
             <DashbaordListCardWrapper>
               <p className="title">
                 <span>Tickets Sold</span>
-                <ExtraText onClick={goToTicketSold}>
-                  View All <RightOutlined />
-                </ExtraText>
+                {lg ? (
+                  <ExtraText onClick={goToTicketSold}>
+                    View All <RightOutlined />
+                  </ExtraText>
+                ) : null}
               </p>
               <TicketsSold isComponent />
+              {lg ? null : (
+                <ExtraText
+                  onClick={goToTicketSold}
+                  style={{
+                    display: 'block',
+                    textAlign: 'center',
+                    marginTop: 20,
+                  }}
+                >
+                  View All <RightOutlined />
+                </ExtraText>
+              )}
             </DashbaordListCardWrapper>
           </Col>
         </Row>
