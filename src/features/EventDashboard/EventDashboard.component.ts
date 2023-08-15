@@ -50,6 +50,8 @@ export const BannerWrapper = styled.div`
     .clock {
       width: 18px;
       height: 18px;
+      position: relative;
+      top: -1px;
     }
   }
 `;
@@ -152,6 +154,9 @@ export const DashbaordListCardWrapper = styled.div`
     list-style: none;
     margin: 0;
     padding: 0;
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 

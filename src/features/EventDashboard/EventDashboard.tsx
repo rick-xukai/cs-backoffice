@@ -19,15 +19,17 @@ import {
   EventDsahboardContainer,
   ExtraText,
 } from './EventDashboard.component';
-import { SGD_UNIT } from '../../constants/constants';
+import { MMM_DD_YYYY_HH_MM, SGD_UNIT } from '../../constants/constants';
 import TicketsSold from '../TicketsSold/TicketsSold';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   getEventDashboardAction,
   reset,
   selectDetailData,
+  selectLoading,
 } from './EventDashboard.slice';
-import { FormatTimeKeys } from '../../constants/Keys';
+import BallLoading from '../../components/BallLoading';
+import { thousandsSeparator } from '../../utils/func';
 
 const { useBreakpoint } = Grid;
 
@@ -59,7 +61,7 @@ const EventDashboard = () => {
   );
   const params: any = useParams();
   const { id } = params;
-
+  const loading = useAppSelector(selectLoading);
   useEffect(() => {
     dispatch(getEventDashboardAction(id));
     return () => {
@@ -85,12 +87,16 @@ const EventDashboard = () => {
       value={pageViews?.averageDailyCount || 0}
     />
   );
-  const notSalesCard = (
+  const netSalesCard = (
     <NormalCard
-      title="Not Sales"
-      text={`${SGD_UNIT} $${netSales?.revenue || 0}`}
+      title="Net Sales"
+      text={`${SGD_UNIT} $${
+        netSales?.revenue ? thousandsSeparator(`${netSales?.revenue}`) : 0
+      }`}
       barTitle="Gross Sales"
-      value={`${SGD_UNIT} $${netSales?.grossSales || 0}`}
+      value={`${SGD_UNIT} $${
+        netSales?.grossSales ? thousandsSeparator(`${netSales?.grossSales}`) : 0
+      }`}
     />
   );
 
@@ -102,7 +108,9 @@ const EventDashboard = () => {
     );
   };
 
-  return (
+  return loading ? (
+    <BallLoading />
+  ) : (
     <EventDsahboardContainer>
       <PageHeaderComponent
         breadcrumb={[
@@ -116,11 +124,11 @@ const EventDashboard = () => {
         ]}
       />
       <Banner
-        title="Escape to Paradise - Pool Party"
+        title={name}
         status={status}
-        time={`${moment(startTime).format(FormatTimeKeys.norm)} - ${moment(
+        time={`${moment(startTime).format(MMM_DD_YYYY_HH_MM)} - ${moment(
           endTime,
-        ).format(FormatTimeKeys.norm)}`}
+        ).format(MMM_DD_YYYY_HH_MM)}`}
         img={image}
       />
       <ContentWrapper>
@@ -133,7 +141,7 @@ const EventDashboard = () => {
               <Row gutter={[16, 19]}>
                 <Col span={12}>{uniqueBuyers}</Col>
                 <Col span={12}>{eventPageViewsCard}</Col>
-                <Col span={24}>{notSalesCard}</Col>
+                <Col span={24}>{netSalesCard}</Col>
               </Row>
             </Col>
           </Row>
@@ -166,7 +174,7 @@ const EventDashboard = () => {
                   </Col>
                 </Row>
               </Col>
-              <Col span={24}>{notSalesCard}</Col>
+              <Col span={24}>{netSalesCard}</Col>
             </Row>
           </div>
         )}

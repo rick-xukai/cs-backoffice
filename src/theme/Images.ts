@@ -75,6 +75,7 @@ import ChampionIcon from '../assets/images/icons/champion.svg';
 import RunnerUpIcon from '../assets/images/icons/runner-up.svg';
 import ThirdPlaceIcon from '../assets/images/icons/third-place.svg';
 import PageNotFoundIcon from '../assets/images/icons/404-page-icon.svg';
+import LoadingBall from '../assets/images/loading-ball.gif';
 
 const Images = {
   Logo,
@@ -156,6 +157,7 @@ const Images = {
   RunnerUpIcon,
   ThirdPlaceIcon,
   PageNotFoundIcon,
+  LoadingBall,
 };
 
 export default Images;

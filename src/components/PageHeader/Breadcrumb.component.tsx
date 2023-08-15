@@ -26,6 +26,7 @@ const BreadcrumbContainer = styled(AntdBreadcrumb)<{ length: number }>`
         width: 100%;
         white-space: nowrap;
         color: ${Colors.black};
+        font-size: 13px;
         span {
           color: ${Colors.branding};
           cursor: pointer;
