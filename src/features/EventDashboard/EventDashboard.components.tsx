@@ -3,6 +3,7 @@ import { Col, Row, Tooltip } from 'antd';
 import { CSSProperties } from 'styled-components';
 
 import { Gauge } from '@ant-design/plots';
+import { isEmpty } from 'lodash';
 import {
   BannerWrapper,
   BottomBar,
@@ -14,6 +15,7 @@ import {
 } from './EventDashboard.component';
 import { getBadge } from '../Events/Events';
 import { Colors, Images } from '../../theme';
+import NoData from '../../components/NoData';
 
 export const Banner = ({
   title,
@@ -130,9 +132,9 @@ export const NormalCard = ({
   href?: string;
   title: React.ReactNode;
   tooltip?: React.ReactNode;
-  text: string;
+  text: React.ReactNode;
   barTitle: string;
-  value: number | string;
+  value: React.ReactNode;
 }) => (
   <CardWrapper hoverable={!!href}>
     <Row justify="space-between" align="middle">
@@ -251,31 +253,39 @@ export const DashbaordListCard = ({
 }) => (
   <DashbaordListCardWrapper>
     <p className="title">{title}</p>
-    {ranking ? (
-      <ul className="list">
-        {data.map((item, index: number) => (
-          <RankingListItem
-            title={item.title}
-            current={item.current}
-            total={item.total}
-            key={item.title}
-            index={index}
-          />
-        ))}
+    {isEmpty(data) ? (
+      <ul className="list" style={{ paddingTop: 20 }}>
+        <NoData />
       </ul>
     ) : (
-      <ul className="list">
-        {data.map((item) => (
-          <NormalListItem
-            title={item.title}
-            img={item.image}
-            current={item.current}
-            total={item.total}
-            key={item.title}
-            ticketsImported={item.ticketsImported}
-          />
-        ))}
-      </ul>
+      <>
+        {ranking ? (
+          <ul className="list">
+            {data.map((item, index: number) => (
+              <RankingListItem
+                title={item.title}
+                current={item.current}
+                total={item.total}
+                key={item.title}
+                index={index}
+              />
+            ))}
+          </ul>
+        ) : (
+          <ul className="list">
+            {data.map((item) => (
+              <NormalListItem
+                title={item.title}
+                img={item.image}
+                current={item.current}
+                total={item.total}
+                key={item.title}
+                ticketsImported={item.ticketsImported}
+              />
+            ))}
+          </ul>
+        )}
+      </>
     )}
   </DashbaordListCardWrapper>
 );

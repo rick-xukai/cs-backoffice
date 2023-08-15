@@ -87,6 +87,9 @@ const API = {
   checkConnectTicket: {
     post: '/admin/event/:eventId/:ticketTypeId/check',
   },
+  getEventDashboard: {
+    get: '/admin/event/:event_id/dashboard',
+  },
 };
 
 export default API;

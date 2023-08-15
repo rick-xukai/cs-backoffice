@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Col, Row, Grid } from 'antd';
 
 import { useParams, useHistory } from 'react-router-dom';
 import { RightOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
 import {
@@ -20,6 +21,13 @@ import {
 } from './EventDashboard.component';
 import { SGD_UNIT } from '../../constants/constants';
 import TicketsSold from '../TicketsSold/TicketsSold';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import {
+  getEventDashboardAction,
+  reset,
+  selectDetailData,
+} from './EventDashboard.slice';
+import { FormatTimeKeys } from '../../constants/Keys';
 
 const { useBreakpoint } = Grid;
 
@@ -27,36 +35,62 @@ const EventDashboard = () => {
   const { t } = useTranslation();
   const { lg } = useBreakpoint();
   const history = useHistory();
+  const dispatch = useAppDispatch();
+  const data = useAppSelector(selectDetailData);
+  const {
+    buyers,
+    name,
+    image,
+    startTime,
+    endTime,
+    status,
+    pageViews,
+    netSales,
+    stocks,
+    ticketTypes,
+    discounts,
+  } = data;
   const dashbaordChartCard = (
-    <DashbaordChartCard total={100} current={10} ticketsImported={10} />
+    <DashbaordChartCard
+      total={stocks?.stockTotal}
+      current={stocks?.soldTotal}
+      ticketsImported={stocks?.importTotal}
+    />
   );
   const params: any = useParams();
-  const { name, id } = params;
+  const { id } = params;
+
+  useEffect(() => {
+    dispatch(getEventDashboardAction(id));
+    return () => {
+      dispatch(reset());
+    };
+  }, []);
 
   const uniqueBuyers = (
     <NormalCard
       title="Unique Buyers"
       href=" "
-      text="162"
+      text={buyers?.userCount || 0}
       barTitle="Conversion Rate"
-      value="20%"
+      value={`${buyers?.conversionRate ? buyers?.conversionRate / 100 : 0}%`}
     />
   );
   const eventPageViewsCard = (
     <NormalCard
       title="Event Page Views"
       href=" "
-      text="110"
+      text={pageViews?.viewCount || 0}
       barTitle="Average Daily Visits"
-      value={90}
+      value={pageViews?.averageDailyCount || 0}
     />
   );
   const notSalesCard = (
     <NormalCard
       title="Not Sales"
-      text={`${SGD_UNIT} 100`}
+      text={`${SGD_UNIT} ${netSales?.revenue || 0}`}
       barTitle="Gross Sales"
-      value={`${SGD_UNIT} 9562.76`}
+      value={`${SGD_UNIT} ${netSales?.grossSales || 0}`}
     />
   );
 
@@ -83,9 +117,11 @@ const EventDashboard = () => {
       />
       <Banner
         title="Escape to Paradise - Pool Party"
-        status={1}
-        time="Feb 26 2023, 19:30 - Feb 26 2023, 22:30"
-        img="https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690940498743-Eqeg.jpg"
+        status={status}
+        time={`${moment(startTime).format(FormatTimeKeys.norm)} - ${moment(
+          endTime,
+        ).format(FormatTimeKeys.norm)}`}
+        img={image}
       />
       <ContentWrapper>
         {lg ? (
@@ -141,60 +177,24 @@ const EventDashboard = () => {
           <Col lg={12} span={24}>
             <DashbaordListCard
               title="Ticket Type Sales"
-              data={[
-                {
-                  title: 'VIP',
-                  image:
-                    'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690882892062-Lu3l.jpg',
-                  current: 0,
-                  total: 200,
-                  ticketsImported: 10,
-                },
-                {
-                  title: 'SVIP',
-                  image:
-                    'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690882892062-Lu3l.jpg',
-                  current: 0,
-                  total: 200,
-                  ticketsImported: 10,
-                },
-                {
-                  title: 'VVIP',
-                  image:
-                    'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690882892062-Lu3l.jpg',
-                  current: 0,
-                  total: 200,
-                  ticketsImported: 0,
-                },
-              ]}
+              data={ticketTypes?.map((item) => ({
+                title: item.name,
+                image: item.image,
+                current: item.soldTotal,
+                total: item.stock,
+                ticketImported: item.importTotal,
+              }))}
             />
           </Col>
           <Col lg={12} span={24}>
             <DashbaordListCard
               title="Discount Ranking"
               ranking
-              data={[
-                {
-                  title: 'Anniversary',
-                  current: 0,
-                  total: 0,
-                },
-                {
-                  title: 'Happy',
-                  current: 0,
-                  total: 0,
-                },
-                {
-                  title: 'Celebration',
-                  current: 0,
-                  total: 20,
-                },
-                {
-                  title: 'Yoo',
-                  current: 0,
-                  total: 20,
-                },
-              ]}
+              data={discounts?.map((item) => ({
+                title: item.name,
+                current: item.usageCount,
+                total: item.limit,
+              }))}
             />
           </Col>
           <Col span={24}>

@@ -136,6 +136,16 @@ const checkConnectTicket = async ({
     .doPost();
   return response;
 };
+
+const getEventDashboard = async ({ eventId }: { eventId: string | number }) => {
+  const uri = API.getEventDashboard.get.replace(':event_id', `${eventId}`);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -149,4 +159,5 @@ export default {
   deleteEvent,
   checkDiscountCode,
   checkConnectTicket,
+  getEventDashboard,
 };
