@@ -74,6 +74,7 @@ import AlertCircleIcon from '../assets/images/icons/alert-circle.svg';
 import ChampionIcon from '../assets/images/icons/champion.svg';
 import RunnerUpIcon from '../assets/images/icons/runner-up.svg';
 import ThirdPlaceIcon from '../assets/images/icons/third-place.svg';
+import PageNotFoundIcon from '../assets/images/icons/404-page-icon.svg';
 
 const Images = {
   Logo,
@@ -154,6 +155,7 @@ const Images = {
   ChampionIcon,
   RunnerUpIcon,
   ThirdPlaceIcon,
+  PageNotFoundIcon,
 };
 
 export default Images;

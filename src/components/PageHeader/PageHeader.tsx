@@ -211,7 +211,9 @@ const PageHeaderComponent = ({
   }, [cookies.getCookie(CookieKeys.authUserName)]);
 
   return (
-    <PageHeaderContainer className={`${(children && 'children-header') || ''}`}>
+    <PageHeaderContainer
+      className={`${(children && 'children-header') || 'page-header'}`}
+    >
       <Row className="main-row">
         <Col lg={15} span={24} style={{ marginBottom: children && 16 }}>
           <Col lg={0} span={24} className="image-content">

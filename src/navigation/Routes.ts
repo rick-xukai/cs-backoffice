@@ -41,6 +41,7 @@ export const UserRoutes = {
   orders: '/orders',
   eventDashbaord: '/event-dashbaord/:id/:name',
   ticketSold: '/ticket-sold/:id/:name',
+  pageNotFound: '/404',
 };
 
 export const AuthRoutes = {

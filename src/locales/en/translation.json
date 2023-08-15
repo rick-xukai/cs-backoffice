@@ -421,5 +421,7 @@
   "The CSV file is missing some required fields. Please fill in all mandatory fields for each ticket.": "The CSV file is missing some required fields. Please fill in all mandatory fields for each ticket.",
   "Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.": "Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.",
   "[count] tickets are successfully issued.": "{{count}} tickets are successfully issued.",
-  "Wrong file type, please upload CSV file": "Wrong file type, please upload CSV file"
+  "Wrong file type, please upload CSV file": "Wrong file type, please upload CSV file",
+  "Whoops, the page you are looking for was not found.": "Whoops, the page you are looking for was not found.",
+  "Back to Home": "Back to Home"
 }

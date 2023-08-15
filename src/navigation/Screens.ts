@@ -16,6 +16,7 @@ import Profile from '../features/Profile/Loadable';
 import UserAndPermissions from '../features/UserAndPermissions/Loadable';
 import Orders from '../features/Orders/Loadable';
 import TicketsSold from '../features/TicketsSold/Loadable';
+import PageNotFound from '../features/404Page/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -256,6 +257,14 @@ export const UserScreens = {
       UserRoleKeys.organizerAdmin,
       UserRoleKeys.organizerUser,
     ],
+  },
+  PageNotFoundComponent: {
+    title: 'Page Not Found - CrowdServe BO',
+    path: UserRoutes.pageNotFound,
+    component: PageNotFound,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
   },
 };
 

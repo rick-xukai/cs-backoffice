@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
 
 import { MOCK } from './constants/predicates';
@@ -13,6 +13,7 @@ import HorizontalLayout from './components/HorizontalLayout';
 import NonAuthLayout from './components/NonAuthLayout';
 import { selectLayoutType } from './app/layout.slice';
 import './style/theme.scss';
+import PageNotFound from './features/404Page/Loadable';
 
 if (MOCK === 'true') {
   MockAPI();
@@ -78,7 +79,7 @@ const getAuthRoutes = (layout: React.ElementType) => {
 const App = () => {
   const layoutType = useAppSelector(selectLayoutType);
   const getLayout = () => {
-    let layoutCls = VerticalLayout;
+    let layoutCls: any = VerticalLayout;
     switch (layoutType) {
       case 'horizontal': {
         layoutCls = HorizontalLayout;
@@ -97,6 +98,16 @@ const App = () => {
       <Switch>
         {getAuthRoutes(NonAuthLayout)}
         {getUserRoutes(layout)}
+        <Route
+          render={() => {
+            const LayoutComponent = layout;
+            return (
+              <LayoutComponent>
+                <PageNotFound />
+              </LayoutComponent>
+            );
+          }}
+        />
       </Switch>
     </ConnectedRouter>
   );
