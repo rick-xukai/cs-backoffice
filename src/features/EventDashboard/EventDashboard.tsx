@@ -88,9 +88,9 @@ const EventDashboard = () => {
   const notSalesCard = (
     <NormalCard
       title="Not Sales"
-      text={`${SGD_UNIT} ${netSales?.revenue || 0}`}
+      text={`${SGD_UNIT} $${netSales?.revenue || 0}`}
       barTitle="Gross Sales"
-      value={`${SGD_UNIT} ${netSales?.grossSales || 0}`}
+      value={`${SGD_UNIT} $${netSales?.grossSales || 0}`}
     />
   );
 
