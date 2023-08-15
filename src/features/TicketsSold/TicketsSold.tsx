@@ -134,12 +134,12 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       key: 'attendee',
       width: 200,
       render: (attendee: string, record: any) => (
-        <>
+        <Row gutter={[0, 0]}>
           <Col span={24}>{attendee}</Col>
           <Col span={24} className="item-label">
             {record.email}
           </Col>
-        </>
+        </Row>
       ),
     },
     {
@@ -169,12 +169,12 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       render: (discount: number, record: any) => (
         <>
           {(discount && (
-            <>
+            <Row gutter={[0, 0]}>
               <Col>{`${discount} ${priceUnit}`}</Col>
               <Col span={24} className="item-label">
                 Promocode: {record.promoCode}
               </Col>
-            </>
+            </Row>
           )) ||
             '/'}
         </>
@@ -254,12 +254,12 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       key: 'boughtAt',
       width: 150,
       render: (boughtAt: string, record: any) => (
-        <>
+        <Row gutter={[0, 0]}>
           <Col span={24}>{boughtAt}</Col>
           <Col span={24} className="item-label">
             {record.time}
           </Col>
-        </>
+        </Row>
       ),
     },
     {
