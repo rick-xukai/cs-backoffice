@@ -108,7 +108,7 @@ const Events = () => {
   const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
   const goToDashboard = (id: any, name: any) => {
     history.push(
-      UserRoutes.eventDashbaord.replace(':id', id).replace(':name', name),
+      UserRoutes.eventDashboard.replace(':id', id).replace(':name', name),
     );
   };
 

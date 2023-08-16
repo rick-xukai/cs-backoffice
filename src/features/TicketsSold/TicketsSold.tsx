@@ -478,7 +478,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
           },
           {
             label: params.name,
-            href: UserRoutes.eventDashbaord
+            href: UserRoutes.eventDashboard
               .replace(':id', params.id)
               .replace(':name', params.name),
           },

@@ -9,13 +9,13 @@ import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
 import {
   Banner,
-  DashbaordChartCard,
-  DashbaordListCard,
+  DashboardChartCard,
+  DashboardListCard,
   NormalCard,
 } from './EventDashboard.components';
 import {
   ContentWrapper,
-  DashbaordListCardWrapper,
+  DashboardListCardWrapper,
   EventDsahboardContainer,
   ExtraText,
 } from './EventDashboard.component';
@@ -52,8 +52,8 @@ const EventDashboard = () => {
     ticketTypes,
     discounts,
   } = data;
-  const dashbaordChartCard = (
-    <DashbaordChartCard
+  const dashboardChartCard = (
+    <DashboardChartCard
       total={stocks?.stockTotal}
       current={stocks?.soldTotal}
       ticketsImported={stocks?.importTotal}
@@ -135,7 +135,7 @@ const EventDashboard = () => {
         {lg ? (
           <Row gutter={[16, 16]}>
             <Col span={8} onClick={goToTicketSold}>
-              {dashbaordChartCard}
+              {dashboardChartCard}
             </Col>
             <Col span={16}>
               <Row gutter={[16, 19]}>
@@ -158,7 +158,7 @@ const EventDashboard = () => {
                     paddingLeft: 15,
                   }}
                 >
-                  <Col span={20}>{dashbaordChartCard}</Col>
+                  <Col span={20}>{dashboardChartCard}</Col>
                   <Col span={23}>
                     <Row style={{ paddingRight: 42 }}>
                       <Col
@@ -183,7 +183,7 @@ const EventDashboard = () => {
           style={{ marginTop: lg ? 16 : 12 }}
         >
           <Col lg={12} span={24}>
-            <DashbaordListCard
+            <DashboardListCard
               title="Ticket Type Sales"
               data={ticketTypes?.map((item) => ({
                 title: item.name,
@@ -195,7 +195,7 @@ const EventDashboard = () => {
             />
           </Col>
           <Col lg={12} span={24}>
-            <DashbaordListCard
+            <DashboardListCard
               title="Discount Ranking"
               ranking
               data={discounts?.map((item) => ({
@@ -206,7 +206,7 @@ const EventDashboard = () => {
             />
           </Col>
           <Col span={24}>
-            <DashbaordListCardWrapper>
+            <DashboardListCardWrapper>
               <p className="title">
                 <span>Tickets Sold</span>
                 {lg ? (
@@ -228,7 +228,7 @@ const EventDashboard = () => {
                   View All <RightOutlined />
                 </ExtraText>
               )}
-            </DashbaordListCardWrapper>
+            </DashboardListCardWrapper>
           </Col>
         </Row>
       </ContentWrapper>

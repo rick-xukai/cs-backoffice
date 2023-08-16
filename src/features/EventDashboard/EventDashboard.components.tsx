@@ -8,7 +8,7 @@ import {
   BannerWrapper,
   BottomBar,
   CardWrapper,
-  DashbaordListCardWrapper,
+  DashboardListCardWrapper,
   InfoWrapper,
   NormalListItemWrapper,
   RankingListItemWrapper,
@@ -61,7 +61,7 @@ const Info = ({
   </InfoWrapper>
 );
 
-export const DashbaordChartCard = ({
+export const DashboardChartCard = ({
   total,
   current,
   ticketsImported,
@@ -236,7 +236,7 @@ const RankingListItem = ({
   </RankingListItemWrapper>
 );
 
-export const DashbaordListCard = ({
+export const DashboardListCard = ({
   ranking,
   data = [],
   title,
@@ -251,7 +251,7 @@ export const DashbaordListCard = ({
   }[];
   title: string;
 }) => (
-  <DashbaordListCardWrapper>
+  <DashboardListCardWrapper>
     <p className="title">{title}</p>
     {isEmpty(data) ? (
       <ul className="list" style={{ paddingTop: 20 }}>
@@ -287,5 +287,5 @@ export const DashbaordListCard = ({
         )}
       </>
     )}
-  </DashbaordListCardWrapper>
+  </DashboardListCardWrapper>
 );

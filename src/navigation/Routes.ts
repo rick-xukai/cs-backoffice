@@ -39,7 +39,7 @@ export const UserRoutes = {
   transactions: '/transactions',
   transactionsDetail: '/transactions-detail/:transactionsId',
   orders: '/orders',
-  eventDashbaord: '/event-dashbaord/:id/:name',
+  eventDashboard: '/event-dashboard/:id/:name',
   ticketSold: '/ticket-sold/:id/:name',
   pageNotFound: '/404',
 };

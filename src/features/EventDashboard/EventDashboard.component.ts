@@ -134,7 +134,7 @@ export const BottomBar = styled.div`
   }
 `;
 
-export const DashbaordListCardWrapper = styled.div`
+export const DashboardListCardWrapper = styled.div`
   padding: 20px;
   background: ${Colors.white};
   border-radius: 2px;

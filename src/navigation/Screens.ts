@@ -239,7 +239,7 @@ export const UserScreens = {
   },
   EventDashboard: {
     title: 'Event Dashboard - CrowdServe BO',
-    path: UserRoutes.eventDashbaord,
+    path: UserRoutes.eventDashboard,
     component: EventDashboard,
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
