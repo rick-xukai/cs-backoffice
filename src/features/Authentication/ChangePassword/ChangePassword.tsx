@@ -70,11 +70,7 @@ const ChangePassword = () => {
   };
 
   return (
-    <LandingLayout
-      title={`${t('Change Password')} | CrowdServe BO`}
-      formTitle={t('Change password')}
-      hideBanner
-    >
+    <LandingLayout formTitle={t('Change password')} hideBanner>
       <Tip>
         {t('Please change the default password for your account security.')}
       </Tip>

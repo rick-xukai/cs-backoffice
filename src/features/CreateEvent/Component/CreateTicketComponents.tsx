@@ -34,7 +34,7 @@ import {
   ListTicketType,
 } from '../CreateEvent.slice';
 import Tips from '../../../components/Tips';
-import { UploadFileAcceptType } from '../../../constants/General';
+import { UploadFileAcceptType, priceUnit } from '../../../constants/General';
 import { TOKEN_EXPIRED_MESSAGE } from '../../../constants/constants';
 import { AuthRoutes } from '../../../navigation/Routes';
 import Messages from '../../../constants/Message';
@@ -143,11 +143,11 @@ export const TicketListItem = ({
           </Row>
           <Row justify="start">
             <Col span={6}>
-              <p className="label">Total Available Quantity</p>
+              <p className="label">Sold / Total Available Quantity</p>
               <p className="value">{stock}</p>
             </Col>
             <Col span={6}>
-              <p className="label">Ticket Price (SDG)</p>
+              <p className="label">{`Ticket Price (${priceUnit})`}</p>
               <p className="value">{price}</p>
             </Col>
             <Col span={12}>
@@ -176,11 +176,11 @@ export const TicketListItem = ({
       </Row>
       <Row>
         <Col span={12}>
-          <p className="label">Total Available Quantity</p>
+          <p className="label">Sold / Total Available Quantity</p>
           <p className="value">{stock}</p>
         </Col>
         <Col span={12}>
-          <p className="label">Ticket Price (SDG)</p>
+          <p className="label">{`Ticket Price (${priceUnit})`}</p>
           <p className="value">{price}</p>
         </Col>
         <Col span={24}>

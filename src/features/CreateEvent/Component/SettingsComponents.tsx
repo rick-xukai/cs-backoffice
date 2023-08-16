@@ -819,7 +819,7 @@ export const AddEditForm = ({
                 </Row>
               </>
             )}
-            <Form.Item label="Promocode Available Quantity">
+            <Form.Item label="Used / Promocode Available Quantity">
               <Row gutter={6} align="middle" wrap={false}>
                 <Col style={{ flexShrink: 0 }}>
                   <b>{promoValue.usageCount || 0}</b> Used /

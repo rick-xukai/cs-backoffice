@@ -21,11 +21,11 @@ import {
   StandaloneSearchBox,
 } from '@react-google-maps/api';
 import { debounce } from 'lodash';
-import Cropper from 'react-easy-crop';
+// import Cropper from 'react-easy-crop';
 
 import { useAppDispatch } from '../../../app/hooks';
 import { Images } from '../../../theme';
-import { getCroppedImg, dataURLtoFile } from '../../../utils/func';
+// import { getCroppedImg, dataURLtoFile } from '../../../utils/func';
 import { UploadFileAcceptType } from '../../../constants/General';
 // eslint-disable-next-line import/no-cycle
 import {
@@ -76,13 +76,13 @@ const EventInfo = ({
     libraries,
   });
 
-  const [crop, setCrop] = useState({ x: 2, y: 2 });
-  const [zoom, setZoom] = useState(1);
-  const [rotation, setRotation] = useState(0);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  const [bannerImageBase64, setBannerImageBase64] = useState<string>('');
-  const [bannerImageEvent, setBannerImageEvent] = useState<any>({});
-  const [showCropImageModal, setShowCropImageModal] = useState<boolean>(false);
+  // const [crop, setCrop] = useState({ x: 2, y: 2 });
+  // const [zoom, setZoom] = useState(1);
+  // const [rotation, setRotation] = useState(0);
+  // const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  // const [bannerImageBase64, setBannerImageBase64] = useState<string>('');
+  // const [bannerImageEvent, setBannerImageEvent] = useState<any>({});
+  // const [showCropImageModal, setShowCropImageModal] = useState<boolean>(false);
   const [showAddressInput, setShowAddressInput] = useState<boolean>(false);
   const [showLocationMap, setShowLocationMap] = useState<boolean>(false);
   const [autocomplete, setAutocomplete] = useState<any>(null);
@@ -98,50 +98,57 @@ const EventInfo = ({
   });
   const [openAiLoading, setOpenAiLoading] = useState(false);
 
-  const customRequest = async (e: any, type: string) => {
-    const formData = new FormData();
-    formData.append('file', e);
-    const response: any = await dispatch(uploadFileAction(formData));
-    if (response.type === uploadFileAction.fulfilled.toString()) {
-      if (type === 'banner') {
-        setBannerFile(response.payload.url);
-        fieldEdit(response.payload.url, 'image');
-      }
-      message.success(t('Upload successful.'));
-    } else {
-      message.error(t('Upload failed, please try again.'));
-    }
-  };
+  // const customRequest = async (e: any, type: string) => {
+  //   const formData = new FormData();
+  //   formData.append('file', e);
+  //   const response: any = await dispatch(uploadFileAction(formData));
+  //   if (response.type === uploadFileAction.fulfilled.toString()) {
+  //     if (type === 'banner') {
+  //       setBannerFile(response.payload.url);
+  //       fieldEdit(response.payload.url, 'image');
+  //     }
+  //     message.success(t('Upload successful.'));
+  //   } else {
+  //     message.error(t('Upload failed, please try again.'));
+  //   }
+  // };
 
-  const onCropComplete = useCallback((_, areaPixels) => {
-    setCroppedAreaPixels(areaPixels);
-  }, []);
+  // const onCropComplete = useCallback((_, areaPixels) => {
+  //   setCroppedAreaPixels(areaPixels);
+  // }, []);
 
-  const showCroppedImage = async () => {
-    setShowCropImageModal(false);
-    try {
-      const { name, type } = bannerImageEvent;
-      const croppedImage: any = await getCroppedImg(
-        bannerImageBase64,
-        type,
-        croppedAreaPixels,
-        rotation,
-      );
-      const file = dataURLtoFile(croppedImage, name.split('.')[0]);
-      customRequest(file, 'banner');
-    } catch (error) {
-      // eslint-disable-next-line
-      console.log(error);
-    }
-  };
+  // const showCroppedImage = async () => {
+  //   setShowCropImageModal(false);
+  //   try {
+  //     const { name, type } = bannerImageEvent;
+  //     const croppedImage: any = await getCroppedImg(
+  //       bannerImageBase64,
+  //       type,
+  //       croppedAreaPixels,
+  //       rotation,
+  //     );
+  //     const file = dataURLtoFile(croppedImage, name.split('.')[0]);
+  //     customRequest(file, 'banner');
+  //   } catch (error) {
+  //     // eslint-disable-next-line
+  //     console.log(error);
+  //   }
+  // };
 
   const bannerUploadProps: UploadProps = {
     name: 'banner',
     multiple: false,
     fileList: [],
-    customRequest: (e: any) => {
-      if (e.file.type === 'image/gif') {
-        customRequest(e.file, 'banner');
+    customRequest: async (e: any) => {
+      const formData = new FormData();
+      formData.append('file', e.file);
+      const response: any = await dispatch(uploadFileAction(formData));
+      if (response.type === uploadFileAction.fulfilled.toString()) {
+        setBannerFile(response.payload.url);
+        fieldEdit(response.payload.url, 'image');
+        message.success(t('Upload successful.'));
+      } else {
+        message.error(t('Upload failed, please try again.'));
       }
     },
     beforeUpload: (file) => {
@@ -155,16 +162,17 @@ const EventInfo = ({
             { size: 5 },
           ),
         );
-      } else if (type !== 'image/gif') {
-        const reader = new FileReader();
-        reader.onloadend = (e: any) => {
-          const base64 = e.target.result;
-          setBannerImageBase64(base64);
-          setBannerImageEvent(file);
-          setShowCropImageModal(true);
-        };
-        reader.readAsDataURL(file);
       }
+      // else if (type !== 'image/gif') {
+      //   const reader = new FileReader();
+      //   reader.onloadend = (e: any) => {
+      //     const base64 = e.target.result;
+      //     setBannerImageBase64(base64);
+      //     setBannerImageEvent(file);
+      //     setShowCropImageModal(true);
+      //   };
+      //   reader.readAsDataURL(file);
+      // }
       return isLimit;
     },
   };
@@ -546,7 +554,7 @@ const EventInfo = ({
                 onChange={(e) => fieldEdit(e, 'descriptionImages')}
                 value={formValue.descriptionImages}
               />
-              <Modal
+              {/* <Modal
                 open={showCropImageModal}
                 centered
                 destroyOnClose
@@ -567,7 +575,7 @@ const EventInfo = ({
                   onZoomChange={setZoom}
                   onRotationChange={setRotation}
                 />
-              </Modal>
+              </Modal> */}
             </div>
           </Col>
           <Col span={(pageTipsShow && 10) || 3}>

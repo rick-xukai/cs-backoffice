@@ -157,10 +157,7 @@ const ForgotPassword = () => {
     }
   }, [data]);
   return (
-    <LandingLayout
-      title={`${t('Forgot Password')} | CrowdServe BO`}
-      formTitle={t('Reset password')}
-    >
+    <LandingLayout formTitle={t('Reset password')}>
       {step === Steps.email ? (
         <Form
           name="email"
