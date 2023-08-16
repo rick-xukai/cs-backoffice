@@ -153,10 +153,7 @@ const Login = () => {
   };
 
   return (
-    <LandingLayout
-      title={`${t('Login')} | CrowdServe BO`}
-      formTitle={t('WELCOME TO CROWDSERVE!')}
-    >
+    <LandingLayout formTitle={t('WELCOME TO CROWDSERVE!')}>
       <Form
         name="login"
         onFinish={onFinish}

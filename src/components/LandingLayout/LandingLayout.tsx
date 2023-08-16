@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { Layout, Col, Row, Grid } from 'antd';
 
 import { Colors, Images } from '../../theme';
@@ -16,21 +15,16 @@ const { useBreakpoint } = Grid;
 
 const LandingLayout = ({
   children,
-  title,
   formTitle,
   hideBanner,
 }: {
   children: React.ReactNode;
-  title: React.ReactNode;
   formTitle: React.ReactNode;
   hideBanner?: boolean;
 }) => {
   const { lg } = useBreakpoint();
   return (
     <div>
-      <Helmet>
-        <title>{title}</title>
-      </Helmet>
       <Layout hasSider={false} style={{ minHeight: '100vh' }}>
         <Content
           style={{

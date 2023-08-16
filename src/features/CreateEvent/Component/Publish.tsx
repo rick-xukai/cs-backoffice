@@ -50,7 +50,7 @@ const Publish = ({
       ),
     },
     {
-      title: 'Quantity',
+      title: 'Sold / Total Available Quantity',
       dataIndex: 'stock',
       key: 'stock',
       render: (stock: string, record: any) => (
