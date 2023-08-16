@@ -111,7 +111,7 @@ interface EventDashboardState {
 }
 
 const initialState: EventDashboardState = {
-  loading: false,
+  loading: true,
   data: {
     id: '',
     name: '',

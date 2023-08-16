@@ -28,6 +28,7 @@ export const BannerWrapper = styled.div`
     display: block;
     .banner-image-wrapper {
       width: 100%;
+      aspect-ratio: 2 / 1;
     }
   }
   .content {

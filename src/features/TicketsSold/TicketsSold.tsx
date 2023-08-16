@@ -37,6 +37,7 @@ import {
 } from '../../constants/General';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import TableComponent from '../../components/Table/Table';
+import Pagination from '../../components/Pagination';
 import {
   TicketsSoldContainer,
   ContainerTitle,
@@ -146,17 +147,20 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       title: 'Ticket Type',
       dataIndex: 'ticketType',
       key: 'ticketType',
+      width: 140,
     },
     {
       title: 'Paid Price',
       dataIndex: 'paidPrice',
       key: 'paidPrice',
       render: (paidPrice: number) => <span>{`${paidPrice} ${priceUnit}`}</span>,
+      width: 140,
     },
     {
       title: 'Ticket Price',
       dataIndex: 'ticketPrice',
       key: 'ticketPrice',
+      width: 140,
       render: (ticketPrice: number) => (
         <span>{`${ticketPrice} ${priceUnit}`}</span>
       ),
@@ -184,6 +188,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       title: 'Fees',
       dataIndex: 'fees',
       key: 'fees',
+      width: 140,
       render: (fees: number) => (
         <Col
           span={24}
@@ -241,6 +246,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       title: 'Seat Number',
       dataIndex: 'seatNumber',
       key: 'seatNumber',
+      width: 160,
     },
     {
       title: 'Ticket Number',
@@ -443,26 +449,30 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   }
 
   const table = (
-    <div
-      className="table-overflow"
-      style={{ minHeight: isComponent ? 'auto' : '250px' }}
-    >
-      <TableComponent
-        loading={false}
-        currentPage={defaultCurrentPage}
-        currentPageSize={defaultPageSize}
-        columns={columns}
-        tableData={data}
-        tableDataTotal={data.length}
-        paginationChange={() => {}}
-        emptyText={
-          <div className="table-empty-text">
-            <img src={Images.NoDataIcon} alt="" />
-            <p>{t('No data')}</p>
-          </div>
-        }
-        showCustomPagination={!isComponent}
-      />
+    <div style={{ minHeight: isComponent ? 'auto' : '250px' }}>
+      <div className="table-overflow">
+        <TableComponent
+          loading={false}
+          columns={columns}
+          tableData={data}
+          emptyText={
+            <div className="table-empty-text">
+              <img src={Images.NoDataIcon} alt="" />
+              <p>{t('No data')}</p>
+            </div>
+          }
+          showCustomPagination={false}
+        />
+      </div>
+      {!isComponent && (
+        <Pagination
+          current={defaultCurrentPage}
+          pageSize={defaultPageSize}
+          total={data.length}
+          onChange={() => {}}
+          hideOnSinglePage
+        />
+      )}
     </div>
   );
 

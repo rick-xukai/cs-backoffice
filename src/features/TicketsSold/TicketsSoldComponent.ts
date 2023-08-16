@@ -76,7 +76,7 @@ const ListTableContainer = styled.div`
     }
   }
   .table-container {
-    width: 180%;
+    width: 190%;
     padding: 0;
     box-shadow: unset;
     .ant-table-thead {
@@ -166,7 +166,8 @@ const TableFilterContainer = styled(Row)`
       font-weight: 500;
       line-height: 19px;
       :hover {
-        color: ${Colors.grey6};
+        color: ${Colors.branding};
+        border-color: ${Colors.branding};
       }
     }
     .ant-btn[disabled] {
