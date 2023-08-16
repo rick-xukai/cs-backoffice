@@ -38,11 +38,12 @@ const renderPage = (
 const getUserRoutes = (layout: React.ElementType) => {
   const routes = Object.entries(UserScreens).map((item) => {
     const [name, props] = item;
-    const { path, component, guard, ...optProps } = props;
+    const { path, component, guard, title, ...optProps } = props;
     return (
       <Authmiddleware
         key={name}
         path={path}
+        title={title}
         guard={guard}
         layout={layout}
         component={component}
@@ -57,11 +58,12 @@ const getUserRoutes = (layout: React.ElementType) => {
 const getAuthRoutes = (layout: React.ElementType) => {
   const routes = Object.entries(AuthScreens).map((item) => {
     const [name, props] = item;
-    const { path, component, guard, ...optProps } = props;
+    const { path, component, guard, title, ...optProps } = props;
     return (
       <Authmiddleware
         key={name}
         path={path}
+        title={title}
         guard={guard}
         layout={layout}
         component={component}

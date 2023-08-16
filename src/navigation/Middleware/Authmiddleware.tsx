@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { CookieKeys } from '../../constants/Keys';
 import { UserRoutes, AuthRoutes } from '../Routes';
@@ -11,6 +12,7 @@ import { selectLayoutType } from '../../app/layout.slice';
 /* eslint-disable complexity */
 const Authmiddleware = ({
   path,
+  title,
   component: Component,
   layout: Layout,
   guard,
@@ -18,6 +20,7 @@ const Authmiddleware = ({
   ...optProps
 }: {
   path: string;
+  title: string;
   component: React.ElementType | null;
   layout: React.ElementType;
   guard: boolean;
@@ -70,6 +73,9 @@ const Authmiddleware = ({
         return (
           Component && (
             <Layout {...optProps}>
+              <Helmet>
+                <title>{title}</title>
+              </Helmet>
               <Component {...routeProps} />
             </Layout>
           )
