@@ -75,7 +75,7 @@ const EventDashboard = () => {
       href=" "
       text={buyers?.userCount || 0}
       barTitle="Conversion Rate"
-      value={`${buyers?.conversionRate ? buyers?.conversionRate / 100 : 0}%`}
+      value={`${buyers?.conversionRate ? buyers?.conversionRate * 100 : 0}%`}
     />
   );
   const eventPageViewsCard = (
