@@ -68,15 +68,16 @@ const ContainerTitle = styled(Row)`
 const ListTableContainer = styled.div`
   padding: 20px;
   background: ${Colors.white};
-  .table-overflow {
-    overflow-y: auto;
-    min-height: 250px;
-    ::-webkit-scrollbar {
-      display: none;
-    }
+  .ant-table-ping-right:not(.ant-table-has-fix-right)
+    > .ant-table-container::after {
+    box-shadow: unset;
+  }
+  .ant-table-ping-left:not(.ant-table-has-fix-left)
+    > .ant-table-container::before {
+    box-shadow: unset;
   }
   .table-container {
-    width: 190%;
+    width: 100%;
     padding: 0;
     box-shadow: unset;
     .ant-table-thead {
