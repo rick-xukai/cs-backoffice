@@ -1,5 +1,4 @@
-/* eslint-disable */
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Row,
@@ -23,23 +22,29 @@ import {
   UploadOutlined,
 } from '@ant-design/icons';
 import { CSVLink } from 'react-csv';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import Papa from 'papaparse';
+import { debounce, cloneDeep } from 'lodash';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { UserRoutes } from '../../navigation/Routes';
+import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { isEmail } from '../../utils/validator';
 import { Images } from '../../theme';
+import { formatTimeStrByTimeString } from '../../utils/func';
+import { FormatTimeKeys } from '../../constants/Keys';
 import {
-  defaultCurrentPage,
-  defaultPageSize,
   priceUnit,
   ImportTicketsTemplate,
   UploadCSVType,
+  TicketSoldFilterStatus,
+  TicketSoldFilterSource,
+  TokenExpireResponseCode,
+  TicketSoldSaleStatus,
 } from '../../constants/General';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import TableComponent from '../../components/Table/Table';
 import Pagination from '../../components/Pagination';
+import BallLoading from '../../components/BallLoading';
 import {
   TicketsSoldContainer,
   ContainerTitle,
@@ -52,7 +57,6 @@ import {
   selectListData,
   selectListTotal,
   selectError,
-  reset,
   resetState,
   setPage,
   setPageSize,
@@ -60,114 +64,88 @@ import {
   setFilterStatus,
   setFilterTicketType,
   setSearchKeyword,
+  setSaleStatus,
   selectPage,
   selectPageSize,
   selectFilterStatus,
   selectFilterTicketType,
   selectFilterSource,
   selectSearchKeyword,
+  selectSaleStatus,
+  selectTicketSoldCount,
+  getTicketSoldCountAction,
+  TicketSoldListItemProps,
+  updateTicketStatusAction,
+  importTicketsAction,
 } from './TicketSold.slice';
 
 const { Option } = Select;
 const { confirm } = Modal;
 const { Dragger } = Upload;
+enum TicketStatus {
+  cancel = 2,
+}
+let timer: NodeJS.Timer | null = null;
 
 const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   const { t } = useTranslation();
   const params: any = useParams();
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
   const listData = useAppSelector(selectListData);
   const listTotal = useAppSelector(selectListTotal);
+  const page = useAppSelector(selectPage);
+  const pageSize = useAppSelector(selectPageSize);
+  const filterStatus = useAppSelector(selectFilterStatus);
+  const filterTicketType = useAppSelector(selectFilterTicketType);
+  const filterSource = useAppSelector(selectFilterSource);
+  const searchKeyword = useAppSelector(selectSearchKeyword);
+  const saleStatus = useAppSelector(selectSaleStatus);
+  const ticketSoldCount = useAppSelector(selectTicketSoldCount);
 
-  const [searchKeyword, setSearchKeyword] = useState<string>('');
+  const [searchKeywordState, setSearchKeywordState] = useState<string>('');
   const [showImportModal, setShowImportModal] = useState<boolean>(false);
   const [showImportProgress, setShowImportProgress] = useState<boolean>(false);
+  const [importTicketItems, setImportTicketItems] = useState([]);
+  const [importProgress, setImportProgress] = useState<number>(0);
 
-  let data = [
-    {
-      id: 1,
-      attendee: 'Christine',
-      email: 'christine.xu@gmail.com',
-      ticketType: 'VIP',
-      paidPrice: 8,
-      ticketPrice: 10,
-      discount: -2,
-      promoCode: 'Birthday',
-      fees: 2,
-      seatNumber: 'VIP-5',
-      ticketNumber: 'K0J2947294759284',
-      boughtAt: 'Jul 12, 2023',
-      time: '21:30',
-      source: 'Primary Market',
-      status: 'Live',
-    },
-    {
-      id: 2,
-      attendee: 'Rick',
-      email: 'rick.xu@imaginato.com',
-      ticketType: 'VIP',
-      paidPrice: 8,
-      ticketPrice: 10,
-      discount: -2,
-      promoCode: 'Birthday',
-      fees: 0,
-      seatNumber: 'VIP-5',
-      ticketNumber: 'K0J2947294759284',
-      boughtAt: 'Jul 12, 2023',
-      time: '21:30',
-      source: 'Primary Market',
-      status: 'Live',
-    },
-    {
-      id: 3,
-      attendee: 'Jack',
-      email: 'jack.zhou@imaginato.com',
-      ticketType: 'VIP',
-      paidPrice: 8,
-      ticketPrice: 10,
-      discount: -2,
-      promoCode: 'Birthday',
-      fees: 0,
-      seatNumber: 'VIP-5',
-      ticketNumber: 'K0J2947294759284',
-      boughtAt: 'Jul 12, 2023',
-      time: '21:30',
-      source: 'Primary Market',
-      status: 'Live',
-    },
-    {
-      id: 4,
-      attendee: 'Simba',
-      email: 'simba.luo@imaginato.com',
-      ticketType: 'VIP',
-      paidPrice: 8,
-      ticketPrice: 10,
-      discount: -2,
-      promoCode: 'Birthday',
-      fees: 0,
-      seatNumber: 'VIP-5',
-      ticketNumber: 'K0J2947294759284',
-      boughtAt: 'Jul 12, 2023',
-      time: '21:30',
-      source: 'Primary Market',
-      status: 'Live',
-    },
-  ];
+  const clearTimerFuction = () => {
+    if (timer) {
+      clearInterval(timer);
+    }
+  };
+
+  const loadTicketSoldPageData = () => {
+    dispatch(
+      getTicketSoldListAction({
+        id: params.id,
+        data: {
+          page,
+          size: pageSize,
+          status: filterStatus,
+          source: filterSource,
+          ticketTypeId: filterTicketType,
+          keyword: searchKeyword,
+          saleStatus,
+        },
+      }),
+    );
+  };
 
   const columns = [
     {
       title: 'Attendee',
-      dataIndex: 'attendee',
+      dataIndex: 'user',
       key: 'attendee',
       width: 200,
-      render: (attendee: string, record: any) => (
+      render: (_: {}, record: TicketSoldListItemProps) => (
         <Row gutter={[0, 0]}>
-          <Col span={24}>{attendee}</Col>
+          <Col span={24}>{record.user.name}</Col>
           <Col span={24} className="item-label">
-            {record.email}
+            {record.user.email}
           </Col>
         </Row>
       ),
@@ -177,18 +155,21 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       dataIndex: 'ticketType',
       key: 'ticketType',
       width: 140,
+      render: (_: {}, record: TicketSoldListItemProps) => (
+        <span>{record.ticketType.name}</span>
+      ),
     },
     {
       title: 'Paid Price',
-      dataIndex: 'paidPrice',
-      key: 'paidPrice',
+      dataIndex: 'total',
+      key: 'total',
       render: (paidPrice: number) => <span>{`${paidPrice} ${priceUnit}`}</span>,
       width: 140,
     },
     {
       title: 'Ticket Price',
-      dataIndex: 'ticketPrice',
-      key: 'ticketPrice',
+      dataIndex: 'price',
+      key: 'price',
       width: 140,
       render: (ticketPrice: number) => (
         <span>{`${ticketPrice} ${priceUnit}`}</span>
@@ -199,14 +180,16 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       dataIndex: 'discount',
       key: 'discount',
       width: 200,
-      render: (discount: number, record: any) => (
+      render: (discount: number, record: TicketSoldListItemProps) => (
         <>
           {(discount && (
             <Row gutter={[0, 0]}>
               <Col>{`${discount} ${priceUnit}`}</Col>
-              <Col span={24} className="item-label">
-                Promocode: {record.promoCode}
-              </Col>
+              {record.promoCode && (
+                <Col span={24} className="item-label">
+                  Promocode: {record.promoCode}
+                </Col>
+              )}
             </Row>
           )) ||
             '/'}
@@ -215,57 +198,57 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
     },
     {
       title: 'Fees',
-      dataIndex: 'fees',
-      key: 'fees',
+      dataIndex: 'absorbFees',
+      key: 'absorbFees',
       width: 140,
       render: (fees: number) => (
         <Col
           span={24}
           className="item-action"
-          onClick={() => {
-            confirm({
-              className: 'fees-detail-modal',
-              centered: true,
-              closable: false,
-              maskClosable: true,
-              content: (
-                <Row>
-                  <Col span={24} className="fees-detail-item">
-                    <Row>
-                      <Col span={12} className="label">
-                        {t('Service Fee')}
-                      </Col>
-                      <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
-                    </Row>
-                  </Col>
-                  <Col span={24} className="fees-detail-item">
-                    <Row>
-                      <Col span={12} className="label">
-                        {t('Royalty Fee')}
-                      </Col>
-                      <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
-                    </Row>
-                  </Col>
-                  <Col span={24} className="fees-detail-item">
-                    <Row>
-                      <Col span={12} className="label">
-                        {t('Transaction Fee')}
-                      </Col>
-                      <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
-                    </Row>
-                  </Col>
-                  <Col span={24} className="fees-detail-item item-total">
-                    <Row>
-                      <Col span={12} className="label">
-                        {t('Total')}
-                      </Col>
-                      <Col span={12} className="value">{`3 ${priceUnit}`}</Col>
-                    </Row>
-                  </Col>
-                </Row>
-              ),
-            });
-          }}
+          // onClick={() => {
+          //   confirm({
+          //     className: 'fees-detail-modal',
+          //     centered: true,
+          //     closable: false,
+          //     maskClosable: true,
+          //     content: (
+          //       <Row>
+          //         <Col span={24} className="fees-detail-item">
+          //           <Row>
+          //             <Col span={12} className="label">
+          //               {t('Service Fee')}
+          //             </Col>
+          //             <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
+          //           </Row>
+          //         </Col>
+          //         <Col span={24} className="fees-detail-item">
+          //           <Row>
+          //             <Col span={12} className="label">
+          //               {t('Royalty Fee')}
+          //             </Col>
+          //             <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
+          //           </Row>
+          //         </Col>
+          //         <Col span={24} className="fees-detail-item">
+          //           <Row>
+          //             <Col span={12} className="label">
+          //               {t('Transaction Fee')}
+          //             </Col>
+          //             <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
+          //           </Row>
+          //         </Col>
+          //         <Col span={24} className="fees-detail-item item-total">
+          //           <Row>
+          //             <Col span={12} className="label">
+          //               {t('Total')}
+          //             </Col>
+          //             <Col span={12} className="value">{`3 ${priceUnit}`}</Col>
+          //           </Row>
+          //         </Col>
+          //       </Row>
+          //     ),
+          //   });
+          // }}
         >
           {(fees > 0 && `${fees} ${priceUnit}`) || fees}
         </Col>
@@ -273,26 +256,28 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
     },
     {
       title: 'Seat Number',
-      dataIndex: 'seatNumber',
-      key: 'seatNumber',
+      dataIndex: 'seat',
+      key: 'seat',
       width: 160,
     },
     {
       title: 'Ticket Number',
-      dataIndex: 'ticketNumber',
-      key: 'ticketNumber',
+      dataIndex: 'ticketNo',
+      key: 'ticketNo',
       width: 250,
     },
     {
       title: 'Bought at',
-      dataIndex: 'boughtAt',
-      key: 'boughtAt',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 150,
-      render: (boughtAt: string, record: any) => (
+      render: (createdAt: string) => (
         <Row gutter={[0, 0]}>
-          <Col span={24}>{boughtAt}</Col>
+          <Col span={24}>
+            {formatTimeStrByTimeString(createdAt, FormatTimeKeys.mdy)}
+          </Col>
           <Col span={24} className="item-label">
-            {record.time}
+            {formatTimeStrByTimeString(createdAt, FormatTimeKeys.hm)}
           </Col>
         </Row>
       ),
@@ -302,19 +287,29 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       dataIndex: 'source',
       key: 'source',
       width: 200,
+      render: (source: number) => (
+        <span>
+          {TicketSoldFilterSource.find((item) => item.id === source)?.name}
+        </span>
+      ),
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
       width: 100,
+      render: (status: number) => (
+        <span>
+          {TicketSoldFilterStatus.find((item) => item.id === status)?.name}
+        </span>
+      ),
     },
     {
       title: '',
       dataIndex: '',
       key: 'action',
       width: 80,
-      render: () => {
+      render: (_: string, record: TicketSoldListItemProps) => {
         const items: MenuProps['items'] = [
           {
             label: t('Cancel Ticket'),
@@ -330,7 +325,22 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                 content: t(
                   'Are you sure you want to cancel this ticket? The ticket will be refunded deducting service fee.',
                 ),
-                onOk: () => {},
+                onOk: async () => {
+                  const response = await dispatch(
+                    updateTicketStatusAction({
+                      id: record.id.toString(),
+                      data: {
+                        status: TicketStatus.cancel,
+                      },
+                    }),
+                  );
+                  if (
+                    response.type ===
+                    updateTicketStatusAction.fulfilled.toString()
+                  ) {
+                    loadTicketSoldPageData();
+                  }
+                },
               });
             },
           },
@@ -368,17 +378,25 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       { label: 'Attendee Name', key: 'attendeeName' },
       { label: 'Attendee Email', key: 'attendeeEmail' },
     );
-    const downloadData = data.map((dataItem) => ({
+    const downloadData = listData.map((dataItem: TicketSoldListItemProps) => ({
       ...dataItem,
-      attendeeName: dataItem.attendee,
-      attendeeEmail: dataItem.email,
-      paidPrice: `${dataItem.paidPrice} ${priceUnit}`,
-      ticketPrice: `${dataItem.ticketPrice} ${priceUnit}`,
+      attendeeName: dataItem.user.name,
+      attendeeEmail: dataItem.user.email,
+      total: `${dataItem.total} ${priceUnit}`,
+      price: `${dataItem.price} ${priceUnit}`,
+      ticketType: dataItem.ticketType.name,
       discount: `${
         (dataItem.discount && `${dataItem.discount} ${priceUnit}`) || '/'
       }`,
-      fees: `${dataItem.fees} ${priceUnit}`,
-      boughtAt: `${dataItem.boughtAt}\n${dataItem.time}`,
+      absorbFees: `${dataItem.absorbFees} ${priceUnit}`,
+      createdAt: `${formatTimeStrByTimeString(
+        dataItem.createdAt,
+        FormatTimeKeys.mdy,
+      )}\n${formatTimeStrByTimeString(dataItem.createdAt, FormatTimeKeys.hm)}`,
+      source: TicketSoldFilterSource.find((item) => item.id === dataItem.source)
+        ?.name,
+      status: TicketSoldFilterStatus.find((item) => item.id === dataItem.status)
+        ?.name,
     }));
     return { headers, data: downloadData };
   };
@@ -453,213 +471,357 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                   );
                   return true;
                 }
+                if (
+                  !ticketSoldCount.ticketTypes.find(
+                    (item) => item.name === obj['Ticket Type'],
+                  )
+                ) {
+                  errorFlag = true;
+                  message.error(
+                    t(
+                      'Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.',
+                    ),
+                  );
+                  return true;
+                }
                 return false;
               });
+            }
+            if (isLimit && type === UploadCSVType && !errorFlag) {
+              const formatTicketItems = cloneDeep(resultsBody).map(
+                (item: any) => ({
+                  email: item[0],
+                  ticketType: item[1],
+                }),
+              );
+              formatTicketItems.shift();
+              setImportTicketItems(formatTicketItems);
             }
           },
         });
       }
       return isLimit && type === UploadCSVType && !errorFlag;
     },
-    customRequest: () => {
-      setShowImportProgress(true);
-      setTimeout(() => {
-        setShowImportModal(false);
-        setShowImportProgress(false);
-        message.success(
-          t('[count] tickets are successfully issued.', { count: 10 }),
-        );
-      }, 1000);
-    },
+    customRequest: () => {},
   };
 
-  if (isComponent) {
-    data = data.slice(0, 4);
-  }
+  const importTicketsRequest = async () => {
+    setImportProgress(0);
+    if (importTicketItems.length) {
+      setShowImportProgress(true);
+      clearTimerFuction();
+      timer = setInterval(() => {
+        setImportProgress((progress: number) => {
+          if (progress < 90) {
+            return progress + 10;
+          }
+          return 90;
+        });
+      }, 1000);
+      const response = await dispatch(
+        importTicketsAction({ id: params.id, data: importTicketItems }),
+      );
+      if (response.type === importTicketsAction.fulfilled.toString()) {
+        setImportProgress(100);
+      }
+    }
+  };
+
+  const resetImportTicket = () => {
+    clearTimerFuction();
+    setShowImportModal(false);
+    setShowImportProgress(false);
+    setImportTicketItems([]);
+  };
 
   const table = (
     <div style={{ minHeight: isComponent ? 'auto' : '250px' }}>
-      <div className="table-overflow">
-        <TableComponent
-          loading={false}
-          columns={columns}
-          tableData={data}
-          emptyText={
-            <div className="table-empty-text">
-              <img src={Images.NoDataIcon} alt="" />
-              <p>{t('No data')}</p>
-            </div>
-          }
-          showCustomPagination={false}
-        />
-      </div>
+      <TableComponent
+        loading={false}
+        columns={columns}
+        tableData={(isComponent && listData.slice(0, 4)) || listData}
+        emptyText={
+          <div className="table-empty-text">
+            <img src={Images.NoDataIcon} alt="" />
+            <p>{t('No data')}</p>
+          </div>
+        }
+        showCustomPagination={false}
+      />
       {!isComponent && (
         <Pagination
-          current={defaultCurrentPage}
-          pageSize={defaultPageSize}
-          total={data.length}
-          onChange={() => {}}
+          current={page}
+          pageSize={pageSize}
+          total={listTotal}
+          onChange={(currentPage, currentPageSize) => {
+            dispatch(setPage(currentPage));
+            dispatch(setPageSize(currentPageSize));
+          }}
           hideOnSinglePage
         />
       )}
     </div>
   );
 
+  const searchInputChange = useCallback(
+    debounce((e) => dispatch(setSearchKeyword(e.target.value)), 300),
+    [],
+  );
+
+  useEffect(() => {
+    importTicketsRequest();
+  }, [importTicketItems]);
+
+  useEffect(() => {
+    if (importProgress === 100) {
+      setTimeout(() => {
+        resetImportTicket();
+        loadTicketSoldPageData();
+        dispatch(getTicketSoldCountAction(params.id));
+        message.success(
+          t('[count] tickets are successfully issued.', {
+            count: importTicketItems.length,
+          }),
+        );
+      }, 500);
+    }
+  }, [importProgress]);
+
+  useEffect(() => {
+    if (error) {
+      if (error.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error(t('User token is deprecated, please log in again.'));
+        return;
+      }
+      message.error(error.message);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    loadTicketSoldPageData();
+  }, [
+    page,
+    pageSize,
+    searchKeyword,
+    filterSource,
+    filterStatus,
+    filterTicketType,
+    saleStatus,
+  ]);
+
+  useEffect(() => {
+    dispatch(getTicketSoldCountAction(params.id));
+    return () => {
+      dispatch(resetState());
+      clearTimerFuction();
+    };
+  }, []);
+
   return isComponent ? (
     <ListTableContainer style={{ padding: 0 }}>{table}</ListTableContainer>
   ) : (
     <>
-      <PageHeaderComponent
-        breadcrumb={[
-          {
-            label: t('Events'),
-            href: UserRoutes.events,
-          },
-          {
-            label: params.name,
-            href: UserRoutes.eventDashboard
-              .replace(':id', params.id)
-              .replace(':name', params.name),
-          },
-          {
-            label: t('Tickets sold'),
-          },
-        ]}
-      />
-      <TicketsSoldContainer>
-        <div className="page-main">
-          <ContainerTitle>
-            <Col span={12}>
-              <div className="info-content">
-                <div>
-                  <p className="content-title">{t('Tickets Sold')}</p>
-                  <p className="content-name">{params.name}</p>
-                </div>
-              </div>
-            </Col>
-            <Col span={12} className="right">
-              <div className="info-content">
-                <div>
-                  <p className="content-title">200</p>
-                  <p className="content-info">
-                    <span>Tickets Imported</span>
-                    <span className="bold">2</span>
-                  </p>
-                  <p className="content-info">
-                    <span>Ticket cancelled / refunded</span>
-                    <span className="bold">0</span>
-                  </p>
-                </div>
-              </div>
-            </Col>
-          </ContainerTitle>
-          <ListTableContainer>
-            <TableFilterContainer>
-              <Col lg={17} span={24}>
-                <Row className="filter-items" gutter={[16, 16]}>
-                  <Col lg={9} span={24}>
-                    <Input
-                      placeholder={t('Search attendee name or email')}
-                      allowClear={{
-                        clearIcon: <CloseOutlined />,
-                      }}
-                      suffix={!searchKeyword && <SearchOutlined />}
-                      onChange={(e) => setSearchKeyword(e.target.value)}
-                    />
-                  </Col>
-                  <Col lg={5} span={24}>
-                    <Select
-                      placeholder={t('Ticket Type')}
-                      defaultActiveFirstOption={false}
-                    >
-                      <Option value="Paid">Paid</Option>
-                    </Select>
-                  </Col>
-                  <Col lg={5} span={24} className="filter-status">
-                    <Select
-                      placeholder={t('Status')}
-                      defaultActiveFirstOption={false}
-                    >
-                      <Option value="Paid">Paid</Option>
-                    </Select>
-                  </Col>
-                  <Col lg={5} span={24} className="filter-status">
-                    <Select
-                      placeholder={t('Source')}
-                      defaultActiveFirstOption={false}
-                    >
-                      <Option value="Paid">Paid</Option>
-                    </Select>
-                  </Col>
-                </Row>
-              </Col>
-              <Col lg={7} span={24} className="export-action">
-                <CSVLink
-                  filename={`${'Test'}_Tickets_Export.csv`}
-                  headers={formatDownloadHeaders().headers}
-                  data={formatDownloadHeaders().data}
-                >
-                  <Button className="action-button" disabled={!data.length}>
-                    <DownloadOutlined />
-                    {t('Export')}
-                  </Button>
-                </CSVLink>
-                <Button
-                  className="action-button"
-                  onClick={() => setShowImportModal(true)}
-                >
-                  <PlusOutlined />
-                  {t('Import')}
-                </Button>
-              </Col>
-            </TableFilterContainer>
-            {table}
-          </ListTableContainer>
-          <Modal
-            wrapClassName="import-modal"
-            open={showImportModal}
-            title={t('Import Tickets')}
-            centered
-            footer={null}
-            onCancel={() => {
-              setShowImportModal(false);
-              setShowImportProgress(false);
-            }}
-          >
-            <CSVLink
-              filename="Tickets_Export_Template.csv"
-              headers={ImportTicketsTemplate}
-              data={[]}
-            >
-              <Col span={24} className="import-info">
-                {t('To import tickets, use our')}
-                <span>{t('CSV Template')}</span>
-              </Col>
-            </CSVLink>
-            <Col span={24} className="import-content">
-              {(!showImportProgress && (
-                <Dragger {...uploadCSVProps}>
-                  <p className="ant-upload-drag-icon">
-                    <UploadOutlined />
-                  </p>
-                  <p className="ant-upload-text">
-                    {t('Click or drag a CSV file to this area to upload')}
-                  </p>
-                </Dragger>
-              )) || (
-                <Col span={24} className="progress-content">
-                  <Progress
-                    percent={30}
-                    showInfo={false}
-                    strokeColor="#27272A"
-                  />
-                  <p className="file-name">Issued tickets.csv</p>
+      {(loading && <BallLoading />) || (
+        <>
+          <PageHeaderComponent
+            breadcrumb={[
+              {
+                label: t('Events'),
+                href: UserRoutes.events,
+              },
+              {
+                label: params.name,
+                href: UserRoutes.eventDashboard
+                  .replace(':id', params.id)
+                  .replace(':name', params.name),
+              },
+              {
+                label: t('Tickets sold'),
+              },
+            ]}
+          />
+          <TicketsSoldContainer>
+            <div className="page-main">
+              <ContainerTitle>
+                <Col span={12}>
+                  <div className="info-content">
+                    <div>
+                      <p className="content-title">{t('Tickets Sold')}</p>
+                      <p className="content-name">{params.name}</p>
+                    </div>
+                  </div>
                 </Col>
-              )}
-            </Col>
-          </Modal>
-        </div>
-      </TicketsSoldContainer>
+                <Col span={12} className="right">
+                  <div className="info-content">
+                    <div>
+                      <p className="content-title">
+                        {ticketSoldCount.stocks.soldTotal}
+                      </p>
+                      <p className="content-info">
+                        <span>Tickets Imported</span>
+                        <span className="bold">
+                          {ticketSoldCount.stocks.importTotal}
+                        </span>
+                      </p>
+                      <p className="content-info">
+                        <span>Ticket cancelled / refunded</span>
+                        <span className="bold">
+                          {ticketSoldCount.stocks.cancelTotal}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </Col>
+              </ContainerTitle>
+              <ListTableContainer>
+                <TableFilterContainer>
+                  <Col lg={17} span={24}>
+                    <Row className="filter-items" gutter={[16, 16]}>
+                      <Col lg={9} span={24}>
+                        <Input
+                          defaultValue={searchKeyword}
+                          placeholder={t('Search attendee name or email')}
+                          allowClear={{
+                            clearIcon: <CloseOutlined />,
+                          }}
+                          suffix={!searchKeywordState && <SearchOutlined />}
+                          onChange={(e) => {
+                            setSearchKeywordState(e.target.value);
+                            searchInputChange(e);
+                          }}
+                        />
+                      </Col>
+                      <Col lg={5} span={24}>
+                        <Select
+                          allowClear
+                          defaultValue={filterTicketType}
+                          placeholder={t('Ticket Type')}
+                          defaultActiveFirstOption={false}
+                          onChange={(e) => dispatch(setFilterTicketType(e))}
+                        >
+                          {ticketSoldCount.ticketTypes.map((item) => (
+                            <Option key={item.id} value={item.id}>
+                              {item.name}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Col>
+                      <Col lg={5} span={24} className="filter-status">
+                        <Select
+                          allowClear
+                          defaultValue={filterStatus}
+                          placeholder={t('Status')}
+                          defaultActiveFirstOption={false}
+                          onChange={(e: number | string) => {
+                            dispatch(setFilterStatus(e));
+                            if (e === null) {
+                              dispatch(setSaleStatus(TicketSoldSaleStatus));
+                            } else {
+                              dispatch(setSaleStatus(undefined));
+                            }
+                          }}
+                        >
+                          {TicketSoldFilterStatus.map((item) => (
+                            <Option key={item.id} value={item.id}>
+                              {item.name}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Col>
+                      <Col lg={5} span={24} className="filter-status">
+                        <Select
+                          allowClear
+                          defaultValue={filterSource}
+                          placeholder={t('Source')}
+                          defaultActiveFirstOption={false}
+                          onChange={(e) => dispatch(setFilterSource(e))}
+                        >
+                          {TicketSoldFilterSource.map((item) => (
+                            <Option key={item.id} value={item.id}>
+                              {item.name}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col lg={7} span={24} className="export-action">
+                    <CSVLink
+                      filename={`${
+                        (params.name.length > 10 &&
+                          `${params.name.substring(0, 10)}...`) ||
+                        params.name
+                      }_Tickets_Export.csv`}
+                      headers={formatDownloadHeaders().headers}
+                      data={formatDownloadHeaders().data}
+                    >
+                      <Button
+                        className="action-button"
+                        disabled={!listData.length}
+                      >
+                        <DownloadOutlined />
+                        {t('Export')}
+                      </Button>
+                    </CSVLink>
+                    <Button
+                      className="action-button"
+                      onClick={() => setShowImportModal(true)}
+                    >
+                      <PlusOutlined />
+                      {t('Import')}
+                    </Button>
+                  </Col>
+                </TableFilterContainer>
+                {table}
+              </ListTableContainer>
+              <Modal
+                wrapClassName="import-modal"
+                open={showImportModal}
+                title={t('Import Tickets')}
+                centered
+                footer={null}
+                onCancel={() => {
+                  setShowImportModal(false);
+                  setShowImportProgress(false);
+                }}
+              >
+                <CSVLink
+                  filename="Tickets_Export_Template.csv"
+                  headers={ImportTicketsTemplate}
+                  data={[]}
+                >
+                  <Col span={24} className="import-info">
+                    {t('To import tickets, use our')}
+                    <span>{t('CSV Template')}</span>
+                  </Col>
+                </CSVLink>
+                <Col span={24} className="import-content">
+                  {(!showImportProgress && (
+                    <Dragger {...uploadCSVProps}>
+                      <p className="ant-upload-drag-icon">
+                        <UploadOutlined />
+                      </p>
+                      <p className="ant-upload-text">
+                        {t('Click or drag a CSV file to this area to upload')}
+                      </p>
+                    </Dragger>
+                  )) || (
+                    <Col span={24} className="progress-content">
+                      <Progress
+                        percent={importProgress}
+                        showInfo={false}
+                        strokeColor="#27272A"
+                      />
+                      <p className="file-name">Issued tickets.csv</p>
+                    </Col>
+                  )}
+                </Col>
+              </Modal>
+            </div>
+          </TicketsSoldContainer>
+        </>
+      )}
     </>
   );
 };

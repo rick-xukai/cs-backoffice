@@ -93,6 +93,15 @@ const API = {
   getTicketSoldList: {
     get: '/admin/event/:event_id/user_ticket',
   },
+  getTicketSoldCount: {
+    get: '/admin/event/:eventId/sold_count',
+  },
+  updateTicketStatus: {
+    put: '/admin/user_ticket/:userTicketId/status',
+  },
+  importTickets: {
+    post: '/admin/event/:eventId/import_ticket',
+  },
 };
 
 export default API;

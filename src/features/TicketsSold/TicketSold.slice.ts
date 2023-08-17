@@ -15,10 +15,11 @@ export interface ErrorType {
 export interface GetListParams {
   page: number;
   size: number;
-  status: number;
-  source: number;
+  status: number | undefined;
+  source: number | undefined;
   keyword: string;
-  ticketTypeId: number;
+  ticketTypeId: number | undefined;
+  saleStatus?: number | undefined;
 }
 
 export interface TicketSoldListItemProps {
@@ -41,14 +42,42 @@ export interface TicketSoldListItemProps {
   status: number;
   source: number;
   createdAt: string;
+  promoCode?: string;
 }
+
+export interface TicketSoldCountItemProps {
+  id: string;
+  name: string;
+  stocks: {
+    soldTotal: number;
+    importTotal: number;
+    cancelTotal: number;
+  };
+  ticketTypes: { id: number; name: string }[];
+}
+
+export interface ImportTicketProps {
+  email: string;
+  ticketType: string;
+}
+
+export const defaultTicketSoldCount = {
+  id: '',
+  name: '',
+  stocks: {
+    soldTotal: 0,
+    importTotal: 0,
+    cancelTotal: 0,
+  },
+  ticketTypes: [],
+};
 
 /**
  * get ticket sold list
  */
 export const getTicketSoldListAction = createAsyncThunk<
   { count: number; list: TicketSoldListItemProps[] },
-  GetListParams,
+  { id: string; data: GetListParams },
   {
     rejectValue: ErrorType;
   }
@@ -76,47 +105,110 @@ export const getTicketSoldListAction = createAsyncThunk<
 );
 
 /**
- * Upload File
+ * get ticket sold count
  */
-// export const uploadProfileFileAction = createAsyncThunk<
-//   { url: string },
-//   {},
-//   {
-//     rejectValue: ErrorType;
-//   }
-// >(
-//   'uploadProfileFile/uploadProfileFileAction',
-//   async (payload, { rejectWithValue }) => {
-//     try {
-//       const response = await UsersService.uploadProfileFile(payload);
-//       if (verificationApi(response)) {
-//         return response.data;
-//       }
-//       return rejectWithValue({
-//         code: response.code,
-//         message: response.message,
-//       } as ErrorType);
-//     } catch (err: any) {
-//       if (!err.response) {
-//         throw err;
-//       }
-//       return rejectWithValue({
-//         message: err.response,
-//       } as ErrorType);
-//     }
-//   },
-// );
+export const getTicketSoldCountAction = createAsyncThunk<
+  TicketSoldCountItemProps,
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getTicketSoldCount/getTicketSoldCountAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await TicketSoldService.getTicketSoldCount(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ * update ticket status
+ */
+export const updateTicketStatusAction = createAsyncThunk<
+  {},
+  { id: string; data: { status: number } },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'updateTicketStatus/updateTicketStatusAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await TicketSoldService.updateTicketStatus(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ * import tickets
+ */
+export const importTicketsAction = createAsyncThunk<
+  {},
+  { id: string; data: ImportTicketProps[] },
+  {
+    rejectValue: ErrorType;
+  }
+>('importTickets/importTicketsAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await TicketSoldService.importTickets(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
 
 interface TicketSoldState {
   loading: boolean;
   listData: TicketSoldListItemProps[];
   listTotal: number;
+  ticketSoldCount: TicketSoldCountItemProps;
   page: number;
   size: number;
-  searchKeyword: string | null;
-  filterTicketType: number | null;
-  filterStatus: number | null;
-  filterSource: number | null;
+  searchKeyword: string;
+  filterTicketType: number | undefined;
+  filterStatus: number | undefined;
+  filterSource: number | undefined;
+  saleStatus: number | undefined;
   error:
     | {
         code: number | undefined;
@@ -132,11 +224,13 @@ const initialState: TicketSoldState = {
   listTotal: 0,
   page: defaultCurrentPage,
   size: defaultPageSize,
-  searchKeyword: null,
-  filterTicketType: null,
-  filterStatus: null,
-  filterSource: null,
+  searchKeyword: '',
+  filterTicketType: undefined,
+  filterStatus: undefined,
+  filterSource: undefined,
+  saleStatus: undefined,
   error: null,
+  ticketSoldCount: defaultTicketSoldCount,
 };
 
 export const ticketSoldSlice = createSlice({
@@ -149,6 +243,7 @@ export const ticketSoldSlice = createSlice({
       state.listData = initialState.listData;
       state.listTotal = initialState.listTotal;
       state.error = initialState.error;
+      state.ticketSoldCount = initialState.ticketSoldCount;
     },
     setPage: (state, action) => {
       state.page = action.payload;
@@ -168,9 +263,27 @@ export const ticketSoldSlice = createSlice({
     setFilterSource: (state, action) => {
       state.filterSource = action.payload;
     },
+    setSaleStatus: (state, action) => {
+      state.saleStatus = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getTicketSoldCountAction.pending, (state) => {
+        state.ticketSoldCount = defaultTicketSoldCount;
+        state.loading = true;
+      })
+      .addCase(getTicketSoldCountAction.fulfilled, (state, action: any) => {
+        state.ticketSoldCount = action.payload;
+      })
+      .addCase(getTicketSoldCountAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
       .addCase(getTicketSoldListAction.pending, (state) => {
         state.listData = [];
         state.loading = true;
@@ -187,21 +300,22 @@ export const ticketSoldSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(updateTicketStatusAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(importTicketsAction.rejected, (state, action) => {
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
       });
-    //   .addCase(updateProfileInfoAction.pending, (state) => {
-    //     state.loading = true;
-    //   })
-    //   .addCase(updateProfileInfoAction.fulfilled, (state) => {
-    //     state.loading = false;
-    //   })
-    //   .addCase(updateProfileInfoAction.rejected, (state, action) => {
-    //     state.loading = false;
-    //     if (action.payload) {
-    //       state.error = action.payload as ErrorType;
-    //     } else {
-    //       state.error = action.error as ErrorType;
-    //     }
-    //   });
   },
 });
 
@@ -214,6 +328,7 @@ export const {
   setFilterStatus,
   setFilterTicketType,
   setSearchKeyword,
+  setSaleStatus,
 } = ticketSoldSlice.actions;
 
 export const selectLoading = (state: RootState) => state.ticketSold.loading;
@@ -222,6 +337,8 @@ export const selectListTotal = (state: RootState) => state.ticketSold.listTotal;
 export const selectError = (state: RootState) => state.ticketSold.error;
 export const selectPage = (state: RootState) => state.ticketSold.page;
 export const selectPageSize = (state: RootState) => state.ticketSold.size;
+export const selectTicketSoldCount = (state: RootState) =>
+  state.ticketSold.ticketSoldCount;
 export const selectFilterStatus = (state: RootState) =>
   state.ticketSold.filterStatus;
 export const selectFilterTicketType = (state: RootState) =>
@@ -230,5 +347,7 @@ export const selectFilterSource = (state: RootState) =>
   state.ticketSold.filterSource;
 export const selectSearchKeyword = (state: RootState) =>
   state.ticketSold.searchKeyword;
+export const selectSaleStatus = (state: RootState) =>
+  state.ticketSold.saleStatus;
 
 export default ticketSoldSlice.reducer;
