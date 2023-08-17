@@ -87,7 +87,7 @@ export const DashboardChartCard = ({
           fontWeight: 700,
         },
         formatter: (e: any) =>
-          `${(e.percent && (e.percent * 100).toFixed(2)) || 0}%`,
+          `${e.percent ? (e.percent * 100).toFixed(2) : 0}%`,
       },
     },
   };
