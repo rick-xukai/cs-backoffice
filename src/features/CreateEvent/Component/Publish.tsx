@@ -3,6 +3,8 @@ import { Row, Col, Radio, Tooltip, Space } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
+import { formatTimeStrByTimeString } from '../../../utils/func';
+import { FormatTimeKeys } from '../../../constants/Keys';
 import { SetRefundKey, priceUnit } from '../../../constants/General';
 import Tips from '../../../components/Tips/Tips';
 import TableComponent from '../../../components/Table/Table';
@@ -102,7 +104,13 @@ const Publish = ({
                       <span>
                         {(formValue.startTime &&
                           formValue.endTime &&
-                          `${formValue.startTime} - ${formValue.endTime}`) ||
+                          `${formatTimeStrByTimeString(
+                            formValue.startTime,
+                            FormatTimeKeys.norm,
+                          )} - ${formatTimeStrByTimeString(
+                            formValue.endTime,
+                            FormatTimeKeys.norm,
+                          )}`) ||
                           '-'}
                       </span>
                     </Col>
