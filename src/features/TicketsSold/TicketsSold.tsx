@@ -410,7 +410,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       const { type, size } = file;
       const isLimit = size / 1024 / 1024 < 20;
       if (type !== UploadCSVType) {
-        message.error(t('Wrong file type, please upload CSV file'));
+        message.error(t('Invalid file format. Please upload a CSV file.'));
       } else if (!isLimit) {
         message.error(
           t(
