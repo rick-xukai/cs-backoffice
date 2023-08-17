@@ -90,6 +90,9 @@ const API = {
   getEventDashboard: {
     get: '/admin/event/:event_id/dashboard',
   },
+  getTicketSoldList: {
+    get: '/admin/event/:event_id/user_ticket',
+  },
 };
 
 export default API;

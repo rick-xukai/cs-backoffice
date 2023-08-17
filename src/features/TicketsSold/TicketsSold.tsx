@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -25,6 +26,7 @@ import { CSVLink } from 'react-csv';
 import { useParams } from 'react-router-dom';
 import Papa from 'papaparse';
 
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserRoutes } from '../../navigation/Routes';
 import { isEmail } from '../../utils/validator';
 import { Images } from '../../theme';
@@ -44,6 +46,27 @@ import {
   ListTableContainer,
   TableFilterContainer,
 } from './TicketsSoldComponent';
+import {
+  getTicketSoldListAction,
+  selectLoading,
+  selectListData,
+  selectListTotal,
+  selectError,
+  reset,
+  resetState,
+  setPage,
+  setPageSize,
+  setFilterSource,
+  setFilterStatus,
+  setFilterTicketType,
+  setSearchKeyword,
+  selectPage,
+  selectPageSize,
+  selectFilterStatus,
+  selectFilterTicketType,
+  selectFilterSource,
+  selectSearchKeyword,
+} from './TicketSold.slice';
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -52,6 +75,12 @@ const { Dragger } = Upload;
 const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   const { t } = useTranslation();
   const params: any = useParams();
+  const dispatch = useAppDispatch();
+
+  const loading = useAppSelector(selectLoading);
+  const error = useAppSelector(selectError);
+  const listData = useAppSelector(selectListData);
+  const listTotal = useAppSelector(selectListTotal);
 
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [showImportModal, setShowImportModal] = useState<boolean>(false);
