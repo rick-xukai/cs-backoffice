@@ -190,7 +190,7 @@ const EventDashboard = () => {
                 image: item.image,
                 current: item.soldTotal,
                 total: item.stock,
-                ticketImported: item.importTotal,
+                ticketsImported: item.importTotal,
               }))}
             />
           </Col>
