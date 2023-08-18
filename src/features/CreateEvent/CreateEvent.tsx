@@ -231,7 +231,7 @@ const CreateEvent = () => {
     const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
       const types = {
         ...item,
-        price: Number(item.price),
+        price: Number(`${item.price}`.replace(/,/g, '')),
         stock: Number(item.stock),
         ceilingPrice: Number(item.ceilingPrice),
         royaltiesFee: Number(item.royaltiesFee),
