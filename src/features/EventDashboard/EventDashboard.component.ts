@@ -252,6 +252,8 @@ export const RankingListItemWrapper = styled.li`
     text-align: right;
     display: flex;
     flex-wrap: nowrap;
+    justify-content: right;
+    gap: 3px;
     b {
       color: ${Colors.black4};
       font-size: 15px;
