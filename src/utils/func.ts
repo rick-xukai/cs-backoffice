@@ -149,7 +149,7 @@ export const checkEventStatus = (status: number) => {
   let statusText = '';
   switch (status) {
     case 0:
-      statusText = 'Darft';
+      statusText = 'Draft';
       break;
     case 1:
       statusText = 'Upcoming';
