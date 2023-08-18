@@ -172,19 +172,19 @@ const NormalListItem = ({
   total: number;
 }) => (
   <NormalListItemWrapper>
-    <Row gutter={16} align="middle">
-      <Col>
+    <Row gutter={16} align="middle" wrap={false}>
+      <Col style={{ width: 56, flexShrink: 0 }}>
         <img src={img} alt="" />
       </Col>
       <Col flex="auto">
-        <Row justify="space-between" align="middle">
-          <Col>
+        <Row justify="space-between" align="middle" wrap={false}>
+          <Col span={19}>
             <p className="title">{title}</p>
             <p className="sub-title">
               Tickets Imported <b>{ticketsImported || 0}</b>
             </p>
           </Col>
-          <Col>
+          <Col span={5}>
             <p className="numbers">
               <b>{current}</b> / {total || 'Unlimited'}
             </p>
@@ -213,8 +213,8 @@ const RankingListItem = ({
   index: number;
 }) => (
   <RankingListItemWrapper>
-    <Row gutter={16} style={{ height: 21 }}>
-      <Col>
+    <Row style={{ height: 21 }} wrap={false} justify="space-between">
+      <Col style={{ width: 36, flexShrink: 0 }}>
         {index < 3 ? (
           <img src={rankingIcons[index]} alt="" />
         ) : (
@@ -222,11 +222,11 @@ const RankingListItem = ({
         )}
       </Col>
       <Col flex="auto">
-        <Row justify="space-between">
-          <Col>
+        <Row justify="space-between" wrap={false}>
+          <Col span={20} xs={16}>
             <p className="title">{title}</p>
           </Col>
-          <Col>
+          <Col span={4} xs={8}>
             <p className="numbers">
               <b>{current}</b> / {total || 'Unlimited'}
             </p>

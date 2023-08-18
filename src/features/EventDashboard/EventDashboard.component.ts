@@ -15,7 +15,6 @@ export const BannerWrapper = styled.div`
 
   .banner-image-wrapper {
     width: 471px;
-    object-fit: cover;
     img {
       width: 100%;
       height: 100%;
@@ -33,6 +32,10 @@ export const BannerWrapper = styled.div`
   }
   .content {
     padding: 24px;
+    width: calc(100% - 471px);
+    @media (max-width: ${BreakPoints.lg}px) {
+      width: 100%;
+    }
   }
   .title {
     font-family: Oswald;
@@ -42,6 +45,9 @@ export const BannerWrapper = styled.div`
     text-transform: uppercase;
     color: ${Colors.white};
     margin: 8px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .time {
     color: ${Colors.white};
@@ -180,6 +186,10 @@ export const NormalListItemWrapper = styled.li`
     margin-bottom: 0;
     line-height: 21px;
     margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
   }
   .sub-title {
     font-size: 13px;
@@ -199,6 +209,7 @@ export const NormalListItemWrapper = styled.li`
     font-weight: 400;
     color: ${Colors.grey6};
     font-weight: 400;
+    text-align: right;
 
     b {
       color: ${Colors.black4};
@@ -227,6 +238,10 @@ export const RankingListItemWrapper = styled.li`
     font-weight: 500;
     line-height: 26px;
     margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
   }
   .numbers {
     line-height: 26px;
@@ -234,7 +249,9 @@ export const RankingListItemWrapper = styled.li`
     font-weight: 400;
     color: ${Colors.grey6};
     font-weight: 400;
-
+    text-align: right;
+    display: flex;
+    flex-wrap: nowrap;
     b {
       color: ${Colors.black4};
       font-size: 15px;
