@@ -594,6 +594,8 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }
+      clearTimerFuction();
+      setShowImportProgress(false);
       message.error(error.message);
     }
   }, [error]);
