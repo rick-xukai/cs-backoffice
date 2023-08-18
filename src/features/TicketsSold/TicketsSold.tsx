@@ -30,7 +30,10 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { isEmail } from '../../utils/validator';
 import { Images } from '../../theme';
-import { formatTimeStrByTimeString } from '../../utils/func';
+import {
+  formatTimeStrByTimeString,
+  thousandsSeparator,
+} from '../../utils/func';
 import { FormatTimeKeys } from '../../constants/Keys';
 import {
   priceUnit,
@@ -163,7 +166,9 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       title: 'Paid Price',
       dataIndex: 'total',
       key: 'total',
-      render: (paidPrice: number) => <span>{`${paidPrice} ${priceUnit}`}</span>,
+      render: (paidPrice: number) => (
+        <span>{`${thousandsSeparator(`${paidPrice}`)} ${priceUnit}`}</span>
+      ),
       width: 140,
     },
     {
@@ -172,7 +177,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       key: 'price',
       width: 140,
       render: (ticketPrice: number) => (
-        <span>{`${ticketPrice} ${priceUnit}`}</span>
+        <span>{`${thousandsSeparator(`${ticketPrice}`)} ${priceUnit}`}</span>
       ),
     },
     {
@@ -250,7 +255,8 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
           //   });
           // }}
         >
-          {(fees > 0 && `${fees} ${priceUnit}`) || fees}
+          {(fees > 0 && `${thousandsSeparator(`${fees}`)} ${priceUnit}`) ||
+            fees}
         </Col>
       ),
     },

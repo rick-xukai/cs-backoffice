@@ -75,16 +75,22 @@ const EventDashboard = () => {
       href=" "
       text={buyers?.userCount || 0}
       barTitle="Conversion Rate"
-      value={`${buyers?.conversionRate ? buyers?.conversionRate * 100 : 0}%`}
+      value={`${
+        buyers?.conversionRate ? (buyers?.conversionRate * 100).toFixed(2) : 0
+      }%`}
     />
   );
   const eventPageViewsCard = (
     <NormalCard
       title="Event Page Views"
       href=" "
-      text={pageViews?.viewCount || 0}
+      text={(pageViews?.viewCount && pageViews?.viewCount.toFixed(2)) || 0}
       barTitle="Average Daily Visits"
-      value={pageViews?.averageDailyCount || 0}
+      value={
+        (pageViews?.averageDailyCount &&
+          pageViews?.averageDailyCount.toFixed(2)) ||
+        0
+      }
     />
   );
   const netSalesCard = (
