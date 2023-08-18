@@ -1,6 +1,7 @@
 import { RequestClientClass } from '../../../utils/requestClient';
 import { API_SERVER } from '../../../constants/predicates';
 import API from '../../../constants/API';
+import { UpdateProfilePayload } from '../../../features/Profile/Profile.slice';
 
 const requestClient = () => new RequestClientClass(API_SERVER);
 
@@ -45,4 +46,95 @@ const getUserDetailTickets = async (payload: {
   return response;
 };
 
-export default { getUsersList, getUserDetail, getUserDetailTickets, doLogin };
+const doChangePassword = async (payload: any) => {
+  const uri = API.changePassword.put;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPut();
+  return response;
+};
+
+const doFotgotPassword = async (payload: any) => {
+  const uri = API.fogogtPassword.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
+
+const getProfileInfo = async () => {
+  const uri = API.getProfileInfo.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+const updateProfileInfo = async (payload: UpdateProfilePayload) => {
+  const uri = API.getProfileInfo.put;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPut();
+  return response;
+};
+
+const doVerificationCode = async (payload: any) => {
+  const uri = API.verificationCode.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
+
+const uploadProfileFile = async (payload: any) => {
+  const uri = API.uploadFile.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setPayload(payload)
+    .doPost();
+  return response;
+};
+
+const doResetPassword = async (payload: any) => {
+  const uri = API.resetPassword.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
+
+const getUserPermissionsList = async () => {
+  const uri = API.getUserPermissionsList.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+export default {
+  getUsersList,
+  getUserDetail,
+  getUserDetailTickets,
+  doLogin,
+  doChangePassword,
+  doFotgotPassword,
+  doVerificationCode,
+  doResetPassword,
+  getProfileInfo,
+  updateProfileInfo,
+  uploadProfileFile,
+  getUserPermissionsList,
+};

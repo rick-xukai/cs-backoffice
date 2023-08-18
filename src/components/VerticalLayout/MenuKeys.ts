@@ -6,5 +6,8 @@ export const MenuKeys = {
   userDetail: 'menu-user-detail',
   tickets: 'menu-tickets',
   settings: 'menu-settings',
+  profile: 'menu-profile',
+  userAndPermissions: 'menu-userAndPermissions',
   transactions: 'menu-transactions',
+  orders: 'menu-orders',
 };

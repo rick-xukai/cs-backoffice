@@ -50,6 +50,43 @@ const API = {
   uploadFile: {
     post: '/admin/file',
   },
+  changePassword: {
+    put: '/admin/my/password',
+  },
+  fogogtPassword: {
+    post: '/admin/my/forget_password',
+  },
+  verificationCode: {
+    post: '/admin/my/verification',
+  },
+  resetPassword: {
+    post: '/admin/my/reset_password',
+  },
+  getProfileInfo: {
+    get: '/admin/my/organizer',
+    put: '/admin/my/organizer',
+  },
+  getUserPermissionsList: {
+    get: '/admin/my/user',
+  },
+  fetchOpenAi: {
+    post: '/admin/openai',
+  },
+  getListTicketType: {
+    get: '/admin/event/ticketType',
+  },
+  cancelEvent: {
+    put: '/admin/event/:eventId/cancel',
+  },
+  deleteEvent: {
+    put: '/admin/event/:eventId/delete',
+  },
+  checkDiscountCode: {
+    post: '/admin/event/discount/code/check',
+  },
+  checkConnectTicket: {
+    post: '/admin/event/:eventId/:ticketTypeId/check',
+  },
 };
 
 export default API;

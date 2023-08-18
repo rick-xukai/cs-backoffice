@@ -99,8 +99,9 @@ export const columns = (routeConfig: any, id?: string, type?: string) => {
     },
     {
       title: 'Ticket Type',
-      dataIndex: 'ticketType',
-      key: 'ticketType',
+      dataIndex:
+        (type === UserRoutes.userDetail && 'ticketTypeName') || 'ticketType',
+      key: (type === UserRoutes.userDetail && 'ticketTypeName') || 'ticketType',
     },
     {
       title: 'Event',

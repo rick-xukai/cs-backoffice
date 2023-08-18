@@ -1,12 +1,18 @@
 import { format, getUnixTime } from 'date-fns';
 import { utcToZonedTime, format as formatTZ } from 'date-fns-tz';
 import CryptoJS from 'crypto-js';
+import { Base64 } from 'js-base64';
+import numeral from 'numeral';
 
 import { DataEncryptionKeys } from '../constants/Keys';
 import {
   FullScreenDocument,
   FullScreenDocumentElement,
 } from '../constants/types';
+import {
+  CreateEventFormValueProps,
+  ApplyCodeToType,
+} from '../features/CreateEvent/CreateEvent.slice';
 
 const OneMin = 60;
 const OneHour = 3600;
@@ -121,14 +127,30 @@ export const dataEncryption = (data: any, type: string) => {
         CryptoJS.enc.Utf8,
       );
     }
-    // eslint-disable-next-line no-empty
-  } catch (_) {}
+  } catch (_) {
+    // eslint-disable-next-line no-console
+    console.error(_);
+  }
   return formatData;
+};
+
+export const base64Decrypt = (code: string) => {
+  const parsedWordArray = CryptoJS.enc.Base64.parse(code);
+  const parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
+  return JSON.parse(parsedStr);
+};
+
+export const base64Encrypt = (parameters: {}) => {
+  const wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(parameters));
+  return CryptoJS.enc.Base64.stringify(wordArray);
 };
 
 export const checkEventStatus = (status: number) => {
   let statusText = '';
   switch (status) {
+    case 0:
+      statusText = 'Draft';
+      break;
     case 1:
       statusText = 'Upcoming';
       break;
@@ -168,3 +190,220 @@ export const mapEditEventTicket = (ticketsData: any) => {
 
 export const formatLabelDate = (value: string) =>
   value.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
+
+export const base64Format = (value: string, type: string) => {
+  if (type === DataEncryptionKeys.encrypt) {
+    return Base64.encodeURI(value);
+  }
+  return Base64.decode(value);
+};
+
+export const isBase64 = (value: string) => {
+  if (!value) return false;
+  return Base64.encodeURI(Base64.decode(value)) === value;
+};
+
+export const createImage = (url: string) =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener('load', () => resolve(image));
+    image.addEventListener('error', (error) => reject(error));
+    image.setAttribute('crossOrigin', 'anonymous');
+    image.src = url;
+  });
+
+export const getRadianAngle = (degreeValue: number) =>
+  (degreeValue * Math.PI) / 180;
+
+export const rotateSize = (width: number, height: number, rotation: any) => {
+  const rotRad = getRadianAngle(rotation);
+  return {
+    width:
+      Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
+    height:
+      Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
+  };
+};
+
+export const getCroppedImg = async (
+  imageSrc: string,
+  imageType: string,
+  pixelCrop: any,
+  rotation = 0,
+  flip = { horizontal: false, vertical: false },
+) => {
+  const image: any = await createImage(imageSrc);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  if (!ctx) {
+    return null;
+  }
+  const rotRad = getRadianAngle(rotation);
+
+  const { width: bBoxWidth, height: bBoxHeight } = rotateSize(
+    image.width,
+    image.height,
+    rotation,
+  );
+
+  canvas.width = bBoxWidth;
+  canvas.height = bBoxHeight;
+
+  ctx.translate(bBoxWidth / 2, bBoxHeight / 2);
+  ctx.rotate(rotRad);
+  ctx.scale(flip.horizontal ? -1 : 1, flip.vertical ? -1 : 1);
+  ctx.translate(-image.width / 2, -image.height / 2);
+
+  ctx.drawImage(image, 0, 0);
+
+  const croppedCanvas = document.createElement('canvas');
+
+  const croppedCtx = croppedCanvas.getContext('2d');
+
+  if (!croppedCtx) {
+    return null;
+  }
+
+  croppedCanvas.width = pixelCrop.width;
+  croppedCanvas.height = pixelCrop.height;
+
+  croppedCtx.drawImage(
+    canvas,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height,
+  );
+
+  return croppedCanvas.toDataURL(imageType);
+};
+
+export const dataURLtoFile = (dataurl: any, filename: string) => {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  // eslint-disable-next-line
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+};
+
+export const bodyOverflow = (status: string) => {
+  try {
+    document.body.style.overflow = status;
+  } catch (error) {
+    // eslint-disable-next-line
+    console.log(error);
+  }
+};
+
+export const requiredValidateForm: any = (
+  value: any,
+  label: string,
+  isSave: boolean,
+) => {
+  if (!value && isSave)
+    return {
+      help: `${label} is required`,
+      validateStatus: 'error',
+    };
+  return {
+    help: undefined,
+    validateStatus: undefined,
+  };
+};
+
+export const thousandsSeparator = (n: string) =>
+  numeral(Number(n)).format('0,0.00');
+
+export const calculatePrice = (price: any, type: boolean) => {
+  if (type)
+    return {
+      userPay: thousandsSeparator(`${price}`),
+      takeHome: thousandsSeparator(`${Number(price) - Number(price) * 0.05}`),
+    };
+
+  return {
+    userPay: thousandsSeparator(`${Number(price) + Number(price) * 0.05}`),
+    takeHome: thousandsSeparator(`${price}`),
+  };
+};
+
+export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
+  let isUnrelatedTickets: string | number = '';
+  if (
+    !source.name ||
+    !source.organizerId ||
+    !source.location ||
+    !source.startTime ||
+    !source.endTime ||
+    !source.image ||
+    !source.descriptionShort
+  ) {
+    isUnrelatedTickets = 0;
+    return isUnrelatedTickets;
+  }
+  if (!source.ticketTypes.length) {
+    isUnrelatedTickets = 1;
+    return isUnrelatedTickets;
+  }
+  if (source.discounts.length) {
+    source.discounts.some((item) => {
+      if (item.condition.quantity && !item.condition.ticketTypeId) {
+        isUnrelatedTickets = 2;
+        return true;
+      }
+      if (item.gift.quantity && !item.gift.ticketTypeId) {
+        isUnrelatedTickets = 2;
+        return true;
+      }
+      if (
+        item.apply.type === ApplyCodeToType.certain &&
+        !item.apply.ticketTypeIds.length
+      ) {
+        isUnrelatedTickets = 2;
+        return true;
+      }
+      return false;
+    });
+  }
+  return isUnrelatedTickets;
+};
+
+export const validatePromoCode = (code: string) => {
+  if (!code) return true;
+  const reg = /^[A-Za-z0-9-_@]+$/;
+  return reg.test(code);
+};
+
+export const formatTimeStrByTimeStringPreview = (
+  timeString: string,
+  formatType: string,
+) => {
+  try {
+    if (timeString) {
+      return format(new Date(timeString.replace(/-/g, '/')), formatType);
+    }
+  } catch (_) {
+    return '-';
+  }
+  return '-';
+};
+
+export const formatLocation = (location: string, address: string) => {
+  if (location && address) {
+    return `${location}, ${address}`;
+  }
+  if (location && !address) {
+    return location;
+  }
+  return '-';
+};

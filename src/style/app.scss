@@ -18,3 +18,31 @@ body {
 .icon-btn {
   border: none;
 }
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background: #de0005;
+  border-color: #de0005;
+}
+.ant-layout-sider .ant-layout-sider-children {
+  @media screen and (max-width: 992px) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.side-by-side {
+  display: inline-block;
+  width: calc(50% - 8px);
+  @media screen and (max-width: 992px) {
+    width: 100%;
+    display: block;
+  }
+}
+
+.side-by-side-left {
+  margin-right: 16px !important;
+  @media screen and (max-width: 992px) {
+    margin-right: 0;
+  }
+}

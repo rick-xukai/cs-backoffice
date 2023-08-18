@@ -1,584 +1,1007 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory, Prompt, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { Button, Form, message, Modal, Spin } from 'antd';
+import _, { isEmpty } from 'lodash';
+import moment from 'moment';
 import {
-  Row,
-  Col,
-  Button,
-  Input,
-  Form,
-  Select,
-  DatePicker,
-  Tabs,
-  Modal,
-  message,
-  Spin,
-} from 'antd';
-import {
-  DeleteOutlined,
   ExclamationCircleOutlined,
+  CloseOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
-import { cloneDeep } from 'lodash';
-import moment from 'moment';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
-import { mapEditEventTicket } from '../../utils/func';
 import {
   defaultCurrentPage,
   defaultOrganizerPageSize,
-  TokenExpireResponseCode,
+  SetRefundKey,
+  DescriptionImagesSize,
+  DeleteTicket,
 } from '../../constants/General';
-import {
-  CreateEventContainer,
-  CreateEventFormContainer,
-} from './CreateEventComponent';
+import { useCookie } from '../../hooks';
+import { Images } from '../../theme';
+import { CookieKeys, UserRoleKeys } from '../../constants/Keys';
+import { validatUnfinishedSteps } from '../../utils/func';
+import { UserRoutes } from '../../navigation/Routes';
+import ProgressBarComponent from '../../components/ProgressBar';
+import PageHeaderComponent from '../../components/PageHeader';
+import { CreateEventContainer, LoadingContainer } from './CreateEventComponent';
+import EventInfo from './Component/EventInfo';
+import CreateTicket from './Component/CreateTicket';
+import Settings, {
+  CreatePromoStatus,
+  CreatePromoType,
+} from './Component/Settings';
+import Publish from './Component/Publish';
 import {
   reset,
   selectError,
-  selectData,
-  uploadFileAction,
-  selectLoading,
-  CreateEventPayloadType,
-  TicketTypes,
-  selectOrganizerData,
-  OrganizerData,
-  getOrganizerAction,
   createEventAction,
+  selectOrganizerData,
+  getOrganizerAction,
+  selectLoading,
+  CreateEventFormValueProps,
+  selectPublishLoading,
+  selectSaveDraftLoading,
+  createEventSaveDraftAction,
+  selectListTicketType,
+  getListTicketTypeAction,
   updateEventAction,
+  selectNeedUpdateEventId,
+  selectNeedUpdateTicketsId,
+  selectNeedUpdateDiscountsId,
+  CreateEventActionType,
+  updateNeedUpdateEventId,
 } from './CreateEvent.slice';
-import { EventDetailDataType } from '../EventDetail/EventDetail.slice';
-import PageHeaderComponent from '../../components/PageHeader/PageHeader';
-import UploadFileComponent from '../../components/UploadFile/UploadFileComponent';
-import TicketTab from './Component/TicketTab';
+import { CreateTicketStatus } from './Component/CreateTicketComponents';
+import { getEventDetailAction } from '../EventDetail/EventDetail.slice';
+import { EventStatusKeys } from '../Events/Events.slice';
 
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 const { confirm } = Modal;
 
-const CreateEvent = ({
-  isEdit = false,
-  editEventID,
-  eventData,
-  setEditEvent,
-}: {
-  isEdit: boolean;
-  editEventID: string;
-  eventData: EventDetailDataType;
-  setEditEvent: (status: boolean) => void;
-}) => {
-  const mainBoxLeft: any = useRef(null);
+export enum ComponentSteps {
+  eventInfo = 0,
+  createTicket = 1,
+  settings = 2,
+  publish = 3,
+}
+
+export const StatusImage = ({ src }: { src: string }) => (
+  <div>
+    <img src={src} alt="" className="status-img" />
+  </div>
+);
+
+const CreateEvent = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const history = useHistory();
+  const dispatch = useAppDispatch();
+  const cookies = useCookie([CookieKeys.authUserRole]);
 
-  const organizerData = useAppSelector(selectOrganizerData);
-  const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
-  const createEventResponseData = useAppSelector(selectData);
+  const publishLoading = useAppSelector(selectPublishLoading);
+  const saveDraftLoading = useAppSelector(selectSaveDraftLoading);
+  const error = useAppSelector(selectError);
+  const organizerData = useAppSelector(selectOrganizerData);
+  const listTicketType = useAppSelector(selectListTicketType);
+  const needUpdateEventId = useAppSelector(selectNeedUpdateEventId);
+  const needUpdateDiscountsId = useAppSelector(selectNeedUpdateDiscountsId);
+  const needUpdateTicketsId = useAppSelector(selectNeedUpdateTicketsId);
 
-  const [activeKey, setActiveKey] = useState<string>('0');
-  const [items, setItems] = useState<any>([]);
-  const [eventFormData, setEventFormData] = useState<CreateEventPayloadType>({
-    organizerId: (eventData && eventData.organizerId) || '',
-    name: (eventData && eventData.name) || '',
-    description: (eventData && eventData.description) || '',
-    location: (eventData && eventData.location) || '',
-    startTime: (eventData && eventData.startTime) || '',
-    endTime: (eventData && eventData.endTime) || '',
-    image: (eventData && eventData.image) || '',
-    royaltiesFee: '',
-  });
-  const [eventTicketData, setEventTicketData] = useState<TicketTypes[]>(
-    (eventData && mapEditEventTicket(eventData.ticketTypes)) || [],
+  const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
+  const [previousStep, setPreviousStep] = useState<number>(
+    ComponentSteps.eventInfo,
   );
-  const [ticketRequiredFields, setTicketRequiredFields] =
+  const [blockRouter, setBlockRouter] = useState<boolean>(true);
+  const [showNotSaveConfirmModal, setShowNotSaveConfirmModal] =
     useState<boolean>(false);
-  const [ticketTypesContainerHeight, setTicketTypesContainerHeight] =
-    useState<string>('0px');
-  const [newTabIndex, setNewTabIndex] = useState<number>(0);
-  const [fileList, setFileList] = useState<any>([]);
-  const [changeTicketField, setChangeTicketField] = useState<any>({});
+  const [showMissingFieldsModal, setShowMissingFieldsModal] =
+    useState<boolean>(false);
+  const [eventInfoFormEdit, setEventInfoFormEdit] = useState<boolean>(false);
+  const [ticketFormEdit, setTicketFormEdit] = useState<boolean>(false);
+  const [settingsFormEdit, setSettingsFormEdit] = useState<boolean>(false);
 
-  const onFinish = (values: CreateEventPayloadType) => {
-    const payload = {
-      ...values,
-      startTime: values.startTime[0],
-      endTime: values.startTime[1],
-      image: eventFormData.image,
-      organizerId: eventFormData.organizerId,
-      ticketTypes: cloneDeep(eventTicketData).map((item) => {
-        let ceilingPrice = 0;
-        let purchaseLimit = 0;
-        if (item.ceilingPrice !== '') {
-          ceilingPrice = Number(item.ceilingPrice);
-        }
-        if (item.purchaseLimit !== '') {
-          purchaseLimit = Number(item.purchaseLimit);
-        }
-        return {
-          ...item,
-          price: Number(item.price),
-          stock: Number(item.stock),
-          ceilingPrice,
-          purchaseLimit,
-          ticketTypeId: undefined,
-          royaltiesFee:
-            ((eventFormData.royaltiesFee || eventFormData.royaltiesFee === 0) &&
-              Number(eventFormData.royaltiesFee) / 100) ||
-            0,
+  const [whichPathUrlWillTo, setWhichPathUrlWillTo] = useState<string>('');
+  const [clickConfirmModalCloseIcon, setClickConfirmModalCloseIcon] =
+    useState<boolean>(false);
+  const [createEventFormValue, setCreateEventFormValue] =
+    useState<CreateEventFormValueProps>({
+      name: '',
+      location: '',
+      locationCoord: '',
+      organizerId: '',
+      address: '',
+      startTime: '',
+      endTime: '',
+      image: '',
+      descriptionShort: '',
+      description: '',
+      descriptionImages: [],
+      ticketTypes: [],
+      refundPolicy: SetRefundKey.nonRefundable,
+      discounts: [],
+    });
+  const [originDetailData, setOriginDetailData] =
+    useState<CreateEventFormValueProps>({
+      name: '',
+      location: '',
+      locationCoord: '',
+      organizerId: '',
+      address: '',
+      startTime: '',
+      endTime: '',
+      image: '',
+      descriptionShort: '',
+      description: '',
+      descriptionImages: [],
+      ticketTypes: [],
+      refundPolicy: SetRefundKey.nonRefundable,
+      discounts: [],
+    });
+
+  const [progressItems, setProgressItems] = useState([
+    {
+      title: 'Create Event',
+      icon: <StatusImage src={Images.EditingIcon} />,
+    },
+    {
+      title: 'Create Ticket',
+      icon: <StatusImage src={Images.NotStartedIcon} />,
+    },
+    {
+      title: 'Settings',
+      icon: <StatusImage src={Images.NotStartedIcon} />,
+    },
+    {
+      title: 'Publish',
+      icon: <StatusImage src={Images.NotStartedIcon} />,
+    },
+  ]);
+  const [createTicketStatus, setCreateTicketStatus] = useState(
+    CreateTicketStatus.list,
+  );
+
+  const [createPromoStatus, setCreatePromoStatus] = useState(
+    CreatePromoStatus.list,
+  );
+
+  const [createPromoType, setCreatePromoType] = useState(
+    CreatePromoType.bundle,
+  );
+
+  const params: { id: string } = useParams();
+  const { id } = params;
+  const isEdit = !!id;
+  const isDraft = createEventFormValue.status === EventStatusKeys.draft;
+
+  const formatRequestPayload = (
+    type: number,
+    anotherPayload?: {
+      discounts?: CreateEventFormValueProps['discounts'];
+      ticketTypes?: CreateEventFormValueProps['ticketTypes'];
+    },
+  ) => {
+    const discounts =
+      anotherPayload?.discounts || createEventFormValue.discounts;
+    const originTicketTypes =
+      anotherPayload?.ticketTypes || createEventFormValue.ticketTypes;
+    const payload: CreateEventFormValueProps = {
+      ...createEventFormValue,
+      publish: type,
+      startTime: moment(createEventFormValue.startTime).format(),
+      endTime: moment(createEventFormValue.endTime).format(),
+      descriptionImages: createEventFormValue.descriptionImages.map(
+        (item: any) => ({
+          image: item.response,
+          size:
+            DescriptionImagesSize.find((sizes) => sizes.key === item.column)
+              ?.text || '',
+        }),
+      ),
+      discounts: discounts.map((discount) => {
+        const applyItems = {
+          ...discount,
+          discount: {
+            ...discount.discount,
+            value:
+              (discount.discount.value &&
+                Number(discount.discount.value.toString().replace(/,/g, ''))) ||
+              0,
+          },
+          quantity: discount.quantity || 0,
+          apply: {
+            ...discount.apply,
+            ticketTypeIds: discount.apply.ticketTypeIds
+              .map((ticketTypeId) => ticketTypeId)
+              .filter((item) => !!item),
+          },
         };
+        return applyItems;
+      }),
+      ticketTypes: originTicketTypes.map((ticket) => {
+        const items = {
+          ...ticket,
+          connectedTickets: ticket.connectedTickets.filter(
+            (item) => !isEmpty(item),
+          ),
+        };
+        return items;
       }),
     };
-    delete payload.royaltiesFee;
-    confirm({
-      centered: true,
-      title:
-        (!isEdit && t('You are about to publish your event.')) ||
-        t('Save your event.'),
-      okText: (!isEdit && t('Publish')) || t('Save'),
-      cancelText: t('Cancel'),
-      icon: <ExclamationCircleOutlined />,
-      content: t('Are you sure you want to [action]?', {
-        action: (!isEdit && 'proceed') || 'save',
-      }),
-      onOk() {
-        if (!isEdit) {
-          dispatch(createEventAction(payload));
-        } else {
-          dispatch(updateEventAction({ payload, id: editEventID })).then(
-            (response) => {
-              if (response.type === updateEventAction.fulfilled.toString()) {
-                history.push(UserRoutes.events);
-                message.success(t('Save successfully'));
-              }
-            },
-          );
-        }
-      },
+    const ticketTypes = _.cloneDeep(payload.ticketTypes).map((item) => {
+      const types = {
+        ...item,
+        price: Number(`${item.price}`.replace(/,/g, '')),
+        stock: Number(item.stock),
+        ceilingPrice: Number(item.ceilingPrice),
+        royaltiesFee: Number(item.royaltiesFee),
+        sellStartTime: moment(item.sellStartTime).format(),
+        sellEndTime: moment(item.sellEndTime).format(),
+        connectedTickets: item.connectedTickets.map((connectedTicket: any) => ({
+          ticketTypeId: connectedTicket.id || connectedTicket.ticketTypeId,
+        })),
+      };
+      return types;
     });
+    if (!createEventFormValue.startTime) {
+      delete payload.startTime;
+    }
+    if (!createEventFormValue.endTime) {
+      delete payload.endTime;
+    }
+    if (!createEventFormValue.organizerId) {
+      delete payload.organizerId;
+    }
+    return { ...payload, ticketTypes };
   };
 
   useEffect(() => {
-    if (changeTicketField.ticketTypeId) {
-      const currentTicket: any = eventTicketData.find(
-        (item) => item.ticketTypeId === changeTicketField.ticketTypeId,
-      );
-      const unchangedTicket = eventTicketData.filter(
-        (item) => item.ticketTypeId !== changeTicketField.ticketTypeId,
-      );
-      setEventTicketData([
-        ...unchangedTicket,
-        { ...currentTicket, ...changeTicketField },
-      ]);
+    if (needUpdateTicketsId.length) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        ticketTypes: createEventFormValue.ticketTypes.map((item, index) => ({
+          ...item,
+          id: needUpdateTicketsId[index].id,
+        })),
+      });
     }
-  }, [changeTicketField]);
+  }, [needUpdateTicketsId]);
 
-  const submitTicketData = (data: any) => {
-    setChangeTicketField(data);
-  };
-
-  const onChange = (newActiveKey: string) => {
-    setActiveKey(newActiveKey);
-  };
-
-  const addTicketTab = (closable?: boolean) => {
-    const newActiveKey = (newTabIndex + 1).toString();
-    setNewTabIndex(Number(newActiveKey));
-    const newPanes: any = [...items];
-    newPanes.push({
-      label: `Ticket ${newActiveKey}`,
-      children: (
-        <TicketTab
-          setTicketRequiredFields={setTicketRequiredFields}
-          submitTicketData={submitTicketData}
-          formName={`Ticket ${newActiveKey}`}
-        />
-      ),
-      key: newActiveKey,
-      closeIcon: <DeleteOutlined />,
-      closable,
-    });
-    if (newPanes.length > 1) {
-      newPanes[0] = { ...newPanes[0], closable: true };
+  useEffect(() => {
+    if (needUpdateDiscountsId.length) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        discounts: createEventFormValue.discounts.map((item, index) => ({
+          ...item,
+          id: needUpdateDiscountsId[index].id,
+        })),
+      });
     }
-    setItems(newPanes);
-    setActiveKey(newActiveKey);
-    setEventTicketData([
-      ...eventTicketData,
-      {
-        ticketTypeId: `Ticket ${newActiveKey}`,
-        name: '',
-        description: '',
-        price: '',
-        stock: '',
-        ceilingPrice: '',
-        purchaseLimit: '',
-        royaltiesFee: '',
-        image: '',
-        imageType: '',
-        thumbnailType: '',
-        thumbnailUrl: '',
-      },
-    ]);
+  }, [needUpdateDiscountsId]);
+
+  const saveAsDraft = async (type?: string) => {
+    if (!createEventFormValue.name) {
+      message.error(
+        t('Please enter a name for your event before saving as a draft.'),
+      );
+    } else {
+      let response: any = {};
+      if (needUpdateEventId || createEventFormValue.id) {
+        const payload: any = {
+          ...formatRequestPayload(CreateEventActionType.saveAsDraft),
+          id: needUpdateEventId || createEventFormValue.id,
+        };
+        response = await dispatch(updateEventAction(payload));
+      } else {
+        response = await dispatch(
+          createEventSaveDraftAction(
+            formatRequestPayload(CreateEventActionType.saveAsDraft),
+          ),
+        );
+      }
+
+      if (
+        response.type ===
+        (
+          (needUpdateEventId && updateEventAction) ||
+          createEventSaveDraftAction
+        ).fulfilled.toString()
+      ) {
+        message.success(t('Draft Saved Successfully!'));
+        setEventInfoFormEdit(false);
+        setTicketFormEdit(false);
+        setSettingsFormEdit(false);
+        if (type && type === 'blockRouter') {
+          setBlockRouter(false);
+        }
+        setEventInfoFormEdit(false);
+      }
+    }
   };
 
-  const removeTicketTab = (targetKey: string) => {
-    confirm({
-      centered: true,
-      title: t('Are you sure you want to delete this Ticket Type?'),
-      okText: t('Delete'),
-      cancelText: t('Cancel'),
-      icon: <ExclamationCircleOutlined />,
-      content: t(
-        `This item will be deleted immediately. You can't undo tis action.`,
-      ),
-      onOk() {
-        let newActiveKey = activeKey;
-        let isRemoveNewTab = false;
-        let lastIndex = -1;
-        items.forEach((item: any, i: number) => {
-          if (item.key === targetKey) {
-            lastIndex = i - 1;
-          }
-        });
-        const newPanes = items.filter((item: any) => item.key !== targetKey);
-        if (newPanes.length && newActiveKey === targetKey) {
-          if (lastIndex >= 0) {
-            newActiveKey = newPanes[lastIndex].key;
-          } else {
-            newActiveKey = newPanes[0].key;
-          }
-        }
-        if (newPanes.length === 1) {
-          newPanes[0] = { ...newPanes[0], closable: false };
-        }
-        eventTicketData.forEach((item) => {
-          if (item.name || item.description || item.price || item.image) {
-            setTicketRequiredFields(false);
-          }
-        });
-        if (isEdit && Number(targetKey) > eventData.ticketTypes.length) {
-          isRemoveNewTab = true;
-        }
-        if (isEdit && !isRemoveNewTab) {
-          const deleteTicket: any = eventTicketData.find(
-            (item) => item.ticketTypeId === `Ticket ${targetKey}`,
-          );
-          const undeletedTicket = eventTicketData.filter(
-            (item) => item.ticketTypeId !== `Ticket ${targetKey}`,
-          );
-          setEventTicketData([
-            ...undeletedTicket,
-            { ...deleteTicket, delete: true },
-          ]);
+  const fetchDetailData = async (
+    afterPublish?: boolean,
+    redirectTo?: () => void,
+  ) => {
+    const response: any = await dispatch(getEventDetailAction(id));
+    if (
+      response.type === getEventDetailAction.fulfilled.toString() &&
+      response.payload?.data
+    ) {
+      const { data } = response.payload;
+      const payload = {
+        ...data,
+        descriptionImages: data.descriptionImages.map((item: any) => ({
+          column: DescriptionImagesSize.find((size) => size.text === item.size)
+            ?.key,
+          response: item.image,
+          type: 'image/jpeg',
+          size: 1,
+          name: item.image,
+        })),
+        ticketTypes: data.ticketTypes.map((item: any) => ({
+          ...item,
+          connectedTickets: item.connectedTickets.map((ticket: any) => ({
+            ...ticket,
+            ...listTicketType.find((type) => type.id === ticket.ticketTypeId),
+          })),
+        })),
+      };
+      setCreateEventFormValue(payload);
+      setOriginDetailData(payload);
+      if (data.status === EventStatusKeys.draft) {
+        dispatch(updateNeedUpdateEventId(data.id));
+      }
+      if (steps !== ComponentSteps.publish && afterPublish) {
+        if (redirectTo) {
+          redirectTo();
         } else {
-          setEventTicketData(
-            eventTicketData.filter(
-              (item: TicketTypes) =>
-                item.ticketTypeId !== `Ticket ${targetKey}`,
+          history.push(UserRoutes.events);
+        }
+      }
+    }
+  };
+
+  const createEventPublish = async (anotherPayload?: {
+    type?: string;
+    discounts?: CreateEventFormValueProps['discounts'];
+    ticketTypes?: CreateEventFormValueProps['ticketTypes'];
+    redirectTo?: () => void;
+    publish?: CreateEventActionType;
+  }) => {
+    const currentTime = new Date().getTime();
+    const endTime = new Date(createEventFormValue.endTime || '').getTime();
+
+    const validate: any = validatUnfinishedSteps(
+      (anotherPayload && {
+        ...createEventFormValue,
+        ticketTypes:
+          anotherPayload.ticketTypes || createEventFormValue.ticketTypes,
+        discounts: anotherPayload.discounts || createEventFormValue.discounts,
+      }) ||
+        createEventFormValue,
+    );
+
+    const unfinishedSteps = () => {
+      if (anotherPayload?.type !== DeleteTicket) {
+        if (validate || validate === ComponentSteps.eventInfo) {
+          return validate;
+        }
+      }
+      return '';
+    };
+    if (unfinishedSteps() === '' || (isDraft && !anotherPayload?.publish)) {
+      if (currentTime > endTime) {
+        message.error(t('Event end time can not be in the past.'));
+      } else if (isEdit) {
+        const payload: any = {
+          ...formatRequestPayload(
+            isDraft && !anotherPayload?.publish
+              ? CreateEventActionType.saveAsDraft
+              : CreateEventActionType.publish,
+            anotherPayload,
+          ),
+          id: createEventFormValue.id,
+        };
+        const handleUpdate = async () => {
+          setShowNotSaveConfirmModal(false);
+          setEventInfoFormEdit(false);
+          setTicketFormEdit(false);
+          setSettingsFormEdit(false);
+          dispatch(updateNeedUpdateEventId(''));
+          const response = await dispatch(updateEventAction(payload));
+          if (response.type === updateEventAction.fulfilled.toString()) {
+            fetchDetailData(true, anotherPayload?.redirectTo);
+            if (anotherPayload?.redirectTo) {
+              anotherPayload.redirectTo();
+            }
+            message.success(t(`Event is successfully updated.`));
+          }
+        };
+        if (
+          originDetailData.address !== createEventFormValue.address ||
+          originDetailData.startTime !== createEventFormValue.startTime ||
+          originDetailData.endTime !== createEventFormValue.endTime ||
+          originDetailData.location !== createEventFormValue.location ||
+          originDetailData.locationCoord !== createEventFormValue.locationCoord
+        ) {
+          setShowNotSaveConfirmModal(false);
+          setEventInfoFormEdit(false);
+          setTicketFormEdit(false);
+          setSettingsFormEdit(false);
+          confirm({
+            className: 'notSaveConfirmModal',
+            onOk: handleUpdate,
+            okText: isDraft ? t('Save') : t('Save and Publish'),
+            title: t('Key Info Changed'),
+            content: t(
+              'Are you sure you gonna change the event key info? Make sure you have informed your attendees.',
+            ),
+            icon: <ExclamationCircleOutlined />,
+            centered: true,
+            closable: false,
+          });
+          return;
+        }
+        handleUpdate();
+      } else {
+        let response: any = {};
+        if (needUpdateEventId) {
+          const payload: any = {
+            ...formatRequestPayload(CreateEventActionType.publish),
+            id: needUpdateEventId,
+          };
+          response = await dispatch(updateEventAction(payload));
+        } else {
+          response = await dispatch(
+            createEventAction(
+              formatRequestPayload(CreateEventActionType.publish),
             ),
           );
         }
-        setItems(newPanes);
-        setActiveKey(newActiveKey);
+        if (
+          response.type ===
+          (
+            (needUpdateEventId && updateEventAction) ||
+            createEventAction
+          ).fulfilled.toString()
+        ) {
+          message.success(
+            t(
+              `Congrats! You have successfully published your event. Let's rock n rol!`,
+            ),
+          );
+          if (anotherPayload?.redirectTo) {
+            anotherPayload.redirectTo();
+          } else {
+            setWhichPathUrlWillTo(UserRoutes.events);
+          }
+          setBlockRouter(false);
+          setShowNotSaveConfirmModal(false);
+          setEventInfoFormEdit(false);
+        }
+      }
+    } else {
+      confirm({
+        open: showMissingFieldsModal,
+        centered: true,
+        closable: false,
+        okText: t('Go Complete'),
+        cancelText: t('Cancel'),
+        title:
+          (createEventFormValue.discounts.length &&
+            unfinishedSteps() === 2 &&
+            t('Discount Field Missing')) ||
+          t('Missing Fields'),
+        icon: <ExclamationCircleOutlined />,
+        content:
+          (createEventFormValue.discounts.length &&
+            unfinishedSteps() === 2 &&
+            t('Please select [type] tickets for the discount.', {
+              type: `"Apply To"`,
+            })) ||
+          t('Please complete all required fields before publishing.'),
+        onOk() {
+          setSteps(Number(unfinishedSteps()));
+        },
+        onCancel() {
+          setShowMissingFieldsModal(false);
+        },
+      });
+    }
+  };
+
+  /**
+   *
+   * @param value Form data
+   * @param field Field name, required!
+   */
+  const handleFieldChange = (value: any, field: string) => {
+    if (
+      field !== 'ticketTypes' &&
+      field !== 'discounts' &&
+      field !== 'locationCoord'
+    ) {
+      setEventInfoFormEdit(true);
+    }
+    if (field === 'eventTime') {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        startTime: value[0],
+        endTime: value[1],
+      });
+    } else if (field === 'locationLatLng') {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        locationCoord: `${value.lat},${value.lng}`,
+        location: value.location,
+      });
+    } else if (field === 'ticketTypesAndDiscount') {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        ticketTypes: value.ticketTypes,
+        discounts: value.discounts,
+      });
+    } else if (field) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        [field]: value,
+      });
+    } else {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        ...value,
+      });
+    }
+  };
+
+  const notSaveConfirm = (
+    onOk?: any,
+    onCancel?: any,
+    okText?: string,
+    cancelText?: string,
+    title?: string,
+    content?: string,
+  ) => {
+    const getOkText = () => {
+      if (okText) return okText;
+      if (isEdit && !isDraft) {
+        return steps !== ComponentSteps.publish
+          ? t('Save and Leave')
+          : t('Publish');
+      }
+      return t('Save as Draft');
+    };
+    confirm({
+      className: 'notSaveConfirmModal',
+      centered: true,
+      closable: false,
+      okText: getOkText(),
+      cancelText: cancelText || t('Leave'),
+      title: title || (
+        <div className="notSaveModalTitle">
+          {title || t('Unsaved Content')}
+          <CloseOutlined onClick={() => setClickConfirmModalCloseIcon(true)} />
+        </div>
+      ),
+      icon: <ExclamationCircleOutlined />,
+      content:
+        content || t('Leaving this page will result in losing your content.'),
+      onOk() {
+        setShowNotSaveConfirmModal(false);
+        if (onOk) {
+          onOk();
+        } else if (isEdit && !isDraft) {
+          createEventPublish();
+          if (steps !== ComponentSteps.publish) {
+            setEventInfoFormEdit(false);
+            setTicketFormEdit(false);
+            setSettingsFormEdit(false);
+          }
+        } else {
+          saveAsDraft('blockRouter');
+        }
+      },
+      onCancel() {
+        setShowNotSaveConfirmModal(false);
+        if (onCancel) {
+          onCancel();
+        } else {
+          setBlockRouter(false);
+        }
       },
     });
   };
 
-  const onEdit = (targetKey: string, action: 'add' | 'remove') => {
-    if (action === 'add') {
-      addTicketTab();
+  const notSaveAlert = (e: any) => {
+    e.preventDefault();
+    e.returnValue = '';
+  };
+
+  const handleRouterHoldUp = (location: any) => {
+    const pathUrl = `${location.pathname}${location.search}`;
+    setWhichPathUrlWillTo(pathUrl);
+    if (eventInfoFormEdit || ticketFormEdit || settingsFormEdit) {
+      setShowNotSaveConfirmModal(true);
     } else {
-      removeTicketTab(targetKey);
+      setBlockRouter(false);
     }
+    return false;
   };
 
-  const handleUploadChange = (info: any) => {
-    setFileList(info.fileList);
-  };
-
-  const handleFileRemove = () => {
-    setEventFormData({ ...eventFormData, image: '' });
-  };
-
-  const customRequest = async (e: any) => {
-    const formData = new FormData();
-    formData.append('file', e.file);
-    const response: any = await dispatch(uploadFileAction(formData));
-    if (response.type === uploadFileAction.fulfilled.toString()) {
-      setEventFormData({ ...eventFormData, image: response.payload.url });
-      e.onSuccess();
-    } else {
-      e.onError();
+  const checkOrganizerDefaultValue = () => {
+    let defaultValue = '';
+    let defaultId = '';
+    if (organizerData.length) {
+      if (createEventFormValue.organizerId) {
+        defaultValue =
+          organizerData.find(
+            (item) => item.id.toString() === createEventFormValue.organizerId,
+          )?.name || '';
+        defaultId =
+          organizerData
+            .find(
+              (item) => item.id.toString() === createEventFormValue.organizerId,
+            )
+            ?.id.toString() || '';
+      } else {
+        const userRole = cookies.getCookie(CookieKeys.authUserRole);
+        if (
+          userRole === UserRoleKeys.organizerAdmin ||
+          userRole === UserRoleKeys.organizerUser
+        ) {
+          defaultValue = _.head(organizerData)?.name || '';
+          defaultId = _.head(organizerData)?.id.toString() || '';
+        }
+      }
     }
+    return { defaultValue, defaultId };
   };
 
   useEffect(() => {
-    if (error) {
-      if (error.code === TokenExpireResponseCode) {
-        history.push(AuthRoutes.login);
-        message.error(t('User token is deprecated, please log in again.'));
-        return;
+    if (clickConfirmModalCloseIcon) {
+      setShowNotSaveConfirmModal(false);
+      Modal.destroyAll();
+    }
+  }, [clickConfirmModalCloseIcon]);
+
+  useEffect(() => {
+    if (showNotSaveConfirmModal) {
+      notSaveConfirm();
+    } else {
+      setClickConfirmModalCloseIcon(false);
+    }
+  }, [showNotSaveConfirmModal]);
+
+  useEffect(() => {
+    if (!blockRouter) {
+      history.push(whichPathUrlWillTo);
+      setBlockRouter(true);
+    }
+  }, [blockRouter]);
+
+  useEffect(() => {
+    const items = _.cloneDeep(progressItems);
+    items[steps].icon = <StatusImage src={Images.EditingIcon} />;
+    if (steps !== previousStep) {
+      let currentIcon = Images.NotStartedIcon;
+      if (previousStep === ComponentSteps.eventInfo) {
+        if (validatUnfinishedSteps(createEventFormValue) !== 0) {
+          currentIcon = Images.SuccessIcon;
+        } else {
+          currentIcon = Images.NotFinishedIcon;
+        }
+        items[ComponentSteps.eventInfo].icon = (
+          <StatusImage src={currentIcon} />
+        );
+      } else if (previousStep === ComponentSteps.createTicket) {
+        if (createEventFormValue.ticketTypes.length) {
+          currentIcon = Images.SuccessIcon;
+        }
+        items[ComponentSteps.createTicket].icon = (
+          <StatusImage src={currentIcon} />
+        );
+      } else if (previousStep === ComponentSteps.settings) {
+        if (createEventFormValue.discounts.length) {
+          currentIcon = Images.SuccessIcon;
+        }
+        items[ComponentSteps.settings].icon = <StatusImage src={currentIcon} />;
+      } else {
+        items[previousStep].icon = <StatusImage src={Images.NotStartedIcon} />;
       }
+    }
+    setProgressItems(items);
+    setPreviousStep(steps);
+  }, [steps]);
+
+  useEffect(() => {
+    const items = _.cloneDeep(progressItems);
+    items[steps].icon = <StatusImage src={Images.EditingIcon} />;
+    if (
+      steps !== ComponentSteps.eventInfo &&
+      createEventFormValue.organizerId &&
+      createEventFormValue.name &&
+      createEventFormValue.startTime &&
+      createEventFormValue.endTime &&
+      createEventFormValue.location &&
+      createEventFormValue.locationCoord &&
+      createEventFormValue.locationCoord &&
+      createEventFormValue.image &&
+      createEventFormValue.descriptionShort
+    ) {
+      items[0].icon = <StatusImage src={Images.SuccessIcon} />;
+    }
+    if (
+      steps !== ComponentSteps.createTicket &&
+      createEventFormValue.ticketTypes.length
+    ) {
+      items[1].icon = <StatusImage src={Images.SuccessIcon} />;
+    }
+    if (
+      steps !== ComponentSteps.settings &&
+      createEventFormValue.discounts.length
+    ) {
+      items[2].icon = <StatusImage src={Images.SuccessIcon} />;
+    }
+    setProgressItems(items);
+    setPreviousStep(steps);
+  }, [createEventFormValue]);
+
+  useEffect(() => {
+    if (!isEdit) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        organizerId: checkOrganizerDefaultValue().defaultId,
+      });
+    }
+  }, [organizerData]);
+
+  useEffect(() => {
+    if (error) {
       message.error(error.message);
     }
   }, [error]);
 
   useEffect(() => {
-    if (createEventResponseData.id) {
-      history.push(UserRoutes.events);
-      message.success(
-        t('Your event has been added. Time to start selling tickets!'),
-      );
-    }
-  }, [createEventResponseData]);
-
-  useEffect(() => {
-    setTicketTypesContainerHeight(`${mainBoxLeft.current.clientHeight}px`);
+    window.addEventListener('beforeunload', notSaveAlert);
+    window.onload = () => {
+      document.addEventListener('gesturestart', notSaveAlert);
+    };
     dispatch(
       getOrganizerAction({
         page: defaultCurrentPage,
         size: defaultOrganizerPageSize,
       }),
     );
-    if (!items.length && !eventData) {
-      addTicketTab(false);
-    }
-    if (eventData) {
-      let newActiveKey = activeKey;
-      let editTicketNewTabIndex = 0;
-      const newPanes: any = [];
-      setFileList([
-        {
-          uid: '1',
-          name: t('Event Image'),
-          status: 'done',
-          url: eventData.image,
-        },
-      ]);
-      eventData.ticketTypes.forEach((item, index) => {
-        newActiveKey = (index + 1).toString();
-        newPanes.push({
-          label: `Ticket ${newActiveKey}`,
-          children: (
-            <TicketTab
-              setTicketRequiredFields={setTicketRequiredFields}
-              submitTicketData={submitTicketData}
-              formName={`Ticket ${newActiveKey}`}
-              editTicketData={item}
-            />
-          ),
-          key: newActiveKey,
-          closeIcon: <DeleteOutlined />,
-        });
-        editTicketNewTabIndex += 1;
-      });
-      if (eventData.ticketTypes.length === 1) {
-        newPanes[0] = { ...newPanes[0], closable: false };
-      }
-      setItems(newPanes);
-      setActiveKey('1');
-      setNewTabIndex(editTicketNewTabIndex);
-      setEventFormData({
-        ...eventFormData,
-        royaltiesFee:
-          (eventData.ticketTypes[0].royaltiesFee &&
-            eventData.ticketTypes[0].royaltiesFee * 100) ||
-          '',
-      });
-    }
+    dispatch(getListTicketTypeAction());
     return () => {
+      window.removeEventListener('beforeunload', notSaveAlert);
+      document.removeEventListener('gesturestart', notSaveAlert);
       dispatch(reset());
     };
   }, []);
 
-  return (
-    <CreateEventContainer>
-      {!isEdit && (
-        <PageHeaderComponent
-          title={t('Create New Event')}
-          showBackArrow
-          clickBack={() => history.push(UserRoutes.events)}
-        />
-      )}
+  const blockStep = () => {
+    if (
+      (steps === ComponentSteps.createTicket &&
+        createTicketStatus !== CreateTicketStatus.list &&
+        ticketFormEdit) ||
+      (steps === ComponentSteps.settings &&
+        createPromoStatus !== CreatePromoStatus.list &&
+        settingsFormEdit)
+    )
+      return true;
+
+    return false;
+  };
+
+  useEffect(() => {
+    if (isEdit) {
+      fetchDetailData();
+    }
+  }, []);
+
+  const handleCancel = () => {
+    history.push(UserRoutes.events);
+  };
+
+  const showSaveAndPublishCondition =
+    (isEdit && steps === ComponentSteps.eventInfo) ||
+    (isEdit && steps === ComponentSteps.publish);
+  const hideBottomCondition =
+    (steps === ComponentSteps.createTicket &&
+      (createTicketStatus === CreateTicketStatus.add ||
+        createTicketStatus === CreateTicketStatus.edit)) ||
+    (steps === ComponentSteps.settings &&
+      (createPromoStatus === CreatePromoStatus.add ||
+        createPromoStatus === CreatePromoStatus.edit));
+
+  const showSaveAndPublishButtonText = () => {
+    if (steps === ComponentSteps.publish) return t('Publish');
+    if (isDraft) return t('Next');
+    return t('Save and Publish');
+  };
+
+  const Loading = (
+    <LoadingContainer>
       <Spin
-        spinning={loading}
-        indicator={<LoadingOutlined spin />}
+        spinning
+        indicator={<LoadingOutlined spin style={{ marginTop: 0 }} />}
         size="large"
-      >
-        <div className={(!isEdit && 'page-main') || 'edit-event-page-main'}>
-          <Form
-            name="event"
-            onFinish={onFinish}
-            initialValues={{
-              ...eventData,
-              organizerId:
-                (eventData && eventData.organizerName) ||
-                eventFormData.organizerId,
-              startTime:
-                (eventData && [
-                  moment(eventFormData.startTime),
-                  moment(eventFormData.endTime),
-                ]) ||
-                null,
-            }}
-          >
-            <Row>
-              <Col span={24} className="publish-event">
-                {isEdit && (
-                  <Button
-                    className="cancel-btn"
-                    onClick={() => setEditEvent(false)}
-                  >
-                    {t('Cancel')}
-                  </Button>
-                )}
-                <Button
-                  disabled={
-                    !eventFormData.description ||
-                    !eventFormData.startTime ||
-                    !eventFormData.location ||
-                    !eventFormData.name ||
-                    !eventFormData.organizerId ||
-                    !eventFormData.image ||
-                    ticketRequiredFields ||
-                    loading
-                  }
-                  htmlType="submit"
-                >
-                  {(isEdit && t('Save')) || t('Publish')}
-                </Button>
-              </Col>
-            </Row>
-            <CreateEventFormContainer
-              containerHight={ticketTypesContainerHeight}
-            >
-              <Row gutter={[24, 24]}>
-                <Col span={12} style={{ paddingLeft: 0 }}>
-                  <div ref={mainBoxLeft} className="main-box">
-                    <Form.Item label="Event Name" name="name">
-                      <Input
-                        showCount
-                        maxLength={100}
-                        onChange={(e) =>
-                          setEventFormData({
-                            ...eventFormData,
-                            name: e.target.value,
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item label="Organizer" name="organizerId">
-                      <Select
-                        disabled={isEdit}
-                        options={organizerData.map((item: OrganizerData) => ({
-                          label: item.name,
-                          value: item.id,
-                        }))}
-                        onChange={(value) =>
-                          setEventFormData({
-                            ...eventFormData,
-                            organizerId: value,
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item label="Location" name="location">
-                      <Input
-                        showCount
-                        maxLength={200}
-                        onChange={(e) =>
-                          setEventFormData({
-                            ...eventFormData,
-                            location: e.target.value,
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item label="Event Time" name="startTime">
-                      <RangePicker
-                        showTime={{ format: 'HH:mm' }}
-                        format="MMM DD YYYY, HH:mm"
-                        disabledDate={(currentDate) =>
-                          currentDate &&
-                          currentDate <
-                            moment().subtract(1, 'days').endOf('day')
-                        }
-                        onChange={(_, dateStrings) =>
-                          setEventFormData({
-                            ...eventFormData,
-                            startTime: dateStrings[0],
-                            endTime: dateStrings[1],
-                          })
-                        }
-                        placeholder={[
-                          t('Select event start time'),
-                          t('Select event end time'),
-                        ]}
-                      />
-                    </Form.Item>
-                    <Form.Item label="Event Description" name="description">
-                      <TextArea
-                        showCount
-                        maxLength={5000}
-                        onChange={(e) =>
-                          setEventFormData({
-                            ...eventFormData,
-                            description: e.target.value,
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item label="Event Image" name="image">
-                      <UploadFileComponent
-                        accept="image/png, image/jpeg, image/gif"
-                        fileList={fileList}
-                        previewImageUrl={eventFormData.image}
-                        previewType="image"
-                        limitFileSize={15}
-                        handleChange={handleUploadChange}
-                        customRequest={customRequest}
-                        handleFileRemove={handleFileRemove}
-                        description={{
-                          type: t('PNG, JPEG or GIF files only'),
-                          size: t('up to [size] MB in size', { size: '15' }),
-                        }}
-                      />
-                    </Form.Item>
-                    <Form.Item className="not-required" label="Royalty Fee">
-                      <Input
-                        suffix="%"
-                        value={eventFormData.royaltiesFee}
-                        onChange={(e) =>
-                          setEventFormData({
-                            ...eventFormData,
-                            royaltiesFee: e.target.value.replace(
-                              /^\D*(\d*(?:\.\d{0,2})?).*$/g,
-                              '$1',
-                            ),
-                          })
-                        }
-                      />
-                    </Form.Item>
-                  </div>
-                </Col>
-                <Col span={12} style={{ paddingRight: 0 }}>
-                  <Tabs
-                    type="editable-card"
-                    onChange={onChange}
-                    activeKey={activeKey}
-                    onEdit={onEdit as any}
-                    items={items}
+        style={{
+          position: 'fixed',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 99,
+        }}
+      />
+    </LoadingContainer>
+  );
+
+  return (
+    <>
+      <Prompt when={blockRouter} message={handleRouterHoldUp} />
+      <PageHeaderComponent
+        title={t('Events')}
+        showBackArrow
+        clickBack={() => history.push(UserRoutes.events)}
+      />
+      <CreateEventContainer>
+        {publishLoading ? Loading : null}
+        {(loading && (
+          <Spin
+            spinning={loading}
+            indicator={<LoadingOutlined spin />}
+            size="large"
+          />
+        )) || (
+          <>
+            <ProgressBarComponent
+              currentStep={steps}
+              currentStepName={progressItems[steps].title}
+              setSteps={setSteps}
+              items={progressItems}
+              mobileItems={progressItems.map((item) => {
+                const mobileItems = { ...item, title: '' };
+                return mobileItems;
+              })}
+              notSaveConfirm={notSaveConfirm}
+              blockStep={blockStep}
+            />
+            <div className="page-main">
+              <Form name="create_event">
+                {steps === ComponentSteps.eventInfo && (
+                  <EventInfo
+                    organizerData={organizerData}
+                    formValue={createEventFormValue}
+                    fieldEdit={handleFieldChange}
+                    isEdit={isEdit}
+                    isDraft={isDraft}
+                    setCreateEventFormValue={setCreateEventFormValue}
                   />
-                </Col>
-              </Row>
-            </CreateEventFormContainer>
-          </Form>
-        </div>
-      </Spin>
-    </CreateEventContainer>
+                )}
+                {steps === ComponentSteps.createTicket && (
+                  <CreateTicket
+                    createTicketStatus={createTicketStatus}
+                    setCreateTicketStatus={setCreateTicketStatus}
+                    formValue={createEventFormValue}
+                    fieldEdit={handleFieldChange}
+                    ticketFormEdit={ticketFormEdit}
+                    setTicketFormEdit={setTicketFormEdit}
+                    isEdit={isEdit}
+                    createEventPublish={createEventPublish}
+                    isDraft={isDraft}
+                    id={id}
+                  />
+                )}
+                {steps === ComponentSteps.settings && (
+                  <Settings
+                    createPromoStatus={createPromoStatus}
+                    setCreatePromoStatus={setCreatePromoStatus}
+                    formValue={createEventFormValue}
+                    fieldEdit={handleFieldChange}
+                    settingsFormEdit={settingsFormEdit}
+                    setSettingsFormEdit={setSettingsFormEdit}
+                    setCreatePromoType={setCreatePromoType}
+                    createPromoType={createPromoType}
+                    isEdit={isEdit}
+                    createEventPublish={createEventPublish}
+                    isDraft={isDraft}
+                    id={id}
+                  />
+                )}
+                {steps === ComponentSteps.publish && (
+                  <Publish
+                    formValue={createEventFormValue}
+                    fieldEdit={handleFieldChange}
+                  />
+                )}
+              </Form>
+            </div>
+            {showSaveAndPublishCondition ? (
+              <div className="page-bottom">
+                <div className="bottom-btn">
+                  <Button
+                    onClick={() => (isDraft ? saveAsDraft() : handleCancel())}
+                    loading={saveDraftLoading}
+                  >
+                    {isDraft ? t('Save as Draft') : t('Cancel')}
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() =>
+                      isDraft && steps !== ComponentSteps.publish
+                        ? setSteps(steps + 1)
+                        : createEventPublish({
+                            redirectTo: () => {},
+                            publish: CreateEventActionType.publish,
+                          })
+                    }
+                    loading={publishLoading}
+                    disabled={
+                      isEdit &&
+                      !isDraft &&
+                      !eventInfoFormEdit &&
+                      !ticketFormEdit &&
+                      !settingsFormEdit
+                    }
+                  >
+                    {showSaveAndPublishButtonText()}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              (steps !== ComponentSteps.publish && (
+                <>
+                  {hideBottomCondition ? null : (
+                    <div className="page-bottom">
+                      <div className="bottom-btn">
+                        <Button
+                          disabled={saveDraftLoading}
+                          onClick={() =>
+                            isEdit && !isDraft ? handleCancel() : saveAsDraft()
+                          }
+                          loading={saveDraftLoading}
+                        >
+                          {isEdit && !isDraft
+                            ? t('Cancel')
+                            : t('Save as Draft')}
+                        </Button>
+                        <Button
+                          type="primary"
+                          onClick={() => setSteps(steps + 1)}
+                        >
+                          {t('Next')}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )) || (
+                <div className="page-bottom">
+                  <div className="bottom-btn">
+                    <Button
+                      onClick={() => (isEdit ? handleCancel() : saveAsDraft())}
+                      loading={saveDraftLoading}
+                    >
+                      {isEdit && !isDraft ? t('Cancel') : t('Save as Draft')}
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={() => createEventPublish()}
+                      loading={publishLoading}
+                    >
+                      {t('Publish')}
+                    </Button>
+                  </div>
+                </div>
+              )
+            )}
+          </>
+        )}
+      </CreateEventContainer>
+    </>
   );
 };
 

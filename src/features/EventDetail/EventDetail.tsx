@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -86,7 +87,17 @@ const EventDetail = () => {
         }
       />
       <div className="page-main">
-        {(loadingForDetail && (
+        <Row>
+          <Col span={24} className="edit-event">
+            <Button
+              disabled={detailData && detailData.status !== 1}
+              onClick={() => setEditEvent(true)}
+            >
+              {t('Edit')}
+            </Button>
+          </Col>
+        </Row>
+        {/* {(loadingForDetail && (
           <Spin
             spinning={loadingForDetail}
             indicator={<LoadingOutlined spin />}
@@ -117,7 +128,7 @@ const EventDetail = () => {
               </>
             )}
           </>
-        )}
+        )} */}
       </div>
     </EventDetailContainer>
   );

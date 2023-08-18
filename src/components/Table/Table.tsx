@@ -114,6 +114,15 @@ const TableContainer = styled.div`
       }
     }
   }
+  .table-empty-text {
+    p {
+      margin-top: 10px;
+      color: ${Colors.grey7};
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
+    }
+  }
 `;
 
 const TableComponent = ({
@@ -128,28 +137,32 @@ const TableComponent = ({
   tableData,
   tableDataTotal,
   scrollY = 'calc(100vh - 254px)',
+  showCustomPagination = true,
+  emptyText = null,
   paginationChange,
   onChange,
 }: {
+  loading: boolean;
+  columns: ColumnsType<any>;
+  tableData: object[];
+  emptyText?: any;
   rowKey?: string;
   rowSelection?: object;
   showHeader?: boolean;
   children?: React.ReactChild;
-  loading: boolean;
-  currentPage: number;
-  currentPageSize: number;
-  columns: ColumnsType<any>;
-  tableData: object[];
-  tableDataTotal: number;
+  currentPage?: number;
+  currentPageSize?: number;
+  tableDataTotal?: number;
+  showCustomPagination?: boolean;
   scrollY?: string;
-  paginationChange: (page: number, pageSize?: number) => void;
+  paginationChange?: (page: number, pageSize?: number) => void;
   onChange?: (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue | null>,
     sorter: SorterResult<any> | any,
   ) => void;
 }) => (
-  <TableContainer>
+  <TableContainer className="table-container">
     <Spin spinning={loading} indicator={<LoadingOutlined spin />} size="large">
       {children && <div>{children}</div>}
       <Table
@@ -158,17 +171,20 @@ const TableComponent = ({
         columns={columns}
         dataSource={tableData}
         pagination={false}
-        locale={{ emptyText: loading ? <div /> : null }}
+        locale={{ emptyText: loading ? <div /> : emptyText }}
         rowSelection={rowSelection}
         showHeader={showHeader}
         onChange={onChange}
       />
-      <Pagination
-        current={currentPage}
-        pageSize={currentPageSize}
-        total={tableDataTotal}
-        onChange={paginationChange}
-      />
+      {showCustomPagination && (
+        <Pagination
+          current={currentPage}
+          pageSize={currentPageSize}
+          total={tableDataTotal}
+          onChange={paginationChange}
+          hideOnSinglePage
+        />
+      )}
     </Spin>
   </TableContainer>
 );

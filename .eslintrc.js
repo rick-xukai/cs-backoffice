@@ -84,5 +84,10 @@ module.exports = {
     'no-debugger': 0,
     indent: 'off',
     '@typescript-eslint/indent': 0,
+    'jsx-a11/interactive-supports-focus': 0,
+    'jsx-a11/yclick-events-have-key-events': 0,
+    'jsx-a11y/no-static-element-interactions': 0,
+    'jsx-a11y/click-events-have-key-events': 0,
+    'jsx-a11y/no-noninteractive-element-interactions': 0,
   },
 };

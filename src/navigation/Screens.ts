@@ -12,9 +12,16 @@ import TransactionsDetail from '../features/TransactionsDetail/Loadable';
 import UsersList from '../features/Users/Loadable';
 import UserDetail from '../features/UserDetail/Loadable';
 import CreateEvent from '../features/CreateEvent/Loadable';
+import Profile from '../features/Profile/Loadable';
+import UserAndPermissions from '../features/UserAndPermissions/Loadable';
+import Orders from '../features/Orders/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
+import ForgotPassword from '../features/Authentication/ForgotPassword/Loadable';
+import ChangePassword from '../features/Authentication/ChangePassword/Loadable';
+import EventDashboard from '../features/EventDashboard/Loadable';
+
 import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
 import { UserRoleKeys } from '../constants/Keys';
 
@@ -26,7 +33,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.dashboard],
     guard: true,
-    role: [],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   Events: {
     title: 'Events - CrowdServe BO',
@@ -35,7 +46,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   CreateEvent: {
     title: 'Create Event - CrowdServe BO',
@@ -44,7 +59,37 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
+  Orders: {
+    title: 'Orders - CrowdServe BO',
+    path: UserRoutes.orders,
+    component: Orders,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.orders],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
+  EditEvent: {
+    title: 'Edit Event - CrowdServe BO',
+    path: UserRoutes.editEvent,
+    component: CreateEvent,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   EventInfo: {
     title: 'Event Info - CrowdServe BO',
@@ -53,7 +98,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   EventTickets: {
     title: 'Event Tickets - CrowdServe BO',
@@ -62,7 +111,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   EventTicketsDetail: {
     title: 'Event Tickets Detail - CrowdServe BO',
@@ -71,7 +124,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   Tickets: {
     title: 'Tickets - CrowdServe BO',
@@ -80,7 +137,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   TicketDetail: {
     title: 'Tickets Details - CrowdServe BO',
@@ -89,7 +150,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   Users: {
     title: 'Users - CrowdServe BO',
@@ -98,7 +163,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   UserDetail: {
     title: 'User Detail - CrowdServe BO',
@@ -107,7 +176,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   UserTicketDetail: {
     title: 'User Ticket Detail - CrowdServe BO',
@@ -116,16 +189,33 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
-  Settings: {
-    title: 'Settings - CrowdServe BO',
-    path: UserRoutes.dashboard,
-    component: Dashboard,
-    subMenuKeys: [],
-    menuKeys: [vMenuKeys.settings],
+  Profile: {
+    title: 'Profile - CrowdServe BO',
+    path: UserRoutes.profile,
+    component: Profile,
+    subMenuKeys: [vMenuKeys.settings],
+    menuKeys: [vMenuKeys.profile],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.organizerAdmin, UserRoleKeys.organizerUser],
+  },
+  UserAndPermissions: {
+    title: 'UserAndPermissions - CrowdServe BO',
+    path: UserRoutes.userAndPermissions,
+    component: UserAndPermissions,
+    subMenuKeys: [vMenuKeys.settings],
+    menuKeys: [vMenuKeys.userAndPermissions],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   Transactions: {
     title: 'Transactions - CrowdServe BO',
@@ -134,7 +224,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.transactions],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [UserRoleKeys.superAdmin],
   },
   TransactionsDetail: {
     title: 'Transactions Detail - CrowdServe BO',
@@ -143,7 +233,20 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.transactions],
     guard: true,
-    role: [UserRoleKeys.admin, UserRoleKeys.guest],
+    role: [UserRoleKeys.superAdmin],
+  },
+  EventDashboard: {
+    title: 'Event Dashboard - CrowdServe BO',
+    path: UserRoutes.eventDashbaord,
+    component: EventDashboard,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
 };
 
@@ -167,6 +270,20 @@ export const AuthScreens = {
     title: 'Register - CrowdServe BO',
     path: AuthRoutes.register,
     component: Register,
+    guard: false,
+    role: undefined,
+  },
+  ForgotPassword: {
+    title: 'Forgot Password - CrowdServe BO',
+    path: AuthRoutes.forgotPassword,
+    component: ForgotPassword,
+    guard: false,
+    role: undefined,
+  },
+  ChangePassword: {
+    title: 'Change Password - CrowdServe BO',
+    path: AuthRoutes.changePassword,
+    component: ChangePassword,
     guard: false,
     role: undefined,
   },

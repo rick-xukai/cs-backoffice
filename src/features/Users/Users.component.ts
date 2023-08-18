@@ -24,6 +24,11 @@ const UsersContainer = styled.div`
   .ant-table-column-sorters {
     padding-right: 85px !important;
   }
+  @media (max-width: 992px) {
+    .page-main {
+      padding: calc(98px + 24px) 15px 15px;
+    }
+  }
 `;
 
 const TableFilterContainer = styled(Row)`

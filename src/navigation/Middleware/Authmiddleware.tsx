@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { CookieKeys } from '../../constants/Keys';
 import { UserRoutes, AuthRoutes } from '../Routes';
@@ -11,6 +12,7 @@ import { selectLayoutType } from '../../app/layout.slice';
 /* eslint-disable complexity */
 const Authmiddleware = ({
   path,
+  title,
   component: Component,
   layout: Layout,
   guard,
@@ -18,6 +20,7 @@ const Authmiddleware = ({
   ...optProps
 }: {
   path: string;
+  title: string;
   component: React.ElementType | null;
   layout: React.ElementType;
   guard: boolean;
@@ -33,7 +36,6 @@ const Authmiddleware = ({
         ? (optProps as any).hMenuKeys
         : (optProps as any).menuKeys,
   };
-  // const { role } = cookies.getCookie(CookieKeys.authUser) || {};
 
   useEffect(() => {
     if (payload.selectedKeys) {
@@ -45,7 +47,11 @@ const Authmiddleware = ({
       path={path}
       {...optProps}
       render={(routeProps: any) => {
-        if (guard && !cookies.getCookie(CookieKeys.authUser)) {
+        if (
+          guard &&
+          (!cookies.getCookie(CookieKeys.authUser) ||
+            !cookies.getCookie(CookieKeys.authUserRole))
+        ) {
           return (
             <Redirect
               to={{
@@ -59,27 +65,17 @@ const Authmiddleware = ({
           return (
             <Redirect
               to={{
-                pathname: UserRoutes.events,
+                pathname: UserRoutes.dashboard,
               }}
             />
           );
         }
-        // if (
-        //   (optProps as any).role &&
-        //   role &&
-        //   !(optProps as any).role.includes(role)
-        // ) {
-        //   return (
-        //     <Redirect
-        //       to={{
-        //         pathname: UserRoutes.transactions,
-        //       }}
-        //     />
-        //   );
-        // }
         return (
           Component && (
             <Layout {...optProps}>
+              <Helmet>
+                <title>{title}</title>
+              </Helmet>
               <Component {...routeProps} />
             </Layout>
           )

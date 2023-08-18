@@ -23,21 +23,28 @@ export const UserRoutes = {
   },
   events: '/events',
   createEvent: '/create-event',
+  editEvent: '/edit-event/:id',
   eventDetail: '/event-detail/:id',
   users: '/users',
   userDetail: '/user/:userId',
   userTicketDetail: '/user-ticket-detail/:ticketId',
   tickets: '/tickets',
   settings: '/settings',
+  profile: '/settings/profile',
+  userAndPermissions: '/settings/user-permissions',
   ticketDetail: '/ticket-detail/:ticketId',
   eventInfo: '/event-info/:id',
   eventTickets: '/event-tickets/:id',
   eventTicketsDetail: '/event-tickets-detail/:eventId/:ticketId',
   transactions: '/transactions',
   transactionsDetail: '/transactions-detail/:transactionsId',
+  orders: '/orders',
+  eventDashbaord: '/event-dashbaord/:id/:name',
 };
 
 export const AuthRoutes = {
   login: '/login',
   register: '/register',
+  forgotPassword: '/forgot-password',
+  changePassword: '/change-password',
 };
