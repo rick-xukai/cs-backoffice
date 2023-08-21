@@ -135,7 +135,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
           source: filterSource,
           ticketTypeId: filterTicketType,
           keyword: searchKeyword,
-          saleStatus,
+          saleStatus: saleStatus || 0,
         },
       }),
     );
@@ -401,11 +401,10 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
             className="list-action"
             style={{
               display:
-                (TicketSoldFilterStatus.find(
-                  (item) => item.name === 'Cancelled' || item.name === 'Sold',
-                )?.id === record.status &&
-                  'none') ||
-                'block',
+                record.status === TicketSoldFilterStatus[2].id ||
+                record.status === TicketSoldFilterStatus[4].id
+                  ? 'none'
+                  : 'block',
             }}
           >
             <div className="icon-content">
@@ -449,15 +448,18 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       discount: `${
         (dataItem.discount && `${dataItem.discount} ${priceUnit}`) || '/'
       }`,
-      absorbFees: `${dataItem.absorbFees} ${priceUnit}`,
+      absorbFees: checkFees(dataItem).props.children,
       createdAt: `${formatTimeStrByTimeString(
         dataItem.createdAt,
         FormatTimeKeys.mdy,
       )}\n${formatTimeStrByTimeString(dataItem.createdAt, FormatTimeKeys.hm)}`,
       source: TicketSoldFilterSource.find((item) => item.id === dataItem.source)
         ?.name,
-      status: TicketSoldFilterStatus.find((item) => item.id === dataItem.status)
-        ?.name,
+      status:
+        dataItem.saleStatus === TicketSoldSaleStatus
+          ? TicketSoldFilterStatus[5].name
+          : TicketSoldFilterStatus.find((item) => item.id === dataItem.status)
+              ?.name,
     }));
     return { headers, data: downloadData };
   };
@@ -646,11 +648,11 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
         loadTicketSoldPageData();
         dispatch(getTicketSoldCountAction(params.id));
         if (importTicketItems.length > 1) {
-          issuedCount = `${importTicketItems.length} tickets`;
+          issuedCount = `${importTicketItems.length} tickets are`;
         } else {
-          issuedCount = `${importTicketItems.length} ticket`;
+          issuedCount = `${importTicketItems.length} ticket is`;
         }
-        message.success(`${issuedCount} are successfully issued.`);
+        message.success(`${issuedCount} successfully issued.`);
       }, 500);
     }
   }, [importProgress]);
