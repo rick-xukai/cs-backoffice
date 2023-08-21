@@ -125,6 +125,11 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   };
 
   const loadTicketSoldPageData = () => {
+    const getSaleStatus = () => {
+      if (filterStatus === TicketSoldFilterStatus[5].id) return saleStatus;
+      if (filterStatus === TicketSoldFilterStatus[4].id) return undefined;
+      return 0;
+    };
     dispatch(
       getTicketSoldListAction({
         id: params.id,
@@ -135,8 +140,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
           source: filterSource,
           ticketTypeId: filterTicketType,
           keyword: searchKeyword,
-          saleStatus:
-            filterStatus || filterStatus === 0 ? saleStatus || 0 : undefined,
+          saleStatus: getSaleStatus(),
         },
       }),
     );
