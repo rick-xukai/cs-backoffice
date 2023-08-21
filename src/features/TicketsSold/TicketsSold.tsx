@@ -128,6 +128,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
     const getSaleStatus = () => {
       if (filterStatus === TicketSoldFilterStatus[5].id) return saleStatus;
       if (filterStatus === TicketSoldFilterStatus[4].id) return undefined;
+      if (filterStatus === undefined) return undefined;
       return 0;
     };
     dispatch(
