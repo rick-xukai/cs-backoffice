@@ -585,3 +585,15 @@ body[data-sidebar='dark'] {
     }
   }
 }
+.ant-message-notice-content {
+  padding: 0 !important;
+  .ant-message-custom-content {
+    padding: 10px 16px;
+  }
+  .ant-message-error {
+    background: $red10;
+  }
+  .ant-message-success {
+    background: $green10;
+  }
+}

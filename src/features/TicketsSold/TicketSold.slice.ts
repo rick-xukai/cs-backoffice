@@ -15,10 +15,10 @@ export interface ErrorType {
 export interface GetListParams {
   page: number;
   size: number;
-  status: number | undefined;
-  source: number | undefined;
-  keyword: string;
-  ticketTypeId: number | undefined;
+  status?: number | undefined;
+  source?: number | undefined;
+  keyword?: string;
+  ticketTypeId?: number | undefined;
   saleStatus?: number | undefined;
 }
 
@@ -42,6 +42,7 @@ export interface TicketSoldListItemProps {
   status: number;
   source: number;
   createdAt: string;
+  saleStatus: number;
   promoCode?: string;
 }
 
