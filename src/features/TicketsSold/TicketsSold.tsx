@@ -135,7 +135,8 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
           source: filterSource,
           ticketTypeId: filterTicketType,
           keyword: searchKeyword,
-          saleStatus: saleStatus || 0,
+          saleStatus:
+            filterStatus || filterStatus === 0 ? saleStatus || 0 : undefined,
         },
       }),
     );
