@@ -78,19 +78,21 @@ const EventDashboard = () => {
       value={`${
         buyers?.conversionRate ? (buyers?.conversionRate * 100).toFixed(2) : 0
       }%`}
+      tooltip="Unique attendees. Some of these attendees may be holding more than 1 ticket."
     />
   );
   const eventPageViewsCard = (
     <NormalCard
       title="Event Page Views"
       href=" "
-      text={(pageViews?.viewCount && pageViews?.viewCount.toFixed(2)) || 0}
+      text={(pageViews?.viewCount && pageViews?.viewCount) || 0}
       barTitle="Average Daily Visits"
       value={
         (pageViews?.averageDailyCount &&
           pageViews?.averageDailyCount.toFixed(2)) ||
         0
       }
+      tooltip="See the total number times your page has been viewed."
     />
   );
   const netSalesCard = (

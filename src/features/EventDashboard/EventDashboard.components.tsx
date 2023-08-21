@@ -113,6 +113,7 @@ export const DashboardChartCard = ({
         infoJustify="center"
         style={{ marginTop: 4 }}
         title="Tickets Sold"
+        tooltip={`Click here to view the total number of tickets sold and the corresponding data. This will only reflect paid tickets on CrowdServe. Ticket information from imported manually or from other sites, will be labelled under "Tickets imported".`}
       />
       <BottomBar style={{ marginTop: 24 }}>
         <div className="left">Tickets Imported</div>

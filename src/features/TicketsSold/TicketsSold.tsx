@@ -227,7 +227,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
         <>
           {(discount && (
             <Row gutter={[0, 0]}>
-              <Col>{`${discount} ${priceUnit}`}</Col>
+              <Col>{`-${discount} ${priceUnit}`}</Col>
               {record.promoCode && (
                 <Col span={24} className="item-label">
                   Promocode: {record.promoCode}
