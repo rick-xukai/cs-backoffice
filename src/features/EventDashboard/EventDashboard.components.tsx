@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row, Tooltip } from 'antd';
+import { Col, Row, Tooltip, Grid } from 'antd';
 import { CSSProperties } from 'styled-components';
 
 import { Gauge } from '@ant-design/plots';
@@ -17,6 +17,7 @@ import { getBadge } from '../Events/Events';
 import { Colors, Images } from '../../theme';
 import NoData from '../../components/NoData';
 
+const { useBreakpoint } = Grid;
 export const Banner = ({
   title,
   status,
@@ -137,27 +138,34 @@ export const NormalCard = ({
   text: React.ReactNode;
   barTitle: string;
   value: React.ReactNode;
-}) => (
-  <CardWrapper hoverable={!!href}>
-    <Row justify="space-between" align="middle">
-      <Col>
-        <Info style={{ marginTop: 4 }} title={title} tooltip={tooltip} />
-      </Col>
-      {href ? (
+}) => {
+  const { lg } = useBreakpoint();
+  return (
+    <CardWrapper hoverable={!!href}>
+      <Row
+        justify="space-between"
+        align="middle"
+        style={{ height: lg ? 28 : 30 }}
+      >
         <Col>
-          <img src={Images.CardArrowIcon} alt="" />
+          <Info style={{ marginTop: 4 }} title={title} tooltip={tooltip} />
         </Col>
-      ) : null}
-    </Row>
-    <div style={{ marginTop: 10.5 }}>
-      <span className="large-text">{text}</span>
-    </div>
-    <BottomBar style={{ marginTop: 12 }}>
-      <div className="left">{barTitle}</div>
-      <div className="right">{value}</div>
-    </BottomBar>
-  </CardWrapper>
-);
+        {href ? (
+          <Col>
+            <img src={Images.CardArrowIcon} alt="" />
+          </Col>
+        ) : null}
+      </Row>
+      <div style={{ marginTop: 10.5 }}>
+        <span className="large-text">{text}</span>
+      </div>
+      <BottomBar style={{ marginTop: 12 }}>
+        <div className="left">{barTitle}</div>
+        <div className="right">{value}</div>
+      </BottomBar>
+    </CardWrapper>
+  );
+};
 
 const NormalListItem = ({
   img,

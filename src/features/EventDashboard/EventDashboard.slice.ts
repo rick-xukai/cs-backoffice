@@ -50,6 +50,10 @@ export interface EventDashboardDataType {
     revenue: number;
     grossSales: number;
   };
+  attendees: {
+    ticketScanned: number;
+    uniqueUser: number;
+  };
   ticketTypes: {
     name: string;
     image: string;
@@ -135,6 +139,10 @@ const initialState: EventDashboardState = {
     netSales: {
       revenue: 0,
       grossSales: 0,
+    },
+    attendees: {
+      ticketScanned: 0,
+      uniqueUser: 0,
     },
     ticketTypes: [],
     discounts: [],
