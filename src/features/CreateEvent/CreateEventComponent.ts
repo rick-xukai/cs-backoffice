@@ -922,14 +922,15 @@ const EventInfoCard = styled(Col)`
   background: ${Colors.white};
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
   .event-image {
-    @media (max-width: ${BreakPoints.lg}px) {
-      height: calc(50vw - 39px);
-    }
+    background: ${Colors.black};
     img {
       width: 100%;
       aspect-ratio: 2 / 1;
-      object-fit: cover;
+      object-fit: contain;
       border-radius: 2px;
+      position: relative;
+      top: 50%;
+      transform: translate(0, -50%);
     }
   }
   .info-detail {
