@@ -62,7 +62,10 @@ const PaginationContainer = styled.div`
 const PaginationCmp = (props: PaginationProps) => (
   <PaginationContainer>
     <div className="container-text">
-      <p>Total {props.total} items</p>
+      <p>
+        Total {props.total}{' '}
+        {props.total && props.total !== 1 ? 'items' : 'item'}
+      </p>
       <Pagination {...props} showSizeChanger />
     </div>
   </PaginationContainer>

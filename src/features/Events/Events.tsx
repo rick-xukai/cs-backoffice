@@ -633,7 +633,9 @@ const Events = () => {
                           pageSize={size}
                           total={eventsListDataTotal}
                           hideOnSinglePage
-                          showTotal={(total) => `Total ${total} items`}
+                          showTotal={(total) =>
+                            `Total ${total} ${total !== 1 ? 'items' : 'item'}`
+                          }
                           showSizeChanger={false}
                           onChange={(currentPage) => {
                             dispatch(setPage(currentPage));
