@@ -776,6 +776,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                       onChange={(e) => {
                         setSearchKeywordState(e.target.value);
                         searchInputChange(e);
+                        dispatch(setPage(1));
                       }}
                     />
                   </Col>
@@ -785,7 +786,10 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                       defaultValue={filterTicketType}
                       placeholder={t('Ticket Type')}
                       defaultActiveFirstOption={false}
-                      onChange={(e) => dispatch(setFilterTicketType(e))}
+                      onChange={(e) => {
+                        dispatch(setFilterTicketType(e));
+                        dispatch(setPage(1));
+                      }}
                     >
                       {ticketSoldCount.ticketTypes.map((item) => (
                         <Option key={item.id} value={item.id}>
@@ -807,6 +811,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                         } else {
                           dispatch(setSaleStatus(undefined));
                         }
+                        dispatch(setPage(1));
                       }}
                     >
                       {TicketSoldFilterStatus.map((item) => (
@@ -822,7 +827,10 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                       defaultValue={filterSource}
                       placeholder={t('Source')}
                       defaultActiveFirstOption={false}
-                      onChange={(e) => dispatch(setFilterSource(e))}
+                      onChange={(e) => {
+                        dispatch(setFilterSource(e));
+                        dispatch(setPage(1));
+                      }}
                     >
                       {TicketSoldFilterSource.map((item) => (
                         <Option key={item.id} value={item.id}>

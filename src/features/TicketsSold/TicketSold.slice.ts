@@ -245,6 +245,11 @@ export const ticketSoldSlice = createSlice({
       state.listTotal = initialState.listTotal;
       state.error = initialState.error;
       state.ticketSoldCount = initialState.ticketSoldCount;
+      state.searchKeyword = '';
+      state.filterTicketType = undefined;
+      state.filterStatus = undefined;
+      state.filterSource = undefined;
+      state.saleStatus = undefined;
     },
     setPage: (state, action) => {
       state.page = action.payload;
