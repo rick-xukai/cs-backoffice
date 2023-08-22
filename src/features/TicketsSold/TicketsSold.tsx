@@ -253,7 +253,6 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       render: (_: number, record: TicketSoldListItemProps) => (
         <Col
           span={24}
-          className="item-action"
           // onClick={() => {
           //   confirm({
           //     className: 'fees-detail-modal',

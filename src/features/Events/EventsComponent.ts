@@ -236,6 +236,7 @@ const EventListTableContainer = styled.div`
       background: ${Colors.black};
       text-align: center;
       border-radius: 4px;
+      overflow: hidden;
       &.type-gif {
         img {
           border-radius: 0px;
@@ -244,7 +245,6 @@ const EventListTableContainer = styled.div`
       img {
         height: 100%;
         object-fit: cover;
-        border-radius: 4px;
       }
     }
     .table-event {
