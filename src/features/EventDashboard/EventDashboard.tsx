@@ -73,7 +73,7 @@ const EventDashboard = () => {
   const uniqueBuyers = (
     <NormalCard
       title="Unique Buyers"
-      href=" "
+      href={UserRoutes.uniqueBuyers.replace(':id', id).replace(':name', name)}
       text={buyers?.userCount || 0}
       barTitle="Conversion Rate"
       value={`${
@@ -85,7 +85,7 @@ const EventDashboard = () => {
   const eventPageViewsCard = (
     <NormalCard
       title="Event Page Views"
-      href=" "
+      href={UserRoutes.eventPageViews.replace(':id', id).replace(':name', name)}
       text={(pageViews?.viewCount && pageViews?.viewCount) || 0}
       barTitle="Average Daily Visits"
       value={

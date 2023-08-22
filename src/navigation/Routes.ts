@@ -42,6 +42,8 @@ export const UserRoutes = {
   eventDashboard: '/event-dashboard/:id/:name',
   ticketSold: '/events-tickets/:id/:name',
   pageNotFound: '/404',
+  eventPageViews: '/event-page-views/:id/:name',
+  uniqueBuyers: '/unique-buyers/:id/:name',
 };
 
 export const AuthRoutes = {

@@ -63,6 +63,9 @@ const Colors = {
   chartBg: '#0BFFFF',
   red1: '#FFAEAF',
   red2: '#FD262B',
+  red3: '#730003',
+  red4: '#C10005',
+  red5: '#FF4B50',
   primaryHoverRed: '#DE0005',
 };
 

@@ -26,6 +26,8 @@ import EventDashboard from '../features/EventDashboard/Loadable';
 
 import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
 import { UserRoleKeys } from '../constants/Keys';
+import EventPageViews from '../features/EventPageViews/Loadable';
+import UniqueBuyers from '../features/UniqueBuyers/Loadable';
 
 export const UserScreens = {
   Dashboard: {
@@ -241,6 +243,32 @@ export const UserScreens = {
     title: 'Tickets - CrowdServe BO',
     path: UserRoutes.ticketSold,
     component: TicketsSold,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
+  EventPageViews: {
+    title: 'Event Page Views - CrowdServe BO',
+    path: UserRoutes.eventPageViews,
+    component: EventPageViews,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
+  UniqueBuyers: {
+    title: 'Unique Buyers - CrowdServe BO',
+    path: UserRoutes.uniqueBuyers,
+    component: UniqueBuyers,
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,

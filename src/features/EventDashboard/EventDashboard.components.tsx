@@ -4,6 +4,7 @@ import { CSSProperties } from 'styled-components';
 
 import { Gauge } from '@ant-design/plots';
 import { isEmpty } from 'lodash';
+import { useHistory } from 'react-router-dom';
 import {
   BannerWrapper,
   BottomBar,
@@ -140,8 +141,13 @@ export const NormalCard = ({
   value: React.ReactNode;
 }) => {
   const { lg } = useBreakpoint();
+  const history = useHistory();
+
   return (
-    <CardWrapper hoverable={!!href}>
+    <CardWrapper
+      hoverable={!!href}
+      onClick={() => (href ? history.push(href) : null)}
+    >
       <Row
         justify="space-between"
         align="middle"

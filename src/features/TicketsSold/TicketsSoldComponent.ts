@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { Row } from 'antd';
 
-import { Colors } from '../../theme';
+import { BreakPoints, Colors } from '../../theme';
 
 const TicketsSoldContainer = styled.div`
-  padding: calc(113px + 24px) 24px 24px;
+  padding: calc(113px + 15px) 15px 15px;
   padding-bottom: 100px;
   background: ${Colors.grey5};
-  @media (min-width: 992px) {
+  @media (min-width: ${BreakPoints.lg}px) {
     padding: calc(60px + 24px) 24px 24px;
   }
 `;
@@ -64,6 +64,9 @@ const ContainerTitle = styled(Row)`
       .content-title-sold {
         color: ${Colors.branding};
       }
+      .large-text {
+        font-size: 30px;
+      }
     }
   }
 `;
@@ -71,6 +74,7 @@ const ContainerTitle = styled(Row)`
 const ListTableContainer = styled.div`
   padding: 20px;
   background: ${Colors.white};
+  border-radius: 4px;
   .ant-table-ping-right:not(.ant-table-has-fix-right)
     > .ant-table-container::after {
     box-shadow: unset;
@@ -159,6 +163,11 @@ const TableFilterContainer = styled(Row)`
     text-align: right;
     > :first-child {
       margin-right: 16px;
+    }
+    &.single {
+      > :first-child {
+        margin-right: 0px;
+      }
     }
     .action-button {
       height: 32px;

@@ -237,11 +237,6 @@ const EventListTableContainer = styled.div`
       text-align: center;
       border-radius: 4px;
       overflow: hidden;
-      &.type-gif {
-        img {
-          border-radius: 0px;
-        }
-      }
       img {
         height: 100%;
         object-fit: cover;
