@@ -51,6 +51,7 @@ const EventDashboard = () => {
     stocks,
     ticketTypes,
     discounts,
+    attendees,
   } = data;
   const dashboardChartCard = (
     <DashboardChartCard
@@ -89,7 +90,7 @@ const EventDashboard = () => {
       barTitle="Average Daily Visits"
       value={
         (pageViews?.averageDailyCount &&
-          pageViews?.averageDailyCount.toFixed(2)) ||
+          pageViews?.averageDailyCount.toFixed(0)) ||
         0
       }
       tooltip="See the total number times your page has been viewed."
@@ -105,6 +106,16 @@ const EventDashboard = () => {
       value={`${SGD_UNIT} $${
         netSales?.grossSales ? thousandsSeparator(`${netSales?.grossSales}`) : 0
       }`}
+    />
+  );
+
+  const uniqueAttendeesCard = (
+    <NormalCard
+      title="Unique Attendees"
+      text={attendees?.uniqueUser}
+      href=" "
+      barTitle="Tickets Scanned"
+      value={attendees?.ticketScanned}
     />
   );
 
@@ -146,10 +157,11 @@ const EventDashboard = () => {
               {dashboardChartCard}
             </Col>
             <Col span={16}>
-              <Row gutter={[16, 19]}>
+              <Row gutter={[16, 16]}>
                 <Col span={12}>{uniqueBuyers}</Col>
                 <Col span={12}>{eventPageViewsCard}</Col>
-                <Col span={24}>{netSalesCard}</Col>
+                <Col span={12}>{netSalesCard}</Col>
+                <Col span={12}>{uniqueAttendeesCard}</Col>
               </Row>
             </Col>
           </Row>
@@ -182,7 +194,28 @@ const EventDashboard = () => {
                   </Col>
                 </Row>
               </Col>
-              <Col span={24}>{netSalesCard}</Col>
+            </Row>
+            <Row gutter={[12, 12]} style={{ marginTop: 12 }}>
+              <Col span={24}>
+                <Row
+                  wrap={false}
+                  style={{
+                    overflow: 'auto',
+                    width: 'calc(100vw + 15px)',
+                    marginLeft: -15,
+                    paddingLeft: 15,
+                  }}
+                >
+                  <Col span={20}>{netSalesCard}</Col>
+                  <Col span={23}>
+                    <Row style={{ paddingRight: 42 }}>
+                      <Col span={24} style={{ marginLeft: 12 }}>
+                        {uniqueAttendeesCard}
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Col>
             </Row>
           </div>
         )}
