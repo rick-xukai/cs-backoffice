@@ -395,6 +395,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                     updateTicketStatusAction.fulfilled.toString()
                   ) {
                     loadTicketSoldPageData();
+                    dispatch(getTicketSoldCountAction(params.id));
                   }
                 },
               });
@@ -724,7 +725,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
               .replace(':name', params.name),
           },
           {
-            label: t('Tickets sold'),
+            label: t('Tickets'),
           },
         ]}
       />
@@ -734,7 +735,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
             <Col span={12}>
               <div className="info-content">
                 <div>
-                  <p className="content-title">{t('Tickets Sold')}</p>
+                  <p className="content-title">{t('Tickets')}</p>
                   <p className="content-name">{params.name}</p>
                 </div>
               </div>
@@ -742,8 +743,11 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
             <Col span={12} className="right">
               <div className="info-content">
                 <div>
-                  <p className="content-title-sold">
-                    {ticketSoldCount.stocks.soldTotal}
+                  <p className="content-info">
+                    <span>Tickets Sold</span>
+                    <span className="bold content-title-sold">
+                      {ticketSoldCount.stocks.soldTotal}
+                    </span>
                   </p>
                   <p className="content-info">
                     <span>Tickets Imported</span>

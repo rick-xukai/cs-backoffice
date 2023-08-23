@@ -40,15 +40,6 @@ const ContainerTitle = styled(Row)`
       line-height: 32px;
       text-transform: uppercase;
     }
-    }
-    .content-title-sold {
-      color: ${Colors.branding};
-      font-size: 30px;
-      font-weight: 700;
-      line-height: 36px;
-      text-transform: uppercase;
-      text-align: right;
-    }
     .content-name {
       color: ${Colors.black4};
       font-size: 17px;
@@ -69,6 +60,9 @@ const ContainerTitle = styled(Row)`
         font-weight: 700;
         line-height: 16px;
         margin-left: 5px;
+      }
+      .content-title-sold {
+        color: ${Colors.branding};
       }
     }
   }
