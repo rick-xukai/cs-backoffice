@@ -249,7 +249,7 @@ const EventDashboard = () => {
           <Col span={24}>
             <DashboardListCardWrapper>
               <p className="title">
-                <span>Tickets Sold</span>
+                <span>Tickets</span>
                 {lg ? (
                   <ExtraText onClick={goToTicketSold}>
                     View All <RightOutlined />
