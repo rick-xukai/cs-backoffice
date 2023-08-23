@@ -246,7 +246,7 @@ export const UserScreens = {
     guard: true,
   },
   TicketsSold: {
-    title: 'Tickets Sold - CrowdServe BO',
+    title: 'Tickets - CrowdServe BO',
     path: UserRoutes.ticketSold,
     component: TicketsSold,
     subMenuKeys: [],
