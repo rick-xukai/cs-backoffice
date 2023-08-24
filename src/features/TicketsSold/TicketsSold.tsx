@@ -790,6 +790,9 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                       defaultValue={filterTicketType}
                       placeholder={t('Ticket Type')}
                       defaultActiveFirstOption={false}
+                      onClear={() => {
+                        dispatch(setFilterTicketType(undefined));
+                      }}
                       onChange={(e) => {
                         dispatch(setFilterTicketType(e));
                         dispatch(setPage(1));
@@ -808,6 +811,9 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                       defaultValue={filterStatus}
                       placeholder={t('Status')}
                       defaultActiveFirstOption={false}
+                      onClear={() => {
+                        dispatch(setFilterStatus(undefined));
+                      }}
                       onChange={(e: number | string) => {
                         dispatch(setFilterStatus(e));
                         if (e === null) {
@@ -831,6 +837,9 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                       defaultValue={filterSource}
                       placeholder={t('Source')}
                       defaultActiveFirstOption={false}
+                      onClear={() => {
+                        dispatch(setFilterSource(undefined));
+                      }}
                       onChange={(e) => {
                         dispatch(setFilterSource(e));
                         dispatch(setPage(1));
