@@ -611,7 +611,12 @@ const Events = () => {
                           </Row>
                         </Col>
                         <Col span={24}>
-                          <h4 className="title">{item.name}</h4>
+                          <h4
+                            className="title"
+                            onClick={() => goToDashboard(item.id, item.name)}
+                          >
+                            {item.name}
+                          </h4>
                           <p className="date">{item.time}</p>
                         </Col>
                         <Col span={24}>
