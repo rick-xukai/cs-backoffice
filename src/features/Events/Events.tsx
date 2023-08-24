@@ -613,7 +613,15 @@ const Events = () => {
                         <Col span={24}>
                           <h4
                             className="title"
-                            onClick={() => goToDashboard(item.id, item.name)}
+                            onClick={() => {
+                              if (item.status === EventStatusKeys.draft) {
+                                history.push(
+                                  UserRoutes.editEvent.replace(':id', item.id),
+                                );
+                              } else {
+                                goToDashboard(item.id, item.name);
+                              }
+                            }}
                           >
                             {item.name}
                           </h4>
