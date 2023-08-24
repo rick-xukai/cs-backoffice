@@ -756,7 +756,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                     </span>
                   </p>
                   <p className="content-info">
-                    <span>Ticket cancelled / refunded</span>
+                    <span>Ticket cancelled</span>
                     <span className="bold">
                       {ticketSoldCount.stocks.cancelTotal}
                     </span>
