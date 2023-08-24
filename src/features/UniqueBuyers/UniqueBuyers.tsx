@@ -241,7 +241,8 @@ const UniqueBuyers = () => {
                         color={Colors.branding}
                         xAxis={{
                           label: {
-                            autoRotate: true,
+                            autoRotate: !lg,
+                            autoHide: false,
                             style: {
                               fill: Colors.black4,
                             },
