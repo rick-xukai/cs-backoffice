@@ -178,7 +178,9 @@ const EventDashboard = () => {
                     paddingLeft: 15,
                   }}
                 >
-                  <Col span={20}>{dashboardChartCard}</Col>
+                  <Col span={20} onClick={goToTicketSold}>
+                    {dashboardChartCard}
+                  </Col>
                   <Col span={23}>
                     <Row style={{ paddingRight: 42 }}>
                       <Col
