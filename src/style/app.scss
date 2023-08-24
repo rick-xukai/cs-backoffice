@@ -71,3 +71,14 @@ body {
     margin-right: 0;
   }
 }
+
+.ant-select {
+  .ant-select-clear {
+    svg {
+      width: 17px;
+      height: 17px;
+      margin-top: -2px;
+      margin-left: -2px;
+    }
+  }
+}
