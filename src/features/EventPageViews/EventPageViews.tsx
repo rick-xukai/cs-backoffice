@@ -118,7 +118,12 @@ const EventPageViews = () => {
               <Col span={12} className="right">
                 <div className="info-content">
                   <div>
-                    <p className="content-title-sold">1</p>
+                    <p className="content-info">
+                      <span></span>
+                      <span className="bold content-title-sold large-text">
+                        1
+                      </span>
+                    </p>
                     <p className="content-info">
                       <span>Average Daily Visits</span>
                       <span className="bold">2</span>

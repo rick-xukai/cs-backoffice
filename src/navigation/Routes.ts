@@ -44,6 +44,7 @@ export const UserRoutes = {
   pageNotFound: '/404',
   eventPageViews: '/event-page-views/:id/:name',
   uniqueBuyers: '/unique-buyers/:id/:name',
+  uniqueAttendees: '/unique-attendees/:id/:name',
 };
 
 export const AuthRoutes = {

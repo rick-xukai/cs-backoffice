@@ -28,6 +28,7 @@ import { MenuKeys as vMenuKeys } from '../components/VerticalLayout/MenuKeys';
 import { UserRoleKeys } from '../constants/Keys';
 import EventPageViews from '../features/EventPageViews/Loadable';
 import UniqueBuyers from '../features/UniqueBuyers/Loadable';
+import UniqueAttendees from '../features/UniqueAttendees/Loadable';
 
 export const UserScreens = {
   Dashboard: {
@@ -278,6 +279,20 @@ export const UserScreens = {
       UserRoleKeys.organizerUser,
     ],
   },
+  UniqueAttendees: {
+    title: 'Unique Attendees - CrowdServe BO',
+    path: UserRoutes.uniqueAttendees,
+    component: UniqueAttendees,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
+
   PageNotFoundComponent: {
     title: 'Page Not Found - CrowdServe BO',
     path: UserRoutes.pageNotFound,

@@ -423,5 +423,6 @@
   "[count] are successfully issued.": "{{count}} are successfully issued.",
   "Whoops, the page you are looking for was not found.": "Whoops, the page you are looking for was not found.",
   "Back to Home": "Back to Home",
-  "Invalid file format. Please upload a CSV file.": "Invalid file format. Please upload a CSV file."
+  "Invalid file format. Please upload a CSV file.": "Invalid file format. Please upload a CSV file.",
+  "Unique Attendees": "Unique Attendees"
 }

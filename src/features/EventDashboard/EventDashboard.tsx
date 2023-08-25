@@ -112,10 +112,12 @@ const EventDashboard = () => {
   const uniqueAttendeesCard = (
     <NormalCard
       title="Unique Attendees"
-      text={attendees?.uniqueUser}
-      href=" "
+      text={attendees?.uniqueUser || 0}
+      href={UserRoutes.uniqueAttendees
+        .replace(':id', id)
+        .replace(':name', name)}
       barTitle="Tickets Scanned"
-      value={attendees?.ticketScanned}
+      value={attendees?.ticketScanned || 0}
     />
   );
 

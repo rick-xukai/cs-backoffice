@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import * as eCharts from 'echarts';
+import { registerMap, init } from 'echarts';
 import { Grid } from 'antd';
 
 import { ProgressContainer, ProgressInfo } from './UniqueBuyers.component';
@@ -38,8 +38,8 @@ export const WorldMap = ({
   const points = useBreakpoint();
   const mapRef: any = useRef();
   useEffect(() => {
-    eCharts.registerMap('world', JSON.stringify(mapData));
-    const myChart = eCharts.init(mapRef?.current);
+    registerMap('world', JSON.stringify(mapData));
+    const myChart = init(mapRef?.current);
     const option = {
       visualMap: {
         show: false,
