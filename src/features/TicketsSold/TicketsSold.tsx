@@ -407,8 +407,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
             className="list-action"
             style={{
               display:
-                record.status === TicketSoldFilterStatus[2].id ||
-                record.status === TicketSoldFilterStatus[4].id
+                record.status !== TicketSoldFilterStatus[0].id
                   ? 'none'
                   : 'block',
             }}
