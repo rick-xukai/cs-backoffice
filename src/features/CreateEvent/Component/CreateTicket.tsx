@@ -710,7 +710,7 @@ const CreateTicket = ({
         <>
           <Row>
             <Col span={24} className="main-title">
-              {t('Tickct Info')}
+              {t('Ticket Info')}
             </Col>
           </Row>
           <CreateEventFormContainer>
