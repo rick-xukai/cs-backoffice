@@ -15,12 +15,13 @@ export interface UserDetailDataType {
   id: number;
   createdAt: string;
   email: string;
-  isActivated: string;
+  isActivated: boolean;
   lastLoginAt: string;
   name: string;
   walletAddress: string;
   birthday: string;
   gender: string;
+  country: string;
 }
 
 export interface UserDetailTicketsDataType {
@@ -114,12 +115,13 @@ const initialState: UserDetailState = {
     id: 0,
     createdAt: '',
     email: '',
-    isActivated: '',
+    isActivated: true,
     lastLoginAt: '',
     name: '',
     walletAddress: '',
     gender: '',
     birthday: '',
+    country: '',
   },
   userDetailTicketsData: [],
   error: null,
