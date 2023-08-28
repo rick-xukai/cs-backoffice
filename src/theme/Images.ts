@@ -76,6 +76,10 @@ import RunnerUpIcon from '../assets/images/icons/runner-up.svg';
 import ThirdPlaceIcon from '../assets/images/icons/third-place.svg';
 import PageNotFoundIcon from '../assets/images/icons/404-page-icon.svg';
 import LoadingBall from '../assets/images/loading-ball.gif';
+import EmailIcon from '../assets/images/icons/email-icon.svg';
+import GenderIcon from '../assets/images/icons/gender-icon.svg';
+import BirthIcon from '../assets/images/icons/birth-icon.svg';
+import CountryIcon from '../assets/images/icons/country-icon.svg';
 
 const Images = {
   Logo,
@@ -158,6 +162,10 @@ const Images = {
   ThirdPlaceIcon,
   PageNotFoundIcon,
   LoadingBall,
+  EmailIcon,
+  GenderIcon,
+  BirthIcon,
+  CountryIcon,
 };
 
 export default Images;
