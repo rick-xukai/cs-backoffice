@@ -517,57 +517,63 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                       fieldObj[resultsHeader[fieldIndex]] = field;
                     }
                   });
-                  jsonResult.push(fieldObj);
+                  if (fieldObj['Attendee Email'] || fieldObj['Ticket Type']) {
+                    jsonResult.push(fieldObj);
+                  }
                 }
               });
-              jsonResult.some((obj: any) => {
-                if (!obj['Attendee Email'] || !obj['Ticket Type']) {
-                  errorFlag = true;
-                  message.error(
-                    t(
-                      'The CSV file is missing some required fields. Please fill in all mandatory fields for each ticket.',
-                    ),
-                  );
-                  return true;
-                }
-                if (!isEmail(obj['Attendee Email'])) {
-                  errorFlag = true;
-                  message.error(
-                    t(
-                      'Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.',
-                    ),
-                  );
-                  return true;
-                }
-                if (
-                  !ticketSoldCount.ticketTypes.find(
-                    (item) => item.name === obj['Ticket Type'],
-                  )
-                ) {
-                  errorFlag = true;
-                  message.error(
-                    t(
-                      'Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.',
-                    ),
-                  );
-                  return true;
-                }
-                return false;
-              });
+              if (jsonResult.length) {
+                jsonResult.some((obj: any) => {
+                  if (!obj['Attendee Email'] || !obj['Ticket Type']) {
+                    errorFlag = true;
+                    message.error(
+                      t(
+                        'The CSV file is missing some required fields. Please fill in all mandatory fields for each ticket.',
+                      ),
+                    );
+                    return true;
+                  }
+                  if (!isEmail(obj['Attendee Email'])) {
+                    errorFlag = true;
+                    message.error(
+                      t(
+                        'Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.',
+                      ),
+                    );
+                    return true;
+                  }
+                  if (
+                    !ticketSoldCount.ticketTypes.find(
+                      (item) => item.name === obj['Ticket Type'],
+                    )
+                  ) {
+                    errorFlag = true;
+                    message.error(
+                      t(
+                        'Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.',
+                      ),
+                    );
+                    return true;
+                  }
+                  return false;
+                });
+              } else {
+                errorFlag = true;
+                message.error(
+                  t(
+                    'The CSV file is missing some required fields. Please fill in all mandatory fields for each ticket.',
+                  ),
+                );
+              }
             }
             if (isLimit && type === UploadCSVType && !errorFlag) {
               setImportTicketFileName(file.name);
-              const formatTicketItems = cloneDeep(resultsBody).map(
+              const formatTicketItems: any = cloneDeep(jsonResult).map(
                 (item: any) => ({
-                  email:
-                    (resultsBody[0].includes('Attendee Name') && item[1]) ||
-                    item[0],
-                  ticketType:
-                    (resultsBody[0].includes('Attendee Name') && item[2]) ||
-                    item[1],
+                  email: item['Attendee Email'],
+                  ticketType: item['Ticket Type'],
                 }),
               );
-              formatTicketItems.shift();
               setImportTicketItems(formatTicketItems);
             }
           },
