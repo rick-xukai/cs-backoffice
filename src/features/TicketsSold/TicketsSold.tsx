@@ -887,7 +887,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
             }}
           >
             <CSVLink
-              filename="Tickets_Export_Template.csv"
+              filename="Tickets_Import_Template.csv"
               headers={ImportTicketsTemplate}
               data={[]}
             >
