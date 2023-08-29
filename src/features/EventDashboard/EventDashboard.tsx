@@ -121,9 +121,7 @@ const EventDashboard = () => {
 
   const goToTicketSold = () => {
     history.push(
-      UserRoutes.ticketSold
-        .replace(':id', id)
-        .replace(':name', name.toLowerCase()),
+      UserRoutes.ticketSold.replace(':id', id).replace(':name', name),
     );
   };
 

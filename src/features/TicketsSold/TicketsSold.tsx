@@ -718,10 +718,10 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
             href: UserRoutes.events,
           },
           {
-            label: params.name,
+            label: ticketSoldCount.name,
             href: UserRoutes.eventDashboard
               .replace(':id', params.id)
-              .replace(':name', params.name),
+              .replace(':name', ticketSoldCount.name),
           },
           {
             label: t('Tickets'),
@@ -735,7 +735,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
               <div className="info-content">
                 <div>
                   <p className="content-title">{t('Tickets')}</p>
-                  <p className="content-name">{params.name}</p>
+                  <p className="content-name">{ticketSoldCount.name}</p>
                 </div>
               </div>
             </Col>
@@ -855,7 +855,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
               </Col>
               <Col lg={7} span={24} className="export-action">
                 <CSVLink
-                  filename={`${params.name}_Tickets_Export.csv`}
+                  filename={`${ticketSoldCount.name}_Tickets_Export.csv`}
                   headers={formatDownloadHeaders().headers}
                   data={formatDownloadHeaders().data}
                 >
