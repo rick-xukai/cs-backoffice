@@ -19,7 +19,9 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   getEventPageViewsAction,
   getEventPageViewsAnalysisAction,
+  selectLoading,
   selectPageViewsAnalysisData,
+  selectPageViewsAnalysisLoading,
   selectPageViewsData,
 } from './EventPageViews.slice';
 import NoData from '../../components/NoData/NoData';
@@ -33,6 +35,10 @@ const EventPageViews = () => {
   const dispatch = useAppDispatch();
   const eventPageViews = useAppSelector(selectPageViewsData);
   const pageViewsAnalysisData = useAppSelector(selectPageViewsAnalysisData);
+  const pageViewsAnalysisLoading = useAppSelector(
+    selectPageViewsAnalysisLoading,
+  );
+  const loading = useAppSelector(selectLoading);
 
   const { name, summary, countries, origins } = eventPageViews;
   const [startDate, setStartDate] = useState('');
@@ -100,7 +106,7 @@ const EventPageViews = () => {
               .replace(':name', name),
           },
           {
-            label: t('Tickets sold'),
+            label: t('Event Page Views'),
           },
         ]}
       />
@@ -135,7 +141,11 @@ const EventPageViews = () => {
             </ContainerTitle>
           </Col>
           <Col span={24}>
-            <Card bodyStyle={{ padding: 20 }} bordered={false}>
+            <Card
+              bodyStyle={{ padding: 20 }}
+              bordered={false}
+              loading={pageViewsAnalysisLoading}
+            >
               <Title>
                 <p>Overview</p>
                 <RangePicker
@@ -165,7 +175,11 @@ const EventPageViews = () => {
             </Card>
           </Col>
           <Col lg={12} sm={24}>
-            <Card bodyStyle={{ padding: 20 }} bordered={false}>
+            <Card
+              bodyStyle={{ padding: 20 }}
+              bordered={false}
+              loading={loading}
+            >
               <Title>
                 <p>Page Views by Country</p>
               </Title>
@@ -191,7 +205,11 @@ const EventPageViews = () => {
             </Card>
           </Col>
           <Col lg={12} sm={24}>
-            <Card bodyStyle={{ padding: 20 }} bordered={false}>
+            <Card
+              bodyStyle={{ padding: 20 }}
+              bordered={false}
+              loading={loading}
+            >
               <Title>
                 <p>Page Views Origin</p>
               </Title>

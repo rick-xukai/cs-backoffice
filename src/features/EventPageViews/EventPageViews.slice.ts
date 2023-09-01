@@ -210,5 +210,6 @@ export const selectPageViewsData = (state: RootState) =>
 
 export const selectPageViewsAnalysisData = (state: RootState) =>
   state.eventPageViews.eventPageViewsAnalysisData;
-
+export const selectPageViewsAnalysisLoading = (state: RootState) =>
+  state.eventPageViews.analysisLoading;
 export default eventPageViewsSlice.reducer;
