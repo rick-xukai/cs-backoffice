@@ -43,6 +43,7 @@ export const FormatTimeKeys = {
   mdy: 'MMM dd, yyyy',
   hms: 'HH:mm:ss',
   hm: 'HH:mm',
+  ymd: 'YYYY-MM-DD',
 };
 export const DataEncryptionKeys = {
   encrypt: 'encrypt',

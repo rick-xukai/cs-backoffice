@@ -102,6 +102,24 @@ const API = {
   importTickets: {
     post: '/admin/event/:eventId/import_ticket',
   },
+  getEventPageView: {
+    get: '/admin/event/:eventId/dashboard/page_view',
+  },
+  getEventPageViewAnalysis: {
+    get: '/admin/event/:eventId/page_view/analysis',
+  },
+  getUnqiueBuyers: {
+    get: '/admin/event/:eventId/buyers',
+  },
+  getUnqiueAttendeesSummary: {
+    get: '/admin/event/:eventId/buyers',
+  },
+  getUnqiueAttendees: {
+    get: '/admin/event/:eventId/buyers',
+  },
+  getEventScanned: {
+    get: '/admin/event/:eventId/buyers',
+  },
 };
 
 export default API;

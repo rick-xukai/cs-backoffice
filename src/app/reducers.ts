@@ -20,6 +20,8 @@ import profileReducer from '../features/Profile/Profile.slice';
 import userPermissionsReducer from '../features/UserAndPermissions/UserAndPermissions.slice';
 import eventDashboardReducer from '../features/EventDashboard/EventDashboard.slice';
 import ticketSoldReducer from '../features/TicketsSold/TicketSold.slice';
+import eventPageViewsReducer from '../features/EventPageViews/EventPageViews.slice';
+import uniqueBuyersReducer from '../features/UniqueBuyers/UniqueBuyers.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -43,6 +45,8 @@ const createRootReducer = (history: any) =>
     userPermissions: userPermissionsReducer,
     eventDashboard: eventDashboardReducer,
     ticketSold: ticketSoldReducer,
+    eventPageViews: eventPageViewsReducer,
+    uniqueBuyers: uniqueBuyersReducer,
   });
 
 export default createRootReducer;

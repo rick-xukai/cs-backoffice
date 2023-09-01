@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, DatePicker, Row } from 'antd';
 import { Line, Column } from '@ant-design/plots';
+import { flatten } from 'lodash';
 
+import moment from 'moment';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
 import {
@@ -13,75 +15,74 @@ import {
 } from './EventPageViews.component';
 import { ContainerTitle } from '../TicketsSold/TicketsSoldComponent';
 import { ProgressBar } from './EventPageViews.components';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import {
+  getEventPageViewsAction,
+  getEventPageViewsAnalysisAction,
+  selectPageViewsAnalysisData,
+  selectPageViewsData,
+} from './EventPageViews.slice';
+import NoData from '../../components/NoData/NoData';
+import { FormatTimeKeys } from '../../constants/Keys';
 
 const { RangePicker } = DatePicker;
 
 const EventPageViews = () => {
   const params: any = useParams();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const eventPageViews = useAppSelector(selectPageViewsData);
+  const pageViewsAnalysisData = useAppSelector(selectPageViewsAnalysisData);
+
+  const { name, summary, countries, origins } = eventPageViews;
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  useEffect(() => {
+    dispatch(getEventPageViewsAction(params.id));
+  }, []);
+  useEffect(() => {
+    dispatch(
+      getEventPageViewsAnalysisAction({
+        eventId: params.id,
+        startDate,
+        endDate,
+      }),
+    );
+  }, [endDate]);
+  const parsedData = flatten(
+    pageViewsAnalysisData?.map((item) => [
+      { date: item.date, type: 'Total Page Views', value: item.pageViewTotal },
+      {
+        date: item.date,
+        type: 'Unique Visitor Page Views',
+        value: item.pageViewUserCount,
+      },
+      {
+        type: 'Ticket Sold',
+        date: item.date,
+        value: item.ticketSoldCount,
+      },
+    ]),
+  );
+
   const config = {
-    data: [
-      { type: 'Total Page Views', date: 1965, value: 1390.5 },
-      { type: 'Total Page Views', date: 1966, value: 1469.5 },
-      { type: 'Total Page Views', date: 1967, value: 1521.7 },
-      { type: 'Total Page Views', date: 1968, value: 1615.9 },
-      { type: 'Total Page Views', date: 1969, value: 1703.7 },
-      { type: 'Total Page Views', date: 1970, value: 1767.8 },
-      { type: 'Total Page Views', date: 1971, value: 1806.2 },
-      { type: 'Total Page Views', date: 1972, value: 1903.5 },
-      { type: 'Total Page Views', date: 1973, value: 1986.6 },
-      { type: 'Total Page Views', date: 1974, value: 1952 },
-      { type: 'Total Page Views', date: 1975, value: 1910.4 },
-      { type: 'Total Page Views', date: 1976, value: 0.8 },
-      { type: 'Total Page Views', date: 1977, value: 2074.7 },
-      { type: 'Total Page Views', date: 1978, value: 2092.7 },
-      { type: 'Total Page Views', date: 1979, value: 2123.8 },
-      { type: 'Total Page Views', date: 1980, value: 2068.3 },
-      { type: 'Total Page Views', date: 1981, value: 2018 },
-      { type: 'Total Page Views', date: 1982, value: 1951.5 },
-      { type: 'Unique Visitor Page Views', date: 1965, value: 290.5 },
-      { type: 'Unique Visitor Page Views', date: 1966, value: 369.5 },
-      { type: 'Unique Visitor Page Views', date: 1967, value: 221.7 },
-      { type: 'Unique Visitor Page Views', date: 1968, value: 415.9 },
-      { type: 'Unique Visitor Page Views', date: 1969, value: 103.7 },
-      { type: 'Unique Visitor Page Views', date: 1970, value: 267.8 },
-      { type: 'Unique Visitor Page Views', date: 1971, value: 506.2 },
-      { type: 'Unique Visitor Page Views', date: 1972, value: 403.5 },
-      { type: 'Unique Visitor Page Views', date: 1973, value: 86.6 },
-      { type: 'Unique Visitor Page Views', date: 1974, value: 252 },
-      { type: 'Unique Visitor Page Views', date: 1975, value: 910.4 },
-      { type: 'Unique Visitor Page Views', date: 1976, value: 2015.8 },
-      { type: 'Unique Visitor Page Views', date: 1977, value: 14.7 },
-      { type: 'Unique Visitor Page Views', date: 1978, value: 92.7 },
-      { type: 'Unique Visitor Page Views', date: 1979, value: 23.8 },
-      { type: 'Unique Visitor Page Views', date: 1980, value: 18.3 },
-      { type: 'Unique Visitor Page Views', date: 1981, value: 8 },
-      { type: 'Unique Visitor Page Views', date: 1982, value: 51.5 },
-      { type: 'Ticket Sold', date: 1965, value: 90.5 },
-      { type: 'Ticket Sold', date: 1966, value: 69.5 },
-      { type: 'Ticket Sold', date: 1967, value: 21.7 },
-      { type: 'Ticket Sold', date: 1968, value: 15.9 },
-      { type: 'Ticket Sold', date: 1969, value: 3.7 },
-      { type: 'Ticket Sold', date: 1970, value: 67.8 },
-      { type: 'Ticket Sold', date: 1971, value: 6.2 },
-      { type: 'Ticket Sold', date: 1972, value: 3.5 },
-      { type: 'Ticket Sold', date: 1973, value: 86.6 },
-      { type: 'Ticket Sold', date: 1974, value: 52 },
-      { type: 'Ticket Sold', date: 1975, value: 10.4 },
-      { type: 'Ticket Sold', date: 1976, value: 15.8 },
-      { type: 'Ticket Sold', date: 1977, value: 4.7 },
-      { type: 'Ticket Sold', date: 1978, value: 2.7 },
-      { type: 'Ticket Sold', date: 1979, value: 23.8 },
-      { type: 'Ticket Sold', date: 1980, value: 8.3 },
-      { type: 'Ticket Sold', date: 1981, value: 8 },
-      { type: 'Ticket Sold', date: 1982, value: 51.5 },
-    ],
+    data: parsedData,
     xField: 'date',
     yField: 'value',
     seriesField: 'type',
     color: ['#056790', '#FCA119', '#FC0006'],
     point: {
-      size: 2,
+      size: 5,
+    },
+  };
+  const columnConfig = {
+    xField: 'name',
+    yField: 'value',
+    seriesField: 'type',
+    color: ['#056790', '#FCA119', '#FC0006'],
+    point: {
+      size: 5,
     },
   };
   return (
@@ -93,10 +94,10 @@ const EventPageViews = () => {
             href: UserRoutes.events,
           },
           {
-            label: params.name,
+            label: name,
             href: UserRoutes.eventDashboard
               .replace(':id', params.id)
-              .replace(':name', params.name),
+              .replace(':name', name),
           },
           {
             label: t('Tickets sold'),
@@ -111,7 +112,7 @@ const EventPageViews = () => {
                 <div className="info-content">
                   <div>
                     <p className="content-title">{t('Event page views')}</p>
-                    <p className="content-name">{params.name}</p>
+                    <p className="content-name">{name}</p>
                   </div>
                 </div>
               </Col>
@@ -121,12 +122,12 @@ const EventPageViews = () => {
                     <p className="content-info">
                       <span></span>
                       <span className="bold content-title-sold large-text">
-                        1
+                        {summary?.viewCount}
                       </span>
                     </p>
                     <p className="content-info">
                       <span>Average Daily Visits</span>
-                      <span className="bold">2</span>
+                      <span className="bold">{summary?.averageDailyCount}</span>
                     </p>
                   </div>
                 </div>
@@ -137,7 +138,24 @@ const EventPageViews = () => {
             <Card bodyStyle={{ padding: 20 }} bordered={false}>
               <Title>
                 <p>Overview</p>
-                <RangePicker style={{ height: 32 }} />
+                <RangePicker
+                  onCalendarChange={(date, dateString) => {
+                    setStartDate(dateString[0]);
+                    setEndDate(dateString[1]);
+                  }}
+                  style={{ height: 32 }}
+                  disabledDate={(currentDate) => {
+                    const tooLate =
+                      startDate && currentDate.diff(startDate, 'days') <= 0;
+                    const tooEarly =
+                      endDate &&
+                      moment(endDate).diff(
+                        currentDate.format(FormatTimeKeys.ymd),
+                        'days',
+                      ) <= 0;
+                    return !!tooLate || !!tooEarly;
+                  }}
+                />
               </Title>
               <Line
                 {...config}
@@ -152,17 +170,23 @@ const EventPageViews = () => {
                 <p>Page Views by Country</p>
               </Title>
               <ProgressContent>
-                <Row gutter={[0, 18]}>
-                  <Col span={24}>
-                    <ProgressBar name="Singapore" percent={90} count={100} />
-                  </Col>
-                  <Col span={24}>
-                    <ProgressBar name="China" percent={90} count={100} />
-                  </Col>
-                  <Col span={24}>
-                    <ProgressBar name="USA" percent={90} count={100} />
-                  </Col>
-                </Row>
+                {countries && countries.length ? (
+                  <Row gutter={[0, 18]}>
+                    {countries?.map((item) => (
+                      <Col span={24} key={item.name}>
+                        <ProgressBar
+                          name={item.name}
+                          percent={item.rate}
+                          count={item.count}
+                        />
+                      </Col>
+                    ))}
+                  </Row>
+                ) : (
+                  <div style={{ marginTop: 30 }}>
+                    <NoData />
+                  </div>
+                )}
               </ProgressContent>
             </Card>
           </Col>
@@ -172,19 +196,35 @@ const EventPageViews = () => {
                 <p>Page Views Origin</p>
               </Title>
               <Column
-                {...config}
+                {...columnConfig}
                 legend={false}
+                columnWidthRatio={0.25}
                 height={148}
-                data={[
-                  { type: 'Page Views Origin', date: 1965, value: 1390.5 },
-                  { type: 'Page Views Origin', date: 1966, value: 1469.5 },
-                  { type: 'Page Views Origin', date: 1967, value: 1521.7 },
-                  { type: 'Page Views Origin', date: 1968, value: 1615.9 },
-                  { type: 'Page Views Origin', date: 1969, value: 1703.7 },
-                  { type: 'Page Views Origin', date: 1970, value: 1767.8 },
-                  { type: 'Page Views Origin', date: 1971, value: 1806.2 },
-                  { type: 'Page Views Origin', date: 1972, value: 1903.5 },
-                ]}
+                data={
+                  origins && origins.length
+                    ? origins.map((item) => ({
+                        type: 'Page Views Origin',
+                        name: item.name,
+                        value: item.count,
+                      }))
+                    : [
+                        {
+                          type: 'Page Views Origin',
+                          name: 'Direct',
+                          value: 0,
+                        },
+                        {
+                          type: 'Page Views Origin',
+                          name: 'Event List',
+                          value: 0,
+                        },
+                        {
+                          type: 'Page Views Origin',
+                          name: 'Facebook',
+                          value: 0,
+                        },
+                      ]
+                }
                 color="#FC0006"
               />
             </Card>

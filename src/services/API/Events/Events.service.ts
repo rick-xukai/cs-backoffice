@@ -146,6 +146,101 @@ const getEventDashboard = async ({ eventId }: { eventId: string | number }) => {
   return response;
 };
 
+const getEventPageViews = async ({ eventId }: { eventId: string | number }) => {
+  const uri = API.getEventPageView.get.replace(':eventId', `${eventId}`);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+const getEventPageViewsAnalysis = async ({
+  eventId,
+  ...opt
+}: {
+  eventId: string | number;
+}) => {
+  const uri = API.getEventPageViewAnalysis.get.replace(
+    ':eventId',
+    `${eventId}`,
+  );
+  const response = await requestClient()
+    .setUri(uri)
+    .setQueryParameter(opt)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+const getUnqiueBuyers = async ({
+  eventId,
+  ...opt
+}: {
+  eventId: string | number;
+  keyword: string;
+  isActivated?: boolean;
+}) => {
+  const uri = API.getUnqiueBuyers.get.replace(':eventId', `${eventId}`);
+  const response = await requestClient()
+    .setUri(uri)
+    .setQueryParameter(opt)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+const getUnqiueAttendees = async ({
+  eventId,
+  ...opt
+}: {
+  eventId: string | number;
+  keyword: string;
+  isActivated: boolean;
+}) => {
+  const uri = API.getUnqiueAttendees.get.replace(':eventId', `${eventId}`);
+  const response = await requestClient()
+    .setUri(uri)
+    .setQueryParameter(opt)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+const getUnqiueAttendeesSummary = async ({
+  eventId,
+}: {
+  eventId: string | number;
+}) => {
+  const uri = API.getUnqiueAttendeesSummary.get.replace(
+    ':eventId',
+    `${eventId}`,
+  );
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+const getEventScanned = async ({
+  eventId,
+  ...opt
+}: {
+  eventId: string | number;
+  keyword: string;
+  ticketTypeId: number;
+  source: number;
+}) => {
+  const uri = API.getEventScanned.get.replace(':eventId', `${eventId}`);
+  const response = await requestClient()
+    .setUri(uri)
+    .setQueryParameter(opt)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -160,4 +255,10 @@ export default {
   checkDiscountCode,
   checkConnectTicket,
   getEventDashboard,
+  getEventPageViews,
+  getEventPageViewsAnalysis,
+  getUnqiueBuyers,
+  getUnqiueAttendees,
+  getUnqiueAttendeesSummary,
+  getEventScanned,
 };

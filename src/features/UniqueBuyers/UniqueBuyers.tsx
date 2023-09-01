@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, Row, Grid, Input, Select, Button, Pagination } from 'antd';
 import { Column, Pie } from '@ant-design/plots';
 import { CSVLink } from 'react-csv';
-
+import moment from 'moment';
 import {
   CloseOutlined,
   DownloadOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
+import { debounce } from 'lodash';
+
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
 import {
@@ -29,6 +31,13 @@ import { ProgressBar, WorldMap } from './UniqueBuyers.components';
 import { Colors } from '../../theme';
 import TableComponent from '../../components/Table/Table';
 import NoData from '../../components/NoData/NoData';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import {
+  getUniqueBuyersAction,
+  selectUniqueBuyers,
+  selectUniqueBuyersLoading,
+} from './UniqueBuyers.slice';
+import { FormatTimeKeys } from '../../constants/Keys';
 
 const { useBreakpoint } = Grid;
 
@@ -36,6 +45,16 @@ const UniqueBuyers = () => {
   const params: any = useParams();
   const { t } = useTranslation();
   const { lg } = useBreakpoint();
+  const dispatch = useAppDispatch();
+  const uniqueBuyersLoading = useAppSelector(selectUniqueBuyersLoading);
+  const uniqueBuyersData = useAppSelector(selectUniqueBuyers);
+
+  const [filter, setFilter] = useState<{
+    keyword: string;
+    isActivated?: boolean;
+  }>({
+    keyword: '',
+  });
   const config = {
     data: [
       { type: 'Gender', name: 'Male', value: 1390.5 },
@@ -70,48 +89,45 @@ const UniqueBuyers = () => {
       value: 6,
     },
   ];
-  const pieConfig: any = {
-    appendPadding: 10,
-    hieght: 140,
-    data: pieData,
-    color: [Colors.red3, Colors.red4, Colors.branding, Colors.red5],
-    angleField: 'value',
-    colorField: 'type',
-    radius: 1,
-    innerRadius: 0.6,
-    label: false,
-    interactions: [
-      {
-        type: 'element-selected',
+  const pieConfig: any = useMemo(
+    () => ({
+      appendPadding: 10,
+      hieght: 140,
+      data: pieData,
+      color: [Colors.red3, Colors.red4, Colors.branding, Colors.red5],
+      angleField: 'value',
+      colorField: 'type',
+      radius: 1,
+      innerRadius: 0.6,
+      label: false,
+      interactions: [
+        {
+          type: 'element-selected',
+        },
+        {
+          type: 'element-active',
+        },
+      ],
+      statistic: {
+        title: false,
+        content: false,
       },
-      {
-        type: 'element-active',
+      legend: {
+        position: lg ? 'right' : 'bottom',
+        padding: [0, lg ? 80 : 0, 0, 0],
+        itemName: {
+          formatter: (seriesField: any, item: any, index: any) =>
+            `${seriesField}    ${pieData[index].value || '-'}`,
+        },
       },
-    ],
-    statistic: {
-      title: false,
-      content: false,
-    },
-    legend: {
-      position: lg ? 'right' : 'bottom',
-      padding: [0, lg ? 80 : 0, 0, 0],
-      itemName: {
-        formatter: (seriesField: any, item: any, index: any) =>
-          `${seriesField}    ${pieData[index].value || '-'}`,
-      },
-    },
-    // toolTip: {
-    //   customContent: (title: string, item: any[]) => {
-    //     console.log(item);
-    //     return <PieTooltip>{item[0].value}</PieTooltip>;
-    //   },
-    // },
-  };
+    }),
+    [],
+  );
 
   const columns = [
     {
       title: 'User Name',
-      dataIndex: 'user_name',
+      dataIndex: 'name',
     },
     {
       title: 'User Email',
@@ -119,7 +135,7 @@ const UniqueBuyers = () => {
     },
     {
       title: 'Owned Tickets',
-      dataIndex: 'tickets',
+      dataIndex: 'ownedTickets',
     },
     {
       title: 'Gender',
@@ -128,20 +144,45 @@ const UniqueBuyers = () => {
     {
       title: 'Birthday',
       dataIndex: 'birthday',
+      render: (_: any) => (_ ? moment(_).format(FormatTimeKeys.norm) : '-'),
     },
     {
       title: 'Last Action',
-      dataIndex: 'lastAction',
+      dataIndex: 'updatedAt',
+      render: (_: any) => moment(_).format(FormatTimeKeys.norm),
     },
     {
       title: 'Status',
-      dataIndex: 'status',
+      dataIndex: 'isActivated',
+      render: (_: any) => (_ ? 'Active' : 'Inactive'),
     },
   ];
   const totalPieCount = pieData.reduce(
     (acc: any, item: any) => acc + item.value,
     0,
   );
+
+  useEffect(() => {
+    dispatch(
+      getUniqueBuyersAction({
+        eventId: params.id,
+        ...filter,
+      }),
+    );
+  }, [filter]);
+
+  const searchInputChange = useCallback(
+    debounce(
+      (e) =>
+        setFilter({
+          ...filter,
+          keyword: e.target.value,
+        }),
+      300,
+    ),
+    [],
+  );
+
   return (
     <>
       <PageHeaderComponent
@@ -300,6 +341,7 @@ const UniqueBuyers = () => {
                         allowClear={{
                           clearIcon: <CloseOutlined />,
                         }}
+                        onChange={searchInputChange}
                       />
                     </Col>
                     <Col lg={5} span={24}>
@@ -307,6 +349,28 @@ const UniqueBuyers = () => {
                         allowClear
                         placeholder={t('Status')}
                         defaultActiveFirstOption={false}
+                        options={[
+                          {
+                            label: 'Active',
+                            value: true,
+                          },
+                          {
+                            label: 'Inactive',
+                            value: false,
+                          },
+                        ]}
+                        onChange={(e) => {
+                          if (!e && e !== false) {
+                            setFilter({
+                              keyword: filter.keyword,
+                            });
+                          } else {
+                            setFilter({
+                              ...filter,
+                              isActivated: e,
+                            });
+                          }
+                        }}
                       />
                     </Col>
                   </Row>
@@ -328,30 +392,9 @@ const UniqueBuyers = () => {
                 </Col>
               </TableFilterContainer>
               <TableComponent
-                loading={false}
+                loading={uniqueBuyersLoading}
                 columns={columns}
-                tableData={[
-                  {
-                    user_name: 'John Doe',
-                    email: 'johndoe@me.com',
-                    tickets: 1,
-                    gender: 'Male',
-                    birthday: 'Jul 12, 2000',
-                    lastAction: 'Jul 12, 2023 21:30',
-                    status: 'Active',
-                    id: 1,
-                  },
-                  {
-                    user_name: 'John Doe',
-                    email: 'johndoe@me.com',
-                    tickets: 2,
-                    gender: 'Female',
-                    birthday: 'Jul 12, 2000',
-                    lastAction: 'Jul 12, 2023 21:30',
-                    status: 'Inactive',
-                    id: 1,
-                  },
-                ]}
+                tableData={uniqueBuyersData}
                 emptyText={<NoData />}
                 showCustomPagination={false}
               />

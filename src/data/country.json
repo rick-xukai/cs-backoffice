@@ -1438,7 +1438,7 @@
           ]
         ]
       },
-      "properties": { "name": "The Bahamas", "childNum": 1 }
+      "properties": { "name": "Bahamas", "childNum": 1 }
     },
     {
       "geometry": {
@@ -1743,7 +1743,7 @@
           ]
         ]
       },
-      "properties": { "name": "Bolivia", "childNum": 1 }
+      "properties": { "name": "Bolivia, Plurinational State of bolivia", "childNum": 1 }
     },
     {
       "geometry": {
@@ -2208,7 +2208,7 @@
           ]
         ]
       },
-      "properties": { "name": "Brunei", "childNum": 1 }
+      "properties": { "name": "Brunei Darussalam", "childNum": 1 }
     },
     {
       "geometry": {
@@ -4751,7 +4751,7 @@
         ]
       },
       "properties": {
-        "name": "Democratic Republic of the Congo",
+        "name": "Congo, The Democratic Republic of the Congo",
         "childNum": 1
       }
     },
@@ -4822,7 +4822,7 @@
           ]
         ]
       },
-      "properties": { "name": "Republic of the Congo", "childNum": 1 }
+      "properties": { "name": "Congo", "childNum": 1 }
     },
     {
       "geometry": {
@@ -5060,7 +5060,7 @@
           ]
         ]
       },
-      "properties": { "name": "Northern Cyprus", "childNum": 1 }
+      "properties": { "name": "Cyprus", "childNum": 1 }
     },
     {
       "geometry": {
@@ -6551,7 +6551,7 @@
           ]
         ]
       },
-      "properties": { "name": "Guinea Bissau", "childNum": 1 }
+      "properties": { "name": "Guinea-Bissau", "childNum": 1 }
     },
     {
       "geometry": {
@@ -8416,7 +8416,7 @@
           ]
         ]
       },
-      "properties": { "name": "Iran", "childNum": 1 }
+      "properties": { "name": "Iran, Islamic Republic of Persian Gulf", "childNum": 1 }
     },
     {
       "geometry": {
@@ -9434,7 +9434,7 @@
           ]
         ]
       },
-      "properties": { "name": "South Korea", "childNum": 1 }
+      "properties": { "name": "Korea, Republic of South Korea", "childNum": 1 }
     },
     {
       "geometry": {
@@ -9819,7 +9819,7 @@
           ]
         ]
       },
-      "properties": { "name": "Libya", "childNum": 1 }
+      "properties": { "name": "Libyan Arab Jamahiriya", "childNum": 1 }
     },
     {
       "geometry": {
@@ -10500,7 +10500,7 @@
           ]
         ]
       },
-      "properties": { "name": "Macedonia", "childNum": 1 }
+      "properties": { "name": "North Macedonia", "childNum": 1 }
     },
     {
       "geometry": {
@@ -13057,7 +13057,7 @@
           ]
         ]
       },
-      "properties": { "name": "United States of America", "childNum": 1 }
+      "properties": { "name": "United States", "childNum": 1 }
     },
     {
       "geometry": {
@@ -13102,7 +13102,7 @@
           ]
         ]
       },
-      "properties": { "name": "North Korea", "childNum": 1 }
+      "properties": { "name": "Korea, Democratic People's Republic of Korea", "childNum": 1 }
     },
     {
       "geometry": {
@@ -15129,7 +15129,7 @@
           ]
         ]
       },
-      "properties": { "name": "Republic of Serbia", "childNum": 1 }
+      "properties": { "name": "Serbia", "childNum": 1 }
     },
     {
       "geometry": {
@@ -15427,7 +15427,7 @@
           ]
         ]
       },
-      "properties": { "name": "Syria", "childNum": 1 }
+      "properties": { "name": "Syrian Arab Republic", "childNum": 1 }
     },
     {
       "geometry": {
@@ -15899,7 +15899,7 @@
           ]
         ]
       },
-      "properties": { "name": "East Timor", "childNum": 1 }
+      "properties": { "name": "Timor-Leste", "childNum": 1 }
     },
     {
       "geometry": {
@@ -16136,7 +16136,7 @@
           ]
         ]
       },
-      "properties": { "name": "Turkey", "childNum": 2 }
+      "properties": { "name": "Türkiye", "childNum": 2 }
     },
     {
       "geometry": {
@@ -16257,7 +16257,7 @@
           ]
         ]
       },
-      "properties": { "name": "United Republic of Tanzania", "childNum": 1 }
+      "properties": { "name": "Tanzania, United Republic of Tanzania", "childNum": 1 }
     },
     {
       "geometry": {
@@ -17049,7 +17049,7 @@
           ]
         ]
       },
-      "properties": { "name": "United States of America", "childNum": 14 }
+      "properties": { "name": "United States", "childNum": 14 }
     },
     {
       "geometry": {
@@ -17273,7 +17273,7 @@
           ]
         ]
       },
-      "properties": { "name": "Venezuela", "childNum": 1 }
+      "properties": { "name": "Venezuela, Bolivarian Republic of Venezuela", "childNum": 1 }
     },
     {
       "geometry": {

@@ -1,11 +1,33 @@
 import React, { useEffect, useRef } from 'react';
-import { registerMap, init } from 'echarts';
+import * as echarts from 'echarts/core';
+import { MapChart } from 'echarts/charts';
+import {
+  DataZoomComponent,
+  ToolboxComponent,
+  VisualMapComponent,
+  GeoComponent,
+} from 'echarts/components';
+import { LabelLayout, UniversalTransition } from 'echarts/features';
+import { CanvasRenderer } from 'echarts/renderers';
+
 import { Grid } from 'antd';
 
 import { ProgressContainer, ProgressInfo } from './UniqueBuyers.component';
 import mapData from '../../data/country.json';
 import { Colors } from '../../theme';
 const { useBreakpoint } = Grid;
+
+echarts.use([
+  LabelLayout,
+  UniversalTransition,
+  CanvasRenderer,
+  DataZoomComponent,
+  ToolboxComponent,
+  VisualMapComponent,
+  MapChart,
+  GeoComponent,
+]);
+
 export const ProgressBar = ({
   name,
   count,
@@ -37,9 +59,10 @@ export const WorldMap = ({
 }) => {
   const points = useBreakpoint();
   const mapRef: any = useRef();
+
   useEffect(() => {
-    registerMap('world', JSON.stringify(mapData));
-    const myChart = init(mapRef?.current);
+    echarts.registerMap('world', JSON.stringify(mapData));
+    const myChart = echarts.init(mapRef.current as unknown as HTMLDivElement);
     const option = {
       visualMap: {
         show: false,

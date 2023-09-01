@@ -21,6 +21,17 @@ const SidebarCmp = styled(Sider)`
   position: fixed;
   z-index: 2;
   min-height: 100vh;
+  .ant-menu-submenu-title .anticon + span,
+  .ant-menu-submenu-title .ant-menu-item-icon + span {
+    margin-left: 13px;
+  }
+  &.ant-layout-sider
+    .ant-menu-dark
+    .ant-menu-inline.ant-menu-sub
+    .ant-menu-item
+    .ant-menu-title-content {
+    margin-left: 12px;
+  }
 `;
 
 const SideBar = ({
