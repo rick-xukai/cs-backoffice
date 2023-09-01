@@ -120,7 +120,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
 
   const clearTimerFuction = () => {
     if (timer) {
-      clearInterval(timer);
+      clearInterval(Number(timer));
     }
   };
 

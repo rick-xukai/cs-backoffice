@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Row, Col, Input, Button, Space } from 'antd';
 import {
@@ -8,7 +8,6 @@ import {
 } from '@ant-design/icons';
 import { CSVLink } from 'react-csv';
 import { useParams } from 'react-router-dom';
-import { debounce } from 'lodash';
 
 import { UserRoutes } from '../../navigation/Routes';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -133,11 +132,6 @@ const UniqueAttendees = () => {
     </div>
   );
 
-  const searchInputChange = useCallback(
-    debounce((e) => console.log(e.target.value), 300),
-    [],
-  );
-
   return (
     <>
       <PageHeaderComponent
@@ -210,10 +204,7 @@ const UniqueAttendees = () => {
                         clearIcon: <CloseOutlined />,
                       }}
                       suffix={!searchKeywordState && <SearchOutlined />}
-                      onChange={(e) => {
-                        setSearchKeywordState(e.target.value);
-                        searchInputChange(e);
-                      }}
+                      onChange={(e) => setSearchKeywordState(e.target.value)}
                     />
                   </Col>
                 </Row>
