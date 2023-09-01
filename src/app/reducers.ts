@@ -22,6 +22,7 @@ import eventDashboardReducer from '../features/EventDashboard/EventDashboard.sli
 import ticketSoldReducer from '../features/TicketsSold/TicketSold.slice';
 import eventPageViewsReducer from '../features/EventPageViews/EventPageViews.slice';
 import uniqueBuyersReducer from '../features/UniqueBuyers/UniqueBuyers.slice';
+import uniqueAttendeesReducer from '../features/UniqueAttendees/UniqueAttendees.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -47,6 +48,7 @@ const createRootReducer = (history: any) =>
     ticketSold: ticketSoldReducer,
     eventPageViews: eventPageViewsReducer,
     uniqueBuyers: uniqueBuyersReducer,
+    uniqueAttendees: uniqueAttendeesReducer,
   });
 
 export default createRootReducer;

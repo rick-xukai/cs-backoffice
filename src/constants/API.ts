@@ -112,13 +112,13 @@ const API = {
     get: '/admin/event/:eventId/buyers',
   },
   getUnqiueAttendeesSummary: {
-    get: '/admin/event/:eventId/buyers',
+    get: '/admin/event/:eventId/attendees/summary',
   },
   getUnqiueAttendees: {
-    get: '/admin/event/:eventId/buyers',
+    get: '/admin/event/:eventId/attendees',
   },
   getEventScanned: {
-    get: '/admin/event/:eventId/buyers',
+    get: '/admin/event/:eventId/scanned',
   },
 };
 

@@ -190,23 +190,6 @@ const getUnqiueBuyers = async ({
   return response;
 };
 
-const getUnqiueAttendees = async ({
-  eventId,
-  ...opt
-}: {
-  eventId: string | number;
-  keyword: string;
-  isActivated: boolean;
-}) => {
-  const uri = API.getUnqiueAttendees.get.replace(':eventId', `${eventId}`);
-  const response = await requestClient()
-    .setUri(uri)
-    .setQueryParameter(opt)
-    .setAuthorizationStatus()
-    .doGet();
-  return response;
-};
-
 const getUnqiueAttendeesSummary = async ({
   eventId,
 }: {
@@ -223,14 +206,31 @@ const getUnqiueAttendeesSummary = async ({
   return response;
 };
 
+const getUnqiueAttendees = async ({
+  eventId,
+  ...opt
+}: {
+  eventId: string | number;
+  keyword: string;
+  isActivated?: boolean;
+}) => {
+  const uri = API.getUnqiueAttendees.get.replace(':eventId', `${eventId}`);
+  const response = await requestClient()
+    .setUri(uri)
+    .setQueryParameter(opt)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 const getEventScanned = async ({
   eventId,
   ...opt
 }: {
   eventId: string | number;
   keyword: string;
-  ticketTypeId: number;
-  source: number;
+  ticketTypeId?: number;
+  source?: number;
 }) => {
   const uri = API.getEventScanned.get.replace(':eventId', `${eventId}`);
   const response = await requestClient()

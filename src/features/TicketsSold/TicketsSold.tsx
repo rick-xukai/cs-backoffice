@@ -706,7 +706,6 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   ]);
 
   useEffect(() => {
-    console.log('ticketSold');
     dispatch(getTicketSoldCountAction(params.id));
     return () => {
       dispatch(resetState());
