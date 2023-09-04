@@ -39,7 +39,9 @@ export const UserRoutes = {
   transactions: '/transactions',
   transactionsDetail: '/transactions-detail/:transactionsId',
   orders: '/orders',
-  eventDashbaord: '/event-dashbaord/:id/:name',
+  eventDashboard: '/event-dashboard/:id/:name',
+  ticketSold: '/events-tickets/:id/:name',
+  pageNotFound: '/404',
 };
 
 export const AuthRoutes = {

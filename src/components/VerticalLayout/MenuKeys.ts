@@ -10,4 +10,5 @@ export const MenuKeys = {
   userAndPermissions: 'menu-userAndPermissions',
   transactions: 'menu-transactions',
   orders: 'menu-orders',
+  ticketsSold: 'menu-ticketsSold',
 };

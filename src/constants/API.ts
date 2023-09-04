@@ -87,6 +87,21 @@ const API = {
   checkConnectTicket: {
     post: '/admin/event/:eventId/:ticketTypeId/check',
   },
+  getEventDashboard: {
+    get: '/admin/event/:event_id/dashboard',
+  },
+  getTicketSoldList: {
+    get: '/admin/event/:event_id/user_ticket',
+  },
+  getTicketSoldCount: {
+    get: '/admin/event/:eventId/sold_count',
+  },
+  updateTicketStatus: {
+    put: '/admin/user_ticket/:userTicketId/status',
+  },
+  importTickets: {
+    post: '/admin/event/:eventId/import_ticket',
+  },
 };
 
 export default API;

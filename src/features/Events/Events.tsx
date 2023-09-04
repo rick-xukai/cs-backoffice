@@ -106,11 +106,11 @@ const Events = () => {
   const [showNoSearchData, setShowNoSearchData] = useState<boolean>(false);
   const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
   const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
-  // const goToDashboard = (id: any, name: any) => {
-  //   history.push(
-  //     UserRoutes.eventDashbaord.replace(':id', id).replace(':name', name),
-  //   );
-  // };
+  const goToDashboard = (id: any, name: any) => {
+    history.push(
+      UserRoutes.eventDashboard.replace(':id', id).replace(':name', name),
+    );
+  };
 
   // const showHideEvent = (record: EventsListDataType) => ({
   //   label: t('Hide Event'),
@@ -131,9 +131,9 @@ const Events = () => {
           display:
             (record.status !== EventStatusKeys.draft && 'block') || 'none',
         },
-        // onClick: () => {
-        //   goToDashboard(record.id, record.name);
-        // },
+        onClick: () => {
+          goToDashboard(record.id, record.name);
+        },
       },
       {
         label: (
@@ -313,13 +313,12 @@ const Events = () => {
               <Col
                 span={24}
                 className="event-name"
-                onClick={
-                  () =>
-                    record.status === EventStatusKeys.draft
-                      ? history.push(
-                          UserRoutes.editEvent.replace(':id', record.id),
-                        )
-                      : null // goToDashboard(record.id, record.name)
+                onClick={() =>
+                  record.status === EventStatusKeys.draft
+                    ? history.push(
+                        UserRoutes.editEvent.replace(':id', record.id),
+                      )
+                    : goToDashboard(record.id, record.name)
                 }
               >
                 {record.name}
@@ -612,7 +611,20 @@ const Events = () => {
                           </Row>
                         </Col>
                         <Col span={24}>
-                          <h4 className="title">{item.name}</h4>
+                          <h4
+                            className="title"
+                            onClick={() => {
+                              if (item.status === EventStatusKeys.draft) {
+                                history.push(
+                                  UserRoutes.editEvent.replace(':id', item.id),
+                                );
+                              } else {
+                                goToDashboard(item.id, item.name);
+                              }
+                            }}
+                          >
+                            {item.name}
+                          </h4>
                           <p className="date">{item.time}</p>
                         </Col>
                         <Col span={24}>
@@ -634,7 +646,9 @@ const Events = () => {
                           pageSize={size}
                           total={eventsListDataTotal}
                           hideOnSinglePage
-                          showTotal={(total) => `Total ${total} items`}
+                          showTotal={(total) =>
+                            `Total ${total} ${total !== 1 ? 'items' : 'item'}`
+                          }
                           showSizeChanger={false}
                           onChange={(currentPage) => {
                             dispatch(setPage(currentPage));

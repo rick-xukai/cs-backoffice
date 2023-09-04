@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useHistory, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Row, Col, Button, Spin, Badge, message, Select } from 'antd';
+import { Row, Col, Button, Spin, message, Avatar } from 'antd';
 import { EditOutlined, LoadingOutlined } from '@ant-design/icons';
 import qs from 'qs';
 
@@ -12,13 +12,16 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   defaultCurrentPage,
   defaultPageSize,
-  activeStatus,
   TokenExpireResponseCode,
 } from '../../constants/General';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { columns } from '../Tickets/Tickets';
-import { UserDetailContainer } from './UserDetail.component';
+import {
+  UserDetailContainer,
+  UserStatusContainer,
+  UserInfoItemContainer,
+} from './UserDetail.component';
 import {
   reset,
   getUserDetailAction,
@@ -30,8 +33,7 @@ import {
   selectError,
   selectDataTotal,
 } from './UserDetail.slice';
-
-const { Option } = Select;
+import { Images } from '../../theme';
 
 interface RouteConfigType {
   search: string;
@@ -138,116 +140,69 @@ const UserDetail = () => {
             </Col>
           </Row>
           <div className="detail-container">
-            <Col md={24} span={0}>
-              <Row className="item">
-                <Col span={6} className="item-key">
-                  <p className="item-key-title">{t('User Name')}</p>
-                  <p className="item-key-value">{userDetailData.name}</p>
-                </Col>
-                <Col span={6} className="item-key">
-                  <p className="item-key-title">{t('User Email')}</p>
-                  <p className="item-key-value">{userDetailData.email}</p>
-                </Col>
-                <Col span={6} className="item-key">
-                  <p className="item-key-title">{t('Gender')}</p>
-                  <p className="item-key-value">
-                    {userDetailData.gender || '-'}
-                  </p>
-                </Col>
-                <Col span={6} className="item-key">
-                  <p className="item-key-title">{t('Date of Birthday')}</p>
-                  <p className="item-key-value">
-                    {(userDetailData.birthday &&
-                      formatTimeStrByTimeString(
-                        formatLabelDate(userDetailData.birthday),
-                        FormatTimeKeys.mdy,
-                      )) ||
-                      '-'}
-                  </p>
-                </Col>
-              </Row>
-            </Col>
-            <Col md={0} span={24}>
-              <Row className="item">
-                <Col span={12} className="item-key">
-                  <p className="item-key-title">{t('User Name')}</p>
-                  <p className="item-key-value">{userDetailData.name}</p>
-                </Col>
-                <Col span={12} className="item-key">
-                  <p className="item-key-title">{t('User Email')}</p>
-                  <p className="item-key-value">{userDetailData.email}</p>
-                </Col>
-              </Row>
-              <Row className="item">
-                <Col span={12} className="item-key">
-                  <p className="item-key-title">{t('Gender')}</p>
-                  <p className="item-key-value">
-                    {userDetailData.gender || '-'}
-                  </p>
-                </Col>
-                <Col span={12} className="item-key">
-                  <p className="item-key-title">{t('Date of Birthday')}</p>
-                  <p className="item-key-value">
-                    {(userDetailData.birthday &&
-                      formatTimeStrByTimeString(
-                        formatLabelDate(userDetailData.birthday),
-                        FormatTimeKeys.mdy,
-                      )) ||
-                      '-'}
-                  </p>
-                </Col>
-              </Row>
-            </Col>
-            <Row className="item" style={{ marginBottom: 0 }}>
-              <Col
-                span={24}
-                md={12}
-                className="item-key"
-                style={{ marginBottom: 24 }}
-              >
-                <p className="item-key-title">{t('Crypto Wallet')}</p>
-                <p className="item-key-value">{userDetailData.walletAddress}</p>
+            <Row className="container-user">
+              <Col lg={2} xs={6} span={4}>
+                <Avatar>{userDetailData.name.charAt(0)}</Avatar>
               </Col>
-              <Col span={4} className="item-key">
-                <p className="item-key-title">{t('Status')}</p>
-                <div className="item-key-value">
-                  {(edit && (
-                    <Select
-                      defaultValue={
-                        (userDetailData.isActivated &&
-                          activeStatus.active.text) ||
-                        activeStatus.inActive.text
-                      }
-                      defaultActiveFirstOption={false}
-                    >
-                      {Object.values(activeStatus).map((item) => {
-                        if (item.text !== activeStatus.all.text) {
-                          return (
-                            <Option key={item.text} value={item.text}>
-                              {item.text}
-                            </Option>
-                          );
-                        }
-                        return null;
-                      })}
-                    </Select>
-                  )) || (
-                    <Badge
-                      status={
-                        (!userDetailData.isActivated && 'warning') || 'success'
-                      }
-                      text={
-                        (userDetailData.isActivated &&
-                          activeStatus.active.text) ||
-                        activeStatus.inActive.text
-                      }
-                    />
-                  )}
-                </div>
+              <Col lg={22} xs={18} span={20}>
+                <Row className="container-user-top">
+                  <Col span={24}>
+                    <div className="user-name-content">
+                      <span className="user-name">{userDetailData.name}</span>
+                      <UserStatusContainer
+                        isActive={userDetailData.isActivated}
+                      >
+                        {(!userDetailData.isActivated && 'Inactive') ||
+                          'Active'}
+                      </UserStatusContainer>
+                    </div>
+                  </Col>
+                  <Col span={24}>
+                    <div className="user-info-content">
+                      <UserInfoItemContainer>
+                        <img src={Images.EmailIcon} alt="" />
+                        <span>{userDetailData.email}</span>
+                      </UserInfoItemContainer>
+                      <UserInfoItemContainer>
+                        <img src={Images.GenderIcon} alt="" />
+                        <span>{userDetailData.gender || '-'}</span>
+                      </UserInfoItemContainer>
+                      <UserInfoItemContainer>
+                        <img
+                          style={{ marginTop: '-2px' }}
+                          src={Images.BirthIcon}
+                          alt=""
+                        />
+                        <span>
+                          {(userDetailData.birthday &&
+                            formatTimeStrByTimeString(
+                              formatLabelDate(userDetailData.birthday),
+                              FormatTimeKeys.mdy,
+                            )) ||
+                            '-'}
+                        </span>
+                      </UserInfoItemContainer>
+                      <UserInfoItemContainer>
+                        <img
+                          style={{ marginTop: '-2px' }}
+                          src={Images.CountryIcon}
+                          alt=""
+                        />
+                        <span>{userDetailData.country || '-'}</span>
+                      </UserInfoItemContainer>
+                    </div>
+                  </Col>
+                </Row>
               </Col>
             </Row>
-            <Row className="item">
-              <Col span={12} className="item-key">
+            <Row className="item" style={{ marginBottom: 0 }}>
+              <Col span={24} md={12} className="item-key">
+                <p className="item-key-title">{t('Crypto Wallet')}</p>
+                <p className="item-key-value mobile-top">
+                  {userDetailData.walletAddress}
+                </p>
+              </Col>
+              <Col span={24} md={12} className="item-key">
                 <p className="item-key-title">{t('Last Action Time')}</p>
                 <p className="item-key-value">
                   {(userDetailData.lastLoginAt &&

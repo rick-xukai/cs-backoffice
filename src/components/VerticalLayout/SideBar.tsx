@@ -6,6 +6,8 @@ import { SiderTheme } from 'antd/lib/layout/Sider';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+import { reset } from '../../features/TicketsSold/TicketSold.slice';
+import { useAppDispatch } from '../../app/hooks';
 import { AuthRoutes } from '../../navigation/Routes';
 import { useCookie } from '../../hooks';
 import { CookieKeys } from '../../constants/Keys';
@@ -32,10 +34,12 @@ const SideBar = ({
 }) => {
   const { t } = useTranslation();
   const cookies = useCookie([CookieKeys.authUser]);
+  const dispatch = useAppDispatch();
 
   const [collapsedWidth, setCollapsedWidth] = useState(CollapsedWidth);
 
   const logout = () => {
+    dispatch(reset());
     cookies.removeCookie(CookieKeys.authUser);
     cookies.removeCookie(CookieKeys.authUserName);
   };

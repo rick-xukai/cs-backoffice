@@ -25,21 +25,22 @@ const TableContainer = styled.div`
   .ant-table-thead {
     th {
       height: 40px;
-      background: ${Colors.grey9};
+      background: ${Colors.grayScale10};
       padding-top: 0;
       padding-bottom: 0;
       border-bottom: none;
       border-top-left-radius: unset !important;
       border-top-right-radius: unset !important;
-      font-weight: 400;
-      font-size: 15px;
-      color: ${Colors.grey6};
+      color: ${Colors.black6};
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 18px;
       ::before {
         display: none;
       }
       &.ant-table-column-sort,
       &.ant-table-column-has-sorters:hover {
-        background: ${Colors.grey9};
+        background: ${Colors.grayScale10};
       }
     }
     .ant-table-column-sorters {

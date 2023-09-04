@@ -232,11 +232,12 @@ const EventListTableContainer = styled.div`
   tbody {
     .event-img {
       height: 44px;
+      width: 88px;
+      background: ${Colors.black};
+      text-align: center;
+      border-radius: 4px;
+      overflow: hidden;
       &.type-gif {
-        background: ${Colors.black};
-        text-align: center;
-        border-radius: 4px;
-        width: 88px;
         img {
           border-radius: 0px;
         }
@@ -244,7 +245,6 @@ const EventListTableContainer = styled.div`
       img {
         height: 100%;
         object-fit: cover;
-        border-radius: 4px;
       }
     }
     .table-event {

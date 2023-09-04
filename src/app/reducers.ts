@@ -18,6 +18,8 @@ import forgotPasswordReducer from '../features/Authentication/ForgotPassword/For
 import changePasswordReducer from '../features/Authentication/ChangePassword/ChangePassword.slice';
 import profileReducer from '../features/Profile/Profile.slice';
 import userPermissionsReducer from '../features/UserAndPermissions/UserAndPermissions.slice';
+import eventDashboardReducer from '../features/EventDashboard/EventDashboard.slice';
+import ticketSoldReducer from '../features/TicketsSold/TicketSold.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -39,6 +41,8 @@ const createRootReducer = (history: any) =>
     changePassword: changePasswordReducer,
     profile: profileReducer,
     userPermissions: userPermissionsReducer,
+    eventDashboard: eventDashboardReducer,
+    ticketSold: ticketSoldReducer,
   });
 
 export default createRootReducer;

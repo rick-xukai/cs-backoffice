@@ -15,6 +15,8 @@ import CreateEvent from '../features/CreateEvent/Loadable';
 import Profile from '../features/Profile/Loadable';
 import UserAndPermissions from '../features/UserAndPermissions/Loadable';
 import Orders from '../features/Orders/Loadable';
+import TicketsSold from '../features/TicketsSold/Loadable';
+import PageNotFound from '../features/404Page/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -137,11 +139,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [
-      UserRoleKeys.superAdmin,
-      UserRoleKeys.organizerAdmin,
-      UserRoleKeys.organizerUser,
-    ],
+    role: [],
   },
   TicketDetail: {
     title: 'Tickets Details - CrowdServe BO',
@@ -163,11 +161,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [
-      UserRoleKeys.superAdmin,
-      UserRoleKeys.organizerAdmin,
-      UserRoleKeys.organizerUser,
-    ],
+    role: [],
   },
   UserDetail: {
     title: 'User Detail - CrowdServe BO',
@@ -237,8 +231,16 @@ export const UserScreens = {
   },
   EventDashboard: {
     title: 'Event Dashboard - CrowdServe BO',
-    path: UserRoutes.eventDashbaord,
+    path: UserRoutes.eventDashboard,
     component: EventDashboard,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
+  },
+  TicketsSold: {
+    title: 'Tickets - CrowdServe BO',
+    path: UserRoutes.ticketSold,
+    component: TicketsSold,
     subMenuKeys: [],
     menuKeys: [vMenuKeys.events],
     guard: true,
@@ -247,6 +249,14 @@ export const UserScreens = {
       UserRoleKeys.organizerAdmin,
       UserRoleKeys.organizerUser,
     ],
+  },
+  PageNotFoundComponent: {
+    title: 'Page Not Found - CrowdServe BO',
+    path: UserRoutes.pageNotFound,
+    component: PageNotFound,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.events],
+    guard: true,
   },
 };
 

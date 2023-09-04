@@ -1,61 +1,133 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Col, Row, Grid } from 'antd';
 
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
+import { RightOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
 import {
   Banner,
-  DashbaordChartCard,
-  DashbaordListCard,
+  DashboardChartCard,
+  DashboardListCard,
   NormalCard,
 } from './EventDashboard.components';
 import {
   ContentWrapper,
+  DashboardListCardWrapper,
   EventDsahboardContainer,
+  ExtraText,
 } from './EventDashboard.component';
-import { SGD_UNIT } from '../../constants/constants';
+import { MMM_DD_YYYY_HH_MM, SGD_UNIT } from '../../constants/constants';
+import TicketsSold from '../TicketsSold/TicketsSold';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import {
+  getEventDashboardAction,
+  reset,
+  selectDetailData,
+  selectLoading,
+} from './EventDashboard.slice';
+import BallLoading from '../../components/BallLoading';
+import { thousandsSeparator } from '../../utils/func';
 
 const { useBreakpoint } = Grid;
 
 const EventDashboard = () => {
   const { t } = useTranslation();
   const { lg } = useBreakpoint();
-  const dashbaordChartCard = (
-    <DashbaordChartCard total={100} current={10} ticketsImported={10} />
+  const history = useHistory();
+  const dispatch = useAppDispatch();
+  const data = useAppSelector(selectDetailData);
+  const {
+    buyers,
+    name,
+    image,
+    startTime,
+    endTime,
+    status,
+    pageViews,
+    netSales,
+    stocks,
+    ticketTypes,
+    discounts,
+    attendees,
+  } = data;
+  const dashboardChartCard = (
+    <DashboardChartCard
+      total={stocks?.stockTotal}
+      current={stocks?.soldTotal}
+      ticketsImported={stocks?.importTotal}
+    />
   );
   const params: any = useParams();
-  const { name } = params;
+  const { id } = params;
+  const loading = useAppSelector(selectLoading);
+  useEffect(() => {
+    dispatch(getEventDashboardAction(id));
+    return () => {
+      dispatch(reset());
+    };
+  }, []);
 
   const uniqueBuyers = (
     <NormalCard
       title="Unique Buyers"
       href=" "
-      text="162"
+      text={buyers?.userCount || 0}
       barTitle="Conversion Rate"
-      value="20%"
+      value={`${
+        buyers?.conversionRate ? (buyers?.conversionRate * 100).toFixed(2) : 0
+      }%`}
+      tooltip="Unique attendees. Some of these attendees may be holding more than 1 ticket."
     />
   );
   const eventPageViewsCard = (
     <NormalCard
       title="Event Page Views"
       href=" "
-      text="110"
+      text={(pageViews?.viewCount && pageViews?.viewCount) || 0}
       barTitle="Average Daily Visits"
-      value={90}
+      value={
+        (pageViews?.averageDailyCount &&
+          pageViews?.averageDailyCount.toFixed(0)) ||
+        0
+      }
+      tooltip="See the total number times your page has been viewed."
     />
   );
-  const notSalesCard = (
+  const netSalesCard = (
     <NormalCard
-      title="Not Sales"
-      text={`${SGD_UNIT} 100`}
+      title="Net Sales"
+      text={`${SGD_UNIT} $${
+        netSales?.revenue ? thousandsSeparator(`${netSales?.revenue}`) : 0
+      }`}
       barTitle="Gross Sales"
-      value={`${SGD_UNIT} 9562.76`}
+      value={`${SGD_UNIT} $${
+        netSales?.grossSales ? thousandsSeparator(`${netSales?.grossSales}`) : 0
+      }`}
     />
   );
 
-  return (
+  const uniqueAttendeesCard = (
+    <NormalCard
+      title="Unique Attendees"
+      text={attendees?.uniqueUser}
+      href=" "
+      barTitle="Tickets Scanned"
+      value={attendees?.ticketScanned}
+    />
+  );
+
+  const goToTicketSold = () => {
+    history.push(
+      UserRoutes.ticketSold.replace(':id', id).replace(':name', name),
+    );
+  };
+
+  return loading ? (
+    <BallLoading />
+  ) : (
     <EventDsahboardContainer>
       <PageHeaderComponent
         breadcrumb={[
@@ -69,20 +141,25 @@ const EventDashboard = () => {
         ]}
       />
       <Banner
-        title="Escape to Paradise - Pool Party"
-        status={1}
-        time="Feb 26 2023, 19:30 - Feb 26 2023, 22:30"
-        img="https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690940498743-Eqeg.jpg"
+        title={name}
+        status={status}
+        time={`${moment(startTime).format(MMM_DD_YYYY_HH_MM)} - ${moment(
+          endTime,
+        ).format(MMM_DD_YYYY_HH_MM)}`}
+        img={image}
       />
       <ContentWrapper>
         {lg ? (
           <Row gutter={[16, 16]}>
-            <Col span={8}>{dashbaordChartCard}</Col>
+            <Col span={8} onClick={goToTicketSold}>
+              {dashboardChartCard}
+            </Col>
             <Col span={16}>
-              <Row gutter={[16, 19]}>
+              <Row gutter={[16, 16]}>
                 <Col span={12}>{uniqueBuyers}</Col>
                 <Col span={12}>{eventPageViewsCard}</Col>
-                <Col span={24}>{notSalesCard}</Col>
+                <Col span={12}>{netSalesCard}</Col>
+                <Col span={12}>{uniqueAttendeesCard}</Col>
               </Row>
             </Col>
           </Row>
@@ -99,7 +176,9 @@ const EventDashboard = () => {
                     paddingLeft: 15,
                   }}
                 >
-                  <Col span={20}>{dashbaordChartCard}</Col>
+                  <Col span={20} onClick={goToTicketSold}>
+                    {dashboardChartCard}
+                  </Col>
                   <Col span={23}>
                     <Row style={{ paddingRight: 42 }}>
                       <Col
@@ -115,7 +194,28 @@ const EventDashboard = () => {
                   </Col>
                 </Row>
               </Col>
-              <Col span={24}>{notSalesCard}</Col>
+            </Row>
+            <Row gutter={[12, 12]} style={{ marginTop: 12 }}>
+              <Col span={24}>
+                <Row
+                  wrap={false}
+                  style={{
+                    overflow: 'auto',
+                    width: 'calc(100vw + 15px)',
+                    marginLeft: -15,
+                    paddingLeft: 15,
+                  }}
+                >
+                  <Col span={20}>{netSalesCard}</Col>
+                  <Col span={23}>
+                    <Row style={{ paddingRight: 42 }}>
+                      <Col span={24} style={{ marginLeft: 12 }}>
+                        {uniqueAttendeesCard}
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Col>
             </Row>
           </div>
         )}
@@ -124,63 +224,52 @@ const EventDashboard = () => {
           style={{ marginTop: lg ? 16 : 12 }}
         >
           <Col lg={12} span={24}>
-            <DashbaordListCard
+            <DashboardListCard
               title="Ticket Type Sales"
-              data={[
-                {
-                  title: 'VIP',
-                  image:
-                    'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690882892062-Lu3l.jpg',
-                  current: 0,
-                  total: 200,
-                  ticketsImported: 10,
-                },
-                {
-                  title: 'SVIP',
-                  image:
-                    'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690882892062-Lu3l.jpg',
-                  current: 0,
-                  total: 200,
-                  ticketsImported: 10,
-                },
-                {
-                  title: 'VVIP',
-                  image:
-                    'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690882892062-Lu3l.jpg',
-                  current: 0,
-                  total: 200,
-                  ticketsImported: 0,
-                },
-              ]}
+              data={ticketTypes?.map((item) => ({
+                title: item.name,
+                image: item.image,
+                current: item.soldTotal,
+                total: item.stock,
+                ticketsImported: item.importTotal,
+              }))}
             />
           </Col>
           <Col lg={12} span={24}>
-            <DashbaordListCard
+            <DashboardListCard
               title="Discount Ranking"
               ranking
-              data={[
-                {
-                  title: 'Anniversary',
-                  current: 0,
-                  total: 0,
-                },
-                {
-                  title: 'Happy',
-                  current: 0,
-                  total: 0,
-                },
-                {
-                  title: 'Celebration',
-                  current: 0,
-                  total: 20,
-                },
-                {
-                  title: 'Yoo',
-                  current: 0,
-                  total: 20,
-                },
-              ]}
+              data={discounts?.map((item) => ({
+                title: item.name,
+                current: item.usageCount,
+                total: item.limit,
+              }))}
             />
+          </Col>
+          <Col span={24}>
+            <DashboardListCardWrapper>
+              <p className="title">
+                <span>Tickets</span>
+                {lg ? (
+                  <ExtraText onClick={goToTicketSold}>
+                    View All <RightOutlined />
+                  </ExtraText>
+                ) : null}
+              </p>
+              <TicketsSold isComponent />
+              {lg ? null : (
+                <ExtraText
+                  onClick={goToTicketSold}
+                  style={{
+                    display: 'block',
+                    textAlign: 'center',
+                    marginTop: 20,
+                  }}
+                >
+                  View All <RightOutlined />
+                </ExtraText>
+              )}
+            </DashboardListCardWrapper>
           </Col>
         </Row>
       </ContentWrapper>

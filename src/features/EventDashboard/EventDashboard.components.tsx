@@ -1,20 +1,23 @@
 import React from 'react';
-import { Col, Row, Tooltip } from 'antd';
+import { Col, Row, Tooltip, Grid } from 'antd';
 import { CSSProperties } from 'styled-components';
 
 import { Gauge } from '@ant-design/plots';
+import { isEmpty } from 'lodash';
 import {
   BannerWrapper,
   BottomBar,
   CardWrapper,
-  DashbaordListCardWrapper,
+  DashboardListCardWrapper,
   InfoWrapper,
   NormalListItemWrapper,
   RankingListItemWrapper,
 } from './EventDashboard.component';
 import { getBadge } from '../Events/Events';
 import { Colors, Images } from '../../theme';
+import NoData from '../../components/NoData';
 
+const { useBreakpoint } = Grid;
 export const Banner = ({
   title,
   status,
@@ -59,7 +62,7 @@ const Info = ({
   </InfoWrapper>
 );
 
-export const DashbaordChartCard = ({
+export const DashboardChartCard = ({
   total,
   current,
   ticketsImported,
@@ -84,7 +87,8 @@ export const DashbaordChartCard = ({
           color: Colors.branding,
           fontWeight: 700,
         },
-        formatter: (e: any) => `${e.percent * 100 || 0}%`,
+        formatter: (e: any) =>
+          `${e.percent ? (e.percent * 100).toFixed(2) : 0}%`,
       },
     },
   };
@@ -110,6 +114,7 @@ export const DashbaordChartCard = ({
         infoJustify="center"
         style={{ marginTop: 4 }}
         title="Tickets Sold"
+        tooltip={`Click here to view the total number of tickets sold and the corresponding data. This will only reflect paid tickets on CrowdServe. Ticket information from imported manually or from other sites, will be labelled under "Tickets imported".`}
       />
       <BottomBar style={{ marginTop: 24 }}>
         <div className="left">Tickets Imported</div>
@@ -130,30 +135,37 @@ export const NormalCard = ({
   href?: string;
   title: React.ReactNode;
   tooltip?: React.ReactNode;
-  text: string;
+  text: React.ReactNode;
   barTitle: string;
-  value: number | string;
-}) => (
-  <CardWrapper hoverable={!!href}>
-    <Row justify="space-between" align="middle">
-      <Col>
-        <Info style={{ marginTop: 4 }} title={title} tooltip={tooltip} />
-      </Col>
-      {href ? (
+  value: React.ReactNode;
+}) => {
+  const { lg } = useBreakpoint();
+  return (
+    <CardWrapper hoverable={!!href}>
+      <Row
+        justify="space-between"
+        align="middle"
+        style={{ height: lg ? 28 : 30 }}
+      >
         <Col>
-          <img src={Images.CardArrowIcon} alt="" />
+          <Info style={{ marginTop: 4 }} title={title} tooltip={tooltip} />
         </Col>
-      ) : null}
-    </Row>
-    <div style={{ marginTop: 10.5 }}>
-      <span className="large-text">{text}</span>
-    </div>
-    <BottomBar style={{ marginTop: 12 }}>
-      <div className="left">{barTitle}</div>
-      <div className="right">{value}</div>
-    </BottomBar>
-  </CardWrapper>
-);
+        {href ? (
+          <Col>
+            <img src={Images.CardArrowIcon} alt="" />
+          </Col>
+        ) : null}
+      </Row>
+      <div style={{ marginTop: 10.5 }}>
+        <span className="large-text">{text}</span>
+      </div>
+      <BottomBar style={{ marginTop: 12 }}>
+        <div className="left">{barTitle}</div>
+        <div className="right">{value}</div>
+      </BottomBar>
+    </CardWrapper>
+  );
+};
 
 const NormalListItem = ({
   img,
@@ -169,19 +181,19 @@ const NormalListItem = ({
   total: number;
 }) => (
   <NormalListItemWrapper>
-    <Row gutter={16} align="middle">
-      <Col>
+    <Row gutter={16} align="middle" wrap={false}>
+      <Col style={{ width: 56, flexShrink: 0 }}>
         <img src={img} alt="" />
       </Col>
       <Col flex="auto">
-        <Row justify="space-between" align="middle">
-          <Col>
+        <Row justify="space-between" align="middle" wrap={false}>
+          <Col span={19}>
             <p className="title">{title}</p>
             <p className="sub-title">
               Tickets Imported <b>{ticketsImported || 0}</b>
             </p>
           </Col>
-          <Col>
+          <Col span={5}>
             <p className="numbers">
               <b>{current}</b> / {total || 'Unlimited'}
             </p>
@@ -210,8 +222,8 @@ const RankingListItem = ({
   index: number;
 }) => (
   <RankingListItemWrapper>
-    <Row gutter={16} style={{ height: 21 }}>
-      <Col>
+    <Row style={{ height: 21 }} wrap={false} justify="space-between">
+      <Col style={{ width: 36, flexShrink: 0 }}>
         {index < 3 ? (
           <img src={rankingIcons[index]} alt="" />
         ) : (
@@ -219,11 +231,11 @@ const RankingListItem = ({
         )}
       </Col>
       <Col flex="auto">
-        <Row justify="space-between">
-          <Col>
+        <Row justify="space-between" wrap={false}>
+          <Col span={20} xs={16}>
             <p className="title">{title}</p>
           </Col>
-          <Col>
+          <Col span={4} xs={8}>
             <p className="numbers">
               <b>{current}</b> / {total || 'Unlimited'}
             </p>
@@ -234,7 +246,7 @@ const RankingListItem = ({
   </RankingListItemWrapper>
 );
 
-export const DashbaordListCard = ({
+export const DashboardListCard = ({
   ranking,
   data = [],
   title,
@@ -249,33 +261,41 @@ export const DashbaordListCard = ({
   }[];
   title: string;
 }) => (
-  <DashbaordListCardWrapper>
+  <DashboardListCardWrapper>
     <p className="title">{title}</p>
-    {ranking ? (
-      <ul className="list">
-        {data.map((item, index: number) => (
-          <RankingListItem
-            title={item.title}
-            current={item.current}
-            total={item.total}
-            key={item.title}
-            index={index}
-          />
-        ))}
+    {isEmpty(data) ? (
+      <ul className="list" style={{ paddingTop: 20 }}>
+        <NoData />
       </ul>
     ) : (
-      <ul className="list">
-        {data.map((item) => (
-          <NormalListItem
-            title={item.title}
-            img={item.image}
-            current={item.current}
-            total={item.total}
-            key={item.title}
-            ticketsImported={item.ticketsImported}
-          />
-        ))}
-      </ul>
+      <>
+        {ranking ? (
+          <ul className="list">
+            {data.map((item, index: number) => (
+              <RankingListItem
+                title={item.title}
+                current={item.current}
+                total={item.total}
+                key={item.title}
+                index={index}
+              />
+            ))}
+          </ul>
+        ) : (
+          <ul className="list">
+            {data.map((item) => (
+              <NormalListItem
+                title={item.title}
+                img={item.image}
+                current={item.current}
+                total={item.total}
+                key={item.title}
+                ticketsImported={item.ticketsImported}
+              />
+            ))}
+          </ul>
+        )}
+      </>
     )}
-  </DashbaordListCardWrapper>
+  </DashboardListCardWrapper>
 );

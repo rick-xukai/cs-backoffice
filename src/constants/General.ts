@@ -104,3 +104,50 @@ export const SortKeys = {
   descend: 'descend',
   ascend: 'ascend',
 };
+export const UploadCSVType = 'text/csv';
+export const ImportTicketsTemplate = [
+  { label: 'Attendee Email', key: 'attendeeEmail' },
+  { label: 'Ticket Type', key: 'ticketType' },
+];
+export const TicketSoldFilterStatus = [
+  {
+    id: 0,
+    name: 'Live',
+  },
+  {
+    id: 1,
+    name: 'Used',
+  },
+  {
+    id: 2,
+    name: 'Cancelled',
+  },
+  {
+    id: 3,
+    name: 'Expired',
+  },
+  {
+    id: 5,
+    name: 'Sold',
+  },
+  {
+    id: null,
+    name: 'Listed',
+  },
+];
+export const TicketSoldFilterSource = [
+  {
+    id: 0,
+    name: 'Primary Market',
+  },
+  {
+    id: 1,
+    name: 'Secondary Market',
+  },
+  {
+    id: 2,
+    name: 'Ticket Imported',
+  },
+];
+export const TicketSoldSaleStatus = 1;
+export const ImportTicketInvalid = 1081;

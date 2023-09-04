@@ -679,7 +679,11 @@ const CreateTicket = ({
                 }
                 title={item.name}
                 stock={`${item.soldTotal} / ${item.stock}`}
-                price={item.price}
+                price={
+                  typeof item.price === 'number'
+                    ? thousandsSeparator(`${item.price}`)
+                    : item.price
+                }
                 sellingTime={`${moment(item.sellStartTime).format(
                   MMM_DD_YYYY_HH_MM,
                 )} - ${moment(item.sellEndTime).format(MMM_DD_YYYY_HH_MM)}`}
@@ -706,7 +710,7 @@ const CreateTicket = ({
         <>
           <Row>
             <Col span={24} className="main-title">
-              {t('Tickct Info')}
+              {t('Ticket Info')}
             </Col>
           </Row>
           <CreateEventFormContainer>
