@@ -281,7 +281,13 @@ const UniqueAttendees = () => {
             <Col span={12}>
               <div className="info-content">
                 <div>
-                  <p className="content-title">{t('Unique Attendees')}</p>
+                  <p className="content-title">
+                    {t(
+                      option === SelectOptions.uniqueAttendees
+                        ? 'Unique Attendees'
+                        : 'Tickets Scanned',
+                    )}
+                  </p>
                   <p className="content-name">{params.name}</p>
                 </div>
               </div>
@@ -292,13 +298,21 @@ const UniqueAttendees = () => {
                   <p className="content-info">
                     <span></span>
                     <span className="bold content-title-sold large-text">
-                      {uniqueAttendeesSummary.attendeesCount}
+                      {option === SelectOptions.uniqueAttendees
+                        ? uniqueAttendeesSummary.attendeesCount
+                        : uniqueAttendeesSummary.scannedCount}
                     </span>
                   </p>
                   <p className="content-info">
-                    <span>Tickets Scanned</span>
+                    <span>
+                      {option === SelectOptions.uniqueAttendees
+                        ? 'Tickets Scanned'
+                        : 'Unique Attendees'}
+                    </span>
                     <span className="bold">
-                      {uniqueAttendeesSummary.scannedCount}
+                      {option === SelectOptions.uniqueAttendees
+                        ? uniqueAttendeesSummary.scannedCount
+                        : uniqueAttendeesSummary.attendeesCount}
                     </span>
                   </p>
                 </div>

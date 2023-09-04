@@ -34,17 +34,19 @@ export const ProgressBar = ({
   name,
   count,
   percent,
+  empty,
 }: {
   name: string;
-  count: number;
-  percent: number;
+  count: number | string;
+  percent: number | string;
+  empty?: boolean;
 }) => (
   <>
     <ProgressInfo>
-      <p className="title">{name}</p>
+      <p className="title">{empty ? '-' : name}</p>
       <div className="right-info">
-        <p className="count">{count}</p>
-        <p className="percent">{percent}%</p>
+        <p className="count">{empty ? '-' : count}</p>
+        <p className="percent">{empty ? '' : `${percent}%`}</p>
       </div>
     </ProgressInfo>
     <ProgressContainer>

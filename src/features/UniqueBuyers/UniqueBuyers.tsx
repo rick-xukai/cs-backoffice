@@ -77,7 +77,7 @@ const parseAgesData = (data: { name: string; count: number }[]) => {
       value: thirtySixToFifty.reduce((a, b) => a + b.count, 0),
     },
     {
-      type: '50+',
+      type: '>50',
       value: moreThanFifty.reduce((a, b) => a + b.count, 0),
     },
   ];
@@ -121,7 +121,7 @@ const UniqueBuyers = () => {
       hieght: 140,
       data: parseAgesData(ages),
       color: [
-        Colors.red2,
+        Colors.red6,
         Colors.red3,
         Colors.red4,
         Colors.branding,
@@ -292,7 +292,9 @@ const UniqueBuyers = () => {
                     </p>
                     <p className="content-info">
                       <span>Conversion Rate</span>
-                      <span className="bold">{summary.conversionRate}%</span>
+                      <span className="bold">
+                        {(summary.conversionRate * 100).toFixed(2)}%
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -320,15 +322,18 @@ const UniqueBuyers = () => {
                           <Col span={24}>
                             <ProgressBar
                               name={item.name}
-                              percent={(item.count / countriesCount) * 100}
+                              percent={(
+                                (item.count / countriesCount) *
+                                100
+                              ).toFixed(2)}
                               count={item.count}
                             />
                           </Col>
                         ))
                       ) : (
-                        <div style={{ margin: 'auto', marginTop: 30 }}>
-                          <NoData />
-                        </div>
+                        <Col span={24}>
+                          <ProgressBar name="-" percent={0} count="-" empty />
+                        </Col>
                       )}
                     </Row>
                   </ProgressContent>
@@ -351,6 +356,7 @@ const UniqueBuyers = () => {
                       <Column
                         {...config}
                         columnWidthRatio={0.25}
+                        maxColumnWidth={45}
                         legend={false}
                         height={148}
                         color={Colors.branding}
@@ -362,6 +368,26 @@ const UniqueBuyers = () => {
                               fill: Colors.black4,
                             },
                           },
+                        }}
+                        yAxis={{
+                          label: {
+                            style: {
+                              fill: Colors.black4,
+                            },
+                          },
+                        }}
+                        tooltip={{
+                          domStyles: {
+                            'g2-tooltip': {
+                              background: 'none',
+                              boxShadow: 0,
+                            },
+                          },
+                          customContent: (a: any, b: any) => (
+                            <PieTooltip>
+                              {a}: {b[0]?.value || 0}
+                            </PieTooltip>
+                          ),
                         }}
                       />
                     </Card>
@@ -387,6 +413,7 @@ const UniqueBuyers = () => {
                             },
                             customContent: (a: any, b: any) => (
                               <PieTooltip>
+                                {a}:{' '}
                                 {(
                                   ((b[0]?.value || 0) / totalPieCount) *
                                   100

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Col, DatePicker, Row } from 'antd';
+import { Card, Col, DatePicker, Row, Skeleton } from 'antd';
 import { Line, Column } from '@ant-design/plots';
-import { flatten, isArray } from 'lodash';
+import { flatten, isArray, isEmpty } from 'lodash';
 
 import moment from 'moment';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -25,12 +25,17 @@ import {
   selectPageViewsData,
 } from './EventPageViews.slice';
 import NoData from '../../components/NoData/NoData';
+import { getDays } from '../../utils/func';
 import { FormatTimeKeys } from '../../constants/Keys';
+import useSearchParams from '../../hooks/useSearchParams';
+import { Colors } from '../../theme';
+import { PieTooltip } from '../UniqueBuyers/UniqueBuyers.component';
 
 const { RangePicker } = DatePicker;
 
 const EventPageViews = () => {
   const params: any = useParams();
+  const pamasStartDate = useSearchParams('startDate');
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const eventPageViews = useAppSelector(selectPageViewsData);
@@ -38,13 +43,13 @@ const EventPageViews = () => {
   const pageViewsAnalysisLoading = useAppSelector(
     selectPageViewsAnalysisLoading,
   );
-
   const loading = useAppSelector(selectLoading);
 
   const { name, summary, countries, origins } = eventPageViews;
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-
+  const [startDate, setStartDate] = useState(
+    pamasStartDate || moment().format(FormatTimeKeys.ymd),
+  );
+  const [endDate, setEndDate] = useState(moment().format(FormatTimeKeys.ymd));
   useEffect(() => {
     dispatch(getEventPageViewsAction(params.id));
   }, []);
@@ -78,15 +83,45 @@ const EventPageViews = () => {
         ])
       : [],
   );
-
+  const dates = getDays(startDate, endDate);
+  const totalPageViewsEmptyData = dates.map((item) => ({
+    date: item,
+    type: 'Total Page Views',
+    value: null,
+  }));
+  const uniqueVisitorPageViewsEmptyData = dates.map((item) => ({
+    date: item,
+    type: 'Unique Visitor Page Views',
+    value: null,
+  }));
+  const ticketSoldEmptyData = dates.map((item) => ({
+    date: item,
+    type: 'Ticket Sold',
+    value: null,
+  }));
   const config = {
-    data: parsedData,
+    data: isEmpty(parsedData)
+      ? [
+          ...totalPageViewsEmptyData,
+          ...uniqueVisitorPageViewsEmptyData,
+          ...ticketSoldEmptyData,
+        ]
+      : parsedData,
     xField: 'date',
     yField: 'value',
     seriesField: 'type',
     color: ['#056790', '#FCA119', '#FC0006'],
     point: {
       size: 5,
+    },
+    xAxis: {
+      label: {
+        autoHide: true,
+        autoRotate: true,
+        style: {
+          fill: Colors.black4,
+        },
+      },
     },
   };
   const columnConfig = {
@@ -98,6 +133,8 @@ const EventPageViews = () => {
       size: 5,
     },
   };
+
+  const countriesCount = countries.reduce((a, b) => a + b.count, 0);
   return (
     <>
       <PageHeaderComponent
@@ -150,37 +187,72 @@ const EventPageViews = () => {
             </ContainerTitle>
           </Col>
           <Col span={24}>
-            <Card
-              bodyStyle={{ padding: 20 }}
-              bordered={false}
-              loading={pageViewsAnalysisLoading}
-            >
+            <Card bodyStyle={{ padding: 20 }} bordered={false}>
               <Title>
                 <p>Overview</p>
                 <RangePicker
-                  onCalendarChange={(date, dateString) => {
+                  onChange={(date, dateString) => {
                     setStartDate(dateString[0]);
                     setEndDate(dateString[1]);
                   }}
+                  value={[
+                    startDate ? moment(startDate) : null,
+                    endDate ? moment(endDate) : null,
+                  ]}
                   style={{ height: 32 }}
                   disabledDate={(currentDate) => {
-                    const tooLate =
-                      startDate && currentDate.diff(startDate, 'days') <= 0;
-                    const tooEarly =
-                      endDate &&
-                      moment(endDate).diff(
-                        currentDate.format(FormatTimeKeys.ymd),
-                        'days',
-                      ) <= 0;
-                    return !!tooLate || !!tooEarly;
+                    // const tooLate =
+                    //   startDate && currentDate.diff(startDate, 'days') <= 0;
+                    // const tooEarly =
+                    //   endDate &&
+                    //   moment(endDate).diff(
+                    //     currentDate.format(FormatTimeKeys.ymd),
+                    //     'days',
+                    //   ) <= 0;
+                    const afterToday = currentDate > moment();
+                    return afterToday;
                   }}
                 />
               </Title>
-              <Line
-                {...config}
-                legend={{ position: 'right', padding: [0, 0, 0, 20] }}
-                yAxis={{ position: 'right' }}
-              />
+              {pageViewsAnalysisLoading ? (
+                <Skeleton />
+              ) : (
+                <Line
+                  {...config}
+                  tooltip={{
+                    domStyles: {
+                      'g2-tooltip': {
+                        background: 'none',
+                        boxShadow: 0,
+                      },
+                    },
+                    customContent: (a: any, b: any) => (
+                      <PieTooltip>
+                        {a}: {b[0]?.value || 0}
+                      </PieTooltip>
+                    ),
+                  }}
+                  legend={{
+                    position: 'right',
+                    padding: [0, 0, 0, 20],
+                    label: {
+                      style: {
+                        stroke: Colors.black,
+                      },
+                    },
+                  }}
+                  yAxis={{
+                    position: 'right',
+                    min: 120,
+                    max: 5,
+                    label: {
+                      style: {
+                        fill: Colors.black4,
+                      },
+                    },
+                  }}
+                />
+              )}
             </Card>
           </Col>
           <Col lg={12} sm={24}>
@@ -199,7 +271,9 @@ const EventPageViews = () => {
                       <Col span={24} key={item.name}>
                         <ProgressBar
                           name={item.name}
-                          percent={item.rate}
+                          percent={Math.round(
+                            (item.count / countriesCount) * 100,
+                          )}
                           count={item.count}
                         />
                       </Col>
@@ -227,8 +301,23 @@ const EventPageViews = () => {
                 legend={false}
                 columnWidthRatio={0.25}
                 height={148}
+                maxColumnWidth={45}
+                xAxis={{
+                  label: {
+                    style: {
+                      fill: Colors.black4,
+                    },
+                  },
+                }}
+                yAxis={{
+                  label: {
+                    style: {
+                      fill: Colors.black4,
+                    },
+                  },
+                }}
                 data={
-                  origins && origins.length
+                  !isEmpty(origins)
                     ? origins.map((item) => ({
                         type: 'Page Views Origin',
                         name: item.name,

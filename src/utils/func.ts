@@ -3,8 +3,9 @@ import { utcToZonedTime, format as formatTZ } from 'date-fns-tz';
 import CryptoJS from 'crypto-js';
 import { Base64 } from 'js-base64';
 import numeral from 'numeral';
+import moment from 'moment';
 
-import { DataEncryptionKeys } from '../constants/Keys';
+import { DataEncryptionKeys, FormatTimeKeys } from '../constants/Keys';
 import {
   FullScreenDocument,
   FullScreenDocumentElement,
@@ -406,4 +407,15 @@ export const formatLocation = (location: string, address: string) => {
     return location;
   }
   return '-';
+};
+export const getDays = (startDate: any, endDate: any) => {
+  const daysList = [];
+  const sDate = moment(startDate);
+  const eDate = moment(endDate);
+  daysList.push(sDate.format(FormatTimeKeys.mDy));
+  while (sDate.add(1, 'days').isBefore(eDate)) {
+    daysList.push(sDate.format(FormatTimeKeys.mDy));
+  }
+  daysList.push(eDate.format(FormatTimeKeys.mDy));
+  return daysList;
 };

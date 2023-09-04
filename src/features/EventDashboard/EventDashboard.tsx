@@ -85,7 +85,9 @@ const EventDashboard = () => {
   const eventPageViewsCard = (
     <NormalCard
       title="Event Page Views"
-      href={UserRoutes.eventPageViews.replace(':id', id).replace(':name', name)}
+      href={`${UserRoutes.eventPageViews
+        .replace(':id', id)
+        .replace(':name', name)}?startDate=${startTime}`}
       text={(pageViews?.viewCount && pageViews?.viewCount) || 0}
       barTitle="Average Daily Visits"
       value={

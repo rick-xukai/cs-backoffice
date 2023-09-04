@@ -66,6 +66,7 @@ const Colors = {
   red3: '#730003',
   red4: '#C10005',
   red5: '#FF4B50',
+  red6: '#530103',
   primaryHoverRed: '#DE0005',
 };
 
