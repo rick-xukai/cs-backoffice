@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, DatePicker, Row } from 'antd';
 import { Line, Column } from '@ant-design/plots';
-import { flatten } from 'lodash';
+import { flatten, isArray } from 'lodash';
 
 import moment from 'moment';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -38,6 +38,7 @@ const EventPageViews = () => {
   const pageViewsAnalysisLoading = useAppSelector(
     selectPageViewsAnalysisLoading,
   );
+
   const loading = useAppSelector(selectLoading);
 
   const { name, summary, countries, origins } = eventPageViews;
@@ -57,19 +58,25 @@ const EventPageViews = () => {
     );
   }, [endDate]);
   const parsedData = flatten(
-    pageViewsAnalysisData?.map((item) => [
-      { date: item.date, type: 'Total Page Views', value: item.pageViewTotal },
-      {
-        date: item.date,
-        type: 'Unique Visitor Page Views',
-        value: item.pageViewUserCount,
-      },
-      {
-        type: 'Ticket Sold',
-        date: item.date,
-        value: item.ticketSoldCount,
-      },
-    ]),
+    pageViewsAnalysisData && isArray(pageViewsAnalysisData)
+      ? pageViewsAnalysisData?.map((item) => [
+          {
+            date: item.date,
+            type: 'Total Page Views',
+            value: item.pageViewTotal,
+          },
+          {
+            date: item.date,
+            type: 'Unique Visitor Page Views',
+            value: item.pageViewUserCount,
+          },
+          {
+            type: 'Ticket Sold',
+            date: item.date,
+            value: item.ticketSoldCount,
+          },
+        ])
+      : [],
   );
 
   const config = {
@@ -133,7 +140,9 @@ const EventPageViews = () => {
                     </p>
                     <p className="content-info">
                       <span>Average Daily Visits</span>
-                      <span className="bold">{summary?.averageDailyCount}</span>
+                      <span className="bold">
+                        {Math.round(summary?.averageDailyCount)}
+                      </span>
                     </p>
                   </div>
                 </div>

@@ -145,7 +145,6 @@ export const eventPageViewsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getEventPageViewsAction.pending, (state) => {
-        state.pageViewsData = {} as EventPageViewsDataType;
         state.loading = true;
       })
       .addCase(getEventPageViewsAction.fulfilled, (state, action: any) => {
@@ -161,8 +160,6 @@ export const eventPageViewsSlice = createSlice({
         }
       })
       .addCase(getEventPageViewsAnalysisAction.pending, (state) => {
-        state.eventPageViewsAnalysisData =
-          [] as EventPageViewsAnalysisDataType[];
         state.analysisLoading = true;
       })
       .addCase(
@@ -174,26 +171,6 @@ export const eventPageViewsSlice = createSlice({
       )
       .addCase(getEventPageViewsAnalysisAction.rejected, (state, action) => {
         state.analysisLoading = false;
-        state.eventPageViewsAnalysisData = [
-          {
-            date: '2023-03-01',
-            pageViewTotal: 10,
-            pageViewUserCount: 2,
-            ticketSoldCount: 5,
-          },
-          {
-            date: '2023-04-01',
-            pageViewTotal: 20,
-            pageViewUserCount: 1,
-            ticketSoldCount: 5,
-          },
-          {
-            date: '2023-05-01',
-            pageViewTotal: 90,
-            pageViewUserCount: 12,
-            ticketSoldCount: 10,
-          },
-        ];
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {

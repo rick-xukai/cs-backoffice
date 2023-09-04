@@ -6,6 +6,7 @@ import {
   ToolboxComponent,
   VisualMapComponent,
   GeoComponent,
+  TooltipComponent,
 } from 'echarts/components';
 import { LabelLayout, UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -26,6 +27,7 @@ echarts.use([
   VisualMapComponent,
   MapChart,
   GeoComponent,
+  TooltipComponent,
 ]);
 
 export const ProgressBar = ({
@@ -72,6 +74,12 @@ export const WorldMap = ({
         text: ['High', 'Low'],
         calculable: true,
         padding: 0,
+      },
+      tooltip: {
+        trigger: 'item',
+        show: true,
+        borderWidth: 0,
+        formatter: (params: any) => `${params.name}: ${params.value || '-'}`,
       },
       series: [
         {

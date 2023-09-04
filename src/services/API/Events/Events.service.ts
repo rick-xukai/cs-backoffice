@@ -241,6 +241,19 @@ const getEventScanned = async ({
   return response;
 };
 
+const getUniqueBuyersCharts = async ({
+  eventId,
+}: {
+  eventId: string | number;
+}) => {
+  const uri = API.getUniqueBuyersCharts.get.replace(':eventId', `${eventId}`);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -261,4 +274,5 @@ export default {
   getUnqiueAttendees,
   getUnqiueAttendeesSummary,
   getEventScanned,
+  getUniqueBuyersCharts,
 };

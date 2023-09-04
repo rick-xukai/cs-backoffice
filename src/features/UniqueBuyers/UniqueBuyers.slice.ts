@@ -20,6 +20,27 @@ export interface UniqueBuyersDataType {
   updatedAt: string;
 }
 
+export interface ChartsDataType {
+  id: number;
+  name: string;
+  summary: {
+    userCount: number;
+    conversionRate: number;
+  };
+  countries: {
+    name: string;
+    count: number;
+  }[];
+  genders: {
+    name: string;
+    count: number;
+  }[];
+  ages: {
+    name: string;
+    count: number;
+  }[];
+}
+
 /**
  * Unique Buyers
  */
@@ -56,6 +77,36 @@ export const getUniqueBuyersAction = createAsyncThunk<
   },
 );
 
+export const getUniqueBuyersChartsAction = createAsyncThunk<
+  UniqueBuyersDataType,
+  {
+    eventId: string | number;
+  },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'uniqueBuyers/getUniqueBuyersChartsAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventsService.getUniqueBuyersCharts(payload);
+      if (verificationApi(response)) {
+        return response;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
 interface UniqueBuyersState {
   uniqueBuyersLoading: boolean;
   error:
@@ -66,12 +117,26 @@ interface UniqueBuyersState {
     | undefined
     | null;
   uniqueBuyers: UniqueBuyersDataType[];
+  chartsLoading: boolean;
+  chartsData: ChartsDataType;
 }
 
 const initialState: UniqueBuyersState = {
   uniqueBuyersLoading: true,
   error: null,
   uniqueBuyers: [],
+  chartsData: {
+    id: 0,
+    name: '',
+    summary: {
+      userCount: 0,
+      conversionRate: 0,
+    },
+    countries: [],
+    genders: [],
+    ages: [],
+  },
+  chartsLoading: false,
 };
 
 export const uniqueBuyersSlice = createSlice({
@@ -96,6 +161,21 @@ export const uniqueBuyersSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(getUniqueBuyersChartsAction.pending, (state) => {
+        state.chartsLoading = true;
+      })
+      .addCase(getUniqueBuyersChartsAction.fulfilled, (state, action: any) => {
+        state.chartsLoading = false;
+        state.chartsData = action.payload.data;
+      })
+      .addCase(getUniqueBuyersChartsAction.rejected, (state, action) => {
+        state.chartsLoading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
       });
   },
 });
@@ -105,5 +185,11 @@ export const selectUniqueBuyersLoading = (state: RootState) =>
   state.uniqueBuyers.uniqueBuyersLoading;
 export const selectUniqueBuyers = (state: RootState) =>
   state.uniqueBuyers.uniqueBuyers;
+
+export const selectUniqueBuyersChartsLoading = (state: RootState) =>
+  state.uniqueBuyers.chartsLoading;
+
+export const selectUniqueBuyersChartsData = (state: RootState) =>
+  state.uniqueBuyers.chartsData;
 
 export default uniqueBuyersSlice.reducer;

@@ -120,6 +120,9 @@ const API = {
   getEventScanned: {
     get: '/admin/event/:eventId/scanned',
   },
+  getUniqueBuyersCharts: {
+    get: '/admin/event/:eventId/dashboard/unique_buyers',
+  },
 };
 
 export default API;

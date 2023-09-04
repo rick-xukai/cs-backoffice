@@ -6,9 +6,9 @@ import {
   SearchOutlined,
   DownloadOutlined,
 } from '@ant-design/icons';
-// import { CSVLink } from 'react-csv';
+import { CSVLink } from 'react-csv';
 import { useParams } from 'react-router-dom';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import moment from 'moment';
 
 import { UserRoutes } from '../../navigation/Routes';
@@ -81,7 +81,7 @@ const UniqueAttendees = () => {
   const loading = useAppSelector(selectLoading);
   const listTicketType = useAppSelector(selectListTicketType);
   const [form] = Form.useForm();
-  const columns =
+  const columns: any =
     option === SelectOptions.uniqueAttendees
       ? [
           {
@@ -143,47 +143,34 @@ const UniqueAttendees = () => {
           },
         ];
 
-  // const formatDownloadHeaders = () => {
-  //   const headers: any = [];
-  //   columns.map((headersItem) => {
-  //     if (headersItem.title) {
-  //       headers.push({
-  //         label: headersItem.title,
-  //         key: headersItem.dataIndex,
-  //       });
-  //     }
-  //     return headersItem;
-  //   });
-  //   headers.shift();
-  //   headers.unshift(
-  //     { label: 'Attendee Name', key: 'attendeeName' },
-  //     { label: 'Attendee Email', key: 'attendeeEmail' },
-  //   );
-  //   const downloadData = listData.map((dataItem: TicketSoldListItemProps) => ({
-  //     ...dataItem,
-  //     attendeeName: dataItem.user.name,
-  //     attendeeEmail: dataItem.user.email,
-  //     total: `${dataItem.total} ${priceUnit}`,
-  //     price: `${dataItem.price} ${priceUnit}`,
-  //     ticketType: dataItem.ticketType.name,
-  //     discount: `${
-  //       (dataItem.discount && `${dataItem.discount} ${priceUnit}`) || '/'
-  //     }`,
-  //     absorbFees: checkFees(dataItem).props.children,
-  //     createdAt: `${formatTimeStrByTimeString(
-  //       dataItem.createdAt,
-  //       FormatTimeKeys.mdy,
-  //     )}\n${formatTimeStrByTimeString(dataItem.createdAt, FormatTimeKeys.hm)}`,
-  //     source: TicketSoldFilterSource.find((item) => item.id === dataItem.source)
-  //       ?.name,
-  //     status:
-  //       dataItem.saleStatus === TicketSoldSaleStatus
-  //         ? TicketSoldFilterStatus[5].name
-  //         : TicketSoldFilterStatus.find((item) => item.id === dataItem.status)
-  //             ?.name,
-  //   }));
-  //   return { headers, data: [] };
-  // };
+  const formatDownloadHeaders = () => {
+    const headers: any = [];
+    columns.map((item: any) => {
+      if (item.title) {
+        headers.push({
+          label: item.title,
+          key: item.dataIndex,
+        });
+      }
+      return item;
+    });
+    const data: any =
+      option === SelectOptions.uniqueAttendees
+        ? uniqueAttendees.map((item) => ({
+            ...item,
+            birthday: item.birthday
+              ? moment().diff(item.birthday, 'years')
+              : '-',
+            isActivated: item.isActivated ? 'Active' : 'Inactive',
+          }))
+        : eventScanned.map((item) => ({
+            ...item,
+            source:
+              sourceOptions.find((opt) => opt.value === item.source)?.label ||
+              '-',
+          }));
+    return { headers, data };
+  };
 
   useEffect(() => {
     dispatch(getUniqueAttendeesSummaryAction({ eventId: params.id }));
@@ -396,16 +383,23 @@ const UniqueAttendees = () => {
                   </Row>
                 </Col>
                 <Col lg={7} span={24} className="export-action single">
-                  {/* <CSVLink
-                  filename={`${params.name}_Tickets_Export.csv`}
-                  headers={formatDownloadHeaders().headers}
-                  data={formatDownloadHeaders().data}
-                > */}
-                  <Button className="action-button">
-                    <DownloadOutlined />
-                    {t('Export')}
-                  </Button>
-                  {/* </CSVLink> */}
+                  <CSVLink
+                    filename={`${params.name}_Unique_Attendees_Export.csv`}
+                    headers={formatDownloadHeaders().headers}
+                    data={formatDownloadHeaders().data}
+                  >
+                    <Button
+                      className="action-button"
+                      disabled={
+                        option === SelectOptions.uniqueAttendees
+                          ? isEmpty(uniqueAttendees)
+                          : isEmpty(eventScanned)
+                      }
+                    >
+                      <DownloadOutlined />
+                      {t('Export')}
+                    </Button>
+                  </CSVLink>
                 </Col>
               </TableFilterContainer>
             </Form>

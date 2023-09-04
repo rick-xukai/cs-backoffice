@@ -10,7 +10,7 @@ import {
   DownloadOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
@@ -34,12 +34,55 @@ import NoData from '../../components/NoData/NoData';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   getUniqueBuyersAction,
+  getUniqueBuyersChartsAction,
   selectUniqueBuyers,
+  selectUniqueBuyersChartsData,
+  selectUniqueBuyersChartsLoading,
   selectUniqueBuyersLoading,
 } from './UniqueBuyers.slice';
+import { MMM_DD_YYYY_HH_MM } from '../../constants/constants';
 import { FormatTimeKeys } from '../../constants/Keys';
 
 const { useBreakpoint } = Grid;
+
+const parseAgesData = (data: { name: string; count: number }[]) => {
+  const lessThanEighteen = data.filter((item) => Number(item.name) < 18);
+  const eighteenToTwentyFive = data.filter(
+    (item) => Number(item.name) >= 18 && Number(item.name) <= 25,
+  );
+  const tweentySixToTthirtyFive = data.filter(
+    (item) => Number(item.name) >= 26 && Number(item.name) <= 35,
+  );
+  const thirtySixToFifty = data.filter(
+    (item) => Number(item.name) >= 36 && Number(item.name) <= 50,
+  );
+  const moreThanFifty = data.filter((item) => Number(item.name) > 50);
+  const result = [
+    !isEmpty(lessThanEighteen)
+      ? {
+          type: '<18',
+          value: lessThanEighteen.reduce((a, b) => a + b.count, 0),
+        }
+      : {},
+    {
+      type: '18 - 25',
+      value: eighteenToTwentyFive.reduce((a, b) => a + b.count, 0),
+    },
+    {
+      type: '26 - 35',
+      value: tweentySixToTthirtyFive.reduce((a, b) => a + b.count, 0),
+    },
+    {
+      type: '36 - 50',
+      value: thirtySixToFifty.reduce((a, b) => a + b.count, 0),
+    },
+    {
+      type: '50+',
+      value: moreThanFifty.reduce((a, b) => a + b.count, 0),
+    },
+  ];
+  return result.filter((item) => !isEmpty(item));
+};
 
 const UniqueBuyers = () => {
   const params: any = useParams();
@@ -48,6 +91,10 @@ const UniqueBuyers = () => {
   const dispatch = useAppDispatch();
   const uniqueBuyersLoading = useAppSelector(selectUniqueBuyersLoading);
   const uniqueBuyersData = useAppSelector(selectUniqueBuyers);
+  const { genders, ages, summary, countries } = useAppSelector(
+    selectUniqueBuyersChartsData,
+  );
+  const chartsLoading = useAppSelector(selectUniqueBuyersChartsLoading);
 
   const [filter, setFilter] = useState<{
     keyword: string;
@@ -56,45 +103,30 @@ const UniqueBuyers = () => {
     keyword: '',
   });
   const config = {
-    data: [
-      { type: 'Gender', name: 'Male', value: 1390.5 },
-      { type: 'Gender', name: 'Female', value: 1469.5 },
-      { type: 'Gender', name: 'Non-binary', value: 1521.7 },
-      { type: 'Gender', name: 'Transgender', value: 1615.9 },
-      { type: 'Gender', name: 'Prefer not to say', value: 1703.7 },
-      { type: 'Gender', name: 'Others', value: 1767.8 },
-    ],
+    data: genders.map((item) => ({
+      type: 'Gender',
+      ...item,
+    })),
     xField: 'name',
-    yField: 'value',
+    yField: 'count',
     color: ['#056790', '#FCA119', '#FC0006'],
     point: {
       size: 2,
     },
   };
-  const pieData = [
-    {
-      type: '18 - 25',
-      value: 108,
-    },
-    {
-      type: '26 - 35',
-      value: 42,
-    },
-    {
-      type: '36 - 50',
-      value: 6,
-    },
-    {
-      type: '50+',
-      value: 6,
-    },
-  ];
+  const pieData = parseAgesData(ages);
   const pieConfig: any = useMemo(
     () => ({
       appendPadding: 10,
       hieght: 140,
-      data: pieData,
-      color: [Colors.red3, Colors.red4, Colors.branding, Colors.red5],
+      data: parseAgesData(ages),
+      color: [
+        Colors.red2,
+        Colors.red3,
+        Colors.red4,
+        Colors.branding,
+        Colors.red5,
+      ],
       angleField: 'value',
       colorField: 'type',
       radius: 1,
@@ -121,35 +153,40 @@ const UniqueBuyers = () => {
         },
       },
     }),
-    [],
+    [pieData],
   );
 
   const columns = [
     {
       title: 'User Name',
       dataIndex: 'name',
+      width: 120,
     },
     {
       title: 'User Email',
       dataIndex: 'email',
+      width: 220,
     },
     {
       title: 'Owned Tickets',
       dataIndex: 'ownedTickets',
+      width: 120,
     },
     {
       title: 'Gender',
       dataIndex: 'gender',
+      render: (gender: string) => gender || '-',
     },
     {
       title: 'Birthday',
       dataIndex: 'birthday',
-      render: (_: any) => (_ ? moment(_).format(FormatTimeKeys.norm) : '-'),
+      render: (_: any) => (_ ? moment(_).format(FormatTimeKeys.mDy) : '-'),
     },
     {
       title: 'Last Action',
       dataIndex: 'updatedAt',
-      render: (_: any) => moment(_).format(FormatTimeKeys.norm),
+      width: 200,
+      render: (_: any) => moment(_).format(MMM_DD_YYYY_HH_MM),
     },
     {
       title: 'Status',
@@ -170,6 +207,13 @@ const UniqueBuyers = () => {
       }),
     );
   }, [filter]);
+  useEffect(() => {
+    dispatch(
+      getUniqueBuyersChartsAction({
+        eventId: params.id,
+      }),
+    );
+  }, []);
 
   const searchInputChange = useCallback(
     debounce(
@@ -182,7 +226,30 @@ const UniqueBuyers = () => {
     ),
     [],
   );
+  const countriesCount = countries.reduce((a, b) => a + b.count, 0);
 
+  const formatDownloadHeaders = () => {
+    const headers: any = [];
+    columns.map((item: any) => {
+      if (item.title) {
+        headers.push({
+          label: item.title,
+          key: item.dataIndex,
+        });
+      }
+      return item;
+    });
+    const data: any = uniqueBuyersData.map((item) => ({
+      ...item,
+      birthday: item.birthday
+        ? moment(item.birthday).format(FormatTimeKeys.mDy)
+        : '-',
+      updatedAt: moment(item.updatedAt).format(MMM_DD_YYYY_HH_MM),
+      isActivated: item.isActivated ? 'Active' : 'Inactive',
+      gender: item.gender || '-',
+    }));
+    return { headers, data };
+  };
   return (
     <>
       <PageHeaderComponent
@@ -220,12 +287,12 @@ const UniqueBuyers = () => {
                     <p className="content-info">
                       <span></span>
                       <span className="bold content-title-sold large-text">
-                        1
+                        {summary.userCount}
                       </span>
                     </p>
                     <p className="content-info">
                       <span>Conversion Rate</span>
-                      <span className="bold">2%</span>
+                      <span className="bold">{summary.conversionRate}%</span>
                     </p>
                   </div>
                 </div>
@@ -241,26 +308,28 @@ const UniqueBuyers = () => {
                   </Title>
                   <SubTitle>*Data only comes from primary market</SubTitle>
                   <WorldMap
-                    data={[
-                      { name: 'China', value: 1 },
-                      { name: 'Singapore', value: 10000 },
-                    ]}
+                    data={countries.map((item) => ({
+                      name: item.name,
+                      value: item.count,
+                    }))}
                   />
                   <ProgressContent style={{ marginTop: 12 }}>
                     <Row gutter={[0, 18]}>
-                      <Col span={24}>
-                        <ProgressBar
-                          name="Singapore"
-                          percent={90}
-                          count={100}
-                        />
-                      </Col>
-                      <Col span={24}>
-                        <ProgressBar name="China" percent={90} count={100} />
-                      </Col>
-                      <Col span={24}>
-                        <ProgressBar name="USA" percent={90} count={100} />
-                      </Col>
+                      {countries.length ? (
+                        countries.map((item) => (
+                          <Col span={24}>
+                            <ProgressBar
+                              name={item.name}
+                              percent={(item.count / countriesCount) * 100}
+                              count={item.count}
+                            />
+                          </Col>
+                        ))
+                      ) : (
+                        <div style={{ margin: 'auto', marginTop: 30 }}>
+                          <NoData />
+                        </div>
+                      )}
                     </Row>
                   </ProgressContent>
                 </Card>
@@ -268,7 +337,11 @@ const UniqueBuyers = () => {
               <Col span={24} lg={12}>
                 <Row gutter={[0, 16]}>
                   <Col span={24}>
-                    <Card bodyStyle={{ padding: 20 }} bordered={false}>
+                    <Card
+                      bodyStyle={{ padding: 20 }}
+                      bordered={false}
+                      loading={chartsLoading}
+                    >
                       <Title>
                         <p>Users by Gender</p>
                       </Title>
@@ -277,6 +350,7 @@ const UniqueBuyers = () => {
                       </SubTitle>
                       <Column
                         {...config}
+                        columnWidthRatio={0.25}
                         legend={false}
                         height={148}
                         color={Colors.branding}
@@ -378,12 +452,13 @@ const UniqueBuyers = () => {
                 <Col className="export-action single">
                   <CSVLink
                     filename={`${params.name}_Unique_Buyers_Export.csv`}
-                    headers={[]}
-                    data={[]}
+                    headers={formatDownloadHeaders().headers}
+                    data={formatDownloadHeaders().data}
                   >
                     <Button
                       className="action-button"
                       style={{ marginRight: 0 }}
+                      disabled={isEmpty(uniqueBuyersData)}
                     >
                       <DownloadOutlined />
                       {t('Export')}
