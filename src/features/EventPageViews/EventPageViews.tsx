@@ -299,7 +299,6 @@ const EventPageViews = () => {
               <Column
                 {...columnConfig}
                 legend={false}
-                columnWidthRatio={0.25}
                 height={148}
                 maxColumnWidth={45}
                 xAxis={{

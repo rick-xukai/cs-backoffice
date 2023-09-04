@@ -355,7 +355,6 @@ const UniqueBuyers = () => {
                       </SubTitle>
                       <Column
                         {...config}
-                        columnWidthRatio={0.25}
                         maxColumnWidth={45}
                         legend={false}
                         height={148}

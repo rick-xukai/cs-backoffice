@@ -106,7 +106,7 @@ export const WorldMap = ({
     };
     myChart.setOption(option);
     myChart.resize();
-  }, [points]);
+  }, [points, data]);
   return (
     <div
       ref={mapRef}
