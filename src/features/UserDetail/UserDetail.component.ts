@@ -84,8 +84,10 @@ const UserDetailContainer = styled.div`
         margin-bottom: 0;
         overflow: hidden;
         text-overflow: ellipsis;
-        &.mobile-top {
-          margin-bottom: 20px;
+        @media (max-width: 768px) {
+          &.mobile-top {
+            margin-bottom: 20px;
+          }
         }
       }
       .ant-badge-status-text {
@@ -158,6 +160,7 @@ const UserDetailContainer = styled.div`
         line-height: 28px;
       }
       .user-info-content {
+        display: flex;
         > :first-child {
           padding-left: 0;
         }
@@ -176,6 +179,43 @@ const UserDetailContainer = styled.div`
       padding: calc(98px + 24px) 15px 15px;
     }
   }
+  @media (max-width: 768px) {
+    .detail-container {
+      .container-user {
+        .user-info-content {
+          display: block;
+          margin-top: 10px;
+          > :nth-child(1) {
+            img {
+              margin-left: -1px;
+            }
+          }
+          > :nth-child(2) {
+            img {
+              margin-right: 8px;
+            }
+          }
+          > :nth-child(3) {
+            img {
+              margin-top: -2px;
+              margin-left: -2px;
+            }
+          }
+          > :nth-child(4) {
+            img {
+              margin-top: -2px;
+              margin-left: -2px;
+            }
+          }
+        }
+      }
+    }
+  }
+  @media (max-width: 375px) {
+    .detail-container {
+      padding: 15px;
+    }
+  }
 `;
 
 const UserStatusContainer = styled.span`
@@ -191,7 +231,7 @@ const UserStatusContainer = styled.span`
   margin-left: 10px;
 `;
 
-const UserInfoItemContainer = styled.span`
+const UserInfoItemContainer = styled.div`
   color: ${Colors.black4};
   font-size: 15px;
   font-weight: 400;
@@ -201,6 +241,11 @@ const UserInfoItemContainer = styled.span`
   border-right: 1px solid ${Colors.grey9};
   img {
     margin-right: 5px;
+  }
+  @media (max-width: 768px) {
+    padding: 0;
+    border-right: 0;
+    margin-bottom: 5px;
   }
 `;
 
