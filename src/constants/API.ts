@@ -123,6 +123,9 @@ const API = {
   getUniqueBuyersCharts: {
     get: '/admin/event/:eventId/dashboard/unique_buyers',
   },
+  hideEvent: {
+    put: '/admin/event/:event_id/hidden/:hiddenState',
+  },
 };
 
 export default API;

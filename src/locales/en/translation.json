@@ -425,5 +425,12 @@
   "Back to Home": "Back to Home",
   "Invalid file format. Please upload a CSV file.": "Invalid file format. Please upload a CSV file.",
   "Unique Attendees": "Unique Attendees",
-  "Search attendee or ticket number": "Search attendee or ticket number"
+  "Search attendee or ticket number": "Search attendee or ticket number",
+  "Hide Event on CrowdServe": "Hide Event on CrowdServe",
+  "Show Event on CrowdServe": "Show Event on CrowdServe",
+  "Are you sure you want to [status] this event?": "Are you sure you want to {{status}} this event?",
+  "Hide Event": "Hide Event",
+  "Show Event": "Show Event",
+  "Hide Success": "Hide Success",
+  "Show success": "Show success"
 }

@@ -254,6 +254,18 @@ const getUniqueBuyersCharts = async ({
   return response;
 };
 
+const hideEvent = async (payload: { id: string; hiddenState: boolean }) => {
+  const uri = API.hideEvent.put
+    .replace(':event_id', payload.id)
+    .replace(':hiddenState', payload.hiddenState.toString());
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload({})
+    .setAuthorizationStatus()
+    .doPut();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -275,4 +287,5 @@ export default {
   getUnqiueAttendeesSummary,
   getEventScanned,
   getUniqueBuyersCharts,
+  hideEvent,
 };

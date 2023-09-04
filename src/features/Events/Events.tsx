@@ -68,6 +68,7 @@ import {
   cancelEventAction,
   deleteEventAction,
   EventStatusKeys,
+  hideEventAction,
 } from './Events.slice';
 import { SGD_UNIT } from '../../constants/constants';
 
@@ -106,6 +107,7 @@ const Events = () => {
   const [showNoSearchData, setShowNoSearchData] = useState<boolean>(false);
   const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
   const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
+  const [hideSuccess, setHideSuccess] = useState<boolean>(false);
   const goToDashboard = (id: any, name: any) => {
     history.push(
       UserRoutes.eventDashboard.replace(':id', id).replace(':name', name),
@@ -232,6 +234,45 @@ const Events = () => {
               if (response.type === cancelEventAction.fulfilled.toString()) {
                 message.success(t('Canceled successfully'));
                 setCancelSuccess(true);
+              }
+            },
+          });
+        },
+      },
+      {
+        label:
+          (record.hidden && t('Show Event on CrowdServe')) ||
+          t('Hide Event on CrowdServe'),
+        key: 'Hide Event',
+        style: {
+          display:
+            (record.status === EventStatusKeys.upcoming && 'block') || 'none',
+        },
+        onClick: () => {
+          setCancelSuccess(false);
+          setDeleteSuccess(false);
+          setHideSuccess(false);
+          confirm({
+            centered: true,
+            closable: false,
+            okText: (record.hidden && t('Show Event')) || t('Hide Event'),
+            cancelText: t('Back'),
+            title: (record.hidden && t('Show Event')) || t('Hide Event'),
+            icon: <ExclamationCircleOutlined />,
+            content: t('Are you sure you want to [status] this event?', {
+              status: (record.hidden && 'show') || 'hide',
+            }),
+            onOk: async () => {
+              const response = await dispatch(
+                hideEventAction({ id: record.id, hiddenState: !record.hidden }),
+              );
+              if (response.type === hideEventAction.fulfilled.toString()) {
+                if (record.hidden) {
+                  message.success(t('Show success'));
+                } else {
+                  message.success(t('Hide success'));
+                }
+                setHideSuccess(true);
               }
             },
           });
@@ -469,7 +510,7 @@ const Events = () => {
   }, [page, size, filterStatus]);
 
   useEffect(() => {
-    if (deleteSuccess || cancelSuccess) {
+    if (deleteSuccess || cancelSuccess || hideSuccess) {
       dispatch(
         getEventsListAction({
           page,
@@ -479,7 +520,7 @@ const Events = () => {
         }),
       );
     }
-  }, [deleteSuccess, cancelSuccess]);
+  }, [deleteSuccess, cancelSuccess, hideSuccess]);
 
   const createNewEventPlaceholder = (
     <AddNewEventContainer>

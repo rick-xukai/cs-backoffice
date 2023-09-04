@@ -25,6 +25,7 @@ export interface EventsListDataType {
   total: number;
   time: string;
   slug: string;
+  hidden: boolean;
 }
 
 export interface EventListRequestProps {
@@ -128,6 +129,35 @@ export const deleteEventAction = createAsyncThunk<
   }
 });
 
+/**
+ *  Hide Events
+ */
+export const hideEventAction = createAsyncThunk<
+  {},
+  { id: string; hiddenState: boolean },
+  {
+    rejectValue: ErrorType;
+  }
+>('hideEvent/hideEventAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await EventsService.hideEvent(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
 interface EventsState {
   loading: boolean;
   data: [];
@@ -212,6 +242,13 @@ export const eventsSlice = createSlice({
         }
       })
       .addCase(deleteEventAction.rejected, (state, action) => {
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(hideEventAction.rejected, (state, action) => {
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
