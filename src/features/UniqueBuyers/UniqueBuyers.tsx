@@ -42,6 +42,7 @@ import {
 } from './UniqueBuyers.slice';
 import { MMM_DD_YYYY_HH_MM } from '../../constants/constants';
 import { FormatTimeKeys } from '../../constants/Keys';
+import mapData from '../../data/country.json';
 
 const { useBreakpoint } = Grid;
 
@@ -109,12 +110,48 @@ const UniqueBuyers = () => {
     })),
     xField: 'name',
     yField: 'count',
-    color: ['#056790', '#FCA119', '#FC0006'],
     point: {
       size: 2,
     },
+    xAxis: {
+      label: {
+        autoRotate: !lg,
+        autoHide: false,
+        style: {
+          fill: Colors.black4,
+        },
+      },
+    },
+    maxColumnWidth: 45,
+    legend: undefined,
+    height: 148,
+    color: Colors.branding,
+    yAxis: {
+      label: {
+        style: {
+          fill: Colors.black4,
+        },
+      },
+    },
+    tooltip: {
+      domStyles: {
+        'g2-tooltip': {
+          background: 'none',
+          boxShadow: 0,
+        },
+      },
+      customContent: (a: any, b: any) => (
+        <PieTooltip>
+          {a}: {b[0]?.value || 0}
+        </PieTooltip>
+      ),
+    },
   };
   const pieData = parseAgesData(ages);
+  const totalPieCount = pieData.reduce(
+    (acc: any, item: any) => acc + item.value,
+    0,
+  );
   const pieConfig: any = useMemo(
     () => ({
       appendPadding: 10,
@@ -151,6 +188,20 @@ const UniqueBuyers = () => {
           formatter: (seriesField: any, item: any, index: any) =>
             `${seriesField}    ${pieData[index].value || '-'}`,
         },
+      },
+      height: 159,
+      tooltip: {
+        domStyles: {
+          'g2-tooltip': {
+            background: 'none',
+            boxShadow: 0,
+          },
+        },
+        customContent: (a: any, b: any) => (
+          <PieTooltip>
+            {a}: {(((b[0]?.value || 0) / totalPieCount) * 100).toFixed(2)}%
+          </PieTooltip>
+        ),
       },
     }),
     [pieData],
@@ -194,10 +245,6 @@ const UniqueBuyers = () => {
       render: (_: any) => (_ ? 'Active' : 'Inactive'),
     },
   ];
-  const totalPieCount = pieData.reduce(
-    (acc: any, item: any) => acc + item.value,
-    0,
-  );
 
   useEffect(() => {
     dispatch(
@@ -250,6 +297,31 @@ const UniqueBuyers = () => {
     }));
     return { headers, data };
   };
+
+  const matchCountires: any = useMemo(() => {
+    const newList: any = [];
+    const others: any = [];
+    for (let index = 0; index < countries.length; index += 1) {
+      const item = countries[index];
+      if (
+        mapData.features.find(
+          (feature) => feature.properties.name === item.name,
+        )
+      ) {
+        newList.push(item);
+      } else {
+        others.push(item);
+      }
+    }
+    return [
+      ...newList,
+      {
+        name: 'Others',
+        count: others.reduce((a: any, b: any) => a + b.count, 0),
+      },
+    ];
+  }, [countries]);
+
   return (
     <>
       <PageHeaderComponent
@@ -317,9 +389,9 @@ const UniqueBuyers = () => {
                   />
                   <ProgressContent style={{ marginTop: 12 }}>
                     <Row gutter={[0, 18]}>
-                      {countries.length ? (
-                        countries.map((item) => (
-                          <Col span={24}>
+                      {matchCountires.length ? (
+                        matchCountires.map((item: any) => (
+                          <Col span={24} key={item.name}>
                             <ProgressBar
                               name={item.name}
                               percent={(
@@ -353,42 +425,7 @@ const UniqueBuyers = () => {
                       <SubTitle>
                         *Data only comes from already activated accounts
                       </SubTitle>
-                      <Column
-                        {...config}
-                        maxColumnWidth={45}
-                        legend={false}
-                        height={148}
-                        color={Colors.branding}
-                        xAxis={{
-                          label: {
-                            autoRotate: !lg,
-                            autoHide: false,
-                            style: {
-                              fill: Colors.black4,
-                            },
-                          },
-                        }}
-                        yAxis={{
-                          label: {
-                            style: {
-                              fill: Colors.black4,
-                            },
-                          },
-                        }}
-                        tooltip={{
-                          domStyles: {
-                            'g2-tooltip': {
-                              background: 'none',
-                              boxShadow: 0,
-                            },
-                          },
-                          customContent: (a: any, b: any) => (
-                            <PieTooltip>
-                              {a}: {b[0]?.value || 0}
-                            </PieTooltip>
-                          ),
-                        }}
-                      />
+                      <Column {...config} />
                     </Card>
                   </Col>
                   <Col span={24}>
@@ -400,28 +437,7 @@ const UniqueBuyers = () => {
                         *Data only comes from already activated accounts
                       </SubTitle>
                       <PieContainer style={{ width: lg ? '100%' : '100%' }}>
-                        <Pie
-                          {...pieConfig}
-                          height={159}
-                          tooltip={{
-                            domStyles: {
-                              'g2-tooltip': {
-                                background: 'none',
-                                boxShadow: 0,
-                              },
-                            },
-                            customContent: (a: any, b: any) => (
-                              <PieTooltip>
-                                {a}:{' '}
-                                {(
-                                  ((b[0]?.value || 0) / totalPieCount) *
-                                  100
-                                ).toFixed(2)}
-                                %
-                              </PieTooltip>
-                            ),
-                          }}
-                        />
+                        <Pie {...pieConfig} />
                       </PieContainer>
                     </Card>
                   </Col>
