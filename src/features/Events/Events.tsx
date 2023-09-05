@@ -113,6 +113,8 @@ const Events = () => {
       UserRoutes.eventDashboard.replace(':id', id).replace(':name', name),
     );
   };
+  const authUserRole = cookie.getCookie(CookieKeys.authUserRole);
+  const isSuperAdmin = authUserRole === UserRoleKeys.superAdmin;
 
   // const showHideEvent = (record: EventsListDataType) => ({
   //   label: t('Hide Event'),
@@ -288,8 +290,6 @@ const Events = () => {
     ) {
       iconDisable = true;
     }
-    const authUserRole = cookie.getCookie(CookieKeys.authUserRole);
-    const isSuperAdmin = authUserRole === UserRoleKeys.superAdmin;
 
     return (
       <div className="event-list-action">
@@ -373,6 +373,13 @@ const Events = () => {
       ),
     },
     {
+      title: 'Organizer Name',
+      dataIndex: 'organizerName',
+      key: 'organizerName',
+      role: [UserRoleKeys.superAdmin],
+      width: 200,
+    },
+    {
       title: 'Sold',
       dataIndex: 'soldTotal',
       key: 'soldTotal',
@@ -412,6 +419,7 @@ const Events = () => {
       ],
       render: (status: number) => getBadge(status),
     },
+
     {
       title: '',
       dataIndex: '',
@@ -666,6 +674,8 @@ const Events = () => {
                           >
                             {item.name}
                           </h4>
+                          {isSuperAdmin ? <p>{item.organizerName}</p> : null}
+
                           <p className="date">{item.time}</p>
                         </Col>
                         <Col span={24}>
