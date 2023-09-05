@@ -65,6 +65,8 @@ const UniqueAttendees = () => {
   const { t } = useTranslation();
   const params: any = useParams();
   const [searchKeywordState, setSearchKeywordState] = useState<string>('');
+  const [searchScannedKeywordState, setSearchScannedKeywordState] =
+    useState<string>('');
   const [ticketTypeState, setTicketTypeState] = useState<undefined | number>(
     undefined,
   );
@@ -192,24 +194,37 @@ const UniqueAttendees = () => {
             eventId: params.id,
             source: sourceState,
             ticketTypeId: ticketTypeState,
-            keyword: searchKeywordState,
+            keyword: searchScannedKeywordState,
           }),
         );
       }
     }, 300),
-    [sourceState, ticketTypeState, searchKeywordState, statusState, option],
+    [
+      sourceState,
+      ticketTypeState,
+      searchKeywordState,
+      searchScannedKeywordState,
+      statusState,
+      option,
+    ],
   );
   useEffect(() => {
     fetchData();
-  }, [sourceState, ticketTypeState, searchKeywordState, statusState, option]);
+  }, [
+    sourceState,
+    ticketTypeState,
+    searchKeywordState,
+    statusState,
+    option,
+    searchKeywordState,
+    searchScannedKeywordState,
+  ]);
 
   useEffect(() => {
     setTicketTypeState(undefined);
     setSourceState(undefined);
     setStatusState(undefined);
-    setSearchKeywordState('');
-    fetchData();
-  }, []);
+  }, [option]);
 
   const table = (
     <div>
@@ -242,6 +257,12 @@ const UniqueAttendees = () => {
     </div>
   );
 
+  const handleChangeOption = (param: SelectOptions) => {
+    setOption(param);
+    setSearchKeywordState('');
+    setSearchScannedKeywordState('');
+  };
+
   return (
     <>
       <PageHeaderComponent
@@ -265,13 +286,13 @@ const UniqueAttendees = () => {
         <Space style={{ marginBottom: 16 }} size="middle">
           <SelectButton
             selected={option === SelectOptions.uniqueAttendees}
-            onClick={() => setOption(SelectOptions.uniqueAttendees)}
+            onClick={() => handleChangeOption(SelectOptions.uniqueAttendees)}
           >
             Unique Attendees
           </SelectButton>
           <SelectButton
             selected={option === SelectOptions.ticketsScanned}
-            onClick={() => setOption(SelectOptions.ticketsScanned)}
+            onClick={() => handleChangeOption(SelectOptions.ticketsScanned)}
           >
             Tickets Scanned
           </SelectButton>
@@ -324,19 +345,29 @@ const UniqueAttendees = () => {
               <Col lg={17} span={24}>
                 <Row className="filter-items" gutter={[16, 16]}>
                   <Col lg={9} span={24}>
-                    <Input
-                      placeholder={t(
-                        option === SelectOptions.uniqueAttendees
-                          ? 'Search attendee name or email'
-                          : 'Search attendee or ticket number',
-                      )}
-                      allowClear={{
-                        clearIcon: <CloseOutlined />,
-                      }}
-                      suffix={!searchKeywordState && <SearchOutlined />}
-                      onChange={(e) => setSearchKeywordState(e.target.value)}
-                      value={searchKeywordState}
-                    />
+                    {option === SelectOptions.uniqueAttendees ? (
+                      <Input
+                        placeholder={t('Search attendee name or email')}
+                        allowClear={{
+                          clearIcon: <CloseOutlined />,
+                        }}
+                        suffix={!searchKeywordState && <SearchOutlined />}
+                        onChange={(e) => setSearchKeywordState(e.target.value)}
+                        value={searchKeywordState}
+                      />
+                    ) : (
+                      <Input
+                        placeholder={t('Search attendee or ticket number')}
+                        allowClear={{
+                          clearIcon: <CloseOutlined />,
+                        }}
+                        suffix={!searchKeywordState && <SearchOutlined />}
+                        onChange={(e) =>
+                          setSearchScannedKeywordState(e.target.value)
+                        }
+                        value={searchScannedKeywordState}
+                      />
+                    )}
                   </Col>
                   {option === SelectOptions.uniqueAttendees ? (
                     <Col lg={7} span={24}>
