@@ -262,8 +262,6 @@ const EventPageViews = () => {
                   }}
                   yAxis={{
                     position: 'right',
-                    min: 120,
-                    max: 5,
                     label: {
                       style: {
                         fill: Colors.black4,
