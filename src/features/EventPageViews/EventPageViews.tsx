@@ -47,7 +47,9 @@ const EventPageViews = () => {
 
   const { name, summary, countries, origins } = eventPageViews;
   const [startDate, setStartDate] = useState(
-    pamasStartDate || moment().format(FormatTimeKeys.ymd),
+    pamasStartDate
+      ? moment(pamasStartDate).format(FormatTimeKeys.ymd)
+      : moment().format(FormatTimeKeys.ymd),
   );
   const [endDate, setEndDate] = useState(moment().format(FormatTimeKeys.ymd));
   useEffect(() => {
@@ -66,18 +68,18 @@ const EventPageViews = () => {
     pageViewsAnalysisData && isArray(pageViewsAnalysisData)
       ? pageViewsAnalysisData?.map((item) => [
           {
-            date: item.date,
+            date: moment(item.date).format(FormatTimeKeys.mDy),
             type: 'Total Page Views',
             value: item.pageViewTotal,
           },
           {
-            date: item.date,
+            date: moment(item.date).format(FormatTimeKeys.mDy),
             type: 'Unique Visitor Page Views',
             value: item.pageViewUserCount,
           },
           {
             type: 'Ticket Sold',
-            date: item.date,
+            date: moment(item.date).format(FormatTimeKeys.mDy),
             value: item.ticketSoldCount,
           },
         ])
@@ -228,7 +230,18 @@ const EventPageViews = () => {
                     },
                     customContent: (a: any, b: any) => (
                       <PieTooltip>
-                        {a}: {b[0]?.value || 0}
+                        <div>
+                          <b>{a}</b>
+                        </div>
+                        <div>
+                          {b[0]?.name}: {b[0]?.value || 0}
+                        </div>
+                        <div>
+                          {b[1]?.name}: {b[1]?.value || 0}
+                        </div>
+                        <div>
+                          {b[2]?.name}: {b[2]?.value || 0}
+                        </div>
                       </PieTooltip>
                     ),
                   }}
@@ -255,7 +268,7 @@ const EventPageViews = () => {
               )}
             </Card>
           </Col>
-          <Col lg={12} sm={24}>
+          <Col lg={12} span={24}>
             <Card
               bodyStyle={{ padding: 20 }}
               bordered={false}
@@ -287,7 +300,7 @@ const EventPageViews = () => {
               </ProgressContent>
             </Card>
           </Col>
-          <Col lg={12} sm={24}>
+          <Col lg={12} span={24}>
             <Card
               bodyStyle={{ padding: 20 }}
               bordered={false}

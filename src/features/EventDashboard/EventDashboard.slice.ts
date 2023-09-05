@@ -31,6 +31,7 @@ export interface EventDashboardDataType {
   name: string;
   startTime: string;
   endTime: string;
+  publishTime: string;
   image: string;
   status: number;
   stocks: {
@@ -121,6 +122,7 @@ const initialState: EventDashboardState = {
     name: '',
     startTime: '',
     endTime: '',
+    publishTime: '',
     image: '',
     status: 0,
     stocks: {

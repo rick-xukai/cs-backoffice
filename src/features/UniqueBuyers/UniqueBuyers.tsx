@@ -43,6 +43,7 @@ import {
 import { MMM_DD_YYYY_HH_MM } from '../../constants/constants';
 import { FormatTimeKeys } from '../../constants/Keys';
 import mapData from '../../data/country.json';
+import BallLoading from '../../components/BallLoading/BallLoading';
 
 const { useBreakpoint } = Grid;
 
@@ -84,7 +85,13 @@ const parseAgesData = (data: { name: string; count: number }[]) => {
   ];
   return result.filter((item) => !isEmpty(item));
 };
-
+const pieColors = [
+  Colors.red6,
+  Colors.red3,
+  Colors.red4,
+  Colors.branding,
+  Colors.red5,
+];
 const UniqueBuyers = () => {
   const params: any = useParams();
   const { t } = useTranslation();
@@ -157,13 +164,7 @@ const UniqueBuyers = () => {
       appendPadding: 10,
       hieght: 140,
       data: parseAgesData(ages),
-      color: [
-        Colors.red6,
-        Colors.red3,
-        Colors.red4,
-        Colors.branding,
-        Colors.red5,
-      ],
+      color: pieColors,
       angleField: 'value',
       colorField: 'type',
       radius: 1,
@@ -209,12 +210,12 @@ const UniqueBuyers = () => {
 
   const columns = [
     {
-      title: 'User Name',
+      title: 'Buyer Name',
       dataIndex: 'name',
       width: 120,
     },
     {
-      title: 'User Email',
+      title: 'Buyer Email',
       dataIndex: 'email',
       width: 220,
     },
@@ -322,7 +323,9 @@ const UniqueBuyers = () => {
     ];
   }, [countries]);
 
-  return (
+  return chartsLoading ? (
+    <BallLoading />
+  ) : (
     <>
       <PageHeaderComponent
         breadcrumb={[

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Row, Col, Input, Button, Space, Select, Form } from 'antd';
+import { Row, Col, Input, Button, Space, Select } from 'antd';
 import {
   CloseOutlined,
   SearchOutlined,
@@ -80,7 +80,6 @@ const UniqueAttendees = () => {
   const eventScanned = useAppSelector(selectEventScanned);
   const loading = useAppSelector(selectLoading);
   const listTicketType = useAppSelector(selectListTicketType);
-  const [form] = Form.useForm();
   const columns: any =
     option === SelectOptions.uniqueAttendees
       ? [
@@ -177,25 +176,31 @@ const UniqueAttendees = () => {
     dispatch(getListTicketTypeAction());
   }, []);
 
+  const fetchData = useCallback(
+    debounce(() => {
+      if (option === SelectOptions.uniqueAttendees) {
+        dispatch(
+          getUniqueAttendeesAction({
+            eventId: params.id,
+            keyword: searchKeywordState,
+            isActivated: statusState,
+          }),
+        );
+      } else {
+        dispatch(
+          getEventScannedAction({
+            eventId: params.id,
+            source: sourceState,
+            ticketTypeId: ticketTypeState,
+            keyword: searchKeywordState,
+          }),
+        );
+      }
+    }, 300),
+    [sourceState, ticketTypeState, searchKeywordState, statusState, option],
+  );
   useEffect(() => {
-    if (option === SelectOptions.uniqueAttendees) {
-      dispatch(
-        getUniqueAttendeesAction({
-          eventId: params.id,
-          keyword: searchKeywordState,
-          isActivated: statusState,
-        }),
-      );
-    } else {
-      dispatch(
-        getEventScannedAction({
-          eventId: params.id,
-          source: sourceState,
-          ticketTypeId: ticketTypeState,
-          keyword: searchKeywordState,
-        }),
-      );
-    }
+    fetchData();
   }, [sourceState, ticketTypeState, searchKeywordState, statusState, option]);
 
   useEffect(() => {
@@ -203,8 +208,8 @@ const UniqueAttendees = () => {
     setSourceState(undefined);
     setStatusState(undefined);
     setSearchKeywordState('');
-    form.resetFields();
-  }, [option]);
+    fetchData();
+  }, []);
 
   const table = (
     <div>
@@ -235,11 +240,6 @@ const UniqueAttendees = () => {
         hideOnSinglePage
       />
     </div>
-  );
-
-  const searchInputChange = useCallback(
-    debounce((e) => setSearchKeywordState(e.target.value), 300),
-    [],
   );
 
   return (
@@ -320,103 +320,106 @@ const UniqueAttendees = () => {
             </Col>
           </ContainerTitle>
           <ListTableContainer>
-            <Form form={form}>
-              <TableFilterContainer>
-                <Col lg={17} span={24}>
-                  <Row className="filter-items" gutter={[16, 16]}>
-                    <Col lg={9} span={24}>
-                      <Form.Item noStyle name="keyword">
-                        <Input
-                          placeholder={t(
-                            option === SelectOptions.uniqueAttendees
-                              ? 'Search attendee name or email'
-                              : 'Search attendee or ticket number',
-                          )}
-                          allowClear={{
-                            clearIcon: <CloseOutlined />,
-                          }}
-                          suffix={!searchKeywordState && <SearchOutlined />}
-                          onChange={searchInputChange}
-                        />
-                      </Form.Item>
+            <TableFilterContainer>
+              <Col lg={17} span={24}>
+                <Row className="filter-items" gutter={[16, 16]}>
+                  <Col lg={9} span={24}>
+                    <Input
+                      placeholder={t(
+                        option === SelectOptions.uniqueAttendees
+                          ? 'Search attendee name or email'
+                          : 'Search attendee or ticket number',
+                      )}
+                      allowClear={{
+                        clearIcon: <CloseOutlined />,
+                      }}
+                      suffix={!searchKeywordState && <SearchOutlined />}
+                      onChange={(e) => setSearchKeywordState(e.target.value)}
+                      value={searchKeywordState}
+                    />
+                  </Col>
+                  {option === SelectOptions.uniqueAttendees ? (
+                    <Col lg={7} span={24}>
+                      <Select
+                        allowClear
+                        placeholder={t('Status')}
+                        defaultActiveFirstOption={false}
+                        onChange={(e) => {
+                          setStatusState(e);
+                        }}
+                        value={statusState}
+                        options={[
+                          {
+                            label: t('Active'),
+                            value: true,
+                          },
+                          {
+                            label: t('Inactive'),
+                            value: false,
+                          },
+                        ]}
+                      />
                     </Col>
-                    {option === SelectOptions.uniqueAttendees ? (
+                  ) : (
+                    <>
                       <Col lg={7} span={24}>
                         <Select
                           allowClear
-                          placeholder={t('Status')}
+                          placeholder={t('Ticket Type')}
                           defaultActiveFirstOption={false}
                           onChange={(e) => {
-                            setStatusState(e);
+                            setTicketTypeState(e);
                           }}
-                          value={statusState}
-                          options={[
-                            {
-                              label: t('Active'),
-                              value: true,
-                            },
-                            {
-                              label: t('Inactive'),
-                              value: false,
-                            },
-                          ]}
+                          value={ticketTypeState}
+                          options={listTicketType.filter(
+                            (item) => item.eventName === params.name,
+                          )}
+                          fieldNames={{
+                            label: 'name',
+                            value: 'id',
+                          }}
                         />
                       </Col>
-                    ) : (
-                      <>
-                        <Col lg={7} span={24}>
-                          <Select
-                            allowClear
-                            placeholder={t('Ticket Type')}
-                            defaultActiveFirstOption={false}
-                            onChange={(e) => {
-                              setTicketTypeState(e);
-                            }}
-                            value={ticketTypeState}
-                            options={listTicketType}
-                            fieldNames={{
-                              label: 'name',
-                              value: 'id',
-                            }}
-                          />
-                        </Col>
-                        <Col lg={7} span={24}>
-                          <Select
-                            allowClear
-                            placeholder={t('Source')}
-                            defaultActiveFirstOption={false}
-                            onChange={(e) => {
-                              setSourceState(e);
-                            }}
-                            options={sourceOptions}
-                            value={sourceState}
-                          />
-                        </Col>
-                      </>
-                    )}
-                  </Row>
-                </Col>
-                <Col lg={7} span={24} className="export-action single">
-                  <CSVLink
-                    filename={`${params.name}_Unique_Attendees_Export.csv`}
-                    headers={formatDownloadHeaders().headers}
-                    data={formatDownloadHeaders().data}
+                      <Col lg={7} span={24}>
+                        <Select
+                          allowClear
+                          placeholder={t('Source')}
+                          defaultActiveFirstOption={false}
+                          onChange={(e) => {
+                            setSourceState(e);
+                          }}
+                          options={sourceOptions}
+                          value={sourceState}
+                        />
+                      </Col>
+                    </>
+                  )}
+                </Row>
+              </Col>
+              <Col lg={7} span={24} className="export-action single">
+                <CSVLink
+                  filename={`${params.name}_${
+                    option === SelectOptions.uniqueAttendees
+                      ? 'Unique_Attendees'
+                      : 'Tickets_Scanned'
+                  }_Export.csv`}
+                  headers={formatDownloadHeaders().headers}
+                  data={formatDownloadHeaders().data}
+                >
+                  <Button
+                    className="action-button"
+                    disabled={
+                      option === SelectOptions.uniqueAttendees
+                        ? isEmpty(uniqueAttendees)
+                        : isEmpty(eventScanned)
+                    }
                   >
-                    <Button
-                      className="action-button"
-                      disabled={
-                        option === SelectOptions.uniqueAttendees
-                          ? isEmpty(uniqueAttendees)
-                          : isEmpty(eventScanned)
-                      }
-                    >
-                      <DownloadOutlined />
-                      {t('Export')}
-                    </Button>
-                  </CSVLink>
-                </Col>
-              </TableFilterContainer>
-            </Form>
+                    <DownloadOutlined />
+                    {t('Export')}
+                  </Button>
+                </CSVLink>
+              </Col>
+            </TableFilterContainer>
             {(loading && <BallLoading />) || <>{table}</>}
           </ListTableContainer>
         </div>

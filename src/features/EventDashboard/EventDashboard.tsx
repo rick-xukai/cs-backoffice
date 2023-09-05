@@ -52,6 +52,7 @@ const EventDashboard = () => {
     ticketTypes,
     discounts,
     attendees,
+    publishTime,
   } = data;
   const dashboardChartCard = (
     <DashboardChartCard
@@ -87,7 +88,7 @@ const EventDashboard = () => {
       title="Event Page Views"
       href={`${UserRoutes.eventPageViews
         .replace(':id', id)
-        .replace(':name', name)}?startDate=${startTime}`}
+        .replace(':name', name)}?startDate=${publishTime}`}
       text={(pageViews?.viewCount && pageViews?.viewCount) || 0}
       barTitle="Average Daily Visits"
       value={
