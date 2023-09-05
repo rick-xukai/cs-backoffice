@@ -469,6 +469,32 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
     return { headers, data: downloadData };
   };
 
+  const validationFailure = (
+    type: 'incorrectTemplate' | 'missingFields' | 'invalidData',
+  ) => {
+    if (type === 'incorrectTemplate') {
+      message.error(
+        t(
+          'Incorrect template used. Please upload the CSV file with our provided template',
+        ),
+      );
+    }
+    if (type === 'missingFields') {
+      message.error(
+        t(
+          'The CSV file is missing some required fields. Please fill in all mandatory fields for each ticket.',
+        ),
+      );
+    }
+    if (type === 'invalidData') {
+      message.error(
+        t(
+          'Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.',
+        ),
+      );
+    }
+  };
+
   const uploadCSVProps: UploadProps = {
     name: 'uploadCSV',
     multiple: false,
@@ -500,14 +526,11 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
             });
             if (
               !resultsHeader.includes('Attendee Email') ||
-              !resultsHeader.includes('Ticket Type')
+              !resultsHeader.includes('Ticket Type') ||
+              !resultsHeader.includes('Event Name')
             ) {
               errorFlag = true;
-              message.error(
-                t(
-                  'Incorrect template used. Please upload the CSV file with our provided template',
-                ),
-              );
+              validationFailure('incorrectTemplate');
             } else {
               resultsBody.forEach((item: string[], index: number) => {
                 if (index !== 0) {
@@ -522,49 +545,37 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                   }
                 }
               });
-              if (jsonResult.length) {
-                jsonResult.some((obj: any) => {
-                  if (!obj['Attendee Email'] || !obj['Ticket Type']) {
-                    errorFlag = true;
-                    message.error(
-                      t(
-                        'The CSV file is missing some required fields. Please fill in all mandatory fields for each ticket.',
-                      ),
-                    );
-                    return true;
-                  }
-                  if (!isEmail(obj['Attendee Email'])) {
-                    errorFlag = true;
-                    message.error(
-                      t(
-                        'Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.',
-                      ),
-                    );
-                    return true;
-                  }
-                  if (
-                    !ticketSoldCount.ticketTypes.find(
-                      (item) => item.name === obj['Ticket Type'],
-                    )
-                  ) {
-                    errorFlag = true;
-                    message.error(
-                      t(
-                        'Invalid data found in the CSV file. Please check for correct formatting and valid values in all ticket entries.',
-                      ),
-                    );
-                    return true;
-                  }
-                  return false;
-                });
-              } else {
-                errorFlag = true;
-                message.error(
-                  t(
-                    'The CSV file is missing some required fields. Please fill in all mandatory fields for each ticket.',
-                  ),
-                );
-              }
+              jsonResult.some((obj: any) => {
+                if (
+                  !obj['Attendee Email'] ||
+                  !obj['Ticket Type'] ||
+                  !obj['Event Name']
+                ) {
+                  errorFlag = true;
+                  validationFailure('missingFields');
+                  return true;
+                }
+                if (!isEmail(obj['Attendee Email'])) {
+                  errorFlag = true;
+                  validationFailure('invalidData');
+                  return true;
+                }
+                if (
+                  !ticketSoldCount.ticketTypes.find(
+                    (item) => item.name === obj['Ticket Type'],
+                  )
+                ) {
+                  errorFlag = true;
+                  validationFailure('invalidData');
+                  return true;
+                }
+                if (obj['Event Name'] !== ticketSoldCount.name) {
+                  errorFlag = true;
+                  validationFailure('invalidData');
+                  return true;
+                }
+                return false;
+              });
             }
             if (isLimit && type === UploadCSVType && !errorFlag) {
               setImportTicketFileName(file.name);

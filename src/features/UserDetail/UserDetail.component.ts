@@ -82,6 +82,7 @@ const UserDetailContainer = styled.div`
         font-weight: 500;
         line-height: 21px;
         margin-bottom: 0;
+        padding-right: 20px;
         overflow: hidden;
         text-overflow: ellipsis;
         @media (max-width: 768px) {
@@ -166,6 +167,9 @@ const UserDetailContainer = styled.div`
         }
         > :last-child {
           border: none;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
       .container-user-top {
@@ -239,6 +243,7 @@ const UserInfoItemContainer = styled.div`
   padding-left: 10px;
   padding-right: 10px;
   border-right: 1px solid ${Colors.grey9};
+  white-space: nowrap;
   img {
     margin-right: 5px;
   }

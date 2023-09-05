@@ -141,10 +141,10 @@ const UserDetail = () => {
           </Row>
           <div className="detail-container">
             <Row className="container-user">
-              <Col lg={2} xs={6} span={4}>
+              <Col xl={2} xs={6} lg={3} sm={4}>
                 <Avatar>{userDetailData.name.charAt(0)}</Avatar>
               </Col>
-              <Col lg={22} xs={18} span={20}>
+              <Col xl={22} xs={18} lg={21} sm={20}>
                 <Row className="container-user-top">
                   <Col span={24}>
                     <div className="user-name-content">
@@ -161,7 +161,7 @@ const UserDetail = () => {
                     <div className="user-info-content">
                       <UserInfoItemContainer>
                         <img src={Images.EmailIcon} alt="" />
-                        <span>{userDetailData.email}</span>
+                        <span>{userDetailData.email || '-'}</span>
                       </UserInfoItemContainer>
                       <UserInfoItemContainer>
                         <img src={Images.GenderIcon} alt="" />
@@ -199,7 +199,7 @@ const UserDetail = () => {
               <Col span={24} md={12} className="item-key">
                 <p className="item-key-title">{t('Crypto Wallet')}</p>
                 <p className="item-key-value mobile-top">
-                  {userDetailData.walletAddress}
+                  {userDetailData.walletAddress || '-'}
                 </p>
               </Col>
               <Col span={24} md={12} className="item-key">
