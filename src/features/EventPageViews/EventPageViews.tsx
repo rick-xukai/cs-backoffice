@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Col, DatePicker, Row, Skeleton, Grid } from 'antd';
+import { Card, Col, DatePicker, Row, Skeleton, Grid, message } from 'antd';
 import { Line, Column } from '@ant-design/plots';
 import { flatten, isArray, isEmpty } from 'lodash';
 
 import moment from 'moment';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
-import { UserRoutes } from '../../navigation/Routes';
+import { AuthRoutes, UserRoutes } from '../../navigation/Routes';
 import {
   PageContainer,
   ProgressContent,
@@ -31,6 +31,7 @@ import { FormatTimeKeys } from '../../constants/Keys';
 import useSearchParams from '../../hooks/useSearchParams';
 import { Colors } from '../../theme';
 import { PieTooltip } from '../UniqueBuyers/UniqueBuyers.component';
+import { TokenExpireResponseCode } from '../../constants/General';
 
 const { RangePicker } = DatePicker;
 const { useBreakpoint } = Grid;
@@ -45,7 +46,6 @@ const EventPageViews = () => {
     selectPageViewsAnalysisLoading,
   );
   const loading = useAppSelector(selectLoading);
-
   const { name, summary, countries, origins } = eventPageViews;
   const [startDate, setStartDate] = useState(
     pamasStartDate
@@ -54,9 +54,19 @@ const EventPageViews = () => {
   );
   const [endDate, setEndDate] = useState(moment().format(FormatTimeKeys.ymd));
   const { lg } = useBreakpoint();
+  const history = useHistory();
 
   useEffect(() => {
-    dispatch(getEventPageViewsAction(params.id));
+    (async () => {
+      const res: any = await dispatch(getEventPageViewsAction(params.id));
+      if (res.payload?.code === TokenExpireResponseCode) {
+        history.push(AuthRoutes.login);
+        message.error({
+          content: t('User token is deprecated, please log in again.'),
+          key: 'expired',
+        });
+      }
+    })();
     return () => {
       dispatch(reset());
     };
@@ -139,6 +149,19 @@ const EventPageViews = () => {
     color: ['#056790', '#FCA119', '#FC0006'],
     point: {
       size: 5,
+    },
+    tooltip: {
+      domStyles: {
+        'g2-tooltip': {
+          background: 'none',
+          boxShadow: 0,
+        },
+      },
+      customContent: (a: any, b: any) => (
+        <PieTooltip>
+          {a}: {b[0]?.value || 0}
+        </PieTooltip>
+      ),
     },
   };
 
