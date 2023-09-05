@@ -35,6 +35,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   getUniqueBuyersAction,
   getUniqueBuyersChartsAction,
+  reset,
   selectUniqueBuyers,
   selectUniqueBuyersChartsData,
   selectUniqueBuyersChartsLoading,
@@ -261,6 +262,9 @@ const UniqueBuyers = () => {
         eventId: params.id,
       }),
     );
+    return () => {
+      dispatch(reset());
+    };
   }, []);
 
   const searchInputChange = useCallback(
@@ -314,13 +318,15 @@ const UniqueBuyers = () => {
         others.push(item);
       }
     }
-    return [
-      ...newList,
-      {
-        name: 'Others',
-        count: others.reduce((a: any, b: any) => a + b.count, 0),
-      },
-    ];
+    return others.length
+      ? [
+          ...newList,
+          {
+            name: 'Others',
+            count: others.reduce((a: any, b: any) => a + b.count, 0),
+          },
+        ]
+      : newList;
   }, [countries]);
 
   return chartsLoading ? (

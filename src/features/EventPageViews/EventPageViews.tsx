@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Col, DatePicker, Row, Skeleton } from 'antd';
+import { Card, Col, DatePicker, Row, Skeleton, Grid } from 'antd';
 import { Line, Column } from '@ant-design/plots';
 import { flatten, isArray, isEmpty } from 'lodash';
 
@@ -19,6 +19,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   getEventPageViewsAction,
   getEventPageViewsAnalysisAction,
+  reset,
   selectLoading,
   selectPageViewsAnalysisData,
   selectPageViewsAnalysisLoading,
@@ -32,7 +33,7 @@ import { Colors } from '../../theme';
 import { PieTooltip } from '../UniqueBuyers/UniqueBuyers.component';
 
 const { RangePicker } = DatePicker;
-
+const { useBreakpoint } = Grid;
 const EventPageViews = () => {
   const params: any = useParams();
   const pamasStartDate = useSearchParams('startDate');
@@ -52,8 +53,13 @@ const EventPageViews = () => {
       : moment().format(FormatTimeKeys.ymd),
   );
   const [endDate, setEndDate] = useState(moment().format(FormatTimeKeys.ymd));
+  const { lg } = useBreakpoint();
+
   useEffect(() => {
     dispatch(getEventPageViewsAction(params.id));
+    return () => {
+      dispatch(reset());
+    };
   }, []);
   useEffect(() => {
     dispatch(
@@ -63,7 +69,7 @@ const EventPageViews = () => {
         endDate,
       }),
     );
-  }, [endDate]);
+  }, [startDate, endDate]);
   const parsedData = flatten(
     pageViewsAnalysisData && isArray(pageViewsAnalysisData)
       ? pageViewsAnalysisData?.map((item) => [
@@ -246,8 +252,8 @@ const EventPageViews = () => {
                     ),
                   }}
                   legend={{
-                    position: 'right',
-                    padding: [0, 0, 0, 20],
+                    position: lg ? 'right' : 'bottom',
+                    padding: [lg ? 0 : 20, 0, 0, 20],
                     label: {
                       style: {
                         stroke: Colors.black,

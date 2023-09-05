@@ -31,6 +31,7 @@ import {
   getEventScannedAction,
   getUniqueAttendeesAction,
   getUniqueAttendeesSummaryAction,
+  reset,
   selectEventScanned,
   selectLoading,
   selectUniqueAttendees,
@@ -176,6 +177,9 @@ const UniqueAttendees = () => {
   useEffect(() => {
     dispatch(getUniqueAttendeesSummaryAction({ eventId: params.id }));
     dispatch(getListTicketTypeAction());
+    return () => {
+      dispatch(reset());
+    };
   }, []);
 
   const fetchData = useCallback(

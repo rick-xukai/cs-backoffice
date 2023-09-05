@@ -15,6 +15,7 @@ export const Title = styled.div`
   justify-content: space-between;
   margin-bottom: 20px;
   color: ${Colors.black5};
+  gap: 10px;
   p {
     font-size: 20px;
     font-style: normal;
