@@ -10,7 +10,7 @@ import {
   DownloadOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { debounce, isEmpty } from 'lodash';
+import { debounce, isEmpty, orderBy } from 'lodash';
 
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { UserRoutes } from '../../navigation/Routes';
@@ -399,18 +399,20 @@ const UniqueBuyers = () => {
                   <ProgressContent style={{ marginTop: 12 }}>
                     <Row gutter={[0, 18]}>
                       {matchCountires.length ? (
-                        matchCountires.map((item: any) => (
-                          <Col span={24} key={item.name}>
-                            <ProgressBar
-                              name={item.name}
-                              percent={(
-                                (item.count / countriesCount) *
-                                100
-                              ).toFixed(2)}
-                              count={item.count}
-                            />
-                          </Col>
-                        ))
+                        orderBy(matchCountires, ['count'], ['desc']).map(
+                          (item: any) => (
+                            <Col span={24} key={item.name}>
+                              <ProgressBar
+                                name={item.name}
+                                percent={(
+                                  (item.count / countriesCount) *
+                                  100
+                                ).toFixed(0)}
+                                count={item.count}
+                              />
+                            </Col>
+                          ),
+                        )
                       ) : (
                         <Col span={24}>
                           <ProgressBar name="-" percent={0} count="-" empty />

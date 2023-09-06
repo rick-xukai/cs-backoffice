@@ -250,6 +250,7 @@ const CreateEventContainer = styled.div`
 `;
 
 const CreateEventFormContainer = styled.div`
+  background: ${Colors.white};
   .address,
   .ant-select-selector,
   .ant-select-selection-search-input,

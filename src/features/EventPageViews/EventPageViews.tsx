@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, Col, DatePicker, Row, Skeleton, Grid, message } from 'antd';
 import { Line, Column } from '@ant-design/plots';
-import { flatten, isArray, isEmpty } from 'lodash';
+import { flatten, isArray, isEmpty, orderBy } from 'lodash';
 
 import moment from 'moment';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -86,17 +86,17 @@ const EventPageViews = () => {
           {
             date: moment(item.date).format(FormatTimeKeys.mDy),
             type: 'Total Page Views',
-            value: item.pageViewTotal,
+            value: item.pageViewTotal || 0,
           },
           {
             date: moment(item.date).format(FormatTimeKeys.mDy),
             type: 'Unique Visitor Page Views',
-            value: item.pageViewUserCount,
+            value: item.pageViewUserCount || 0,
           },
           {
             type: 'Ticket Sold',
             date: moment(item.date).format(FormatTimeKeys.mDy),
-            value: item.ticketSoldCount,
+            value: item.ticketSoldCount || 0,
           },
         ])
       : [],
@@ -307,17 +307,19 @@ const EventPageViews = () => {
               <ProgressContent>
                 {countries && countries.length ? (
                   <Row gutter={[0, 18]}>
-                    {countries?.map((item) => (
-                      <Col span={24} key={item.name}>
-                        <ProgressBar
-                          name={item.name}
-                          percent={Math.round(
-                            (item.count / countriesCount) * 100,
-                          )}
-                          count={item.count}
-                        />
-                      </Col>
-                    ))}
+                    {orderBy(countries || [], ['count'], ['desc']).map(
+                      (item) => (
+                        <Col span={24} key={item.name}>
+                          <ProgressBar
+                            name={item.name}
+                            percent={Math.round(
+                              (item.count / countriesCount) * 100,
+                            )}
+                            count={item.count}
+                          />
+                        </Col>
+                      ),
+                    )}
                   </Row>
                 ) : (
                   <div style={{ marginTop: 30 }}>
