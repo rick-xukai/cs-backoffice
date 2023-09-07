@@ -45,10 +45,14 @@ export const ProgressInfo = styled.div`
     .count {
       color: ${Colors.black4};
       font-weight: 500;
+      width: 30px;
+      text-align: left;
     }
     .percent {
       color: ${Colors.grey6};
       font-weight: 400;
+      width: 30px;
+      text-align: left;
     }
   }
 `;

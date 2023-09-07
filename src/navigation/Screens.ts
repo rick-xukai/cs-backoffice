@@ -1,6 +1,6 @@
 import { UserRoutes, AuthRoutes } from './Routes';
 // User features
-import Dashboard from '../features/Dashboard/Loadable';
+// import Dashboard from '../features/Dashboard/Loadable';
 import Events from '../features/Events/Loadable';
 import EventTickets from '../features/EventTickets/Loadable';
 import EventTicketsDetail from '../features/EventTicketsDetail/Loadable';
@@ -33,16 +33,12 @@ import UniqueAttendees from '../features/UniqueAttendees/Loadable';
 export const UserScreens = {
   Dashboard: {
     title: 'Dashboard - CrowdServe BO',
-    path: UserRoutes.dashboard,
-    component: Dashboard,
+    path: UserRoutes.events,
+    component: Events,
     subMenuKeys: [],
-    menuKeys: [vMenuKeys.dashboard],
+    menuKeys: [vMenuKeys.events],
     guard: true,
-    role: [
-      UserRoleKeys.superAdmin,
-      UserRoleKeys.organizerAdmin,
-      UserRoleKeys.organizerUser,
-    ],
+    role: [],
   },
   Events: {
     title: 'Events - CrowdServe BO',
@@ -164,11 +160,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [
-      UserRoleKeys.superAdmin,
-      UserRoleKeys.organizerAdmin,
-      UserRoleKeys.organizerUser,
-    ],
+    role: [],
   },
   UserDetail: {
     title: 'User Detail - CrowdServe BO',

@@ -336,7 +336,7 @@ const Events = () => {
         UserRoleKeys.partnerAdmin,
         UserRoleKeys.superAdmin,
       ],
-      width: 480,
+      width: 400,
       render: (_: string, record: EventsListDataType) => (
         <Row>
           <Col span={6}>
@@ -411,6 +411,7 @@ const Events = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: 100,
       role: [
         UserRoleKeys.organizerAdmin,
         UserRoleKeys.organizerUser,
@@ -424,6 +425,7 @@ const Events = () => {
       title: '',
       dataIndex: '',
       key: 'action',
+      width: 100,
       role: [
         UserRoleKeys.organizerAdmin,
         UserRoleKeys.organizerUser,
