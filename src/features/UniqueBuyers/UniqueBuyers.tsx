@@ -241,7 +241,7 @@ const UniqueBuyers = () => {
               <span>{owned}</span>
               <Tooltip
                 title={t(
-                  'Buyer has sold or cancelled their ticket and would not be included in the data above',
+                  'Buyer has sold their ticket and would not be included in the data above',
                 )}
               >
                 <img
