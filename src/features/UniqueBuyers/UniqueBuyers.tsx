@@ -1,7 +1,17 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Col, Row, Grid, Input, Select, Button, Pagination } from 'antd';
+import {
+  Card,
+  Col,
+  Row,
+  Grid,
+  Input,
+  Select,
+  Button,
+  Pagination,
+  Tooltip,
+} from 'antd';
 import { Column, Pie } from '@ant-design/plots';
 import { CSVLink } from 'react-csv';
 import moment from 'moment';
@@ -28,7 +38,7 @@ import {
   TableFilterContainer,
 } from '../TicketsSold/TicketsSoldComponent';
 import { ProgressBar, WorldMap } from './UniqueBuyers.components';
-import { Colors } from '../../theme';
+import { Colors, Images } from '../../theme';
 import TableComponent from '../../components/Table/Table';
 import NoData from '../../components/NoData/NoData';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -224,6 +234,27 @@ const UniqueBuyers = () => {
       title: 'Owned Tickets',
       dataIndex: 'ownedTickets',
       width: 120,
+      render: (owned: number) => {
+        if (owned === 0) {
+          return (
+            <>
+              <span>{owned}</span>
+              <Tooltip
+                title={t(
+                  'Buyer has sold or cancelled their ticket and would not be included in the data above',
+                )}
+              >
+                <img
+                  style={{ marginLeft: 8, cursor: 'pointer', marginTop: -2 }}
+                  src={Images.AlertCircleIcon}
+                  alt=""
+                />
+              </Tooltip>
+            </>
+          );
+        }
+        return <span>{owned}</span>;
+      },
     },
     {
       title: 'Gender',
