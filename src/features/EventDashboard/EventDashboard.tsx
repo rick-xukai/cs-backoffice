@@ -80,7 +80,9 @@ const EventDashboard = () => {
       value={`${
         buyers?.conversionRate ? (buyers?.conversionRate * 100).toFixed(2) : 0
       }%`}
-      tooltip="Unique attendees. Some of these attendees may be holding more than 1 ticket."
+      tooltip={t(
+        'Click here to view the list of people who purchased the tickets. Each buyer may purchase more than 1 ticket',
+      )}
     />
   );
   const eventPageViewsCard = (
@@ -109,6 +111,7 @@ const EventDashboard = () => {
       value={`${SGD_UNIT} $${
         netSales?.grossSales ? thousandsSeparator(`${netSales?.grossSales}`) : 0
       }`}
+      tooltip={t('Net sales is the total amount you will receive at payout')}
     />
   );
 
@@ -121,6 +124,9 @@ const EventDashboard = () => {
         .replace(':name', name)}
       barTitle="Tickets Scanned"
       value={attendees?.ticketScanned || 0}
+      tooltip={t(
+        'Click here to view the list of scanned tickets, which shows the total number of people who attended',
+      )}
     />
   );
 

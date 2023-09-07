@@ -65,7 +65,7 @@ const ChangePassword = () => {
     );
     if (response.type === changePasswordAction.fulfilled.toString()) {
       message.success(t('Password changed successfully'));
-      history.replace(UserRoutes.dashboard);
+      history.replace(UserRoutes.events);
     }
   };
 

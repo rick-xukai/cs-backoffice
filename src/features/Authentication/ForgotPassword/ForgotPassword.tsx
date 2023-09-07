@@ -153,7 +153,7 @@ const ForgotPassword = () => {
           path: '/',
         },
       );
-      history.replace(UserRoutes.dashboard);
+      history.replace(UserRoutes.events);
     }
   }, [data]);
   return (

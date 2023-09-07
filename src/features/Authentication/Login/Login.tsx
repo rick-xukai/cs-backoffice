@@ -108,7 +108,7 @@ const Login = () => {
         path: '/',
       });
       if (data.user.status === ActiveStatus.active) {
-        history.replace(UserRoutes.dashboard);
+        history.replace(UserRoutes.events);
       } else {
         history.push(AuthRoutes.changePassword);
       }

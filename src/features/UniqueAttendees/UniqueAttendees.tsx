@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Row, Col, Input, Button, Space, Select } from 'antd';
+import { Row, Col, Input, Button, Space, Select, Tooltip } from 'antd';
 import {
   CloseOutlined,
   SearchOutlined,
@@ -97,6 +97,27 @@ const UniqueAttendees = () => {
           {
             title: 'Owned Tickets',
             dataIndex: 'ownedTickets',
+            render: (owned: number) => {
+              if (owned === 0) {
+                return (
+                  <>
+                    <span>{owned}</span>
+                    <Tooltip
+                      title={t(
+                        'Buyer has sold or cancelled their ticket and would not be included in the data above',
+                      )}
+                    >
+                      <img
+                        style={{ marginLeft: 8, cursor: 'pointer' }}
+                        src={Images.AlertCircleIcon}
+                        alt=""
+                      />
+                    </Tooltip>
+                  </>
+                );
+              }
+              return <span>{owned}</span>;
+            },
           },
           {
             title: 'Gender',
