@@ -61,6 +61,18 @@ const Authmiddleware = ({
             />
           );
         }
+        if (
+          path === AuthRoutes.login &&
+          cookies.getCookie(CookieKeys.authUser)
+        ) {
+          return (
+            <Redirect
+              to={{
+                pathname: UserRoutes.events,
+              }}
+            />
+          );
+        }
         if (path === UserRoutes.home) {
           return (
             <Redirect
