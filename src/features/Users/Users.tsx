@@ -6,10 +6,12 @@ import type { TablePaginationConfig } from 'antd/es/table';
 import { SortOrder, FilterValue, SorterResult } from 'antd/es/table/interface';
 import qs from 'qs';
 
+import { useCookie } from '../../hooks';
+import { logoutAction } from '../Authentication/Login/Login.slice';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { formatTimeStrByTimeString, formatLabelDate } from '../../utils/func';
-import { SortKeys, FormatTimeKeys } from '../../constants/Keys';
+import { SortKeys, FormatTimeKeys, CookieKeys } from '../../constants/Keys';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import {
@@ -40,6 +42,7 @@ const Users = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const location = useLocation();
+  const cookies = useCookie([CookieKeys.authUser]);
 
   const loading = useAppSelector(selectLoading);
   const data = useAppSelector(selectData);
@@ -207,6 +210,12 @@ const Users = () => {
     dispatch(filtersChangeAction({ status: currentStatus }));
   };
 
+  const onLogout = async () => {
+    cookies.removeCookie(CookieKeys.authUser);
+    await dispatch(logoutAction());
+    history.push(AuthRoutes.login);
+  };
+
   // eslint-disable-next-line
   useEffect(() => {
     return () => {
@@ -217,7 +226,7 @@ const Users = () => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        history.push(AuthRoutes.login);
+        onLogout();
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }

@@ -14,10 +14,12 @@ import {
   defaultPageSize,
   TokenExpireResponseCode,
 } from '../../constants/General';
+import { useCookie } from '../../hooks';
+import { logoutAction } from '../Authentication/Login/Login.slice';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
-import { StatusKeys, FormatTimeKeys } from '../../constants/Keys';
+import { StatusKeys, FormatTimeKeys, CookieKeys } from '../../constants/Keys';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import {
   reset,
@@ -47,6 +49,7 @@ const TransactionsDetail = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const location: RouteConfigType = useLocation();
+  const cookies = useCookie([CookieKeys.authUser]);
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -77,6 +80,12 @@ const TransactionsDetail = () => {
     });
   };
 
+  const onLogout = async () => {
+    cookies.removeCookie(CookieKeys.authUser);
+    await dispatch(logoutAction());
+    history.push(AuthRoutes.login);
+  };
+
   useEffect(() => {
     if (changeStatusSuccess) {
       message.success(t('TransactionCompleted'));
@@ -104,7 +113,7 @@ const TransactionsDetail = () => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        history.push(AuthRoutes.login);
+        onLogout();
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }

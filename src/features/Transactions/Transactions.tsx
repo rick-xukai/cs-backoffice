@@ -26,9 +26,16 @@ import {
   decimalPlaces,
   TokenExpireResponseCode,
 } from '../../constants/General';
+import { useCookie } from '../../hooks';
+import { logoutAction } from '../Authentication/Login/Login.slice';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
-import { StatusKeys, SortKeys, FormatTimeKeys } from '../../constants/Keys';
+import {
+  StatusKeys,
+  SortKeys,
+  FormatTimeKeys,
+  CookieKeys,
+} from '../../constants/Keys';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
@@ -63,6 +70,7 @@ const Transactions = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const location = useLocation();
+  const cookies = useCookie([CookieKeys.authUser]);
 
   const loading = useAppSelector(selectLoading);
   const data = useAppSelector(selectData);
@@ -288,6 +296,12 @@ const Transactions = () => {
     dispatch(filtersChangeAction({ status: currentStatus }));
   };
 
+  const onLogout = async () => {
+    cookies.removeCookie(CookieKeys.authUser);
+    await dispatch(logoutAction());
+    history.push(AuthRoutes.login);
+  };
+
   useEffect(() => {
     if (showTableHeader) {
       setSelectItemsQuantity(0);
@@ -332,7 +346,7 @@ const Transactions = () => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        history.push(AuthRoutes.login);
+        onLogout();
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }

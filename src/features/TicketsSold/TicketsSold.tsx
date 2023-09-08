@@ -26,6 +26,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import Papa from 'papaparse';
 import { debounce, cloneDeep } from 'lodash';
 
+import { useCookie } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import { isEmail } from '../../utils/validator';
@@ -34,7 +35,7 @@ import {
   formatTimeStrByTimeString,
   thousandsSeparator,
 } from '../../utils/func';
-import { FormatTimeKeys } from '../../constants/Keys';
+import { FormatTimeKeys, CookieKeys } from '../../constants/Keys';
 import {
   priceUnit,
   ImportTicketsTemplate,
@@ -46,6 +47,7 @@ import {
   defaultCurrentPage,
   defaultPageSize,
 } from '../../constants/General';
+import { logoutAction } from '../Authentication/Login/Login.slice';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import TableComponent from '../../components/Table/Table';
 import Pagination from '../../components/Pagination';
@@ -97,6 +99,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   const params: any = useParams();
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const cookies = useCookie([CookieKeys.authUser]);
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -658,6 +661,12 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
     [],
   );
 
+  const onLogout = async () => {
+    cookies.removeCookie(CookieKeys.authUser);
+    await dispatch(logoutAction());
+    history.push(AuthRoutes.login);
+  };
+
   useEffect(() => {
     importTicketsRequest();
   }, [importTicketItems]);
@@ -682,7 +691,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        history.push(AuthRoutes.login);
+        onLogout();
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }
