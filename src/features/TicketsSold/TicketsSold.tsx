@@ -253,57 +253,56 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       dataIndex: 'absorbFees',
       key: 'absorbFees',
       width: 140,
-      render: (_: number, record: TicketSoldListItemProps) => (
-        <Col
-          span={24}
-          // onClick={() => {
-          //   confirm({
-          //     className: 'fees-detail-modal',
-          //     centered: true,
-          //     closable: false,
-          //     maskClosable: true,
-          //     content: (
-          //       <Row>
-          //         <Col span={24} className="fees-detail-item">
-          //           <Row>
-          //             <Col span={12} className="label">
-          //               {t('Service Fee')}
-          //             </Col>
-          //             <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
-          //           </Row>
-          //         </Col>
-          //         <Col span={24} className="fees-detail-item">
-          //           <Row>
-          //             <Col span={12} className="label">
-          //               {t('Royalty Fee')}
-          //             </Col>
-          //             <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
-          //           </Row>
-          //         </Col>
-          //         <Col span={24} className="fees-detail-item">
-          //           <Row>
-          //             <Col span={12} className="label">
-          //               {t('Transaction Fee')}
-          //             </Col>
-          //             <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
-          //           </Row>
-          //         </Col>
-          //         <Col span={24} className="fees-detail-item item-total">
-          //           <Row>
-          //             <Col span={12} className="label">
-          //               {t('Total')}
-          //             </Col>
-          //             <Col span={12} className="value">{`3 ${priceUnit}`}</Col>
-          //           </Row>
-          //         </Col>
-          //       </Row>
-          //     ),
-          //   });
-          // }}
-        >
-          {checkFees(record)}
-        </Col>
-      ),
+      render: (_: number, record: TicketSoldListItemProps) =>
+        // <Col
+        //   span={24}
+        //   onClick={() => {
+        //     confirm({
+        //       className: 'fees-detail-modal',
+        //       centered: true,
+        //       closable: false,
+        //       maskClosable: true,
+        //       content: (
+        //         <Row>
+        //           <Col span={24} className="fees-detail-item">
+        //             <Row>
+        //               <Col span={12} className="label">
+        //                 {t('Service Fee')}
+        //               </Col>
+        //               <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
+        //             </Row>
+        //           </Col>
+        //           <Col span={24} className="fees-detail-item">
+        //             <Row>
+        //               <Col span={12} className="label">
+        //                 {t('Royalty Fee')}
+        //               </Col>
+        //               <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
+        //             </Row>
+        //           </Col>
+        //           <Col span={24} className="fees-detail-item">
+        //             <Row>
+        //               <Col span={12} className="label">
+        //                 {t('Transaction Fee')}
+        //               </Col>
+        //               <Col span={12} className="value">{`1 ${priceUnit}`}</Col>
+        //             </Row>
+        //           </Col>
+        //           <Col span={24} className="fees-detail-item item-total">
+        //             <Row>
+        //               <Col span={12} className="label">
+        //                 {t('Total')}
+        //               </Col>
+        //               <Col span={12} className="value">{`3 ${priceUnit}`}</Col>
+        //             </Row>
+        //           </Col>
+        //         </Row>
+        //       ),
+        //     });
+        //   }}
+        // >
+        checkFees(record),
+      // </Col>
     },
     {
       title: 'Seat Number',
