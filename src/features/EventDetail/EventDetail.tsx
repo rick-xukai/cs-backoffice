@@ -1,10 +1,11 @@
-/* eslint-disable */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Spin, message, Row, Col, Button } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { message, Row, Col, Button } from 'antd';
 
+import { useCookie } from '../../hooks';
+import { CookieKeys } from '../../constants/Keys';
+import { logoutAction } from '../Authentication/Login/Login.slice';
 import {
   defaultCurrentPage,
   defaultPageSize,
@@ -16,14 +17,11 @@ import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import { EventDetailContainer } from './EventDetailComponent';
 import {
   getEventDetailAction,
-  selectDetailLoading,
   selectDetailData,
   EventDetailDataType,
   selectError,
   reset,
 } from './EventDetail.slice';
-import EventInfo from './Component/EventInfo';
-import CreateEvent from '../CreateEvent';
 
 interface RouteConfigType {
   state: {
@@ -40,12 +38,16 @@ const EventDetail = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const location: RouteConfigType = useLocation();
+  const cookies = useCookie([CookieKeys.authUser]);
 
   const error = useAppSelector(selectError);
-  const loadingForDetail = useAppSelector(selectDetailLoading);
   const detailData: EventDetailDataType = useAppSelector(selectDetailData);
 
-  const [editEvent, setEditEvent] = useState<boolean>(false);
+  const onLogout = async () => {
+    cookies.removeCookie(CookieKeys.authUser);
+    await dispatch(logoutAction());
+    history.push(AuthRoutes.login);
+  };
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -57,7 +59,7 @@ const EventDetail = () => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        history.push(AuthRoutes.login);
+        onLogout();
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }
@@ -89,46 +91,11 @@ const EventDetail = () => {
       <div className="page-main">
         <Row>
           <Col span={24} className="edit-event">
-            <Button
-              disabled={detailData && detailData.status !== 1}
-              onClick={() => setEditEvent(true)}
-            >
+            <Button disabled={detailData && detailData.status !== 1}>
               {t('Edit')}
             </Button>
           </Col>
         </Row>
-        {/* {(loadingForDetail && (
-          <Spin
-            spinning={loadingForDetail}
-            indicator={<LoadingOutlined spin />}
-            size="large"
-          />
-        )) || (
-          <>
-            {(editEvent && (
-              <CreateEvent
-                isEdit
-                editEventID={id}
-                setEditEvent={setEditEvent}
-                eventData={detailData}
-              />
-            )) || (
-              <>
-                <Row>
-                  <Col span={24} className="edit-event">
-                    <Button
-                      disabled={detailData && detailData.status !== 1}
-                      onClick={() => setEditEvent(true)}
-                    >
-                      {t('Edit')}
-                    </Button>
-                  </Col>
-                </Row>
-                <EventInfo data={detailData} />
-              </>
-            )}
-          </>
-        )} */}
       </div>
     </EventDetailContainer>
   );

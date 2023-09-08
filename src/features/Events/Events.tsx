@@ -35,6 +35,7 @@ import {
   UserRoleKeys,
   FilterEventStatus,
 } from '../../constants/Keys';
+import { logoutAction } from '../Authentication/Login/Login.slice';
 import { checkEventStatus } from '../../utils/func';
 import { Images, Colors } from '../../theme';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
@@ -489,6 +490,12 @@ const Events = () => {
     [],
   );
 
+  const onLogout = async () => {
+    cookie.removeCookie(CookieKeys.authUser);
+    await dispatch(logoutAction());
+    history.push(AuthRoutes.login);
+  };
+
   useEffect(() => {
     const roleColumns: any = [];
     columns.forEach((item) => {
@@ -505,7 +512,7 @@ const Events = () => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        history.push(AuthRoutes.login);
+        onLogout();
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }
