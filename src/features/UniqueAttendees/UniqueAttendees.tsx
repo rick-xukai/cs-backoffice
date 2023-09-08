@@ -249,8 +249,11 @@ const UniqueAttendees = () => {
         showCustomPagination={false}
       />
       <Pagination
-        current={1}
-        pageSize={20}
+        pageSize={
+          option === SelectOptions.uniqueAttendees
+            ? uniqueAttendees.length
+            : eventScanned.length
+        }
         total={
           option === SelectOptions.uniqueAttendees
             ? uniqueAttendees.length
