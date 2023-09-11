@@ -108,6 +108,7 @@ const Login = () => {
           expires: new Date(currentDate.getTime() + TokenExpire),
           path: '/',
         });
+        cookies.removeCookie(CookieKeys.userNotActiveToken);
       } else {
         cookies.setCookie(CookieKeys.userNotActiveToken, data.token, {
           expires: new Date(currentDate.getTime() + TokenExpire),
