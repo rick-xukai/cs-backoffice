@@ -88,29 +88,39 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    if (data.token) {
+    if (data && data.token) {
       const currentDate = new Date();
       const { user } = data;
-      cookies.setCookie(CookieKeys.authUser, data.token, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-      });
-      cookies.setCookie(
-        CookieKeys.authUserName,
-        base64Encrypt(user.name || ''),
-        {
+      if (user.status === ActiveStatus.active) {
+        cookies.setCookie(CookieKeys.authUser, data.token, {
           expires: new Date(currentDate.getTime() + TokenExpire),
           path: '/',
-        },
-      );
-      cookies.setCookie(CookieKeys.authUserRole, user.role, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-      });
+        });
+        cookies.setCookie(
+          CookieKeys.authUserName,
+          base64Encrypt(user.name || ''),
+          {
+            expires: new Date(currentDate.getTime() + TokenExpire),
+            path: '/',
+          },
+        );
+        cookies.setCookie(CookieKeys.authUserRole, user.role, {
+          expires: new Date(currentDate.getTime() + TokenExpire),
+          path: '/',
+        });
+      } else {
+        cookies.setCookie(CookieKeys.userNotActiveToken, data.token, {
+          expires: new Date(currentDate.getTime() + TokenExpire),
+          path: '/',
+        });
+      }
       if (data.user.status === ActiveStatus.active) {
         history.replace(UserRoutes.events);
       } else {
-        history.push(AuthRoutes.changePassword);
+        history.push({
+          pathname: AuthRoutes.changePassword,
+          state: { email: user.email },
+        });
       }
     }
   }, [data]);

@@ -122,10 +122,17 @@ export class RequestClientClass {
   async doMethod(method = 'GET') {
     if (this.authorizationStatus) {
       const userToken = this.cookies.get(`${PREFIX}${CookieKeys.authUser}`);
+      const userNotActiveToken = this.cookies.get(
+        `${PREFIX}${CookieKeys.userNotActiveToken}`,
+      );
       if (userToken) {
         this.setHeaders({
           authorization: `${AuthorizationType.bearer} ${userToken}`,
-        })
+        });
+      } else {
+        this.setHeaders({
+          authorization: `${AuthorizationType.bearer} ${userNotActiveToken}`,
+        });
       }
     }
     const options: any = {
@@ -155,7 +162,7 @@ export class RequestClientClass {
     if (response.status >= 400) {
       throw new Error(`Response error: ${this.uri}`);
     }
-    
+
     const finalResponse = response.data;
     if (this.requireHeadersReturn) {
       const finalHeaders = {
