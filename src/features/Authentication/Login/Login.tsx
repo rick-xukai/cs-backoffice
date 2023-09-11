@@ -114,6 +114,7 @@ const Login = () => {
           path: '/',
         });
       }
+      dispatch(reset());
       if (data.user.status === ActiveStatus.active) {
         history.replace(UserRoutes.events);
       } else {
