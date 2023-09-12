@@ -9,6 +9,7 @@ export const CookieKeys = {
   authUserName: 'authUserName',
   authUserRole: 'authUserRole',
   userLoginToken: 'userLoginToken',
+  userNotActiveToken: 'userNotActiveToken',
 };
 export const EventTabsKey = {
   eventInfo: 'Event Info',
