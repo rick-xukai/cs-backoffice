@@ -44,15 +44,20 @@ const SideBar = ({
   sidebarTheme: SiderTheme;
 }) => {
   const { t } = useTranslation();
-  const cookies = useCookie([CookieKeys.authUser]);
+  const cookies = useCookie([
+    CookieKeys.authUser,
+    CookieKeys.authUserName,
+    CookieKeys.userNotActiveToken,
+  ]);
   const dispatch = useAppDispatch();
 
   const [collapsedWidth, setCollapsedWidth] = useState(CollapsedWidth);
 
   const logout = () => {
     dispatch(reset());
-    cookies.removeCookie(CookieKeys.authUser);
-    cookies.removeCookie(CookieKeys.authUserName);
+    cookies.removeCookie(CookieKeys.authUser, { path: '/' });
+    cookies.removeCookie(CookieKeys.authUserName, { path: '/' });
+    cookies.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
   };
 
   return (

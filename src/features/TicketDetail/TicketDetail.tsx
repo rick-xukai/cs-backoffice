@@ -5,7 +5,6 @@ import { Row, Col, Select, Button, Spin, message } from 'antd';
 import { LoadingOutlined, EditOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../../hooks';
-import { logoutAction } from '../Authentication/Login/Login.slice';
 import { FormatTimeKeys, CookieKeys } from '../../constants/Keys';
 import {
   ticketStatus,
@@ -50,7 +49,11 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
   const location: RouteConfigType = useLocation();
   const { ticketId }: { ticketId: string } = useParams();
   const dispatch = useAppDispatch();
-  const cookies = useCookie([CookieKeys.authUser]);
+  const cookies = useCookie([
+    CookieKeys.authUser,
+    CookieKeys.authUserName,
+    CookieKeys.userNotActiveToken,
+  ]);
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -59,12 +62,6 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
 
   const [ticketStatusKey, setTicketStatusKey] = useState<number>(0);
   const [edit, setEdit] = useState(false);
-
-  const onLogout = async () => {
-    cookies.removeCookie(CookieKeys.authUser);
-    await dispatch(logoutAction());
-    history.push(AuthRoutes.login);
-  };
 
   useEffect(() => {
     dispatch(getTicketsDetailAction({ userTicketId: ticketId }));
@@ -76,7 +73,10 @@ const TicketDetail = ({ showHeader = true }: { showHeader: boolean }) => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        onLogout();
+        cookies.removeCookie(CookieKeys.authUser, { path: '/' });
+        cookies.removeCookie(CookieKeys.authUserName, { path: '/' });
+        cookies.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
+        history.push(AuthRoutes.login);
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }
