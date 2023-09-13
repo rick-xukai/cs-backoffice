@@ -35,7 +35,6 @@ import {
   UserRoleKeys,
   FilterEventStatus,
 } from '../../constants/Keys';
-import { logoutAction } from '../Authentication/Login/Login.slice';
 import { checkEventStatus } from '../../utils/func';
 import { Images, Colors } from '../../theme';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
@@ -93,7 +92,12 @@ const Events = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const cookie = useCookie([CookieKeys.authUserRole]);
+  const cookie = useCookie([
+    CookieKeys.authUserRole,
+    CookieKeys.authUser,
+    CookieKeys.authUserName,
+    CookieKeys.userNotActiveToken,
+  ]);
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -490,12 +494,6 @@ const Events = () => {
     [],
   );
 
-  const onLogout = async () => {
-    cookie.removeCookie(CookieKeys.authUser);
-    await dispatch(logoutAction());
-    history.push(AuthRoutes.login);
-  };
-
   useEffect(() => {
     const roleColumns: any = [];
     columns.forEach((item) => {
@@ -512,7 +510,10 @@ const Events = () => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        onLogout();
+        cookie.removeCookie(CookieKeys.authUser, { path: '/' });
+        cookie.removeCookie(CookieKeys.authUserName, { path: '/' });
+        cookie.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
+        history.push(AuthRoutes.login);
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }

@@ -5,7 +5,6 @@ import { message, Row, Col, Button } from 'antd';
 
 import { useCookie } from '../../hooks';
 import { CookieKeys } from '../../constants/Keys';
-import { logoutAction } from '../Authentication/Login/Login.slice';
 import {
   defaultCurrentPage,
   defaultPageSize,
@@ -38,16 +37,14 @@ const EventDetail = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const location: RouteConfigType = useLocation();
-  const cookies = useCookie([CookieKeys.authUser]);
+  const cookies = useCookie([
+    CookieKeys.authUser,
+    CookieKeys.authUserName,
+    CookieKeys.userNotActiveToken,
+  ]);
 
   const error = useAppSelector(selectError);
   const detailData: EventDetailDataType = useAppSelector(selectDetailData);
-
-  const onLogout = async () => {
-    cookies.removeCookie(CookieKeys.authUser);
-    await dispatch(logoutAction());
-    history.push(AuthRoutes.login);
-  };
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -59,7 +56,10 @@ const EventDetail = () => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        onLogout();
+        cookies.removeCookie(CookieKeys.authUser, { path: '/' });
+        cookies.removeCookie(CookieKeys.authUserName, { path: '/' });
+        cookies.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
+        history.push(AuthRoutes.login);
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }

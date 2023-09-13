@@ -47,7 +47,6 @@ import {
   defaultCurrentPage,
   defaultPageSize,
 } from '../../constants/General';
-import { logoutAction } from '../Authentication/Login/Login.slice';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import TableComponent from '../../components/Table/Table';
 import Pagination from '../../components/Pagination';
@@ -99,7 +98,11 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   const params: any = useParams();
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const cookies = useCookie([CookieKeys.authUser]);
+  const cookies = useCookie([
+    CookieKeys.authUser,
+    CookieKeys.authUserName,
+    CookieKeys.userNotActiveToken,
+  ]);
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -660,12 +663,6 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
     [],
   );
 
-  const onLogout = async () => {
-    cookies.removeCookie(CookieKeys.authUser);
-    await dispatch(logoutAction());
-    history.push(AuthRoutes.login);
-  };
-
   useEffect(() => {
     importTicketsRequest();
   }, [importTicketItems]);
@@ -690,7 +687,10 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        onLogout();
+        cookies.removeCookie(CookieKeys.authUser, { path: '/' });
+        cookies.removeCookie(CookieKeys.authUserName, { path: '/' });
+        cookies.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
+        history.push(AuthRoutes.login);
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }

@@ -5,7 +5,6 @@ import { Form, message, Button, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../../../hooks';
-import { base64Encrypt } from '../../../utils/func';
 import { TokenExpire } from '../../../constants/General';
 import { CookieKeys } from '../../../constants/Keys';
 import { passwordValidator } from '../../../utils/validator';
@@ -18,7 +17,6 @@ import {
   changePasswordAction,
   StatusCodes,
 } from './ChangePassword.slice';
-import { loginAction, selectData } from '../Login/Login.slice';
 import LandingLayout from '../../../components/LandingLayout/LandingLayout';
 import { Tip } from './ChangePasswordComponents';
 import PasswordInput from '../../../components/PasswordInput/PasswordInput';
@@ -29,15 +27,17 @@ interface RouteConfigType {
   search: string;
   pathname: string;
   state: {
-    email: string;
+    token: string;
   };
 }
 
 const ChangePassword = () => {
   const { t } = useTranslation();
-  const cookies = useCookie([CookieKeys.authUser]);
+  const cookies = useCookie([
+    CookieKeys.authUser,
+    CookieKeys.userNotActiveToken,
+  ]);
 
-  const data = useAppSelector(selectData);
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
   const dispatch = useAppDispatch();
@@ -59,32 +59,6 @@ const ChangePassword = () => {
     }
     return Promise.resolve();
   };
-
-  useEffect(() => {
-    if (data && data.token) {
-      const currentDate = new Date();
-      const { user } = data;
-      cookies.setCookie(CookieKeys.authUser, data.token, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-      });
-      cookies.setCookie(
-        CookieKeys.authUserName,
-        base64Encrypt(user.name || ''),
-        {
-          expires: new Date(currentDate.getTime() + TokenExpire),
-          path: '/',
-        },
-      );
-      cookies.setCookie(CookieKeys.authUserRole, user.role, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-      });
-      cookies.removeCookie(CookieKeys.userNotActiveToken);
-      message.success(t('Password changed successfully'));
-      history.replace(UserRoutes.events);
-    }
-  }, [data]);
 
   useEffect(() => {
     if (error) {
@@ -109,9 +83,14 @@ const ChangePassword = () => {
       changePasswordAction({ password: values.password }),
     );
     if (response.type === changePasswordAction.fulfilled.toString()) {
-      dispatch(
-        loginAction({ email: location.state.email, password: values.password }),
-      );
+      const currentDate = new Date();
+      cookies.setCookie(CookieKeys.authUser, location.state.token, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+      });
+      cookies.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
+      message.success(t('Password changed successfully'));
+      history.replace(UserRoutes.events);
     }
   };
 

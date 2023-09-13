@@ -27,7 +27,6 @@ import {
   TokenExpireResponseCode,
 } from '../../constants/General';
 import { useCookie } from '../../hooks';
-import { logoutAction } from '../Authentication/Login/Login.slice';
 import { formatTimeStrByTimeString } from '../../utils/func';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
 import {
@@ -70,7 +69,11 @@ const Transactions = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const location = useLocation();
-  const cookies = useCookie([CookieKeys.authUser]);
+  const cookies = useCookie([
+    CookieKeys.authUser,
+    CookieKeys.authUserName,
+    CookieKeys.userNotActiveToken,
+  ]);
 
   const loading = useAppSelector(selectLoading);
   const data = useAppSelector(selectData);
@@ -296,12 +299,6 @@ const Transactions = () => {
     dispatch(filtersChangeAction({ status: currentStatus }));
   };
 
-  const onLogout = async () => {
-    cookies.removeCookie(CookieKeys.authUser);
-    await dispatch(logoutAction());
-    history.push(AuthRoutes.login);
-  };
-
   useEffect(() => {
     if (showTableHeader) {
       setSelectItemsQuantity(0);
@@ -346,7 +343,10 @@ const Transactions = () => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        onLogout();
+        cookies.removeCookie(CookieKeys.authUser, { path: '/' });
+        cookies.removeCookie(CookieKeys.authUserName, { path: '/' });
+        cookies.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
+        history.push(AuthRoutes.login);
         message.error(t('User token is deprecated, please log in again.'));
         return;
       }
