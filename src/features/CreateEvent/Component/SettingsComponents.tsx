@@ -349,7 +349,9 @@ export const SelectTicketsModal = ({
         </ModalFooterButton>,
       ]}
       centered
-      onCancel={() => setOpen(false)}
+      onCancel={() => {
+        setOpen(false);
+      }}
       open={open}
     >
       <SelectEventsTable>
@@ -880,7 +882,20 @@ export const AddEditForm = ({
                     <Col>
                       <Row align="bottom">
                         <Col>
-                          <ActionTextButton onClick={() => setOpen(true)}>
+                          <ActionTextButton
+                            onClick={() => {
+                              setOpen(true);
+                              setTicketListData(
+                                ticketsList.map((item: any) => ({
+                                  ...item,
+                                  checked:
+                                    promoValue.apply.ticketTypeIds.includes(
+                                      item.id,
+                                    ),
+                                })),
+                              );
+                            }}
+                          >
                             {promoValue.apply.ticketTypeIds.length
                               ? 'Edit'
                               : 'Select'}

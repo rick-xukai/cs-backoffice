@@ -66,6 +66,7 @@ const CreateEventContainer = styled.div`
     width: calc(100% - 240px);
     right: 0;
     text-align: right;
+    z-index: 2;
     .bottom-btn {
       > :first-child {
         .anticon {
