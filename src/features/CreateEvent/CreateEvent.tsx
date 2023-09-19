@@ -87,7 +87,6 @@ const CreateEvent = () => {
   const needUpdateEventId = useAppSelector(selectNeedUpdateEventId);
   const needUpdateDiscountsId = useAppSelector(selectNeedUpdateDiscountsId);
   const needUpdateTicketsId = useAppSelector(selectNeedUpdateTicketsId);
-
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
     ComponentSteps.eventInfo,
@@ -173,7 +172,6 @@ const CreateEvent = () => {
   const { id } = params;
   const isEdit = !!id;
   const isDraft = createEventFormValue.status === EventStatusKeys.draft;
-
   const formatRequestPayload = (
     type: number,
     anotherPayload?: {
@@ -280,6 +278,7 @@ const CreateEvent = () => {
   }, [needUpdateDiscountsId]);
 
   const saveAsDraft = async (type?: string) => {
+    if (publishLoading || saveDraftLoading) return;
     if (!createEventFormValue.name) {
       message.error(
         t('Please enter a name for your event before saving as a draft.'),
@@ -369,6 +368,7 @@ const CreateEvent = () => {
     redirectTo?: () => void;
     publish?: CreateEventActionType;
   }) => {
+    if (publishLoading || saveDraftLoading) return;
     const currentTime = new Date().getTime();
     const endTime = new Date(createEventFormValue.endTime || '').getTime();
 
@@ -848,7 +848,7 @@ const CreateEvent = () => {
         clickBack={() => history.push(UserRoutes.events)}
       />
       <CreateEventContainer>
-        {publishLoading ? Loading : null}
+        {publishLoading || saveDraftLoading ? Loading : null}
         {(loading && (
           <Spin
             spinning={loading}
@@ -924,7 +924,6 @@ const CreateEvent = () => {
                 <div className="bottom-btn">
                   <Button
                     onClick={() => (isDraft ? saveAsDraft() : handleCancel())}
-                    loading={saveDraftLoading}
                   >
                     {isDraft ? t('Save as Draft') : t('Cancel')}
                   </Button>
@@ -938,7 +937,6 @@ const CreateEvent = () => {
                             publish: CreateEventActionType.publish,
                           })
                     }
-                    loading={publishLoading}
                     disabled={
                       isEdit &&
                       !isDraft &&
@@ -958,11 +956,9 @@ const CreateEvent = () => {
                     <div className="page-bottom">
                       <div className="bottom-btn">
                         <Button
-                          disabled={saveDraftLoading}
                           onClick={() =>
                             isEdit && !isDraft ? handleCancel() : saveAsDraft()
                           }
-                          loading={saveDraftLoading}
                         >
                           {isEdit && !isDraft
                             ? t('Cancel')
@@ -983,15 +979,10 @@ const CreateEvent = () => {
                   <div className="bottom-btn">
                     <Button
                       onClick={() => (isEdit ? handleCancel() : saveAsDraft())}
-                      loading={saveDraftLoading}
                     >
                       {isEdit && !isDraft ? t('Cancel') : t('Save as Draft')}
                     </Button>
-                    <Button
-                      type="primary"
-                      onClick={() => createEventPublish()}
-                      loading={publishLoading}
-                    >
+                    <Button type="primary" onClick={() => createEventPublish()}>
                       {t('Publish')}
                     </Button>
                   </div>
