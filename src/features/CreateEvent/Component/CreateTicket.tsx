@@ -145,7 +145,6 @@ const CreateTicket = ({
   const [thumbnaiFileList, setThumbnaiFileList] = useState<any>([]);
   const [ticketValue, setTicketValue] = useState<TicketListProps>({
     ...initialValues,
-    sellEndTime: formValue.startTime || '',
   });
   const [onSave, setOnSave] = useState(false);
   const [showNoEndTimeError, setShowNoEndTimeError] = useState<boolean>(false);
@@ -886,14 +885,14 @@ const CreateTicket = ({
                         });
                       }}
                       inputReadOnly
-                      defaultValue={[
+                      value={[
                         ticketValue.sellStartTime
                           ? moment(ticketValue.sellStartTime)
-                          : moment(),
-                        formValue.startTime
-                          ? moment(formValue.startTime)
-                          : (ticketValue.sellEndTime &&
-                              moment(ticketValue.sellEndTime)) ||
+                          : null,
+                        ticketValue.sellEndTime
+                          ? moment(ticketValue.sellEndTime)
+                          : (formValue.startTime &&
+                              moment(formValue.startTime)) ||
                             null,
                       ]}
                       disabledDate={(currentDate) =>
