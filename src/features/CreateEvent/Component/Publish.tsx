@@ -20,8 +20,8 @@ const initialTicketList = [
   {
     id: 1,
     name: '-',
-    price: 0,
-    stock: 0,
+    price: '-',
+    stock: '-',
   },
 ];
 
@@ -48,7 +48,9 @@ const Publish = ({
       dataIndex: 'price',
       key: 'price',
       render: (price: string) => (
-        <div>{(price && `${price} ${priceUnit}`) || '0'}</div>
+        <div>
+          {(!Number.isNaN(Number(price)) && `${price} ${priceUnit}`) || '-'}
+        </div>
       ),
     },
     {
@@ -56,7 +58,11 @@ const Publish = ({
       dataIndex: 'stock',
       key: 'stock',
       render: (stock: string, record: any) => (
-        <div>{(stock && `${record.soldTotal || 0} / ${stock}`) || '0 / 0'}</div>
+        <div>
+          {(!Number.isNaN(Number(stock)) &&
+            `${record.soldTotal || 0} / ${stock}`) ||
+            '- / -'}
+        </div>
       ),
     },
   ];
