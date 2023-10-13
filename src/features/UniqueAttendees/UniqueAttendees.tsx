@@ -61,8 +61,8 @@ const sourceOptions = [
     value: SourceType.import,
   },
   {
-    label: 'Transerred',
-    value: SourceType.transerred,
+    label: 'Transferred',
+    value: SourceType.transferred,
   },
 ];
 

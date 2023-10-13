@@ -38,7 +38,7 @@ export enum SourceType {
   primary = 0,
   secondary = 1,
   import = 2,
-  transerred = 4,
+  transferred = 4,
 }
 
 export const getUniqueAttendeesAction = createAsyncThunk<
