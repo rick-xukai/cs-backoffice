@@ -60,6 +60,10 @@ const sourceOptions = [
     label: 'Manually Imported',
     value: SourceType.import,
   },
+  {
+    label: 'Transerred',
+    value: SourceType.transerred,
+  },
 ];
 
 const UniqueAttendees = () => {
