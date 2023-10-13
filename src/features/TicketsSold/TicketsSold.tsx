@@ -350,7 +350,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 120,
       render: (status: number, record: TicketSoldListItemProps) => (
         <>
           {(record.saleStatus === TicketSoldSaleStatus && (
@@ -369,7 +369,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       title: '',
       dataIndex: '',
       key: 'action',
-      width: 80,
+      width: 60,
       render: (_: string, record: TicketSoldListItemProps) => {
         const items: MenuProps['items'] = [
           {
@@ -869,7 +869,9 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                         dispatch(setPage(1));
                       }}
                     >
-                      {TicketSoldFilterSource.map((item) => (
+                      {TicketSoldFilterSource.filter(
+                        (source) => source.id !== 1,
+                      ).map((item) => (
                         <Option key={item.id} value={item.id}>
                           {item.name}
                         </Option>

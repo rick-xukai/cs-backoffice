@@ -165,6 +165,11 @@ export const DashboardListCardWrapper = styled.div`
       display: none;
     }
   }
+  .item-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 export const NormalListItemWrapper = styled.li`

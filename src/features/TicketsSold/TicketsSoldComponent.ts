@@ -7,6 +7,11 @@ const TicketsSoldContainer = styled.div`
   padding: calc(113px + 15px) 15px 15px;
   padding-bottom: 100px;
   background: ${Colors.grey5};
+  .item-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   @media (min-width: ${BreakPoints.lg}px) {
     padding: calc(60px + 24px) 24px 24px;
   }

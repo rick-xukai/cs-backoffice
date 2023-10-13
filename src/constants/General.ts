@@ -132,6 +132,10 @@ export const TicketSoldFilterStatus = [
     name: 'Sold',
   },
   {
+    id: 6,
+    name: 'Transferred',
+  },
+  {
     id: null,
     name: 'Listed',
   },
