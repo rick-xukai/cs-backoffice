@@ -153,6 +153,10 @@ export const TicketSoldFilterSource = [
     id: 2,
     name: 'Ticket Imported',
   },
+  {
+    id: 4,
+    name: 'Transferred',
+  },
 ];
 export const TicketSoldSaleStatus = 1;
 export const ImportTicketInvalid = 1081;
