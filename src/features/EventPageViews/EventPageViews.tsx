@@ -345,6 +345,8 @@ const EventPageViews = () => {
                 maxColumnWidth={45}
                 xAxis={{
                   label: {
+                    autoHide: false,
+                    autoRotate: true,
                     style: {
                       fill: Colors.black4,
                     },
