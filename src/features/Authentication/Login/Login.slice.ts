@@ -34,6 +34,7 @@ export enum RoleTypes {
   partnerAdmin = 1,
   organizerAdmin = 2,
   organizerUser = 3,
+  scanner = 4,
 }
 
 export interface UserLoginResponseType {

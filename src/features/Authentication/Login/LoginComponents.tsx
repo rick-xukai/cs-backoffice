@@ -17,3 +17,19 @@ export const ForGotPassword = styled.div`
     text-decoration: underline;
   }
 `;
+
+export const ScannerError = styled.div`
+  color: ${Colors.branding2};
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: 20px;
+`;
+
+export const PageContainer = styled.div`
+  .scanner-error {
+    margin-bottom: 0;
+    .ant-input-affix-wrapper {
+      border-color: ${Colors.branding2} !important;
+    }
+  }
+`;

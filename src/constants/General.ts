@@ -156,3 +156,4 @@ export const TicketSoldFilterSource = [
 ];
 export const TicketSoldSaleStatus = 1;
 export const ImportTicketInvalid = 1081;
+export const ScannerRole = 4;
