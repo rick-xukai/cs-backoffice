@@ -69,6 +69,10 @@ export const UserRole = [
     key: 3,
     text: 'Organizer User',
   },
+  {
+    key: 4,
+    text: 'Scanner',
+  },
 ];
 export const UserActiveStatus = [
   {
