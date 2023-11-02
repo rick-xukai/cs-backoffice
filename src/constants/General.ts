@@ -69,6 +69,10 @@ export const UserRole = [
     key: 3,
     text: 'Organizer User',
   },
+  {
+    key: 4,
+    text: 'Scanner',
+  },
 ];
 export const UserActiveStatus = [
   {
@@ -156,3 +160,4 @@ export const TicketSoldFilterSource = [
 ];
 export const TicketSoldSaleStatus = 1;
 export const ImportTicketInvalid = 1081;
+export const ScannerRole = 4;

@@ -147,9 +147,7 @@ const Events = () => {
       {
         label: (
           <a
-            href={`${process.env.REACT_APP_WEB_APP_LINK}/scan-qr-code/${
-              record.slug.split('-')[record.slug.split('-').length - 1]
-            }`}
+            href={`${process.env.REACT_APP_WEB_APP_LINK}/scan-event`}
             target="_blank"
           >
             {t('Scanner Link')}

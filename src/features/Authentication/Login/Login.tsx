@@ -11,10 +11,15 @@ import {
   LocalStorageKeys,
   DataEncryptionKeys,
 } from '../../../constants/Keys';
-import { TokenExpire } from '../../../constants/General';
+import { TokenExpire, ScannerRole } from '../../../constants/General';
 import { AuthRoutes, UserRoutes } from '../../../navigation/Routes';
 import Colors from '../../../theme/Colors';
-import { ForGotPassword, RememberMe } from './LoginComponents';
+import {
+  ForGotPassword,
+  RememberMe,
+  ScannerError,
+  PageContainer,
+} from './LoginComponents';
 import { useAppSelector, useAppDispatch } from '../../../app/hooks';
 import {
   reset,
@@ -41,6 +46,7 @@ const Login = () => {
   const [finishFailed, setFinishFailed] = useState(false);
   const [rememberMeChecked, setRememberMeChecked] = useState<boolean>(false);
   const [form] = Form.useForm();
+  const [showScannerError, setShowScannerError] = useState<boolean>(false);
   const validatePasswordOrEmail = (isEmail?: boolean) => {
     if (error?.code === StatusCodes.passwordWrong) {
       return (
@@ -91,37 +97,41 @@ const Login = () => {
     if (data && data.token) {
       const currentDate = new Date();
       const { user } = data;
-      if (user.status === ActiveStatus.active) {
-        cookies.setCookie(CookieKeys.authUser, data.token, {
+      if (user.role !== ScannerRole) {
+        if (user.status === ActiveStatus.active) {
+          cookies.setCookie(CookieKeys.authUser, data.token, {
+            expires: new Date(currentDate.getTime() + TokenExpire),
+            path: '/',
+          });
+          cookies.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
+        } else {
+          cookies.setCookie(CookieKeys.userNotActiveToken, data.token, {
+            expires: new Date(currentDate.getTime() + TokenExpire),
+            path: '/',
+          });
+        }
+        cookies.setCookie(
+          CookieKeys.authUserName,
+          base64Encrypt(user.name || ''),
+          {
+            expires: new Date(currentDate.getTime() + TokenExpire),
+            path: '/',
+          },
+        );
+        cookies.setCookie(CookieKeys.authUserRole, user.role, {
           expires: new Date(currentDate.getTime() + TokenExpire),
           path: '/',
         });
-        cookies.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
+        if (data.user.status === ActiveStatus.active) {
+          history.replace(UserRoutes.events);
+        } else {
+          history.push({
+            pathname: AuthRoutes.changePassword,
+            state: { token: data.token },
+          });
+        }
       } else {
-        cookies.setCookie(CookieKeys.userNotActiveToken, data.token, {
-          expires: new Date(currentDate.getTime() + TokenExpire),
-          path: '/',
-        });
-      }
-      cookies.setCookie(
-        CookieKeys.authUserName,
-        base64Encrypt(user.name || ''),
-        {
-          expires: new Date(currentDate.getTime() + TokenExpire),
-          path: '/',
-        },
-      );
-      cookies.setCookie(CookieKeys.authUserRole, user.role, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-      });
-      if (data.user.status === ActiveStatus.active) {
-        history.replace(UserRoutes.events);
-      } else {
-        history.push({
-          pathname: AuthRoutes.changePassword,
-          state: { token: data.token },
-        });
+        setShowScannerError(true);
       }
     }
   }, [data]);
@@ -164,76 +174,87 @@ const Login = () => {
   };
 
   return (
-    <LandingLayout formTitle={t('WELCOME TO CROWDSERVE!')}>
-      <Form
-        name="login"
-        onFinish={onFinish}
-        validateTrigger={['submit']}
-        onFinishFailed={() => setFinishFailed(true)}
-        form={form}
-      >
-        <Form.Item
-          help={(!finishFailed && validatePasswordOrEmail(true)) || null}
-          name="email"
-          rules={[{ validator: emailValidator }]}
+    <PageContainer>
+      <LandingLayout formTitle={t('WELCOME TO CROWDSERVE!')}>
+        <Form
+          name="login"
+          onFinish={onFinish}
+          validateTrigger={['submit']}
+          onFinishFailed={() => setFinishFailed(true)}
+          form={form}
         >
-          <Input
-            status={
-              !finishFailed && validatePasswordOrEmail(true) ? 'error' : ''
-            }
-            placeholder={t('Email')}
-            prefix={<UserOutlined />}
-          />
-        </Form.Item>
-        <Form.Item
-          help={(!finishFailed && validatePasswordOrEmail()) || null}
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: `${t('Password is required')}`,
-            },
-          ]}
-        >
-          <PasswordInput
-            status={!finishFailed && validatePasswordOrEmail() ? 'error' : ''}
-            placeholder={t('Password')}
-            prefix={<LockOutlined />}
-          />
-        </Form.Item>
-        <Row justify="space-between">
-          <Col>
-            <Form.Item name="remember" className="remember-me">
-              <Checkbox
-                name="remember"
-                checked={rememberMeChecked}
-                onChange={(e) => setRememberMeChecked(e.target.checked)}
-              >
-                <RememberMe>{t('Remember me')}</RememberMe>
-              </Checkbox>
-            </Form.Item>
-          </Col>
-          <Col>
-            <ForGotPassword onClick={handleGoToForgotPassword}>
-              {t('Forgot Password?')}
-            </ForGotPassword>
-          </Col>
-        </Row>
-        <Form.Item>
-          <Button disabled={loading} type="primary" htmlType="submit">
-            {(loading && (
-              <Spin
-                indicator={
-                  <LoadingOutlined spin style={{ color: Colors.white }} />
-                }
-                size="default"
-              />
-            )) ||
-              t('Sign In')}
-          </Button>
-        </Form.Item>
-      </Form>
-    </LandingLayout>
+          <Form.Item
+            help={(!finishFailed && validatePasswordOrEmail(true)) || null}
+            name="email"
+            rules={[{ validator: emailValidator }]}
+            className={(showScannerError && 'scanner-error') || ''}
+          >
+            <Input
+              status={
+                !finishFailed && validatePasswordOrEmail(true) ? 'error' : ''
+              }
+              placeholder={t('Email')}
+              prefix={<UserOutlined />}
+              onChange={() => setShowScannerError(false)}
+            />
+          </Form.Item>
+          {showScannerError && (
+            <ScannerError>
+              {t(
+                'This is a scanner account, please login to another account or contact your admin.',
+              )}
+            </ScannerError>
+          )}
+          <Form.Item
+            help={(!finishFailed && validatePasswordOrEmail()) || null}
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: `${t('Password is required')}`,
+              },
+            ]}
+          >
+            <PasswordInput
+              status={!finishFailed && validatePasswordOrEmail() ? 'error' : ''}
+              placeholder={t('Password')}
+              prefix={<LockOutlined />}
+            />
+          </Form.Item>
+          <Row justify="space-between">
+            <Col>
+              <Form.Item name="remember" className="remember-me">
+                <Checkbox
+                  name="remember"
+                  checked={rememberMeChecked}
+                  onChange={(e) => setRememberMeChecked(e.target.checked)}
+                >
+                  <RememberMe>{t('Remember me')}</RememberMe>
+                </Checkbox>
+              </Form.Item>
+            </Col>
+            <Col>
+              <ForGotPassword onClick={handleGoToForgotPassword}>
+                {t('Forgot Password?')}
+              </ForGotPassword>
+            </Col>
+          </Row>
+          <Form.Item>
+            <Button disabled={loading} type="primary" htmlType="submit">
+              {(loading && (
+                <Spin
+                  indicator={
+                    <LoadingOutlined spin style={{ color: Colors.white }} />
+                  }
+                  size="default"
+                />
+              )) ||
+                t('Sign In')}
+            </Button>
+          </Form.Item>
+        </Form>
+      </LandingLayout>
+    </PageContainer>
   );
 };
 
