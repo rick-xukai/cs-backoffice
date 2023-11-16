@@ -151,7 +151,9 @@ const UserDetail = () => {
           <div className="detail-container">
             <Row className="container-user">
               <Col xl={2} xs={6} lg={3} sm={4}>
-                <Avatar>{userDetailData.name.charAt(0)}</Avatar>
+                {(userDetailData.profileImage && (
+                  <Avatar src={userDetailData.profileImage} />
+                )) || <Avatar>{userDetailData.name.charAt(0)}</Avatar>}
               </Col>
               <Col xl={22} xs={18} lg={21} sm={20}>
                 <Row className="container-user-top">
@@ -220,6 +222,14 @@ const UserDetail = () => {
                       FormatTimeKeys.norm,
                     )) ||
                     '-'}
+                </p>
+              </Col>
+            </Row>
+            <Row className="item" style={{ marginBottom: 0, marginTop: 20 }}>
+              <Col span={24} md={12} className="item-key">
+                <p className="item-key-title">{t('Phone Number')}</p>
+                <p className="item-key-value mobile-top">
+                  {userDetailData.phoneNumber || '-'}
                 </p>
               </Col>
             </Row>

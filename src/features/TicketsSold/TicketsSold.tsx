@@ -11,6 +11,7 @@ import {
   Upload,
   message,
   Progress,
+  Tooltip,
 } from 'antd';
 import type { MenuProps, UploadProps } from 'antd';
 import {
@@ -196,7 +197,14 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       width: 200,
       render: (_: {}, record: TicketSoldListItemProps) => (
         <Row gutter={[0, 0]}>
-          <Col span={24}>{record.user.name}</Col>
+          <Col span={24}>
+            <Tooltip title={`${record.user.firstName} ${record.user.lastName}`}>
+              <p
+                className="email"
+                style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+              >{`${record.user.firstName} ${record.user.lastName}`}</p>
+            </Tooltip>
+          </Col>
           <Col span={24} className="item-label">
             {record.user.email}
           </Col>

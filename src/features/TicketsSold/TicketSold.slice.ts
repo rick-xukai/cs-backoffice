@@ -27,6 +27,8 @@ export interface TicketSoldListItemProps {
   user: {
     name: string;
     email: string;
+    firstName: string;
+    lastName: string;
   };
   ticketType: {
     name: string;

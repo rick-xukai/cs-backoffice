@@ -437,5 +437,6 @@
   "Click here to view the list of people who purchased the tickets. Each buyer may purchase more than 1 ticket": "Click here to view the list of people who purchased the tickets. Each buyer may purchase more than 1 ticket.",
   "Click here to view the list of scanned tickets, which shows the total number of people who attended": "Click here to view the list of scanned tickets, which shows the total number of people who attended.",
   "Buyer has sold their ticket and would not be included in the data above": "Buyer has sold their ticket and would not be included in the data above.",
-  "This is a scanner account, please login to another account or contact your admin.": "This is a scanner account, please login to another account or contact your admin."
+  "This is a scanner account, please login to another account or contact your admin.": "This is a scanner account, please login to another account or contact your admin.",
+  "Phone Number": "Phone Number"
 }
