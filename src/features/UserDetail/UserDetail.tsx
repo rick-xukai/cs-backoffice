@@ -157,7 +157,7 @@ const UserDetail = () => {
                 <Row className="container-user-top">
                   <Col span={24}>
                     <div className="user-name-content">
-                      <span className="user-name">{userDetailData.name}</span>
+                      <span className="user-name">{`${userDetailData.firstName} ${userDetailData.lastName}`}</span>
                       <UserStatusContainer
                         isActive={userDetailData.isActivated}
                       >
