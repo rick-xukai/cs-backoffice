@@ -221,8 +221,13 @@ const UniqueBuyers = () => {
 
   const columns = [
     {
-      title: 'Buyer Name',
-      dataIndex: 'name',
+      title: 'First Name',
+      dataIndex: 'firstName',
+      width: 120,
+    },
+    {
+      title: 'Last Name',
+      dataIndex: 'lastName',
       width: 120,
     },
     {
@@ -257,7 +262,7 @@ const UniqueBuyers = () => {
       },
     },
     {
-      title: 'Gender',
+      title: 'Sex',
       dataIndex: 'gender',
       render: (gender: string) => gender || '-',
     },
