@@ -458,7 +458,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
     );
     const downloadData = listData.map((dataItem: TicketSoldListItemProps) => ({
       ...dataItem,
-      attendeeName: dataItem.user.name,
+      attendeeName: `${dataItem.user.firstName} ${dataItem.user.lastName}`,
       attendeeEmail: dataItem.user.email,
       total: `${dataItem.total} ${priceUnit}`,
       price: `${dataItem.price} ${priceUnit}`,
