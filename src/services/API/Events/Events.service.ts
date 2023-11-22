@@ -266,6 +266,16 @@ const hideEvent = async (payload: { id: string; hiddenState: boolean }) => {
   return response;
 };
 
+const duplicateEvent = async (payload: { eventId: number }) => {
+  const uri = API.duplicateEvent.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -288,4 +298,5 @@ export default {
   getEventScanned,
   getUniqueBuyersCharts,
   hideEvent,
+  duplicateEvent,
 };
