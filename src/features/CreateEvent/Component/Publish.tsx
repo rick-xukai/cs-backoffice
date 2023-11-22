@@ -141,7 +141,9 @@ const Publish = ({
                       columns={columns}
                       tableData={
                         (formValue.ticketTypes.length &&
-                          formValue.ticketTypes) ||
+                          formValue.ticketTypes.filter(
+                            (item) => !item.delete,
+                          )) ||
                         initialTicketList
                       }
                       loading={false}
