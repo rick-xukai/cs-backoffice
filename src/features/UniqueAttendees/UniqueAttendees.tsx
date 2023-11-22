@@ -91,8 +91,14 @@ const UniqueAttendees = () => {
     option === SelectOptions.uniqueAttendees
       ? [
           {
-            title: 'Attendee Name',
-            dataIndex: 'name',
+            title: 'Attendee First Name',
+            dataIndex: 'firstName',
+            render: (firstName: string) => firstName || '-',
+          },
+          {
+            title: 'Attendee Last Name',
+            dataIndex: 'lastName',
+            render: (lastName: string) => lastName || '-',
           },
           {
             title: 'Attendee Email',
@@ -103,7 +109,7 @@ const UniqueAttendees = () => {
             dataIndex: 'ownedTickets',
           },
           {
-            title: 'Gender',
+            title: 'Sex',
             dataIndex: 'gender',
             render: (gender: string) => gender || '-',
           },
@@ -122,8 +128,12 @@ const UniqueAttendees = () => {
         ]
       : [
           {
-            title: 'Attendee Name',
-            dataIndex: 'name',
+            title: 'Attendee First Name',
+            dataIndex: 'firstName',
+          },
+          {
+            title: 'Attendee Last Name',
+            dataIndex: 'lastName',
           },
           {
             title: 'Attendee Email',

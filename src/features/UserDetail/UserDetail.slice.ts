@@ -22,6 +22,10 @@ export interface UserDetailDataType {
   birthday: string;
   gender: string;
   country: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  profileImage: string;
 }
 
 export interface UserDetailTicketsDataType {
@@ -122,6 +126,10 @@ const initialState: UserDetailState = {
     gender: '',
     birthday: '',
     country: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    profileImage: '',
   },
   userDetailTicketsData: [],
   error: null,

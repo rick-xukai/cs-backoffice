@@ -84,9 +84,9 @@ const Users = () => {
       ),
     },
     {
-      title: 'User Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'First Name',
+      dataIndex: 'firstName',
+      key: 'firstName',
       width: 100,
       render: (text: string) => (
         <Tooltip title={text}>
@@ -95,7 +95,18 @@ const Users = () => {
       ),
     },
     {
-      title: 'Gender',
+      title: 'Last Name',
+      dataIndex: 'lastName',
+      key: 'lastName',
+      width: 100,
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <p className="email">{text || '-'}</p>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Sex',
       dataIndex: 'gender',
       key: 'gender',
       width: 100,

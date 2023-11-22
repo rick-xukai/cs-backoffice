@@ -8,6 +8,10 @@ const UsersContainer = styled.div`
   .page-main {
     padding: calc(60px + 24px) 24px 24px;
     background: ${Colors.grey5};
+    .email {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   .name-btn {
     border: none;

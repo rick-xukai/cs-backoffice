@@ -160,7 +160,11 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [],
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
   },
   UserDetail: {
     title: 'User Detail - CrowdServe BO',
