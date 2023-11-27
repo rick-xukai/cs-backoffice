@@ -252,7 +252,7 @@ const Events = () => {
             title: t('Cancel Event'),
             icon: <ExclamationCircleOutlined />,
             content: t(
-              'Are you sure you want to cancel this event? All the user tickets will be refunded',
+              'Are you sure you want to cancel the event? Please contact the attendees to make refund arrangements',
             ),
             onOk: async () => {
               const response = await dispatch(cancelEventAction(record.id));
