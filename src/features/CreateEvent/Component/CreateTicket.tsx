@@ -537,9 +537,14 @@ const CreateTicket = ({
       icon: <ExclamationCircleOutlined />,
       content: `Are you sure you want to delete ${item.name}?`,
       onOk: () => {
-        const newTicketTypes = [...formValue.ticketTypes];
+        let newTicketTypes = [...formValue.ticketTypes];
         if (isEdit && typeof newTicketTypes[index].id !== 'string') {
-          newTicketTypes[index].delete = true;
+          newTicketTypes = newTicketTypes.map((types) => {
+            if (types.id === item.id) {
+              return { ...types, delete: true };
+            }
+            return types;
+          });
         } else {
           newTicketTypes.splice(index, 1);
         }

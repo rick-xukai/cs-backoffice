@@ -69,6 +69,7 @@ import {
   deleteEventAction,
   EventStatusKeys,
   hideEventAction,
+  duplicateEventAction,
 } from './Events.slice';
 import { SGD_UNIT } from '../../constants/constants';
 
@@ -113,6 +114,7 @@ const Events = () => {
   const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
   const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
   const [hideSuccess, setHideSuccess] = useState<boolean>(false);
+  const [duplicateSuccess, setDuplicateSuccess] = useState<boolean>(false);
   const goToDashboard = (id: any, name: any) => {
     history.push(
       UserRoutes.eventDashboard.replace(':id', id).replace(':name', name),
@@ -212,6 +214,24 @@ const Events = () => {
         onClick: () => {
           copy(`${process.env.REACT_APP_WEB_APP_LINK}/events/${record.slug}`);
           message.success(t('Link copied.'));
+        },
+      },
+      {
+        label: t('Duplicate Event'),
+        key: 'Duplicate Event',
+        onClick: async () => {
+          const response = await dispatch(
+            duplicateEventAction({ eventId: Number(record.id) }),
+          );
+          if (response.type === duplicateEventAction.fulfilled.toString()) {
+            message.success(
+              <>
+                A duplicate of &apos;<b>{record.name}</b>&apos; has been created
+                and can now be found under draft events.
+              </>,
+            );
+            setDuplicateSuccess(true);
+          }
         },
       },
       {
@@ -526,7 +546,7 @@ const Events = () => {
   }, [page, size, filterStatus]);
 
   useEffect(() => {
-    if (deleteSuccess || cancelSuccess || hideSuccess) {
+    if (deleteSuccess || cancelSuccess || hideSuccess || duplicateSuccess) {
       dispatch(
         getEventsListAction({
           page,
@@ -536,7 +556,7 @@ const Events = () => {
         }),
       );
     }
-  }, [deleteSuccess, cancelSuccess, hideSuccess]);
+  }, [deleteSuccess, cancelSuccess, hideSuccess, duplicateSuccess]);
 
   const createNewEventPlaceholder = (
     <AddNewEventContainer>

@@ -126,6 +126,9 @@ const API = {
   hideEvent: {
     put: '/admin/event/:event_id/hidden/:hiddenState',
   },
+  duplicateEvent: {
+    post: '/admin/event/duplicate',
+  },
 };
 
 export default API;

@@ -158,6 +158,38 @@ export const hideEventAction = createAsyncThunk<
   }
 });
 
+/**
+ *  Duplicate Events
+ */
+export const duplicateEventAction = createAsyncThunk<
+  {},
+  { eventId: number },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'duplicateEvent/duplicateEventAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventsService.duplicateEvent(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
 interface EventsState {
   loading: boolean;
   data: [];
@@ -249,6 +281,13 @@ export const eventsSlice = createSlice({
         }
       })
       .addCase(hideEventAction.rejected, (state, action) => {
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(duplicateEventAction.rejected, (state, action) => {
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
