@@ -426,7 +426,7 @@ const CreateTicket = ({
     }
     if (Number(ticketValue.stock) < ticketValue.soldTotal) {
       message.error(
-        t('Ticket Available Quantity can’t be less than the sold tickets.'),
+        t(`Ticket Available Quantity can't be less than the sold tickets.`),
       );
       return;
     }
