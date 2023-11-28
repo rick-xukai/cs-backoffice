@@ -47,7 +47,22 @@ const Login = () => {
   const [rememberMeChecked, setRememberMeChecked] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [showScannerError, setShowScannerError] = useState<boolean>(false);
+
   const validatePasswordOrEmail = (isEmail?: boolean) => {
+    if (
+      form.getFieldValue('password') &&
+      form.getFieldValue('password').length < 8 &&
+      !loading
+    ) {
+      return (
+        <div
+          className="ant-form-item-explain-error"
+          style={{ display: (!isEmail && 'block') || 'none' }}
+        >
+          {t('Wrong email or password')}
+        </div>
+      );
+    }
     if (error?.code === StatusCodes.passwordWrong) {
       return (
         <div
@@ -72,7 +87,8 @@ const Login = () => {
     if (error) {
       if (
         error.code !== StatusCodes.passwordWrong &&
-        error.code !== StatusCodes.notFound
+        error.code !== StatusCodes.notFound &&
+        !error.message?.includes('characters')
       ) {
         message.error(error.message);
       }
