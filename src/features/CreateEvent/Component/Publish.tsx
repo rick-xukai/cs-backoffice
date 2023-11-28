@@ -1,8 +1,12 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Radio, Tooltip, Space } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Row, Col, Radio, Tooltip, Space, Input } from 'antd';
+import { QuestionCircleOutlined, DoubleRightOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 
+import { isEmail } from '../../../utils/validator';
+import { UserRoutes } from '../../../navigation/Routes';
 import { formatTimeStrByTimeString } from '../../../utils/func';
 import { FormatTimeKeys } from '../../../constants/Keys';
 import { SetRefundKey, priceUnit } from '../../../constants/General';
@@ -33,9 +37,13 @@ const Publish = ({
   fieldEdit: (value: any, field: string) => void;
 }) => {
   const { t } = useTranslation();
+  const history = useHistory();
 
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
   const [show, setShow] = useState(false);
+  const [inputContactEmailError, setInputContactEmailError] =
+    useState<boolean>(false);
+
   const columns = [
     {
       title: 'Ticket Type Name',
@@ -66,6 +74,21 @@ const Publish = ({
       ),
     },
   ];
+
+  const contactEmailChange = (value: string) => {
+    let contactEmail = '';
+    if (value) {
+      if (isEmail(value)) {
+        setInputContactEmailError(false);
+        contactEmail = value;
+      } else {
+        setInputContactEmailError(true);
+      }
+    } else {
+      setInputContactEmailError(false);
+    }
+    fieldEdit(contactEmail, 'contactEmail');
+  };
 
   useEffect(() => {
     if (show) {
@@ -152,6 +175,43 @@ const Publish = ({
                   </Col>
                 </Row>
               </EventInfoCard>
+              <Col className="set-refund-title">
+                <span>{t('Contact Email')}</span>
+                <span>
+                  <Tooltip
+                    overlayInnerStyle={{
+                      fontSize: 13,
+                      fontWeight: 400,
+                      padding: 8,
+                    }}
+                    title={
+                      <div
+                        className="contact-email-tooltip"
+                        onClick={() => history.push(UserRoutes.profile)}
+                      >
+                        <span>
+                          {t(
+                            'Set the default contact email in your company profile. ',
+                          )}
+                        </span>
+                        <span>
+                          {t('Go')} <DoubleRightOutlined />
+                        </span>
+                      </div>
+                    }
+                  >
+                    <QuestionCircleOutlined />
+                  </Tooltip>
+                </span>
+              </Col>
+              <Col className="contact-email-input">
+                {inputContactEmailError && (
+                  <div className="contact-email-error">
+                    {t('Please enter a valid email address.')}
+                  </div>
+                )}
+                <Input onChange={(e) => contactEmailChange(e.target.value)} />
+              </Col>
               <Col className="set-refund-title">
                 <span>{t('Set the refund and cancellation policy')}</span>
                 <span>

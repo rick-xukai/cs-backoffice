@@ -118,6 +118,7 @@ const CreateEvent = () => {
       ticketTypes: [],
       refundPolicy: SetRefundKey.nonRefundable,
       discounts: [],
+      contactEmail: '',
     });
   const [originDetailData, setOriginDetailData] =
     useState<CreateEventFormValueProps>({
@@ -135,6 +136,7 @@ const CreateEvent = () => {
       ticketTypes: [],
       refundPolicy: SetRefundKey.nonRefundable,
       discounts: [],
+      contactEmail: '',
     });
 
   const [progressItems, setProgressItems] = useState([

@@ -82,3 +82,15 @@ body {
     }
   }
 }
+
+.contact-email-tooltip {
+  cursor: pointer;
+  > :last-child {
+    margin-left: 10px;
+    color: #FC0006;
+    .anticon {
+      transform: scale(0.8);
+      font-size: 12px;
+    }
+  }
+}

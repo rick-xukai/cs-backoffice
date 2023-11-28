@@ -195,7 +195,11 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.settings],
     menuKeys: [vMenuKeys.profile],
     guard: true,
-    role: [UserRoleKeys.organizerAdmin, UserRoleKeys.organizerUser],
+    role: [
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+      UserRoleKeys.superAdmin,
+    ],
   },
   UserAndPermissions: {
     title: 'UserAndPermissions - CrowdServe BO',

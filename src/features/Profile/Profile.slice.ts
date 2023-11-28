@@ -14,6 +14,7 @@ const defaultProfileInfo = {
   banner: '',
   logo: '',
   marketingSite: '',
+  contactEmail: '',
 };
 
 export interface ErrorType {
@@ -29,6 +30,7 @@ export interface OrganizerProfileInfo {
   banner: string;
   logo: string;
   marketingSite: string;
+  contactEmail: string;
 }
 
 export interface UpdateProfilePayload {
@@ -36,6 +38,7 @@ export interface UpdateProfilePayload {
   banner: string;
   logo: string;
   marketingSite: string;
+  contactEmail: string;
 }
 
 /**

@@ -113,6 +113,7 @@ export interface CreateEventFormValueProps {
   ticketTypes: TicketListProps[];
   discounts: PromoListProps[];
   refundPolicy: SetRefundKey.nonRefundable;
+  contactEmail: string;
   organizerId?: string;
   startTime?: string;
   endTime?: string;

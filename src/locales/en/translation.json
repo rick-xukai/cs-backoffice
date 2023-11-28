@@ -440,5 +440,9 @@
   "This is a scanner account, please login to another account or contact your admin.": "This is a scanner account, please login to another account or contact your admin.",
   "Phone Number": "Phone Number",
   "Duplicate Event": "Duplicate Event",
-  "We're currently handling your data, this process may take a few minutes. Kindly remain on this page and refrain from refreshing it!": "We're currently handling your data, this process may take a few minutes. Kindly remain on this page and refrain from refreshing it!"
+  "We're currently handling your data, this process may take a few minutes. Kindly remain on this page and refrain from refreshing it!": "We're currently handling your data, this process may take a few minutes. Kindly remain on this page and refrain from refreshing it!",
+  "Contact Email": "Contact Email",
+  "Set the default contact email in your company profile": "Set the default contact email in your company profile.",
+  "Go": "Go",
+  "Please enter a valid email address.": "Please enter a valid email address."
 }
