@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Input, message, Button, Modal } from 'antd';
 import type { UploadProps } from 'antd';

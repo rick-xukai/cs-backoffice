@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Radio, Tooltip, Space, Input } from 'antd';
 import { QuestionCircleOutlined, DoubleRightOutlined } from '@ant-design/icons';
