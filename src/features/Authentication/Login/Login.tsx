@@ -50,7 +50,10 @@ const Login = () => {
   const validatePasswordOrEmail = (isEmail?: boolean) => {
     if (error?.code === StatusCodes.passwordWrong) {
       return (
-        <div className="ant-form-item-explain-error">
+        <div
+          className="ant-form-item-explain-error"
+          style={{ display: (!isEmail && 'block') || 'none' }}
+        >
           {t('Wrong email or password')}
         </div>
       );
@@ -173,6 +176,12 @@ const Login = () => {
     history.push(AuthRoutes.forgotPassword);
   };
 
+  useEffect(() => {
+    if (showScannerError) {
+      setFinishFailed(true);
+    }
+  }, [showScannerError]);
+
   return (
     <PageContainer>
       <LandingLayout formTitle={t('WELCOME TO CROWDSERVE!')}>
@@ -219,6 +228,7 @@ const Login = () => {
               status={!finishFailed && validatePasswordOrEmail() ? 'error' : ''}
               placeholder={t('Password')}
               prefix={<LockOutlined />}
+              onChange={() => setShowScannerError(false)}
             />
           </Form.Item>
           <Row justify="space-between">
