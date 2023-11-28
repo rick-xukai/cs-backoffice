@@ -21,6 +21,7 @@ import { validatUnfinishedSteps } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import ProgressBarComponent from '../../components/ProgressBar';
 import PageHeaderComponent from '../../components/PageHeader';
+import { getProfileInfoAction, selectData } from '../Profile/Profile.slice';
 import { CreateEventContainer, LoadingContainer } from './CreateEventComponent';
 import EventInfo from './Component/EventInfo';
 import CreateTicket from './Component/CreateTicket';
@@ -86,6 +87,8 @@ const CreateEvent = () => {
   const needUpdateDiscountsId = useAppSelector(selectNeedUpdateDiscountsId);
   const needUpdateTicketsId = useAppSelector(selectNeedUpdateTicketsId);
   const showLoadingMessage = useAppSelector(selectShowLoadingMessage);
+  const userProfileInfo = useAppSelector(selectData);
+
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
     ComponentSteps.eventInfo,
@@ -138,6 +141,8 @@ const CreateEvent = () => {
       discounts: [],
       contactEmail: '',
     });
+  const [inputContactEmailError, setInputContactEmailError] =
+    useState<boolean>(false);
 
   const [progressItems, setProgressItems] = useState([
     {
@@ -279,6 +284,7 @@ const CreateEvent = () => {
   }, [needUpdateDiscountsId]);
 
   const saveAsDraft = async (type?: string) => {
+    if (inputContactEmailError) return;
     if (publishLoading || saveDraftLoading) return;
     if (!createEventFormValue.name) {
       message.error(
@@ -391,6 +397,9 @@ const CreateEvent = () => {
       }
       return '';
     };
+
+    if (inputContactEmailError) return;
+
     if (unfinishedSteps() === '' || (isDraft && !anotherPayload?.publish)) {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
@@ -483,6 +492,7 @@ const CreateEvent = () => {
         }
       }
     } else {
+      if (inputContactEmailError) return;
       confirm({
         open: showMissingFieldsModal,
         centered: true,
@@ -775,6 +785,7 @@ const CreateEvent = () => {
       }),
     );
     dispatch(getListTicketTypeAction());
+    dispatch(getProfileInfoAction());
     return () => {
       window.removeEventListener('beforeunload', notSaveAlert);
       document.removeEventListener('gesturestart', notSaveAlert);
@@ -907,6 +918,9 @@ const CreateEvent = () => {
                   <Publish
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
+                    userProfileInfo={userProfileInfo}
+                    inputContactEmailError={inputContactEmailError}
+                    setInputContactEmailError={setInputContactEmailError}
                   />
                 )}
               </Form>

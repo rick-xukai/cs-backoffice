@@ -19,6 +19,7 @@ import {
   EventInfoCard,
 } from '../CreateEventComponent';
 import Preview from './Preview';
+import { OrganizerProfileInfo } from '../../Profile/Profile.slice';
 
 const initialTicketList = [
   {
@@ -31,18 +32,22 @@ const initialTicketList = [
 
 const Publish = ({
   formValue,
+  userProfileInfo,
+  inputContactEmailError,
   fieldEdit,
+  setInputContactEmailError,
 }: {
   formValue: CreateEventFormValueProps;
+  userProfileInfo: OrganizerProfileInfo;
+  inputContactEmailError: boolean;
   fieldEdit: (value: any, field: string) => void;
+  setInputContactEmailError: (status: boolean) => void;
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
 
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
   const [show, setShow] = useState(false);
-  const [inputContactEmailError, setInputContactEmailError] =
-    useState<boolean>(false);
 
   const columns = [
     {
@@ -210,7 +215,10 @@ const Publish = ({
                     {t('Please enter a valid email address.')}
                   </div>
                 )}
-                <Input onChange={(e) => contactEmailChange(e.target.value)} />
+                <Input
+                  defaultValue={userProfileInfo.contactEmail}
+                  onChange={(e) => contactEmailChange(e.target.value)}
+                />
               </Col>
               <Col className="set-refund-title">
                 <span>{t('Set the refund and cancellation policy')}</span>

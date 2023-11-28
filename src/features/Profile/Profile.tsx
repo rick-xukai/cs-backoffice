@@ -120,6 +120,8 @@ const Profile = () => {
     const response = await dispatch(updateProfileInfoAction(profileValue));
     if (response.type === updateProfileInfoAction.fulfilled.toString()) {
       message.success(t('Organizer profile has been updated.'));
+      dispatch(getProfileInfoAction());
+      setIsEditItem(false);
     }
   };
 
