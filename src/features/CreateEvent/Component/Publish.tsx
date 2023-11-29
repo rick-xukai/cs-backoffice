@@ -38,12 +38,14 @@ const Publish = ({
   formValue,
   userProfileInfo,
   inputContactEmailError,
+  isEventEdit,
   fieldEdit,
   setInputContactEmailError,
 }: {
   formValue: CreateEventFormValueProps;
   userProfileInfo: OrganizerProfileInfo;
   inputContactEmailError: boolean;
+  isEventEdit: boolean;
   fieldEdit: (value: any, field: string) => void;
   setInputContactEmailError: (status: boolean) => void;
 }) => {
@@ -100,6 +102,16 @@ const Publish = ({
       setInputContactEmailError(false);
     }
     fieldEdit(contactEmail, 'contactEmail');
+  };
+
+  const checkContactEmailDefaultValue = () => {
+    if (isEventEdit) {
+      if (formValue.contactEmail) {
+        return formValue.contactEmail;
+      }
+      return '';
+    }
+    return userProfileInfo.contactEmail;
   };
 
   useEffect(() => {
@@ -232,7 +244,7 @@ const Publish = ({
                   </div>
                 )}
                 <Input
-                  defaultValue={userProfileInfo.contactEmail}
+                  defaultValue={checkContactEmailDefaultValue()}
                   onChange={(e) => contactEmailChange(e.target.value)}
                 />
               </Col>

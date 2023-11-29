@@ -916,6 +916,7 @@ const CreateEvent = () => {
                 )}
                 {steps === ComponentSteps.publish && (
                   <Publish
+                    isEventEdit={isEdit}
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
                     userProfileInfo={userProfileInfo}
