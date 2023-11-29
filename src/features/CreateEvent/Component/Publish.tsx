@@ -4,10 +4,15 @@ import { QuestionCircleOutlined, DoubleRightOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
+import { useCookie } from '../../../hooks';
 import { isEmail } from '../../../utils/validator';
 import { UserRoutes } from '../../../navigation/Routes';
 import { formatTimeStrByTimeString } from '../../../utils/func';
-import { FormatTimeKeys } from '../../../constants/Keys';
+import {
+  FormatTimeKeys,
+  CookieKeys,
+  UserRoleKeys,
+} from '../../../constants/Keys';
 import { SetRefundKey, priceUnit } from '../../../constants/General';
 import Tips from '../../../components/Tips/Tips';
 import TableComponent from '../../../components/Table/Table';
@@ -44,9 +49,12 @@ const Publish = ({
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
+  const cookie = useCookie([CookieKeys.authUserRole]);
 
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
   const [show, setShow] = useState(false);
+  const [showGoProfileTooltip, setShowGoProfileTooltip] =
+    useState<boolean>(false);
 
   const columns = [
     {
@@ -101,6 +109,13 @@ const Publish = ({
       document.body.style.overflow = 'unset';
     }
   }, [show]);
+
+  useEffect(() => {
+    const role = cookie.getCookie(CookieKeys.authUserRole);
+    if (role && role !== UserRoleKeys.superAdmin) {
+      setShowGoProfileTooltip(true);
+    }
+  }, []);
 
   return (
     <Row>
@@ -180,33 +195,35 @@ const Publish = ({
                 </Row>
               </EventInfoCard>
               <Col className="set-refund-title">
-                <span>{t('Contact Email')}</span>
-                <span>
-                  <Tooltip
-                    overlayInnerStyle={{
-                      fontSize: 13,
-                      fontWeight: 400,
-                      padding: 8,
-                    }}
-                    title={
-                      <div
-                        className="contact-email-tooltip"
-                        onClick={() => history.push(UserRoutes.profile)}
-                      >
-                        <span>
-                          {t(
-                            'Set the default contact email in your company profile. ',
-                          )}
-                        </span>
-                        <span>
-                          {t('Go')} <DoubleRightOutlined />
-                        </span>
-                      </div>
-                    }
-                  >
-                    <QuestionCircleOutlined />
-                  </Tooltip>
-                </span>
+                <span className="title-label">{t('Contact Email')}</span>
+                {showGoProfileTooltip && (
+                  <span>
+                    <Tooltip
+                      overlayInnerStyle={{
+                        fontSize: 13,
+                        fontWeight: 400,
+                        padding: 8,
+                      }}
+                      title={
+                        <div
+                          className="contact-email-tooltip"
+                          onClick={() => history.push(UserRoutes.profile)}
+                        >
+                          <span>
+                            {t(
+                              'Set the default contact email in your company profile. ',
+                            )}
+                          </span>
+                          <span>
+                            {t('Go')} <DoubleRightOutlined />
+                          </span>
+                        </div>
+                      }
+                    >
+                      <QuestionCircleOutlined />
+                    </Tooltip>
+                  </span>
+                )}
               </Col>
               <Col className="contact-email-input">
                 {inputContactEmailError && (

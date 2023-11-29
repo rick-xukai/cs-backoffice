@@ -386,8 +386,8 @@
   "No Matching Results": "No Matching Results",
   "Discount Field Missing": "Discount Field Missing",
   "Please select [type] tickets for the discount.": "Please select {{type}} tickets for the discount",
-  "This Discount has been used by an attendee before and cannot be deleted.":"This Discount has been used by an attendee before and cannot be deleted.",
-  "Unable to Delete Discount":"Unable to Delete Discount",
+  "This Discount has been used by an attendee before and cannot be deleted.": "This Discount has been used by an attendee before and cannot be deleted.",
+  "Unable to Delete Discount": "Unable to Delete Discount",
   "Delete Discount": "Delete Discount",
   "Are you sure you want to delete this discount?": "Are you sure you want to delete this discount?",
   "Unable to Delete Ticket": "Unable to Delete Ticket",
@@ -444,5 +444,6 @@
   "Contact Email": "Contact Email",
   "Set the default contact email in your company profile": "Set the default contact email in your company profile.",
   "Go": "Go",
-  "Please enter a valid email address.": "Please enter a valid email address."
+  "Please enter a valid email address.": "Please enter a valid email address.",
+  "Unhide event on CrowdServe": "Unhide event on CrowdServe"
 }

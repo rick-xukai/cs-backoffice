@@ -265,7 +265,7 @@ const Events = () => {
       },
       {
         label:
-          (record.hidden && t('Show Event on CrowdServe')) ||
+          (record.hidden && t('Unhide event on CrowdServe')) ||
           t('Hide Event on CrowdServe'),
         key: 'Hide Event',
         style: {
