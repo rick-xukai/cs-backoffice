@@ -553,6 +553,14 @@ const CreateEvent = () => {
         ticketTypes: value.ticketTypes,
         discounts: value.discounts,
       });
+    } else if (field === 'organizerId') {
+      const currentContactEmail =
+        organizerData.find((item) => item.id === value)?.contactEmail || '';
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        organizerId: value,
+        contactEmail: currentContactEmail,
+      });
     } else if (field) {
       setCreateEventFormValue({
         ...createEventFormValue,
@@ -928,7 +936,6 @@ const CreateEvent = () => {
                 )}
                 {steps === ComponentSteps.publish && (
                   <Publish
-                    organizerData={organizerData}
                     isEventEdit={isEdit}
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
