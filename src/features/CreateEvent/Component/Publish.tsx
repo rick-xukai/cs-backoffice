@@ -17,7 +17,7 @@ import { SetRefundKey, priceUnit } from '../../../constants/General';
 import Tips from '../../../components/Tips/Tips';
 import TableComponent from '../../../components/Table/Table';
 import { Images } from '../../../theme';
-import { CreateEventFormValueProps } from '../CreateEvent.slice';
+import { CreateEventFormValueProps, OrganizerData } from '../CreateEvent.slice';
 import {
   PublishComponentContainer,
   EventInfoCard,
@@ -39,6 +39,7 @@ const Publish = ({
   userProfileInfo,
   inputContactEmailError,
   isEventEdit,
+  organizerData,
   fieldEdit,
   setInputContactEmailError,
 }: {
@@ -46,6 +47,7 @@ const Publish = ({
   userProfileInfo: OrganizerProfileInfo;
   inputContactEmailError: boolean;
   isEventEdit: boolean;
+  organizerData: OrganizerData[];
   fieldEdit: (value: any, field: string) => void;
   setInputContactEmailError: (status: boolean) => void;
 }) => {
@@ -57,6 +59,8 @@ const Publish = ({
   const [show, setShow] = useState(false);
   const [showGoProfileTooltip, setShowGoProfileTooltip] =
     useState<boolean>(false);
+  const [organizerContactEmail, setOrganizerContactEmail] =
+    useState<string>('');
 
   const columns = [
     {
@@ -105,14 +109,26 @@ const Publish = ({
   };
 
   const checkContactEmailDefaultValue = () => {
+    const role = cookie.getCookie(CookieKeys.authUserRole);
     if (isEventEdit) {
       if (formValue.contactEmail) {
         return formValue.contactEmail;
       }
       return '';
     }
+    if (role === UserRoleKeys.superAdmin && !isEventEdit) {
+      return organizerData.find(
+        (item) => item.id.toString() === formValue.organizerId?.toString(),
+      )?.contactEmail;
+    }
     return userProfileInfo.contactEmail;
   };
+
+  useEffect(() => {
+    if (organizerContactEmail) {
+      fieldEdit(organizerContactEmail, 'contactEmail');
+    }
+  }, [organizerContactEmail]);
 
   useEffect(() => {
     if (show) {
@@ -126,6 +142,15 @@ const Publish = ({
     const role = cookie.getCookie(CookieKeys.authUserRole);
     if (role && role !== UserRoleKeys.superAdmin) {
       setShowGoProfileTooltip(true);
+    }
+    if (role === UserRoleKeys.superAdmin && !isEventEdit) {
+      setOrganizerContactEmail(
+        (organizerData &&
+          organizerData.find(
+            (item) => item.id.toString() === formValue.organizerId?.toString(),
+          )?.contactEmail) ||
+          '',
+      );
     }
   }, []);
 

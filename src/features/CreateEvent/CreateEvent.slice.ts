@@ -154,6 +154,7 @@ export interface CreateEventPayloadType {
 export interface OrganizerData {
   id: number;
   name: string;
+  contactEmail: string;
 }
 
 export interface ResponseUpdateId {

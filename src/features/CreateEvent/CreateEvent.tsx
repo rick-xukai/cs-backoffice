@@ -774,6 +774,7 @@ const CreateEvent = () => {
   }, [error]);
 
   useEffect(() => {
+    const userRole = cookies.getCookie(CookieKeys.authUserRole);
     window.addEventListener('beforeunload', notSaveAlert);
     window.onload = () => {
       document.addEventListener('gesturestart', notSaveAlert);
@@ -785,7 +786,9 @@ const CreateEvent = () => {
       }),
     );
     dispatch(getListTicketTypeAction());
-    dispatch(getProfileInfoAction());
+    if (userRole !== UserRoleKeys.superAdmin) {
+      dispatch(getProfileInfoAction());
+    }
     return () => {
       window.removeEventListener('beforeunload', notSaveAlert);
       document.removeEventListener('gesturestart', notSaveAlert);
@@ -916,6 +919,7 @@ const CreateEvent = () => {
                 )}
                 {steps === ComponentSteps.publish && (
                   <Publish
+                    organizerData={organizerData}
                     isEventEdit={isEdit}
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
