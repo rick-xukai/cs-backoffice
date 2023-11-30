@@ -768,6 +768,15 @@ const CreateEvent = () => {
   }, [organizerData]);
 
   useEffect(() => {
+    if (!isEdit && userProfileInfo.contactEmail) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        contactEmail: userProfileInfo.contactEmail,
+      });
+    }
+  }, [userProfileInfo]);
+
+  useEffect(() => {
     if (error) {
       message.error(error.message);
     }
