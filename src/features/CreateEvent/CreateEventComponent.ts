@@ -22,6 +22,24 @@ const CreateEventContainer = styled.div`
     top: 50%;
     left: 0;
     right: 0;
+    .anticon {
+      font-size: 40px;
+    }
+  }
+  .loading-message {
+    width: 100%;
+    position: absolute;
+    top: 55%;
+    text-align: center;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    font-weight: 800;
+    p {
+      width: 50%;
+      color: ${Colors.branding};
+    }
   }
   .page-main {
     background: ${Colors.white};

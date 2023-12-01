@@ -52,6 +52,7 @@ import {
   selectNeedUpdateDiscountsId,
   CreateEventActionType,
   updateNeedUpdateEventId,
+  selectShowLoadingMessage,
 } from './CreateEvent.slice';
 import { CreateTicketStatus } from './Component/CreateTicketComponents';
 import { getEventDetailAction } from '../EventDetail/EventDetail.slice';
@@ -87,6 +88,7 @@ const CreateEvent = () => {
   const needUpdateEventId = useAppSelector(selectNeedUpdateEventId);
   const needUpdateDiscountsId = useAppSelector(selectNeedUpdateDiscountsId);
   const needUpdateTicketsId = useAppSelector(selectNeedUpdateTicketsId);
+  const showLoadingMessage = useAppSelector(selectShowLoadingMessage);
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
     ComponentSteps.eventInfo,
@@ -836,6 +838,14 @@ const CreateEvent = () => {
           zIndex: 99,
         }}
       />
+      {showLoadingMessage && (
+        <div className="loading-message">
+          <p>
+            {t(`We're currently handling your data, this process may take a few
+            minutes. Kindly remain on this page and refrain from refreshing it!`)}
+          </p>
+        </div>
+      )}
     </LoadingContainer>
   );
 

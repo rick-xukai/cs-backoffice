@@ -439,5 +439,6 @@
   "Buyer has sold their ticket and would not be included in the data above": "Buyer has sold their ticket and would not be included in the data above.",
   "This is a scanner account, please login to another account or contact your admin.": "This is a scanner account, please login to another account or contact your admin.",
   "Phone Number": "Phone Number",
-  "Duplicate Event": "Duplicate Event"
+  "Duplicate Event": "Duplicate Event",
+  "We're currently handling your data, this process may take a few minutes. Kindly remain on this page and refrain from refreshing it!": "We're currently handling your data, this process may take a few minutes. Kindly remain on this page and refrain from refreshing it!"
 }
