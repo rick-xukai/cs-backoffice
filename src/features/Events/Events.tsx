@@ -11,7 +11,6 @@ import {
   Tooltip,
   Dropdown,
   Modal,
-  Spin,
   Pagination,
 } from 'antd';
 import type { MenuProps } from 'antd';
@@ -20,7 +19,6 @@ import {
   SearchOutlined,
   PlusOutlined,
   ExclamationCircleOutlined,
-  LoadingOutlined,
 } from '@ant-design/icons';
 import copy from 'copy-to-clipboard';
 import { debounce } from 'lodash';
@@ -42,6 +40,7 @@ import { useCookie } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
+import BallLoading from '../../components/BallLoading';
 import {
   EventsContainer,
   AddNewEventContainer,
@@ -493,22 +492,12 @@ const Events = () => {
     }
   };
 
-  const handleSearchEvent = (keyword: string, status: number | null) => {
-    if (!keyword) {
-      dispatch(
-        getEventsListAction({
-          page,
-          size,
-          status,
-        }),
-      );
-    } else {
-      dispatch(setPage(defaultCurrentPage));
-    }
+  const handleSearchEvent = (keyword: string) => {
+    dispatch(setSearchKeyword(keyword));
   };
 
   const searchInputChange = useCallback(
-    debounce((e, status) => handleSearchEvent(e.target.value, status), 300),
+    debounce((e) => handleSearchEvent(e.target.value), 300),
     [],
   );
 
@@ -538,6 +527,10 @@ const Events = () => {
       message.error(error.message);
     }
   }, [error]);
+
+  useEffect(() => {
+    dispatch(setPage(defaultCurrentPage));
+  }, [searchKeyword]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -606,8 +599,7 @@ const Events = () => {
                   suffix={!searchKeyword && <SearchOutlined />}
                   onChange={(e) => {
                     dispatch(setPage(0));
-                    dispatch(setSearchKeyword(e.target.value));
-                    searchInputChange(e, filterStatus);
+                    searchInputChange(e);
                   }}
                 />
               </Col>
@@ -647,14 +639,7 @@ const Events = () => {
           </Col>
         </Row>
         <EventListTableContainer>
-          {(loading && (
-            <Spin
-              spinning
-              indicator={<LoadingOutlined spin />}
-              size="large"
-              style={{ margin: 'auto' }}
-            />
-          )) || (
+          {(loading && <BallLoading />) || (
             <>
               {(eventsListData.length && (
                 <>

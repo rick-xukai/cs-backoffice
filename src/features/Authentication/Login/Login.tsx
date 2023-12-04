@@ -33,6 +33,7 @@ import {
 import { useCookie, useLocalStorage } from '../../../hooks';
 import LandingLayout from '../../../components/LandingLayout/LandingLayout';
 import PasswordInput from '../../../components/PasswordInput/PasswordInput';
+import { resetEventRelatedState } from '../../Events/Events.slice';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -141,6 +142,7 @@ const Login = () => {
           expires: new Date(currentDate.getTime() + TokenExpire),
           path: '/',
         });
+        dispatch(resetEventRelatedState());
         if (data.user.status === ActiveStatus.active) {
           history.replace(UserRoutes.events);
         } else {

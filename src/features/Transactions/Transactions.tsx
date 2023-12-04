@@ -19,6 +19,7 @@ import qs from 'qs';
 import type { TablePaginationConfig } from 'antd/es/table';
 import { FilterValue, SorterResult, SortOrder } from 'antd/es/table/interface';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import moment from 'moment';
 
 import {
   defaultPageSize,
@@ -94,6 +95,9 @@ const Transactions = () => {
     currentPage: defaultCurrentPage,
     currentPageSize: defaultPageSize,
   });
+  const [selectDefaultStatus, setSelectDefaultStatus] = useState<string>(
+    StatusKeys.all.text,
+  );
 
   const columns = [
     {
@@ -290,6 +294,7 @@ const Transactions = () => {
   };
 
   const handleStatusChange = (status: string) => {
+    setSelectDefaultStatus(status);
     let currentStatus: number | null = null;
     if (status === StatusKeys.pending.text) {
       currentStatus = StatusKeys.pending.key;
@@ -396,7 +401,7 @@ const Transactions = () => {
                   <Col span={8} className="filter-status">
                     <span>{t('Status')}:</span>
                     <Select
-                      defaultValue={StatusKeys.all.text}
+                      value={selectDefaultStatus}
                       onChange={handleStatusChange}
                       defaultActiveFirstOption={false}
                     >
@@ -410,6 +415,11 @@ const Transactions = () => {
                   <Col span={16} className="filter-picker">
                     <span>{t('Submitted Date')}:</span>
                     <RangePicker
+                      value={[
+                        (filters.startDate && moment(filters.startDate)) ||
+                          null,
+                        (filters.endDate && moment(filters.endDate)) || null,
+                      ]}
                       onChange={(_date: any, dateString: string[]) =>
                         dispatch(
                           filtersChangeAction({

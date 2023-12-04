@@ -419,6 +419,7 @@ interface CreateEventState {
   listTicketTypeLoading: boolean;
   publishLoading: boolean;
   saveDraftLoading: boolean;
+  showLoadingMessage: boolean;
   needUpdateEventId: string;
   needUpdateTicketsId: ResponseUpdateId[];
   needUpdateDiscountsId: ResponseUpdateId[];
@@ -439,6 +440,7 @@ const initialState: CreateEventState = {
   listTicketTypeLoading: false,
   publishLoading: false,
   saveDraftLoading: false,
+  showLoadingMessage: false,
   needUpdateEventId: '',
   needUpdateTicketsId: [],
   needUpdateDiscountsId: [],
@@ -461,16 +463,19 @@ export const createEventSlice = createSlice({
     builder
       .addCase(createEventAction.pending, (state) => {
         state.data = { id: 0 };
+        state.showLoadingMessage = true;
         state.publishLoading = true;
       })
       .addCase(createEventAction.fulfilled, (state, action: any) => {
         state.needUpdateEventId = '';
         state.needUpdateTicketsId = [];
         state.needUpdateDiscountsId = [];
+        state.showLoadingMessage = false;
         state.publishLoading = false;
         state.data = action.payload;
       })
       .addCase(createEventAction.rejected, (state, action) => {
+        state.showLoadingMessage = false;
         state.publishLoading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
@@ -513,6 +518,7 @@ export const createEventSlice = createSlice({
       })
       .addCase(updateEventAction.pending, (state) => {
         state.data = { id: 0 };
+        state.showLoadingMessage = true;
         if (state.needUpdateEventId) {
           state.saveDraftLoading = true;
         } else {
@@ -520,6 +526,7 @@ export const createEventSlice = createSlice({
         }
       })
       .addCase(updateEventAction.fulfilled, (state, action: any) => {
+        state.showLoadingMessage = false;
         if (state.needUpdateEventId) {
           state.saveDraftLoading = false;
         } else {
@@ -530,6 +537,7 @@ export const createEventSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(updateEventAction.rejected, (state, action: any) => {
+        state.showLoadingMessage = false;
         if (state.needUpdateEventId) {
           state.saveDraftLoading = false;
         } else {
@@ -602,5 +610,7 @@ export const selectNeedUpdateDiscountsId = (state: RootState) =>
   state.createEvent.needUpdateDiscountsId;
 export const selectListTicketTypeLoading = (state: RootState) =>
   state.createEvent.listTicketTypeLoading;
+export const selectShowLoadingMessage = (state: RootState) =>
+  state.createEvent.showLoadingMessage;
 
 export default createEventSlice.reducer;

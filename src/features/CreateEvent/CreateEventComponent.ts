@@ -14,6 +14,9 @@ const CreateEventContainer = styled.div`
   padding-bottom: 100px;
   background: ${Colors.grey5};
   position: relative;
+  @media (max-width: 996px) {
+    min-height: 100%;
+  }
   @media (min-width: ${BreakPoints.lg}px) {
     height: calc(100% - 120px);
   }
@@ -22,6 +25,24 @@ const CreateEventContainer = styled.div`
     top: 50%;
     left: 0;
     right: 0;
+    .anticon {
+      font-size: 40px;
+    }
+  }
+  .loading-message {
+    width: 100%;
+    position: absolute;
+    top: 55%;
+    text-align: center;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    font-weight: 400;
+    p {
+      width: 50%;
+      color: ${Colors.black};
+    }
   }
   .page-main {
     background: ${Colors.white};
@@ -1121,12 +1142,17 @@ export const ActionTextButton = styled.span`
 
 export const LoadingContainer = styled.div`
   position: fixed;
-  left: 0;
+  right: 0;
   top: 0;
-  background: rgba(255, 255, 255, 0.7);
-  width: 100vw;
+  background: rgba(255, 255, 255, 1);
+  width: calc(100vw - 240px);
   height: 100vh;
   z-index: 11;
+  @media (max-width: 996px) {
+    left: 0;
+    width: 100vw;
+    right: unset;
+  }
 `;
 
 export {
