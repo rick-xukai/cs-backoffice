@@ -11,6 +11,7 @@ import { useAppDispatch } from '../../app/hooks';
 import { AuthRoutes } from '../../navigation/Routes';
 import { useCookie } from '../../hooks';
 import { CookieKeys } from '../../constants/Keys';
+import { resetEventRelatedState } from '../../features/Events/Events.slice';
 import Images from '../../theme/Images';
 import { SidebarWidth, CollapsedWidth } from '../../constants/Layout';
 import SidebarContent from './SidebarContent';
@@ -55,6 +56,7 @@ const SideBar = ({
 
   const logout = () => {
     dispatch(reset());
+    dispatch(resetEventRelatedState());
     cookies.removeCookie(CookieKeys.authUser, { path: '/' });
     cookies.removeCookie(CookieKeys.authUserName, { path: '/' });
     cookies.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });

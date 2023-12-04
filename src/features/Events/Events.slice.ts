@@ -231,6 +231,12 @@ export const eventsSlice = createSlice({
       state.total = initialState.total;
       state.error = initialState.error;
     },
+    resetEventRelatedState: (state) => {
+      state.page = defaultCurrentPage;
+      state.size = defaultPageSize;
+      state.searchKeyword = '';
+      state.filterStatus = EventStatusKeys.upcoming;
+    },
     setPage: (state, action) => {
       state.page = action.payload;
     },
@@ -305,6 +311,7 @@ export const {
   setFilterStatusText,
   setPage,
   setPageSize,
+  resetEventRelatedState,
 } = eventsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.events.loading;

@@ -492,22 +492,12 @@ const Events = () => {
     }
   };
 
-  const handleSearchEvent = (keyword: string, status: number | null) => {
-    if (!keyword) {
-      dispatch(
-        getEventsListAction({
-          page,
-          size,
-          status,
-        }),
-      );
-    } else {
-      dispatch(setPage(defaultCurrentPage));
-    }
+  const handleSearchEvent = (keyword: string) => {
+    dispatch(setSearchKeyword(keyword));
   };
 
   const searchInputChange = useCallback(
-    debounce((e, status) => handleSearchEvent(e.target.value, status), 300),
+    debounce((e) => handleSearchEvent(e.target.value), 300),
     [],
   );
 
@@ -537,6 +527,10 @@ const Events = () => {
       message.error(error.message);
     }
   }, [error]);
+
+  useEffect(() => {
+    dispatch(setPage(defaultCurrentPage));
+  }, [searchKeyword]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -605,8 +599,7 @@ const Events = () => {
                   suffix={!searchKeyword && <SearchOutlined />}
                   onChange={(e) => {
                     dispatch(setPage(0));
-                    dispatch(setSearchKeyword(e.target.value));
-                    searchInputChange(e, filterStatus);
+                    searchInputChange(e);
                   }}
                 />
               </Col>
