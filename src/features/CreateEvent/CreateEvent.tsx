@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, Prompt, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Form, message, Modal, Spin } from 'antd';
+import { Button, Form, message, Modal } from 'antd';
 import _, { isEmpty } from 'lodash';
 import moment from 'moment';
-import {
-  ExclamationCircleOutlined,
-  CloseOutlined,
-  LoadingOutlined,
-} from '@ant-design/icons';
+import { ExclamationCircleOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -33,6 +29,7 @@ import Settings, {
   CreatePromoType,
 } from './Component/Settings';
 import Publish from './Component/Publish';
+import BallLoading from '../../components/BallLoading';
 import {
   reset,
   selectError,
@@ -826,23 +823,12 @@ const CreateEvent = () => {
 
   const Loading = (
     <LoadingContainer>
-      <Spin
-        spinning
-        indicator={<LoadingOutlined spin style={{ marginTop: 0 }} />}
-        size="large"
-        style={{
-          position: 'fixed',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 99,
-        }}
-      />
+      <BallLoading />
       {showLoadingMessage && (
         <div className="loading-message">
           <p>
             {t(`We're currently handling your data, this process may take a few
-            minutes. Kindly remain on this page and refrain from refreshing it!`)}
+          minutes. Kindly remain on this page and refrain from refreshing it!`)}
           </p>
         </div>
       )}
@@ -859,13 +845,7 @@ const CreateEvent = () => {
       />
       <CreateEventContainer>
         {publishLoading || saveDraftLoading ? Loading : null}
-        {(loading && (
-          <Spin
-            spinning={loading}
-            indicator={<LoadingOutlined spin />}
-            size="large"
-          />
-        )) || (
+        {(loading && <BallLoading />) || (
           <>
             <ProgressBarComponent
               currentStep={steps}

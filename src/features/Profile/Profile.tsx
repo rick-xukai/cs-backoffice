@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Input, message, Button, Spin, Modal } from 'antd';
+import { Row, Col, Input, message, Button, Modal } from 'antd';
 import type { UploadProps } from 'antd';
-import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
@@ -16,6 +16,7 @@ import { WebSiteDomain, UploadFileAcceptType } from '../../constants/General';
 import PageHeaderComponent from '../../components/PageHeader';
 import UploadFileComponent from '../../components/UploadFile';
 import DraggerUploadComponent from '../../components/DraggerUpload';
+import BallLoading from '../../components/BallLoading';
 import { ProfileContainer, TipContent } from './ProfileComponent';
 import {
   reset,
@@ -167,13 +168,7 @@ const Profile = () => {
     <>
       <PageHeaderComponent title={t('Settings')} />
       <ProfileContainer>
-        {(loading && (
-          <Spin
-            spinning={loading}
-            indicator={<LoadingOutlined spin />}
-            size="large"
-          />
-        )) || (
+        {(loading && <BallLoading />) || (
           <>
             <div className="page-main">
               <Row>

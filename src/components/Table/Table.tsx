@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Table, Spin } from 'antd';
+import { Table } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { LoadingOutlined } from '@ant-design/icons';
 
 import { Colors } from '../../theme';
 import Pagination from '../Pagination';
+import BallLoading from '../BallLoading';
 
 const TableContainer = styled.div`
   padding: 24px;
@@ -164,29 +164,31 @@ const TableComponent = ({
   ) => void;
 }) => (
   <TableContainer className="table-container">
-    <Spin spinning={loading} indicator={<LoadingOutlined spin />} size="large">
-      {children && <div>{children}</div>}
-      <Table
-        scroll={{ x: 950, y: scrollY }}
-        rowKey={rowKey}
-        columns={columns}
-        dataSource={tableData}
-        pagination={false}
-        locale={{ emptyText: loading ? <div /> : emptyText }}
-        rowSelection={rowSelection}
-        showHeader={showHeader}
-        onChange={onChange}
-      />
-      {showCustomPagination && (
-        <Pagination
-          current={currentPage}
-          pageSize={currentPageSize}
-          total={tableDataTotal}
-          onChange={paginationChange}
-          hideOnSinglePage
+    {(loading && <BallLoading />) || (
+      <>
+        {children && <div>{children}</div>}
+        <Table
+          scroll={{ x: 950, y: scrollY }}
+          rowKey={rowKey}
+          columns={columns}
+          dataSource={tableData}
+          pagination={false}
+          locale={{ emptyText: loading ? <div /> : emptyText }}
+          rowSelection={rowSelection}
+          showHeader={showHeader}
+          onChange={onChange}
         />
-      )}
-    </Spin>
+        {showCustomPagination && (
+          <Pagination
+            current={currentPage}
+            pageSize={currentPageSize}
+            total={tableDataTotal}
+            onChange={paginationChange}
+            hideOnSinglePage
+          />
+        )}
+      </>
+    )}
   </TableContainer>
 );
 
