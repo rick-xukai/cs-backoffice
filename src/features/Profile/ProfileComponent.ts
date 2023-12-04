@@ -255,6 +255,9 @@ const ProfileContainer = styled.div`
       color: ${Colors.grey7};
     }
   }
+  .contact-email-error {
+    color: ${Colors.branding};
+  }
   @media (max-width: 996px) {
     padding: calc(98px + 15px) 15px 85px;
     .page-main {

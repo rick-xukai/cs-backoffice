@@ -118,6 +118,12 @@ const CreateEventContainer = styled.div`
   .show-error {
     border-color: #e16058;
   }
+  .contact-email-input {
+    margin-top: 16px;
+  }
+  .contact-email-error {
+    color: ${Colors.branding};
+  }
   @media (max-width: 992px) {
     padding: calc(98px + 15px) 15px 85px;
     overflow-x: hidden;
@@ -905,6 +911,10 @@ const PublishComponentContainer = styled(Row)`
     .set-refund-title {
       margin-top: 24px;
       margin-bottom: 16px;
+      .title-label {
+        color: ${Colors.black4} !important;
+        margin-left: 0 !important;
+      }
       > :first-child {
         font-size: 17px;
         font-weight: 500;

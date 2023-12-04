@@ -21,6 +21,7 @@ import { validatUnfinishedSteps } from '../../utils/func';
 import { UserRoutes } from '../../navigation/Routes';
 import ProgressBarComponent from '../../components/ProgressBar';
 import PageHeaderComponent from '../../components/PageHeader';
+import { getProfileInfoAction, selectData } from '../Profile/Profile.slice';
 import { CreateEventContainer, LoadingContainer } from './CreateEventComponent';
 import EventInfo from './Component/EventInfo';
 import CreateTicket from './Component/CreateTicket';
@@ -86,6 +87,8 @@ const CreateEvent = () => {
   const needUpdateDiscountsId = useAppSelector(selectNeedUpdateDiscountsId);
   const needUpdateTicketsId = useAppSelector(selectNeedUpdateTicketsId);
   const showLoadingMessage = useAppSelector(selectShowLoadingMessage);
+  const userProfileInfo = useAppSelector(selectData);
+
   const [steps, setSteps] = useState<number>(ComponentSteps.eventInfo);
   const [previousStep, setPreviousStep] = useState<number>(
     ComponentSteps.eventInfo,
@@ -118,6 +121,7 @@ const CreateEvent = () => {
       ticketTypes: [],
       refundPolicy: SetRefundKey.nonRefundable,
       discounts: [],
+      contactEmail: '',
     });
   const [originDetailData, setOriginDetailData] =
     useState<CreateEventFormValueProps>({
@@ -135,7 +139,10 @@ const CreateEvent = () => {
       ticketTypes: [],
       refundPolicy: SetRefundKey.nonRefundable,
       discounts: [],
+      contactEmail: '',
     });
+  const [inputContactEmailError, setInputContactEmailError] =
+    useState<boolean>(false);
 
   const [progressItems, setProgressItems] = useState([
     {
@@ -277,6 +284,7 @@ const CreateEvent = () => {
   }, [needUpdateDiscountsId]);
 
   const saveAsDraft = async (type?: string) => {
+    if (inputContactEmailError) return;
     if (publishLoading || saveDraftLoading) return;
     if (!createEventFormValue.name) {
       message.error(
@@ -389,6 +397,9 @@ const CreateEvent = () => {
       }
       return '';
     };
+
+    if (inputContactEmailError) return;
+
     if (unfinishedSteps() === '' || (isDraft && !anotherPayload?.publish)) {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
@@ -481,6 +492,7 @@ const CreateEvent = () => {
         }
       }
     } else {
+      if (inputContactEmailError) return;
       confirm({
         open: showMissingFieldsModal,
         centered: true,
@@ -540,6 +552,14 @@ const CreateEvent = () => {
         ...createEventFormValue,
         ticketTypes: value.ticketTypes,
         discounts: value.discounts,
+      });
+    } else if (field === 'organizerId') {
+      const currentContactEmail =
+        organizerData.find((item) => item.id === value)?.contactEmail || '';
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        organizerId: value,
+        contactEmail: currentContactEmail,
       });
     } else if (field) {
       setCreateEventFormValue({
@@ -756,12 +776,22 @@ const CreateEvent = () => {
   }, [organizerData]);
 
   useEffect(() => {
+    if (!isEdit && userProfileInfo.contactEmail) {
+      setCreateEventFormValue({
+        ...createEventFormValue,
+        contactEmail: userProfileInfo.contactEmail,
+      });
+    }
+  }, [userProfileInfo]);
+
+  useEffect(() => {
     if (error) {
       message.error(error.message);
     }
   }, [error]);
 
   useEffect(() => {
+    const userRole = cookies.getCookie(CookieKeys.authUserRole);
     window.addEventListener('beforeunload', notSaveAlert);
     window.onload = () => {
       document.addEventListener('gesturestart', notSaveAlert);
@@ -773,6 +803,9 @@ const CreateEvent = () => {
       }),
     );
     dispatch(getListTicketTypeAction());
+    if (userRole !== UserRoleKeys.superAdmin) {
+      dispatch(getProfileInfoAction());
+    }
     return () => {
       window.removeEventListener('beforeunload', notSaveAlert);
       document.removeEventListener('gesturestart', notSaveAlert);
@@ -903,8 +936,12 @@ const CreateEvent = () => {
                 )}
                 {steps === ComponentSteps.publish && (
                   <Publish
+                    isEventEdit={isEdit}
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
+                    userProfileInfo={userProfileInfo}
+                    inputContactEmailError={inputContactEmailError}
+                    setInputContactEmailError={setInputContactEmailError}
                   />
                 )}
               </Form>

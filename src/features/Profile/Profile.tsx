@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useCookie } from '../../hooks';
-import { isImageLink } from '../../utils/validator';
+import { isImageLink, isEmail } from '../../utils/validator';
 import { CookieKeys, UserRoleKeys } from '../../constants/Keys';
 import { AuthRoutes } from '../../navigation/Routes';
 import Messages from '../../constants/Message';
@@ -52,8 +52,11 @@ const Profile = () => {
     banner: '',
     logo: '',
     marketingSite: '',
+    contactEmail: '',
   });
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
+  const [inputContactEmailError, setInputContactEmailError] =
+    useState<boolean>(false);
 
   const customRequest = async (e: any, type?: string) => {
     const formData = new FormData();
@@ -116,6 +119,8 @@ const Profile = () => {
     const response = await dispatch(updateProfileInfoAction(profileValue));
     if (response.type === updateProfileInfoAction.fulfilled.toString()) {
       message.success(t('Organizer profile has been updated.'));
+      dispatch(getProfileInfoAction());
+      setIsEditItem(false);
     }
   };
 
@@ -128,6 +133,26 @@ const Profile = () => {
     });
   };
 
+  const contactEmailChange = (value: string) => {
+    let contactEmail = '';
+    if (value) {
+      if (isEmail(value)) {
+        setIsEditItem(true);
+        setInputContactEmailError(false);
+        contactEmail = value;
+      } else {
+        setIsEditItem(false);
+        setInputContactEmailError(true);
+      }
+    } else {
+      setInputContactEmailError(false);
+    }
+    setProfileValue({
+      ...profileValue,
+      contactEmail,
+    });
+  };
+
   useEffect(() => {
     if (data) {
       setProfileValue({
@@ -135,6 +160,7 @@ const Profile = () => {
         description: data.description,
         logo: data.logo,
         marketingSite: data.marketingSite,
+        contactEmail: data.contactEmail,
       });
       setBannerFile(data.banner);
     }
@@ -248,6 +274,22 @@ const Profile = () => {
                     </Col>
                     <Col span={24} className="item-value">
                       <Input disabled defaultValue={data.name} />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={24} className="item-title">
+                      {t('Contact Email')}
+                    </Col>
+                    {inputContactEmailError && (
+                      <Col className="contact-email-error">
+                        {t('Please enter a valid email address.')}
+                      </Col>
+                    )}
+                    <Col span={24} className="item-value">
+                      <Input
+                        defaultValue={data.contactEmail}
+                        onChange={(e) => contactEmailChange(e.target.value)}
+                      />
                     </Col>
                   </Row>
                   <Row>

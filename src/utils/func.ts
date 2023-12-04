@@ -376,6 +376,10 @@ export const validatUnfinishedSteps = (source: CreateEventFormValueProps) => {
       return false;
     });
   }
+  if (!source.contactEmail) {
+    isUnrelatedTickets = 3;
+    return isUnrelatedTickets;
+  }
   return isUnrelatedTickets;
 };
 

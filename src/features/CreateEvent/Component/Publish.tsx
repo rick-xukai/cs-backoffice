@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Radio, Tooltip, Space } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Row, Col, Radio, Tooltip, Space, Input } from 'antd';
+import { QuestionCircleOutlined, DoubleRightOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 
+import { useCookie } from '../../../hooks';
+import { isEmail } from '../../../utils/validator';
+import { UserRoutes } from '../../../navigation/Routes';
 import { formatTimeStrByTimeString } from '../../../utils/func';
-import { FormatTimeKeys } from '../../../constants/Keys';
+import {
+  FormatTimeKeys,
+  CookieKeys,
+  UserRoleKeys,
+} from '../../../constants/Keys';
 import { SetRefundKey, priceUnit } from '../../../constants/General';
 import Tips from '../../../components/Tips/Tips';
 import TableComponent from '../../../components/Table/Table';
@@ -15,6 +23,7 @@ import {
   EventInfoCard,
 } from '../CreateEventComponent';
 import Preview from './Preview';
+import { OrganizerProfileInfo } from '../../Profile/Profile.slice';
 
 const initialTicketList = [
   {
@@ -27,15 +36,28 @@ const initialTicketList = [
 
 const Publish = ({
   formValue,
+  userProfileInfo,
+  inputContactEmailError,
+  isEventEdit,
   fieldEdit,
+  setInputContactEmailError,
 }: {
   formValue: CreateEventFormValueProps;
+  userProfileInfo: OrganizerProfileInfo;
+  inputContactEmailError: boolean;
+  isEventEdit: boolean;
   fieldEdit: (value: any, field: string) => void;
+  setInputContactEmailError: (status: boolean) => void;
 }) => {
   const { t } = useTranslation();
+  const history = useHistory();
+  const cookie = useCookie([CookieKeys.authUserRole]);
 
   const [pageTipsShow, setPageTipsShow] = useState<boolean>(true);
   const [show, setShow] = useState(false);
+  const [showGoProfileTooltip, setShowGoProfileTooltip] =
+    useState<boolean>(false);
+
   const columns = [
     {
       title: 'Ticket Type Name',
@@ -67,6 +89,35 @@ const Publish = ({
     },
   ];
 
+  const contactEmailChange = (value: string) => {
+    let contactEmail = '';
+    if (value) {
+      if (isEmail(value)) {
+        setInputContactEmailError(false);
+        contactEmail = value;
+      } else {
+        setInputContactEmailError(true);
+      }
+    } else {
+      setInputContactEmailError(false);
+    }
+    fieldEdit(contactEmail, 'contactEmail');
+  };
+
+  const checkContactEmailDefaultValue = () => {
+    const role = cookie.getCookie(CookieKeys.authUserRole);
+    if (isEventEdit) {
+      if (formValue.contactEmail) {
+        return formValue.contactEmail;
+      }
+      return '';
+    }
+    if (role === UserRoleKeys.superAdmin && !isEventEdit) {
+      return formValue.contactEmail;
+    }
+    return userProfileInfo.contactEmail;
+  };
+
   useEffect(() => {
     if (show) {
       document.body.style.overflow = 'hidden';
@@ -74,6 +125,13 @@ const Publish = ({
       document.body.style.overflow = 'unset';
     }
   }, [show]);
+
+  useEffect(() => {
+    const role = cookie.getCookie(CookieKeys.authUserRole);
+    if (role && role !== UserRoleKeys.superAdmin) {
+      setShowGoProfileTooltip(true);
+    }
+  }, []);
 
   return (
     <Row>
@@ -152,6 +210,48 @@ const Publish = ({
                   </Col>
                 </Row>
               </EventInfoCard>
+              <Col className="set-refund-title">
+                <span className="title-label">{t('Contact Email')}</span>
+                {showGoProfileTooltip && (
+                  <span>
+                    <Tooltip
+                      overlayInnerStyle={{
+                        fontSize: 13,
+                        fontWeight: 400,
+                        padding: 8,
+                      }}
+                      title={
+                        <div
+                          className="contact-email-tooltip"
+                          onClick={() => history.push(UserRoutes.profile)}
+                        >
+                          <span>
+                            {t(
+                              'Set the default contact email in your company profile. ',
+                            )}
+                          </span>
+                          <span>
+                            {t('Go')} <DoubleRightOutlined />
+                          </span>
+                        </div>
+                      }
+                    >
+                      <QuestionCircleOutlined />
+                    </Tooltip>
+                  </span>
+                )}
+              </Col>
+              <Col className="contact-email-input">
+                {inputContactEmailError && (
+                  <div className="contact-email-error">
+                    {t('Please enter a valid email address.')}
+                  </div>
+                )}
+                <Input
+                  defaultValue={checkContactEmailDefaultValue()}
+                  onChange={(e) => contactEmailChange(e.target.value)}
+                />
+              </Col>
               <Col className="set-refund-title">
                 <span>{t('Set the refund and cancellation policy')}</span>
                 <span>
