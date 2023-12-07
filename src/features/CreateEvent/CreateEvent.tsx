@@ -141,8 +141,6 @@ const CreateEvent = () => {
       discounts: [],
       contactEmail: '',
     });
-  const [inputContactEmailError, setInputContactEmailError] =
-    useState<boolean>(false);
 
   const [progressItems, setProgressItems] = useState([
     {
@@ -284,7 +282,6 @@ const CreateEvent = () => {
   }, [needUpdateDiscountsId]);
 
   const saveAsDraft = async (type?: string) => {
-    if (inputContactEmailError) return;
     if (publishLoading || saveDraftLoading) return;
     if (!createEventFormValue.name) {
       message.error(
@@ -398,8 +395,6 @@ const CreateEvent = () => {
       return '';
     };
 
-    if (inputContactEmailError) return;
-
     if (unfinishedSteps() === '' || (isDraft && !anotherPayload?.publish)) {
       if (currentTime > endTime) {
         message.error(t('Event end time can not be in the past.'));
@@ -492,7 +487,6 @@ const CreateEvent = () => {
         }
       }
     } else {
-      if (inputContactEmailError) return;
       confirm({
         open: showMissingFieldsModal,
         centered: true,
@@ -940,8 +934,6 @@ const CreateEvent = () => {
                     formValue={createEventFormValue}
                     fieldEdit={handleFieldChange}
                     userProfileInfo={userProfileInfo}
-                    inputContactEmailError={inputContactEmailError}
-                    setInputContactEmailError={setInputContactEmailError}
                   />
                 )}
               </Form>

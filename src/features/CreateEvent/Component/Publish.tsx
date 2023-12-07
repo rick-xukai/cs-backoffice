@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import { useCookie } from '../../../hooks';
-import { isEmail } from '../../../utils/validator';
 import { UserRoutes } from '../../../navigation/Routes';
 import { formatTimeStrByTimeString } from '../../../utils/func';
 import {
@@ -37,17 +36,13 @@ const initialTicketList = [
 const Publish = ({
   formValue,
   userProfileInfo,
-  inputContactEmailError,
   isEventEdit,
   fieldEdit,
-  setInputContactEmailError,
 }: {
   formValue: CreateEventFormValueProps;
   userProfileInfo: OrganizerProfileInfo;
-  inputContactEmailError: boolean;
   isEventEdit: boolean;
   fieldEdit: (value: any, field: string) => void;
-  setInputContactEmailError: (status: boolean) => void;
 }) => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -88,21 +83,6 @@ const Publish = ({
       ),
     },
   ];
-
-  const contactEmailChange = (value: string) => {
-    let contactEmail = '';
-    if (value) {
-      if (isEmail(value)) {
-        setInputContactEmailError(false);
-        contactEmail = value;
-      } else {
-        setInputContactEmailError(true);
-      }
-    } else {
-      setInputContactEmailError(false);
-    }
-    fieldEdit(contactEmail, 'contactEmail');
-  };
 
   const checkContactEmailDefaultValue = () => {
     const role = cookie.getCookie(CookieKeys.authUserRole);
@@ -211,7 +191,9 @@ const Publish = ({
                 </Row>
               </EventInfoCard>
               <Col className="set-refund-title">
-                <span className="title-label">{t('Contact Email')}</span>
+                <span className="title-label contact-email-label">
+                  {t('Contact Email')}
+                </span>
                 {showGoProfileTooltip && (
                   <span>
                     <Tooltip
@@ -242,14 +224,9 @@ const Publish = ({
                 )}
               </Col>
               <Col className="contact-email-input">
-                {inputContactEmailError && (
-                  <div className="contact-email-error">
-                    {t('Please enter a valid email address.')}
-                  </div>
-                )}
                 <Input
                   defaultValue={checkContactEmailDefaultValue()}
-                  onChange={(e) => contactEmailChange(e.target.value)}
+                  onChange={(e) => fieldEdit(e.target.value, 'contactEmail')}
                 />
               </Col>
               <Col className="set-refund-title">
