@@ -914,6 +914,11 @@ const PublishComponentContainer = styled(Row)`
       .title-label {
         color: ${Colors.black4} !important;
         margin-left: 0 !important;
+        &.contact-email-label {
+          ::after {
+            display: none;
+          }
+        }
       }
       > :first-child {
         font-size: 17px;
