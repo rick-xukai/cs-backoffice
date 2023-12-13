@@ -471,7 +471,7 @@ const Events = () => {
   const requestEventsList = async () => {
     const response: any = await dispatch(
       getEventsListAction({
-        page,
+        page: (searchKeyword && defaultCurrentPage) || page,
         size,
         status: filterStatus,
         keyword: searchKeyword,
@@ -529,14 +529,10 @@ const Events = () => {
   }, [error]);
 
   useEffect(() => {
-    dispatch(setPage(defaultCurrentPage));
-  }, [searchKeyword]);
-
-  useEffect(() => {
     if (page !== 0) {
       requestEventsList();
     }
-  }, [page, size, filterStatus]);
+  }, [page, size, filterStatus, searchKeyword]);
 
   useEffect(() => {
     if (deleteSuccess || cancelSuccess || hideSuccess || duplicateSuccess) {
@@ -598,7 +594,6 @@ const Events = () => {
                   }}
                   suffix={!searchKeyword && <SearchOutlined />}
                   onChange={(e) => {
-                    dispatch(setPage(0));
                     searchInputChange(e);
                   }}
                 />
