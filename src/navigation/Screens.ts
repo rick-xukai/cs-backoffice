@@ -17,6 +17,8 @@ import UserAndPermissions from '../features/UserAndPermissions/Loadable';
 import Orders from '../features/Orders/Loadable';
 import TicketsSold from '../features/TicketsSold/Loadable';
 import PageNotFound from '../features/404Page/Loadable';
+import Organisers from '../features/Organisers/Loadable';
+import CreateOrganisers from '../features/CreateOrganisers';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -52,6 +54,33 @@ export const UserScreens = {
       UserRoleKeys.organizerAdmin,
       UserRoleKeys.organizerUser,
     ],
+  },
+  Organisers: {
+    title: 'Organisers - CrowdServe BO',
+    path: UserRoutes.organisers,
+    component: Organisers,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.organisers],
+    guard: true,
+    role: [UserRoleKeys.superAdmin],
+  },
+  CreateOrganiser: {
+    title: 'Create Organiser - CrowdServe BO',
+    path: UserRoutes.createOrganiser,
+    component: CreateOrganisers,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.organisers],
+    guard: true,
+    role: [UserRoleKeys.superAdmin],
+  },
+  EditOrganiser: {
+    title: 'Edit Organiser - CrowdServe BO',
+    path: UserRoutes.editOrganiser,
+    component: CreateOrganisers,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.organisers],
+    guard: true,
+    role: [UserRoleKeys.superAdmin],
   },
   CreateEvent: {
     title: 'Create Event - CrowdServe BO',

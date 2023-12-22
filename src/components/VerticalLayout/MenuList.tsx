@@ -24,6 +24,13 @@ const MenuList = (): IMenu[] => {
       path: UserScreens.Events.path,
       role: UserScreens.Events.role,
     },
+    {
+      key: MenuKeys.organisers,
+      title: t('Organisers'),
+      icon: <SVG src={Images.OrganisersMenuIcon} />,
+      path: UserScreens.Organisers.path,
+      role: UserScreens.Organisers.role,
+    },
     // {
     //   key: MenuKeys.orders,
     //   title: t('Orders'),

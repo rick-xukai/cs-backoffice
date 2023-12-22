@@ -129,6 +129,24 @@ const API = {
   duplicateEvent: {
     post: '/admin/event/duplicate',
   },
+  getOrganizerList: {
+    get: '/admin/organizer',
+  },
+  createOrganizer: {
+    post: '/admin/organizer',
+  },
+  getOrganizerDetail: {
+    get: '/admin/organizer/{id}',
+  },
+  checkAdminUserExist: {
+    post: '/admin/organizer/user/checkEmail',
+  },
+  updateOrganizer: {
+    put: '/admin/organizer/{id}',
+  },
+  deleteOrganizer: {
+    delete: '/admin/organizer/{id}',
+  },
 };
 
 export default API;

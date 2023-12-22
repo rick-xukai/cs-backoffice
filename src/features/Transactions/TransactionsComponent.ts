@@ -99,6 +99,24 @@ const TableFilterContainer = styled(Row)`
     font-size: 15px;
     border-radius: 2px;
   }
+  .action-button {
+    margin-top: 24px;
+  }
+  @media (min-width: 992px) {
+    .action-button {
+      margin-top: 0;
+      text-align: right;
+    }
+  }
+  @media (max-width: 576px) {
+    .filter-status {
+      padding-right: 0;
+    }
+    .filter-picker {
+      margin-top: 16px;
+      padding-left: 0;
+    }
+  }
 `;
 
 const TableSelectItemsContainer = styled(Row)`

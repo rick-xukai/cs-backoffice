@@ -80,6 +80,13 @@ import EmailIcon from '../assets/images/icons/email-icon.svg';
 import GenderIcon from '../assets/images/icons/gender-icon.svg';
 import BirthIcon from '../assets/images/icons/birth-icon.svg';
 import CountryIcon from '../assets/images/icons/country-icon.svg';
+import OrganisersMenuIcon from '../assets/images/icons/organisers-menu-icon.svg';
+import AddNewUserIcon from '../assets/images/icons/add-new-user.svg';
+import AdmainSettingIcon from '../assets/images/icons/admin-setting-icon.svg';
+import UserIcon from '../assets/images/icons/user-icon.svg';
+import ScannerIcon from '../assets/images/icons/scanner-icon.svg';
+import MailOutlinedIcon from '../assets/images/icons/mail-outlined-icon.svg';
+import TimeIcon from '../assets/images/icons/time-icon.svg';
 
 const Images = {
   Logo,
@@ -166,6 +173,13 @@ const Images = {
   GenderIcon,
   BirthIcon,
   CountryIcon,
+  OrganisersMenuIcon,
+  AddNewUserIcon,
+  AdmainSettingIcon,
+  UserIcon,
+  ScannerIcon,
+  MailOutlinedIcon,
+  TimeIcon,
 };
 
 export default Images;

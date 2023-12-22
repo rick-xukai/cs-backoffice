@@ -134,22 +134,21 @@ const Profile = () => {
   };
 
   const contactEmailChange = (value: string) => {
-    let contactEmail = '';
     if (value) {
       if (isEmail(value)) {
         setIsEditItem(true);
         setInputContactEmailError(false);
-        contactEmail = value;
       } else {
         setIsEditItem(false);
         setInputContactEmailError(true);
       }
     } else {
+      setIsEditItem(true);
       setInputContactEmailError(false);
     }
     setProfileValue({
       ...profileValue,
-      contactEmail,
+      contactEmail: value,
     });
   };
 

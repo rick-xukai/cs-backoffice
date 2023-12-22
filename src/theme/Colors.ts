@@ -68,6 +68,7 @@ const Colors = {
   red5: '#FF4B50',
   red6: '#530103',
   primaryHoverRed: '#DE0005',
+  buttonDisable: '#F56E72',
 };
 
 export default Colors;
