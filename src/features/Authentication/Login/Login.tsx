@@ -34,6 +34,7 @@ import { useCookie, useLocalStorage } from '../../../hooks';
 import LandingLayout from '../../../components/LandingLayout/LandingLayout';
 import PasswordInput from '../../../components/PasswordInput/PasswordInput';
 import { resetEventRelatedState } from '../../Events/Events.slice';
+import { resetOrganiserRelatedState } from '../../Organisers/Organisers.slice';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -74,6 +75,18 @@ const Login = () => {
         </div>
       );
     }
+    if (error?.code === StatusCodes.accountInactive) {
+      return (
+        <div
+          className="ant-form-item-explain-error"
+          style={{ display: (!isEmail && 'none') || 'block' }}
+        >
+          {t(
+            'This is an inactive account, please login to another account or contact your admin.',
+          )}
+        </div>
+      );
+    }
     if (error?.code === StatusCodes.notFound && isEmail) {
       return (
         <div className="ant-form-item-explain-error">
@@ -89,6 +102,7 @@ const Login = () => {
       if (
         error.code !== StatusCodes.passwordWrong &&
         error.code !== StatusCodes.notFound &&
+        error.code !== StatusCodes.accountInactive &&
         !error.message?.includes('characters')
       ) {
         message.error(error.message);
@@ -143,6 +157,7 @@ const Login = () => {
           path: '/',
         });
         dispatch(resetEventRelatedState());
+        dispatch(resetOrganiserRelatedState());
         if (data.user.status === ActiveStatus.active) {
           history.replace(UserRoutes.events);
         } else {

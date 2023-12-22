@@ -8,6 +8,7 @@ import UsersService from '../../../services/API/Users';
 export enum StatusCodes {
   passwordWrong = 1003,
   notFound = 404,
+  accountInactive = 1001,
 }
 export interface ErrorType {
   message: string;

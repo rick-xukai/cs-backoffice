@@ -23,6 +23,8 @@ import ticketSoldReducer from '../features/TicketsSold/TicketSold.slice';
 import eventPageViewsReducer from '../features/EventPageViews/EventPageViews.slice';
 import uniqueBuyersReducer from '../features/UniqueBuyers/UniqueBuyers.slice';
 import uniqueAttendeesReducer from '../features/UniqueAttendees/UniqueAttendees.slice';
+import organiserReducer from '../features/Organisers/Organisers.slice';
+import createOrganiserReducer from '../features/CreateOrganisers/CreateOrganisers.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -49,6 +51,8 @@ const createRootReducer = (history: any) =>
     eventPageViews: eventPageViewsReducer,
     uniqueBuyers: uniqueBuyersReducer,
     uniqueAttendees: uniqueAttendeesReducer,
+    organiser: organiserReducer,
+    createOrganiser: createOrganiserReducer,
   });
 
 export default createRootReducer;

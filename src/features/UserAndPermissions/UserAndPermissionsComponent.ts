@@ -26,8 +26,11 @@ const UserAndPermissionsContainer = styled.div`
     }
   }
   @media (max-width: 992px) {
+    padding-top: 130px;
     .page-main {
-      padding: calc(98px + 24px) 15px 15px;
+      padding: 15px;
+      /* padding-top: 15px;
+      padding: calc(98px + 24px) 15px 15px; */
     }
   }
 `;

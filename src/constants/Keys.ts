@@ -1,4 +1,4 @@
-import { Colors } from '../theme';
+import { Colors, Images } from '../theme';
 
 export const LocalStorageKeys = {
   rememberMe: 'rememberMe',
@@ -81,5 +81,36 @@ export const FilterEventStatus = [
     key: null,
     color: '',
     background: '',
+  },
+];
+export const FilterOrganisersStatus = [
+  {
+    text: 'Active',
+    key: 1,
+    color: Colors.green1,
+    background: Colors.green2,
+  },
+  {
+    text: 'Inactive',
+    key: 0,
+    color: Colors.grey7,
+    background: Colors.grayScale20,
+  },
+];
+export const UserTypeStatus = [
+  {
+    text: 'Admin',
+    key: 2,
+    icon: Images.AdmainSettingIcon,
+  },
+  {
+    text: 'Scanner',
+    key: 4,
+    icon: Images.ScannerIcon,
+  },
+  {
+    text: 'User',
+    key: 3,
+    icon: Images.UserIcon,
   },
 ];

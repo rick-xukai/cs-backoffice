@@ -460,7 +460,7 @@ body[data-sidebar='dark'] {
     display: none;
   }
 }
-.event-more-action {
+.event-more-action, .organiser-more-action {
   .ant-dropdown-menu-item {
     padding: 10px 12px;
     color: $black900;
@@ -595,5 +595,20 @@ body[data-sidebar='dark'] {
   }
   .ant-message-success {
     background: $green10;
+  }
+}
+
+.ant-modal-confirm-btns {
+  .action-button {
+    &.ant-btn-primary[disabled] {
+      background: #F56E72;
+      color: $white;
+    }
+  }
+  .delete-organiser {
+    .anticon {
+      color: $white;
+      margin-right: 5px;
+    }
   }
 }

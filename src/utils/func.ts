@@ -167,6 +167,21 @@ export const checkEventStatus = (status: number) => {
   return statusText;
 };
 
+export const checkOrganiserStatus = (status: number) => {
+  let statusText = '';
+  switch (status) {
+    case 0:
+      statusText = 'Inactive';
+      break;
+    case 1:
+      statusText = 'Active';
+      break;
+    default:
+      statusText = '';
+  }
+  return statusText;
+};
+
 export const mapEditEventTicket = (ticketsData: any) => {
   const editTicketTypes: any = [];
   ticketsData.forEach((item: any, index: number) => {

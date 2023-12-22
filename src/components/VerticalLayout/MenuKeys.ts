@@ -11,4 +11,5 @@ export const MenuKeys = {
   transactions: 'menu-transactions',
   orders: 'menu-orders',
   ticketsSold: 'menu-ticketsSold',
+  organisers: 'menu-organisers',
 };

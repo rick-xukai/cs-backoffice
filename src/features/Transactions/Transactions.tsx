@@ -396,9 +396,9 @@ const Transactions = () => {
         >
           <div>
             <TableFilterContainer>
-              <Col span={20}>
+              <Col lg={20} span={24}>
                 <Row>
-                  <Col span={8} className="filter-status">
+                  <Col sm={8} span={24} className="filter-status">
                     <span>{t('Status')}:</span>
                     <Select
                       value={selectDefaultStatus}
@@ -412,7 +412,7 @@ const Transactions = () => {
                       ))}
                     </Select>
                   </Col>
-                  <Col span={16} className="filter-picker">
+                  <Col sm={16} span={24} className="filter-picker">
                     <span>{t('Submitted Date')}:</span>
                     <RangePicker
                       value={[
@@ -435,7 +435,7 @@ const Transactions = () => {
                   </Col>
                 </Row>
               </Col>
-              <Col span={4} style={{ textAlign: 'right' }}>
+              <Col className="action-button" lg={4} span={24}>
                 {!showTableHeader && (
                   <Button
                     type="primary"

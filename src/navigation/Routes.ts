@@ -45,6 +45,9 @@ export const UserRoutes = {
   eventPageViews: '/event-page-views/:id/:name',
   uniqueBuyers: '/unique-buyers/:id/:name',
   uniqueAttendees: '/unique-attendees/:id/:name',
+  organisers: '/organisers',
+  createOrganiser: '/create-organiser',
+  editOrganiser: '/edit-organiser/:organiserId',
 };
 
 export const AuthRoutes = {

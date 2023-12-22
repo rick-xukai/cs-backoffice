@@ -35,9 +35,10 @@ import {
 } from '../../constants/Keys';
 import { checkEventStatus } from '../../utils/func';
 import { Images, Colors } from '../../theme';
-import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
+import { UserRoutes } from '../../navigation/Routes';
 import { useCookie } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import useTokenExpire from '../../hooks/useTokenExpire';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import BallLoading from '../../components/BallLoading';
@@ -90,6 +91,7 @@ export const getBadge = (status: number) => {
 };
 const Events = () => {
   const { t } = useTranslation();
+  const { tokenExpireFunction } = useTokenExpire();
   const dispatch = useAppDispatch();
   const history = useHistory();
   const cookie = useCookie([
@@ -517,12 +519,7 @@ const Events = () => {
   useEffect(() => {
     if (error) {
       if (error.code === TokenExpireResponseCode) {
-        cookie.removeCookie(CookieKeys.authUser, { path: '/' });
-        cookie.removeCookie(CookieKeys.authUserName, { path: '/' });
-        cookie.removeCookie(CookieKeys.userNotActiveToken, { path: '/' });
-        history.push(AuthRoutes.login);
-        message.error(t('User token is deprecated, please log in again.'));
-        return;
+        tokenExpireFunction();
       }
       message.error(error.message);
     }
