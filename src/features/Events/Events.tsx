@@ -524,10 +524,13 @@ const Events = () => {
   };
 
   useEffect(() => {
-    dispatch(getPopupSettingAction({ config: GetSettingsType.eventPopup }));
+    const userRoles = cookie.getCookie(CookieKeys.authUserRole);
+    if (userRoles !== UserRoleKeys.superAdmin) {
+      dispatch(getPopupSettingAction({ config: GetSettingsType.eventPopup }));
+    }
     const roleColumns: any = [];
     columns.forEach((item) => {
-      if (item.role?.includes(cookie.getCookie(CookieKeys.authUserRole))) {
+      if (item.role?.includes(userRoles)) {
         roleColumns.push(item);
       }
     });

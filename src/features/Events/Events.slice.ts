@@ -311,6 +311,11 @@ export const eventsSlice = createSlice({
       state.data = initialState.data;
       state.total = initialState.total;
       state.error = initialState.error;
+      state.popupSetting = {
+        value: '1',
+        notes: 'close',
+      };
+      state.savePopupSettingLoading = false;
     },
     resetEventRelatedState: (state) => {
       state.page = defaultCurrentPage;
