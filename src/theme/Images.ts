@@ -87,6 +87,7 @@ import UserIcon from '../assets/images/icons/user-icon.svg';
 import ScannerIcon from '../assets/images/icons/scanner-icon.svg';
 import MailOutlinedIcon from '../assets/images/icons/mail-outlined-icon.svg';
 import TimeIcon from '../assets/images/icons/time-icon.svg';
+import PopupSettingIcon from '../assets/images/icons/popup-setting-icon.svg';
 
 const Images = {
   Logo,
@@ -180,6 +181,7 @@ const Images = {
   ScannerIcon,
   MailOutlinedIcon,
   TimeIcon,
+  PopupSettingIcon,
 };
 
 export default Images;

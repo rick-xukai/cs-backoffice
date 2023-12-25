@@ -21,12 +21,13 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import copy from 'copy-to-clipboard';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 
 import {
   priceUnit,
   defaultCurrentPage,
   TokenExpireResponseCode,
+  GetSettingsType,
 } from '../../constants/General';
 import {
   CookieKeys,
@@ -42,6 +43,7 @@ import useTokenExpire from '../../hooks/useTokenExpire';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import BallLoading from '../../components/BallLoading';
+import AnnouncementPopup from '../../components/AnnouncementPopup';
 import {
   EventsContainer,
   AddNewEventContainer,
@@ -70,6 +72,10 @@ import {
   EventStatusKeys,
   hideEventAction,
   duplicateEventAction,
+  selectPopupSetting,
+  getPopupSettingAction,
+  savePopupSettingAction,
+  selectSavePopupSettingLoading,
 } from './Events.slice';
 import { SGD_UNIT } from '../../constants/constants';
 
@@ -109,6 +115,8 @@ const Events = () => {
   const size = useAppSelector(selectPageSize);
   const filterStatus = useAppSelector(selectFilterStatus);
   const searchKeyword = useAppSelector(selectSearchKeyword);
+  const popupSetting = useAppSelector(selectPopupSetting);
+  const savePopupSettingLoading = useAppSelector(selectSavePopupSettingLoading);
 
   const [tableColumns, setTableColumns] = useState([]);
   const [showNoSearchData, setShowNoSearchData] = useState<boolean>(false);
@@ -503,7 +511,20 @@ const Events = () => {
     [],
   );
 
+  const updatePopupSetting = async () => {
+    const response = await dispatch(
+      savePopupSettingAction({
+        config: GetSettingsType.eventPopup,
+        value: '1',
+      }),
+    );
+    if (response.type === savePopupSettingAction.fulfilled.toString()) {
+      dispatch(getPopupSettingAction({ config: GetSettingsType.eventPopup }));
+    }
+  };
+
   useEffect(() => {
+    dispatch(getPopupSettingAction({ config: GetSettingsType.eventPopup }));
     const roleColumns: any = [];
     columns.forEach((item) => {
       if (item.role?.includes(cookie.getCookie(CookieKeys.authUserRole))) {
@@ -720,6 +741,11 @@ const Events = () => {
           )}
         </EventListTableContainer>
       </div>
+      <AnnouncementPopup
+        modalOpen={isEmpty(popupSetting) || popupSetting.value !== '1'}
+        buttonLoading={savePopupSettingLoading}
+        buttonFunction={updatePopupSetting}
+      />
     </EventsContainer>
   );
 };
