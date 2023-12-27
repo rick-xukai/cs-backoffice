@@ -42,6 +42,16 @@ export enum EventStatusKeys {
   cancelled = 3,
 }
 
+export interface PopupConfig {
+  value: string;
+  notes: string;
+}
+
+export interface SavePopupConfig {
+  value: string;
+  config: string;
+}
+
 /**
  * Events
  */
@@ -190,6 +200,70 @@ export const duplicateEventAction = createAsyncThunk<
   },
 );
 
+/**
+ *  get popup setting
+ */
+export const getPopupSettingAction = createAsyncThunk<
+  PopupConfig,
+  { config: string },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getPopupSetting/getPopupSettingAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventsService.getPopupSetting(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ *  save popup setting
+ */
+export const savePopupSettingAction = createAsyncThunk<
+  {},
+  SavePopupConfig,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'savePopupSetting/savePopupSettingAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventsService.savePopupSetting(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
 interface EventsState {
   loading: boolean;
   data: [];
@@ -199,6 +273,8 @@ interface EventsState {
   searchKeyword: string;
   filterStatus: number | null;
   filterStatusText: string;
+  popupSetting: PopupConfig;
+  savePopupSettingLoading: boolean;
   error:
     | {
         code: number | undefined;
@@ -218,6 +294,11 @@ const initialState: EventsState = {
   data: [],
   total: 0,
   error: null,
+  popupSetting: {
+    value: '1',
+    notes: 'close',
+  },
+  savePopupSettingLoading: false,
 };
 
 export const eventsSlice = createSlice({
@@ -230,6 +311,11 @@ export const eventsSlice = createSlice({
       state.data = initialState.data;
       state.total = initialState.total;
       state.error = initialState.error;
+      state.popupSetting = {
+        value: '1',
+        notes: 'close',
+      };
+      state.savePopupSettingLoading = false;
     },
     resetEventRelatedState: (state) => {
       state.page = defaultCurrentPage;
@@ -266,6 +352,36 @@ export const eventsSlice = createSlice({
       })
       .addCase(getEventsListAction.rejected, (state, action) => {
         state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(getPopupSettingAction.pending, (state) => {
+        state.popupSetting = {
+          value: '1',
+          notes: 'close',
+        };
+      })
+      .addCase(getPopupSettingAction.fulfilled, (state, action: any) => {
+        state.popupSetting = action.payload;
+      })
+      .addCase(getPopupSettingAction.rejected, (state, action) => {
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(savePopupSettingAction.pending, (state) => {
+        state.savePopupSettingLoading = true;
+      })
+      .addCase(savePopupSettingAction.fulfilled, (state) => {
+        state.savePopupSettingLoading = false;
+      })
+      .addCase(savePopupSettingAction.rejected, (state, action) => {
+        state.savePopupSettingLoading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
@@ -326,5 +442,9 @@ export const selectSearchKeyword = (state: RootState) =>
   state.events.searchKeyword;
 export const selectPage = (state: RootState) => state.events.page;
 export const selectPageSize = (state: RootState) => state.events.size;
+export const selectSavePopupSettingLoading = (state: RootState) =>
+  state.events.savePopupSettingLoading;
+export const selectPopupSetting = (state: RootState) =>
+  state.events.popupSetting;
 
 export default eventsSlice.reducer;

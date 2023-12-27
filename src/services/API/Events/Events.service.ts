@@ -276,6 +276,26 @@ const duplicateEvent = async (payload: { eventId: number }) => {
   return response;
 };
 
+const getPopupSetting = async (payload: any) => {
+  const uri = API.getSeetings.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setQueryParameter(payload)
+    .doGet();
+  return response;
+};
+
+const savePopupSetting = async (payload: any) => {
+  const uri = API.saveSeetings.put;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setPayload(payload)
+    .doPut();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -299,4 +319,6 @@ export default {
   getUniqueBuyersCharts,
   hideEvent,
   duplicateEvent,
+  getPopupSetting,
+  savePopupSetting,
 };

@@ -147,6 +147,12 @@ const API = {
   deleteOrganizer: {
     delete: '/admin/organizer/{id}',
   },
+  getSeetings: {
+    get: '/admin/setting',
+  },
+  saveSeetings: {
+    put: '/admin/setting',
+  },
 };
 
 export default API;

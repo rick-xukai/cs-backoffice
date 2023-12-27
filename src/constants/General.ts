@@ -162,3 +162,6 @@ export const TicketSoldSaleStatus = 1;
 export const ImportTicketInvalid = 1081;
 export const ScannerRole = 4;
 export const EmailExist = 1101;
+export const GetSettingsType = {
+  eventPopup: 'event_popup',
+};
