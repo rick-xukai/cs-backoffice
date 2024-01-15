@@ -81,7 +81,7 @@ const EventDashboard = () => {
         buyers?.conversionRate ? (buyers?.conversionRate * 100).toFixed(2) : 0
       }%`}
       tooltip={t(
-        'Click here to view the list of people who purchased the tickets. Each buyer may purchase more than 1 ticket',
+        'Click here to view the list of people who purchased the tickets and the number of tickets they own based on unique emails.',
       )}
     />
   );
