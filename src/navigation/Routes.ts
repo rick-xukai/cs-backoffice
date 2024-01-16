@@ -44,7 +44,7 @@ export const UserRoutes = {
   pageNotFound: '/404',
   eventPageViews: '/event-page-views/:id/:name',
   uniqueBuyers: '/unique-buyers/:id/:name',
-  uniqueAttendees: '/unique-attendees/:id/:name',
+  uniqueAttendees: '/total-ticket-holders/:id/:name',
   organisers: '/organisers',
   createOrganiser: '/create-organiser',
   editOrganiser: '/edit-organiser/:organiserId',

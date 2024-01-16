@@ -299,7 +299,10 @@ const UniqueAttendees = () => {
               .replace(':name', params.name),
           },
           {
-            label: t('Attendees'),
+            label:
+              (option === SelectOptions.uniqueAttendees &&
+                t('Total Ticket Holders')) ||
+              t('Tickets Scanned'),
           },
         ]}
       />
@@ -309,7 +312,7 @@ const UniqueAttendees = () => {
             selected={option === SelectOptions.uniqueAttendees}
             onClick={() => handleChangeOption(SelectOptions.uniqueAttendees)}
           >
-            Unique Attendees
+            Total Ticket Holders
           </SelectButton>
           <SelectButton
             selected={option === SelectOptions.ticketsScanned}
@@ -326,7 +329,7 @@ const UniqueAttendees = () => {
                   <p className="content-title">
                     {t(
                       option === SelectOptions.uniqueAttendees
-                        ? 'Unique Attendees'
+                        ? 'Total Ticket Holders'
                         : 'Tickets Scanned',
                     )}
                   </p>
@@ -349,7 +352,7 @@ const UniqueAttendees = () => {
                     <span>
                       {option === SelectOptions.uniqueAttendees
                         ? 'Tickets Scanned'
-                        : 'Unique Attendees'}
+                        : 'Total Ticket Holders'}
                     </span>
                     <span className="bold">
                       {option === SelectOptions.uniqueAttendees
