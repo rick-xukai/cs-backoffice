@@ -455,7 +455,7 @@ const UniqueAttendees = () => {
                 <CSVLink
                   filename={`${params.name}_${
                     option === SelectOptions.uniqueAttendees
-                      ? 'Unique_Attendees'
+                      ? 'Total_Ticket_Holders'
                       : 'Tickets_Scanned'
                   }_Export.csv`}
                   headers={formatDownloadHeaders().headers}
