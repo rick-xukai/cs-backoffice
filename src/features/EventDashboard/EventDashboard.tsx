@@ -117,7 +117,7 @@ const EventDashboard = () => {
 
   const uniqueAttendeesCard = (
     <NormalCard
-      title="Unique Attendees"
+      title="Total Ticket Holders"
       text={attendees?.uniqueUser || 0}
       href={UserRoutes.uniqueAttendees
         .replace(':id', id)
@@ -125,7 +125,7 @@ const EventDashboard = () => {
       barTitle="Tickets Scanned"
       value={attendees?.ticketScanned || 0}
       tooltip={t(
-        'Click here to view the list of scanned tickets, which shows the total number of people who attended',
+        'Click here to view the full list of ticket holders, including transferred and resold tickets.',
       )}
     />
   );

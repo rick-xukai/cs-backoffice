@@ -305,7 +305,7 @@ export const UserScreens = {
     ],
   },
   UniqueAttendees: {
-    title: 'Unique Attendees - CrowdServe BO',
+    title: 'Total Ticket Holders - CrowdServe BO',
     path: UserRoutes.uniqueAttendees,
     component: UniqueAttendees,
     subMenuKeys: [],
