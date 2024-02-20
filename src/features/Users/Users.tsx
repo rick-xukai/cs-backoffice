@@ -37,7 +37,7 @@ import {
   selectFilters,
   selectSort,
   getUsersListAction,
-  // filtersChangeAction,
+  filtersChangeAction,
   sortChangeAction,
   UsersListDataType,
   selectAllUserList,
@@ -237,6 +237,60 @@ const Users = () => {
   //   dispatch(filtersChangeAction({ status: currentStatus }));
   // };
 
+  const handleExportAllUserList = async () => {
+    const response = await dispatch(
+      getAllUsersListAction({
+        page: 1,
+        size: 100000,
+        filters,
+        sort,
+      }),
+    );
+    if (response.type === getAllUsersListAction.fulfilled.toString()) {
+      const exportButton: any = document.querySelector('.export-user-list');
+      if (exportButton) {
+        exportButton.click();
+      }
+    }
+  };
+
+  const formatExportData = () => {
+    const headers: any = [];
+    columns.map((headersItem) => {
+      if (headersItem.title) {
+        headers.push({
+          label: headersItem.title,
+          key: headersItem.dataIndex,
+        });
+      }
+      return headersItem;
+    });
+    const downloadData = allUserList.map((item) => ({
+      ...item,
+      birthday:
+        (item.birthday &&
+          `${formatTimeStrByTimeString(
+            formatLabelDate(item.birthday),
+            FormatTimeKeys.mdy,
+          )}\n${''}`) ||
+        '',
+      lastLoginAt:
+        (item.lastLoginAt &&
+          `${formatTimeStrByTimeString(
+            item.lastLoginAt,
+            FormatTimeKeys.mdy,
+          )}\n${formatTimeStrByTimeString(
+            item.lastLoginAt,
+            FormatTimeKeys.hms,
+          )}`) ||
+        '',
+      isActivated:
+        (item.isActivated && activeStatus.active.text) ||
+        activeStatus.inActive.text,
+    }));
+    return { headers, data: downloadData };
+  };
+
   // eslint-disable-next-line
   useEffect(() => {
     return () => {
@@ -275,54 +329,6 @@ const Users = () => {
       }),
     );
   }, [location.search, filters, sort]);
-
-  const handleExportAllUserList = async () => {
-    const response = await dispatch(
-      getAllUsersListAction({
-        page: 1,
-        size: 100000,
-        filters,
-        sort,
-      }),
-    );
-    if (response.type === getAllUsersListAction.fulfilled.toString()) {
-      const exportButton: any = document.querySelector('.export-user-list');
-      if (exportButton) {
-        exportButton.click();
-      }
-    }
-  };
-
-  const formatExportData = () => {
-    const headers: any = [];
-    columns.map((headersItem) => {
-      if (headersItem.title) {
-        headers.push({
-          label: headersItem.title,
-          key: headersItem.dataIndex,
-        });
-      }
-      return headersItem;
-    });
-    const downloadData = allUserList.map((item) => ({
-      ...item,
-      birthday: item.birthday || '-',
-      lastLoginAt:
-        (item.lastLoginAt &&
-          `${formatTimeStrByTimeString(
-            item.lastLoginAt,
-            FormatTimeKeys.mdy,
-          )}\n${formatTimeStrByTimeString(
-            item.lastLoginAt,
-            FormatTimeKeys.hms,
-          )}`) ||
-        '-',
-      isActivated:
-        (item.isActivated && activeStatus.active.text) ||
-        activeStatus.inActive.text,
-    }));
-    return { headers, data: downloadData };
-  };
 
   return (
     <UsersContainer>
