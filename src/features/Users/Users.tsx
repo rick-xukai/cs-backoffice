@@ -1,10 +1,13 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation, Link } from 'react-router-dom';
-import { Tooltip, message, Badge, Button, Row, Col, Select } from 'antd';
+import { Tooltip, message, Badge, Button, Row, Col, Select, Input } from 'antd';
+import { CloseOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { TablePaginationConfig } from 'antd/es/table';
 import { SortOrder, FilterValue, SorterResult } from 'antd/es/table/interface';
 import qs from 'qs';
+import { CSVLink } from 'react-csv';
 
 import { useCookie } from '../../hooks';
 import { UserRoutes, AuthRoutes } from '../../navigation/Routes';
@@ -13,13 +16,18 @@ import { formatTimeStrByTimeString, formatLabelDate } from '../../utils/func';
 import { SortKeys, FormatTimeKeys, CookieKeys } from '../../constants/Keys';
 import TableComponent from '../../components/Table/Table';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
+import BallLoading from '../../components/BallLoading';
 import {
   defaultPageSize,
   defaultCurrentPage,
   activeStatus,
   TokenExpireResponseCode,
 } from '../../constants/General';
-import { UsersContainer, TableFilterContainer } from './Users.component';
+import {
+  UsersContainer,
+  TableFilterContainer,
+  ListTableContainer,
+} from './Users.component';
 import {
   reset,
   selectLoading,
@@ -29,9 +37,12 @@ import {
   selectFilters,
   selectSort,
   getUsersListAction,
-  filtersChangeAction,
+  // filtersChangeAction,
   sortChangeAction,
   UsersListDataType,
+  selectAllUserList,
+  selectGetAllUserListLoading,
+  getAllUsersListAction,
 } from './Users.slice';
 
 const { Option } = Select;
@@ -53,6 +64,8 @@ const Users = () => {
   const error = useAppSelector(selectError);
   const total = useAppSelector(selectDataTotal);
   const filters = useAppSelector(selectFilters);
+  const allUserList = useAppSelector(selectAllUserList);
+  const getAllUserListLoading = useAppSelector(selectGetAllUserListLoading);
 
   const [currentPaginationConfig, setCurrentPaginationConfig] = useState({
     userListPage: defaultCurrentPage,
@@ -214,15 +227,15 @@ const Users = () => {
     );
   };
 
-  const handleStatusChange = (status: string) => {
-    let currentStatus: boolean | null = null;
-    if (status === activeStatus.active.text) {
-      currentStatus = activeStatus.active.status;
-    } else if (status === activeStatus.inActive.text) {
-      currentStatus = activeStatus.inActive.status;
-    }
-    dispatch(filtersChangeAction({ status: currentStatus }));
-  };
+  // const handleStatusChange = (status: string) => {
+  //   let currentStatus: boolean | null = null;
+  //   if (status === activeStatus.active.text) {
+  //     currentStatus = activeStatus.active.status;
+  //   } else if (status === activeStatus.inActive.text) {
+  //     currentStatus = activeStatus.inActive.status;
+  //   }
+  //   dispatch(filtersChangeAction({ status: currentStatus }));
+  // };
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -263,49 +276,119 @@ const Users = () => {
     );
   }, [location.search, filters, sort]);
 
+  const handleExportAllUserList = async () => {
+    const response = await dispatch(
+      getAllUsersListAction({
+        page: 1,
+        size: 100000,
+        filters,
+        sort,
+      }),
+    );
+    if (response.type === getAllUsersListAction.fulfilled.toString()) {
+      const exportButton: any = document.querySelector('.export-user-list');
+      if (exportButton) {
+        exportButton.click();
+      }
+    }
+  };
+
+  const formatExportData = () => {
+    const headers: any = [];
+    columns.map((headersItem) => {
+      if (headersItem.title) {
+        headers.push({
+          label: headersItem.title,
+          key: headersItem.dataIndex,
+        });
+      }
+      return headersItem;
+    });
+    const downloadData = allUserList.map((item) => ({
+      ...item,
+      birthday: item.birthday || '-',
+      lastLoginAt:
+        (item.lastLoginAt &&
+          `${formatTimeStrByTimeString(
+            item.lastLoginAt,
+            FormatTimeKeys.mdy,
+          )}\n${formatTimeStrByTimeString(
+            item.lastLoginAt,
+            FormatTimeKeys.hms,
+          )}`) ||
+        '-',
+      isActivated:
+        (item.isActivated && activeStatus.active.text) ||
+        activeStatus.inActive.text,
+    }));
+    return { headers, data: downloadData };
+  };
+
   return (
     <UsersContainer>
       <PageHeaderComponent title={t('Users')} />
       <div className="page-main">
-        <TableComponent
-          loading={loading}
-          currentPage={currentPaginationConfig.userListPage}
-          currentPageSize={currentPaginationConfig.userListPageSize}
-          columns={columns}
-          tableData={data}
-          tableDataTotal={total}
-          onChange={onTableChange}
-          paginationChange={(page, pageSize) =>
-            history.push(
-              `${UserRoutes.users}?page=${
-                (pageSize === currentPaginationConfig.userListPageSize &&
-                  page) ||
-                defaultCurrentPage
-              }&pageSize=${pageSize}`,
-            )
-          }
-        >
-          <TableFilterContainer style={{ display: 'none' }}>
-            <Col span={24}>
-              <Row>
-                <Col span={6} className="filter-status">
-                  <span>{t('Status')}:</span>
+        <ListTableContainer>
+          <TableFilterContainer>
+            <Col lg={17} span={24}>
+              {/* <Row className="filter-items" gutter={[16, 16]}>
+                <Col lg={9} span={24}>
+                  <Input
+                    placeholder={t('Search name or email')}
+                    allowClear={{
+                      clearIcon: <CloseOutlined />,
+                    }}
+                  />
+                </Col>
+                <Col lg={5} span={24} className="filter-status">
                   <Select
-                    defaultValue={activeStatus.all.text}
-                    onChange={handleStatusChange}
+                    allowClear
+                    placeholder={t('Status')}
                     defaultActiveFirstOption={false}
                   >
-                    {Object.values(activeStatus).map((item) => (
-                      <Option key={item.text} value={item.text}>
-                        {item.text}
-                      </Option>
-                    ))}
+                    <Option value="Active">Active</Option>
                   </Select>
                 </Col>
-              </Row>
+              </Row> */}
+            </Col>
+            <Col lg={7} span={24} className="export-action">
+              <Button
+                onClick={handleExportAllUserList}
+                className="action-button"
+                disabled={!data.length || getAllUserListLoading}
+              >
+                <DownloadOutlined />
+                {t('Export')}
+              </Button>
+              <CSVLink
+                filename="Users_Export.csv"
+                headers={formatExportData().headers}
+                data={formatExportData().data}
+                className="export-user-list"
+              />
             </Col>
           </TableFilterContainer>
-        </TableComponent>
+          {(loading && <BallLoading />) || (
+            <TableComponent
+              loading={loading}
+              currentPage={currentPaginationConfig.userListPage}
+              currentPageSize={currentPaginationConfig.userListPageSize}
+              columns={columns}
+              tableData={data}
+              tableDataTotal={total}
+              onChange={onTableChange}
+              paginationChange={(page, pageSize) =>
+                history.push(
+                  `${UserRoutes.users}?page=${
+                    (pageSize === currentPaginationConfig.userListPageSize &&
+                      page) ||
+                    defaultCurrentPage
+                  }&pageSize=${pageSize}`,
+                )
+              }
+            />
+          )}
+        </ListTableContainer>
       </div>
     </UsersContainer>
   );

@@ -66,9 +66,49 @@ export const getUsersListAction = createAsyncThunk<
   }
 });
 
+/**
+ *  All Users List
+ */
+export const getAllUsersListAction = createAsyncThunk<
+  { count: number; list: UsersListDataType[] },
+  GetUsersListPayload | undefined,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getAllUsersList/getAllUsersListAction',
+  async (payload, { rejectWithValue }) => {
+    const { page, size, filters, sort } = payload || {};
+    try {
+      const response = await UsersService.getUsersList({
+        page,
+        size,
+        ...sort,
+        ...filters,
+      });
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
 interface UsersListState {
   loading: boolean;
+  getAllUserListLoading: boolean;
   data: UsersListDataType[];
+  allUserList: UsersListDataType[];
   sort: { sortName: string; sortValue: string };
   filters: { status: number | null };
   total: number;
@@ -83,12 +123,14 @@ interface UsersListState {
 
 const initialState: UsersListState = {
   loading: false,
+  getAllUserListLoading: false,
   sort: {
     sortName: 'last_action',
     sortValue: SortKeys.descend,
   },
   filters: { status: null },
   data: [],
+  allUserList: [],
   total: 0,
   error: null,
 };
@@ -123,6 +165,22 @@ export const usersListSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(getAllUsersListAction.pending, (state) => {
+        state.allUserList = [];
+        state.getAllUserListLoading = true;
+      })
+      .addCase(getAllUsersListAction.fulfilled, (state, action: any) => {
+        state.getAllUserListLoading = false;
+        state.allUserList = action.payload.list;
+      })
+      .addCase(getAllUsersListAction.rejected, (state, action) => {
+        state.getAllUserListLoading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
       });
   },
 });
@@ -136,5 +194,9 @@ export const selectFilters = (state: RootState) => state.usersList.filters;
 export const selectData = (state: RootState) => state.usersList.data;
 export const selectError = (state: RootState) => state.usersList.error;
 export const selectSort = (state: RootState) => state.usersList.sort;
+export const selectAllUserList = (state: RootState) =>
+  state.usersList.allUserList;
+export const selectGetAllUserListLoading = (state: RootState) =>
+  state.usersList.getAllUserListLoading;
 
 export default usersListSlice.reducer;
