@@ -184,6 +184,9 @@ const ListTableContainer = styled.div`
       background: ${Colors.grey9};
       color: ${Colors.grayScale40};
     }
+    .loading-icon {
+      color: ${Colors.grayScale50};
+    }
   }
   @media (max-width: 992px) {
     .export-action {

@@ -3,7 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import { Tooltip, message, Badge, Button, Row, Col, Select, Input } from 'antd';
-import { CloseOutlined, DownloadOutlined } from '@ant-design/icons';
+import {
+  CloseOutlined,
+  DownloadOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
 import type { TablePaginationConfig } from 'antd/es/table';
 import { SortOrder, FilterValue, SorterResult } from 'antd/es/table/interface';
 import qs from 'qs';
@@ -363,7 +367,9 @@ const Users = () => {
                 className="action-button"
                 disabled={!data.length || getAllUserListLoading}
               >
-                <DownloadOutlined />
+                {(getAllUserListLoading && (
+                  <LoadingOutlined className="loading-icon" />
+                )) || <DownloadOutlined />}
                 {t('Export')}
               </Button>
               <CSVLink
