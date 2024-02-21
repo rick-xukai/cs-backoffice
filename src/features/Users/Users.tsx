@@ -26,6 +26,7 @@ import {
   defaultCurrentPage,
   activeStatus,
   TokenExpireResponseCode,
+  GetAllDataPageSize,
 } from '../../constants/General';
 import {
   UsersContainer,
@@ -244,8 +245,8 @@ const Users = () => {
   const handleExportAllUserList = async () => {
     const response = await dispatch(
       getAllUsersListAction({
-        page: 1,
-        size: 100000,
+        page: defaultCurrentPage,
+        size: GetAllDataPageSize,
         filters,
         sort,
       }),
