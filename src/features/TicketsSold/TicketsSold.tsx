@@ -21,6 +21,7 @@ import {
   DownloadOutlined,
   ExclamationCircleOutlined,
   UploadOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 import { CSVLink } from 'react-csv';
 import { useParams, useHistory } from 'react-router-dom';
@@ -47,6 +48,7 @@ import {
   TicketSoldSaleStatus,
   defaultCurrentPage,
   defaultPageSize,
+  GetAllDataPageSize,
 } from '../../constants/General';
 import PageHeaderComponent from '../../components/PageHeader/PageHeader';
 import TableComponent from '../../components/Table/Table';
@@ -84,6 +86,9 @@ import {
   TicketSoldListItemProps,
   updateTicketStatusAction,
   importTicketsAction,
+  selectAllListData,
+  selectGetAllListDataLoading,
+  getAllTicketSoldListAction,
 } from './TicketSold.slice';
 
 const { Option } = Select;
@@ -117,6 +122,8 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
   const searchKeyword = useAppSelector(selectSearchKeyword);
   const saleStatus = useAppSelector(selectSaleStatus);
   const ticketSoldCount = useAppSelector(selectTicketSoldCount);
+  const allListData = useAppSelector(selectAllListData);
+  const getAllListDataLoading = useAppSelector(selectGetAllListDataLoading);
 
   const [searchKeywordState, setSearchKeywordState] = useState<string>('');
   const [showImportModal, setShowImportModal] = useState<boolean>(false);
@@ -434,6 +441,29 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
     },
   ];
 
+  const handleExportAllListData = async () => {
+    const response = await dispatch(
+      getAllTicketSoldListAction({
+        id: params.id,
+        data: {
+          page,
+          size: GetAllDataPageSize,
+          status: filterStatus,
+          source: filterSource,
+          ticketTypeId: filterTicketType,
+          keyword: searchKeyword,
+          saleStatus,
+        },
+      }),
+    );
+    if (response.type === getAllTicketSoldListAction.fulfilled.toString()) {
+      const exportButton: any = document.querySelector('.export-tickets-list');
+      if (exportButton) {
+        exportButton.click();
+      }
+    }
+  };
+
   const formatDownloadHeaders = () => {
     const headers: any = [];
     columns.map((headersItem) => {
@@ -450,29 +480,35 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       { label: 'Attendee Name', key: 'attendeeName' },
       { label: 'Attendee Email', key: 'attendeeEmail' },
     );
-    const downloadData = listData.map((dataItem: TicketSoldListItemProps) => ({
-      ...dataItem,
-      attendeeName: `${dataItem.user.firstName} ${dataItem.user.lastName}`,
-      attendeeEmail: dataItem.user.email,
-      total: `${dataItem.total} ${priceUnit}`,
-      price: `${dataItem.price} ${priceUnit}`,
-      ticketType: dataItem.ticketType.name,
-      discount: `${
-        (dataItem.discount && `${dataItem.discount} ${priceUnit}`) || '/'
-      }`,
-      absorbFees: checkFees(dataItem).props.children,
-      createdAt: `${formatTimeStrByTimeString(
-        dataItem.createdAt,
-        FormatTimeKeys.mdy,
-      )}\n${formatTimeStrByTimeString(dataItem.createdAt, FormatTimeKeys.hm)}`,
-      source: TicketSoldFilterSource.find((item) => item.id === dataItem.source)
-        ?.name,
-      status:
-        dataItem.saleStatus === TicketSoldSaleStatus
-          ? TicketSoldFilterStatus[5].name
-          : TicketSoldFilterStatus.find((item) => item.id === dataItem.status)
-              ?.name,
-    }));
+    const downloadData = allListData.map(
+      (dataItem: TicketSoldListItemProps) => ({
+        ...dataItem,
+        attendeeName: `${dataItem.user.firstName} ${dataItem.user.lastName}`,
+        attendeeEmail: dataItem.user.email,
+        total: `${dataItem.total} ${priceUnit}`,
+        price: `${dataItem.price} ${priceUnit}`,
+        ticketType: dataItem.ticketType.name,
+        discount: `${
+          (dataItem.discount && `${dataItem.discount} ${priceUnit}`) || '/'
+        }`,
+        absorbFees: checkFees(dataItem).props.children,
+        createdAt: `${formatTimeStrByTimeString(
+          dataItem.createdAt,
+          FormatTimeKeys.mdy,
+        )}\n${formatTimeStrByTimeString(
+          dataItem.createdAt,
+          FormatTimeKeys.hm,
+        )}`,
+        source: TicketSoldFilterSource.find(
+          (item) => item.id === dataItem.source,
+        )?.name,
+        status:
+          dataItem.saleStatus === TicketSoldSaleStatus
+            ? TicketSoldFilterStatus[5].name
+            : TicketSoldFilterStatus.find((item) => item.id === dataItem.status)
+                ?.name,
+      }),
+    );
     return { headers, data: downloadData };
   };
 
@@ -883,16 +919,22 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                 </Row>
               </Col>
               <Col lg={7} span={24} className="export-action">
+                <Button
+                  className="action-button"
+                  disabled={!listData.length || getAllListDataLoading}
+                  onClick={handleExportAllListData}
+                >
+                  {(getAllListDataLoading && (
+                    <LoadingOutlined className="loading-icon" />
+                  )) || <DownloadOutlined />}
+                  {t('Export')}
+                </Button>
                 <CSVLink
                   filename={`${ticketSoldCount.name}_Tickets_Export.csv`}
                   headers={formatDownloadHeaders().headers}
                   data={formatDownloadHeaders().data}
-                >
-                  <Button className="action-button" disabled={!listData.length}>
-                    <DownloadOutlined />
-                    {t('Export')}
-                  </Button>
-                </CSVLink>
+                  className="export-tickets-list"
+                />
                 <Button
                   className="action-button"
                   onClick={() => setShowImportModal(true)}

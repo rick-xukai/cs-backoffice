@@ -187,6 +187,9 @@ const TableFilterContainer = styled(Row)`
         color: ${Colors.branding};
         border-color: ${Colors.branding};
       }
+      .loading-icon {
+        color: ${Colors.grayScale40};
+      }
     }
     .ant-btn[disabled] {
       border: 1px solid ${Colors.grey8};

@@ -5,6 +5,7 @@ export const test = 'test';
 export const defaultCurrentPage = 1;
 export const defaultPageSize = 20;
 export const defaultOrganizerPageSize = 100;
+export const GetAllDataPageSize = 100000;
 export const ticketStatus = [
   {
     text: 'Upcoming',

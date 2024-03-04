@@ -108,6 +108,38 @@ export const getTicketSoldListAction = createAsyncThunk<
 );
 
 /**
+ * get all ticket sold list
+ */
+export const getAllTicketSoldListAction = createAsyncThunk<
+  { count: number; list: TicketSoldListItemProps[] },
+  { id: string; data: GetListParams },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getAllTicketSoldListAction/getAllTicketSoldListAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await TicketSoldService.getTicketSoldList(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
  * get ticket sold count
  */
 export const getTicketSoldCountAction = createAsyncThunk<
@@ -203,6 +235,8 @@ export const importTicketsAction = createAsyncThunk<
 interface TicketSoldState {
   loading: boolean;
   listData: TicketSoldListItemProps[];
+  allListData: TicketSoldListItemProps[];
+  getAllListDataLoading: boolean;
   listTotal: number;
   ticketSoldCount: TicketSoldCountItemProps;
   page: number;
@@ -224,6 +258,8 @@ interface TicketSoldState {
 const initialState: TicketSoldState = {
   loading: false,
   listData: [],
+  allListData: [],
+  getAllListDataLoading: false,
   listTotal: 0,
   page: defaultCurrentPage,
   size: defaultPageSize,
@@ -309,6 +345,22 @@ export const ticketSoldSlice = createSlice({
           state.error = action.error as ErrorType;
         }
       })
+      .addCase(getAllTicketSoldListAction.pending, (state) => {
+        state.allListData = [];
+        state.getAllListDataLoading = true;
+      })
+      .addCase(getAllTicketSoldListAction.fulfilled, (state, action: any) => {
+        state.getAllListDataLoading = false;
+        state.allListData = action.payload.list;
+      })
+      .addCase(getAllTicketSoldListAction.rejected, (state, action) => {
+        state.getAllListDataLoading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
       .addCase(updateTicketStatusAction.rejected, (state, action) => {
         state.loading = false;
         if (action.payload) {
@@ -357,5 +409,9 @@ export const selectSearchKeyword = (state: RootState) =>
   state.ticketSold.searchKeyword;
 export const selectSaleStatus = (state: RootState) =>
   state.ticketSold.saleStatus;
+export const selectAllListData = (state: RootState) =>
+  state.ticketSold.allListData;
+export const selectGetAllListDataLoading = (state: RootState) =>
+  state.ticketSold.getAllListDataLoading;
 
 export default ticketSoldSlice.reducer;
