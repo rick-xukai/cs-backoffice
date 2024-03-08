@@ -129,6 +129,8 @@ const Transactions = () => {
               {text}
               <br />
               {record.cardNo}
+              <br />
+              {record.swiftCode || ''}
             </span>
           }
         >
