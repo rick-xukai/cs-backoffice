@@ -136,6 +136,8 @@ const Transactions = () => {
             {text}
             <br />
             {record.cardNo}
+            <br />
+            {record.swiftCode || ''}
           </p>
         </Tooltip>
       ),
