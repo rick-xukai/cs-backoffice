@@ -23,6 +23,7 @@ export interface TransactionsDataType {
   status: number;
   createdAt: string;
   updatedAt: string;
+  swiftCode: string;
 }
 
 export interface UpdateTransactionsStatusPayload {
