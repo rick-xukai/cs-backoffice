@@ -308,6 +308,30 @@ const updateOnControl = async (eventId: string, state: boolean) => {
   return response;
 };
 
+const updateSellState = async (eventId: string, state: boolean) => {
+  const uri = API.updateSellState.put
+    .replace('{eventId}', eventId)
+    .replace('{state}', state.toString());
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setPayload({})
+    .doPut();
+  return response;
+};
+
+const updateTransferState = async (eventId: string, state: boolean) => {
+  const uri = API.updateTransferState.put
+    .replace('{eventId}', eventId)
+    .replace('{state}', state.toString());
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setPayload({})
+    .doPut();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -334,4 +358,6 @@ export default {
   getPopupSetting,
   savePopupSetting,
   updateOnControl,
+  updateSellState,
+  updateTransferState,
 };

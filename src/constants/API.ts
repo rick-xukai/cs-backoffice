@@ -156,6 +156,12 @@ const API = {
   updateOnControl: {
     put: '/admin/event/{eventId}/on_control/{state}',
   },
+  updateSellState: {
+    put: '/admin/event/{eventId}/can_sell/{state}',
+  },
+  updateTransferState: {
+    put: '/admin/event/{eventId}/can_transfer/{state}',
+  },
 };
 
 export default API;
