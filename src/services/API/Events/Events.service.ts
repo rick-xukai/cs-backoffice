@@ -296,6 +296,18 @@ const savePopupSetting = async (payload: any) => {
   return response;
 };
 
+const updateOnControl = async (eventId: string, state: boolean) => {
+  const uri = API.updateOnControl.put
+    .replace('{eventId}', eventId)
+    .replace('{state}', state.toString());
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setPayload({})
+    .doPut();
+  return response;
+};
+
 export default {
   getEventsList,
   getEventDetail,
@@ -321,4 +333,5 @@ export default {
   duplicateEvent,
   getPopupSetting,
   savePopupSetting,
+  updateOnControl,
 };

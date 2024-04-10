@@ -153,6 +153,9 @@ const API = {
   saveSeetings: {
     put: '/admin/setting',
   },
+  updateOnControl: {
+    put: '/admin/event/{eventId}/on_control/{state}',
+  },
 };
 
 export default API;

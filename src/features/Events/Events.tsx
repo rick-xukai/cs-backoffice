@@ -12,6 +12,7 @@ import {
   Dropdown,
   Modal,
   Pagination,
+  Switch,
 } from 'antd';
 import type { MenuProps } from 'antd';
 import {
@@ -76,6 +77,7 @@ import {
   getPopupSettingAction,
   savePopupSettingAction,
   selectSavePopupSettingLoading,
+  updateOnControlAction,
 } from './Events.slice';
 import { SGD_UNIT } from '../../constants/constants';
 
@@ -123,6 +125,8 @@ const Events = () => {
   const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
   const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
   const [hideSuccess, setHideSuccess] = useState<boolean>(false);
+  const [updateEventOnControlSuccess, setUpdateEventOnControlSuccess] =
+    useState<boolean>(false);
   const [duplicateSuccess, setDuplicateSuccess] = useState<boolean>(false);
   const goToDashboard = (id: any, name: any) => {
     history.push(
@@ -357,6 +361,30 @@ const Events = () => {
     );
   };
 
+  const onSwitchChange = (state: boolean, id: string) => {
+    setUpdateEventOnControlSuccess(false);
+    confirm({
+      centered: true,
+      closable: false,
+      okText: t('Confirm'),
+      cancelText: t('Cancel'),
+      title:
+        (state && t('Show on CrowdControl')) || t('Remove from CrowdControl'),
+      icon: <ExclamationCircleOutlined />,
+      content:
+        (state &&
+          t('Are you sure you want to show this event on CrowdControl?')) ||
+        t('Are you sure you want to remove this event from CrowdControl?'),
+      onOk: async () => {
+        const response = await dispatch(updateOnControlAction({ id, state }));
+        if (response.type === updateOnControlAction.fulfilled.toString()) {
+          message.success(t('Event is successfully updated.'));
+          setUpdateEventOnControlSuccess(true);
+        }
+      },
+    });
+  };
+
   const columns = [
     {
       title: 'Event',
@@ -414,6 +442,7 @@ const Events = () => {
     {
       title: 'Sold',
       dataIndex: 'soldTotal',
+      width: 120,
       key: 'soldTotal',
       role: [
         UserRoleKeys.organizerAdmin,
@@ -429,6 +458,7 @@ const Events = () => {
       title: 'Revenue',
       dataIndex: 'revenue',
       key: 'revenue',
+      width: 120,
       role: [
         UserRoleKeys.organizerAdmin,
         UserRoleKeys.organizerUser,
@@ -443,7 +473,7 @@ const Events = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 120,
       role: [
         UserRoleKeys.organizerAdmin,
         UserRoleKeys.organizerUser,
@@ -452,7 +482,19 @@ const Events = () => {
       ],
       render: (status: number) => getBadge(status),
     },
-
+    {
+      title: 'Show on Ctrl',
+      dataIndex: '',
+      key: '',
+      width: 120,
+      role: [UserRoleKeys.superAdmin],
+      render: (_: any, record: EventsListDataType) => (
+        <Switch
+          checked={record.onControl}
+          onChange={(state) => onSwitchChange(state, record.id)}
+        />
+      ),
+    },
     {
       title: '',
       dataIndex: '',
@@ -556,7 +598,13 @@ const Events = () => {
   }, [page, size, filterStatus, searchKeyword]);
 
   useEffect(() => {
-    if (deleteSuccess || cancelSuccess || hideSuccess || duplicateSuccess) {
+    if (
+      deleteSuccess ||
+      cancelSuccess ||
+      hideSuccess ||
+      duplicateSuccess ||
+      updateEventOnControlSuccess
+    ) {
       dispatch(
         getEventsListAction({
           page,
@@ -566,7 +614,13 @@ const Events = () => {
         }),
       );
     }
-  }, [deleteSuccess, cancelSuccess, hideSuccess, duplicateSuccess]);
+  }, [
+    deleteSuccess,
+    cancelSuccess,
+    hideSuccess,
+    duplicateSuccess,
+    updateEventOnControlSuccess,
+  ]);
 
   const createNewEventPlaceholder = (
     <AddNewEventContainer>
@@ -714,6 +768,14 @@ const Events = () => {
                           <p className="price">
                             {item.revenue.toLocaleString()} {SGD_UNIT}
                           </p>
+                        </Col>
+                        <Col span={24}>
+                          <Switch
+                            checked={item.onControl}
+                            onChange={(state: boolean) =>
+                              onSwitchChange(state, item.id)
+                            }
+                          />
                         </Col>
                         <Col span={24}>{getBadge(item.status)}</Col>
                       </EventInfoCardResponsive>

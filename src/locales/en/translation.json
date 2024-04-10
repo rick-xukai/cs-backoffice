@@ -467,5 +467,9 @@
   "Are you sure you want to delete this organizer?": "Are you sure you want to delete this organizer?",
   "Total Ticket Holders": "Total Ticket Holders",
   "Tickets Scanned": "Tickets Scanned",
-  "Click here to view the full list of ticket holders, including transferred and resold tickets.": "Click here to view the full list of ticket holders, including transferred and resold tickets."
+  "Click here to view the full list of ticket holders, including transferred and resold tickets.": "Click here to view the full list of ticket holders, including transferred and resold tickets.",
+  "Show on CrowdControl": "Show on CrowdControl",
+  "Are you sure you want to show this event on CrowdControl?": "Are you sure you want to show this event on CrowdControl?",
+  "Remove from CrowdControl": "Remove from CrowdControl",
+  "Are you sure you want to remove this event from CrowdControl?": "Are you sure you want to remove this event from CrowdControl?"
 }
