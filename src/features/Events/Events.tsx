@@ -377,7 +377,7 @@ const Events = () => {
       {
         label:
           (record.canTransfer && t('Deactivate Tickets Transfers')) ||
-          t('Open Tickets Transferring'),
+          t('Open Ticket Transfers'),
         key: 'transfer',
         style: {
           display: (userRoles === UserRoleKeys.superAdmin && 'block') || 'none',
