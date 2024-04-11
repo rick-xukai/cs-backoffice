@@ -12,6 +12,7 @@ import {
   Dropdown,
   Modal,
   Pagination,
+  Switch,
 } from 'antd';
 import type { MenuProps } from 'antd';
 import {
@@ -76,6 +77,9 @@ import {
   getPopupSettingAction,
   savePopupSettingAction,
   selectSavePopupSettingLoading,
+  updateOnControlAction,
+  updateSellStateAction,
+  updateTransferStateAction,
 } from './Events.slice';
 import { SGD_UNIT } from '../../constants/constants';
 
@@ -123,7 +127,13 @@ const Events = () => {
   const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
   const [cancelSuccess, setCancelSuccess] = useState<boolean>(false);
   const [hideSuccess, setHideSuccess] = useState<boolean>(false);
+  const [updateEventOnControlSuccess, setUpdateEventOnControlSuccess] =
+    useState<boolean>(false);
   const [duplicateSuccess, setDuplicateSuccess] = useState<boolean>(false);
+  const [updateEventSellStateSuccess, setUpdateEventSellStateSuccess] =
+    useState<boolean>(false);
+  const [updateEventTransferStateSuccess, setUpdateEventTransferStateSuccess] =
+    useState<boolean>(false);
   const goToDashboard = (id: any, name: any) => {
     history.push(
       UserRoutes.eventDashboard.replace(':id', id).replace(':name', name),
@@ -142,7 +152,19 @@ const Events = () => {
   //     // goToDashboard(record.id, record.name);
   //   },
   // });
+  const resetSuccessState = () => {
+    setDeleteSuccess(false);
+    setCancelSuccess(false);
+    setHideSuccess(false);
+    setDuplicateSuccess(false);
+    setUpdateEventSellStateSuccess(false);
+    setUpdateEventTransferStateSuccess(false);
+    setUpdateEventOnControlSuccess(false);
+  };
+
   const renderListItemAction = (record: EventsListDataType) => {
+    const userRoles = cookie.getCookie(CookieKeys.authUserRole);
+
     const items: MenuProps['items'] = [
       {
         label: t('Dashboard'),
@@ -193,8 +215,7 @@ const Events = () => {
             (record.status === EventStatusKeys.draft && 'block') || 'none',
         },
         onClick: () => {
-          setCancelSuccess(false);
-          setDeleteSuccess(false);
+          resetSuccessState();
           confirm({
             centered: true,
             closable: false,
@@ -251,8 +272,7 @@ const Events = () => {
             (record.status === EventStatusKeys.upcoming && 'block') || 'none',
         },
         onClick: () => {
-          setCancelSuccess(false);
-          setDeleteSuccess(false);
+          resetSuccessState();
           confirm({
             centered: true,
             closable: false,
@@ -283,9 +303,7 @@ const Events = () => {
             (record.status === EventStatusKeys.upcoming && 'block') || 'none',
         },
         onClick: () => {
-          setCancelSuccess(false);
-          setDeleteSuccess(false);
-          setHideSuccess(false);
+          resetSuccessState();
           confirm({
             centered: true,
             closable: false,
@@ -307,6 +325,94 @@ const Events = () => {
                   message.success(t('Hide success'));
                 }
                 setHideSuccess(true);
+              }
+            },
+          });
+        },
+      },
+      {
+        label:
+          (record.canSell && t('Deactivate Secondary Market')) ||
+          t('Open Secondary Market'),
+        key: 'sell',
+        style: {
+          display: (userRoles === UserRoleKeys.superAdmin && 'block') || 'none',
+        },
+        onClick: () => {
+          resetSuccessState();
+          confirm({
+            centered: true,
+            closable: false,
+            okText: t('Confirm'),
+            cancelText: t('Cancel'),
+            title:
+              (record.canSell && t('Stop Secondary Market')) ||
+              t('Open Secondary Market'),
+            icon: <ExclamationCircleOutlined />,
+            content:
+              (record.canSell &&
+                t(
+                  'Are you sure you want to deactivate the secondary market for this event? This action will automatically recall all on-listing tickets.',
+                )) ||
+              t(
+                'Are you sure you want to reopen the secondary market for this event?',
+              ),
+            onOk: async () => {
+              const response = await dispatch(
+                updateSellStateAction({
+                  id: record.id,
+                  state: !record.canSell,
+                }),
+              );
+              if (
+                response.type === updateSellStateAction.fulfilled.toString()
+              ) {
+                message.success(t('Event is successfully updated.'));
+                setUpdateEventSellStateSuccess(true);
+              }
+            },
+          });
+        },
+      },
+      {
+        label:
+          (record.canTransfer && t('Deactivate Tickets Transfers')) ||
+          t('Open Ticket Transfers'),
+        key: 'transfer',
+        style: {
+          display: (userRoles === UserRoleKeys.superAdmin && 'block') || 'none',
+        },
+        onClick: () => {
+          resetSuccessState();
+          confirm({
+            centered: true,
+            closable: false,
+            okText: t('Confirm'),
+            cancelText: t('Cancel'),
+            title:
+              (record.canTransfer && t('Stop Ticket Transfers')) ||
+              t('Open Ticket Transfers'),
+            icon: <ExclamationCircleOutlined />,
+            content:
+              (record.canTransfer &&
+                t(
+                  'Are you sure you want to deactivate ticket transfers for this event? This action will automatically recall all the in transferring tickets.',
+                )) ||
+              t(
+                'Are you sure you want to reopen the ticket transfers for this event?',
+              ),
+            onOk: async () => {
+              const response = await dispatch(
+                updateTransferStateAction({
+                  id: record.id,
+                  state: !record.canTransfer,
+                }),
+              );
+              if (
+                response.type === updateTransferStateAction.fulfilled.toString()
+              ) {
+                message.success(t('Event is successfully updated.'));
+                setUpdateEventTransferStateSuccess(true);
               }
             },
           });
@@ -355,6 +461,30 @@ const Events = () => {
         </div>
       </div>
     );
+  };
+
+  const onSwitchChange = (state: boolean, id: string) => {
+    resetSuccessState();
+    confirm({
+      centered: true,
+      closable: false,
+      okText: t('Confirm'),
+      cancelText: t('Cancel'),
+      title:
+        (state && t('Show on CrowdControl')) || t('Remove from CrowdControl'),
+      icon: <ExclamationCircleOutlined />,
+      content:
+        (state &&
+          t('Are you sure you want to show this event on CrowdControl?')) ||
+        t('Are you sure you want to remove this event from CrowdControl?'),
+      onOk: async () => {
+        const response = await dispatch(updateOnControlAction({ id, state }));
+        if (response.type === updateOnControlAction.fulfilled.toString()) {
+          message.success(t('Event is successfully updated.'));
+          setUpdateEventOnControlSuccess(true);
+        }
+      },
+    });
   };
 
   const columns = [
@@ -414,6 +544,7 @@ const Events = () => {
     {
       title: 'Sold',
       dataIndex: 'soldTotal',
+      width: 120,
       key: 'soldTotal',
       role: [
         UserRoleKeys.organizerAdmin,
@@ -429,6 +560,7 @@ const Events = () => {
       title: 'Revenue',
       dataIndex: 'revenue',
       key: 'revenue',
+      width: 120,
       role: [
         UserRoleKeys.organizerAdmin,
         UserRoleKeys.organizerUser,
@@ -443,7 +575,7 @@ const Events = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 120,
       role: [
         UserRoleKeys.organizerAdmin,
         UserRoleKeys.organizerUser,
@@ -452,7 +584,19 @@ const Events = () => {
       ],
       render: (status: number) => getBadge(status),
     },
-
+    {
+      title: 'Show on Ctrl',
+      dataIndex: '',
+      key: '',
+      width: 120,
+      role: [UserRoleKeys.superAdmin],
+      render: (_: any, record: EventsListDataType) => (
+        <Switch
+          checked={record.onControl}
+          onChange={(state) => onSwitchChange(state, record.id)}
+        />
+      ),
+    },
     {
       title: '',
       dataIndex: '',
@@ -556,7 +700,15 @@ const Events = () => {
   }, [page, size, filterStatus, searchKeyword]);
 
   useEffect(() => {
-    if (deleteSuccess || cancelSuccess || hideSuccess || duplicateSuccess) {
+    if (
+      deleteSuccess ||
+      cancelSuccess ||
+      hideSuccess ||
+      duplicateSuccess ||
+      updateEventOnControlSuccess ||
+      updateEventSellStateSuccess ||
+      updateEventTransferStateSuccess
+    ) {
       dispatch(
         getEventsListAction({
           page,
@@ -566,7 +718,15 @@ const Events = () => {
         }),
       );
     }
-  }, [deleteSuccess, cancelSuccess, hideSuccess, duplicateSuccess]);
+  }, [
+    deleteSuccess,
+    cancelSuccess,
+    hideSuccess,
+    duplicateSuccess,
+    updateEventOnControlSuccess,
+    updateEventSellStateSuccess,
+    updateEventTransferStateSuccess,
+  ]);
 
   const createNewEventPlaceholder = (
     <AddNewEventContainer>
@@ -714,6 +874,14 @@ const Events = () => {
                           <p className="price">
                             {item.revenue.toLocaleString()} {SGD_UNIT}
                           </p>
+                        </Col>
+                        <Col span={24}>
+                          <Switch
+                            checked={item.onControl}
+                            onChange={(state: boolean) =>
+                              onSwitchChange(state, item.id)
+                            }
+                          />
                         </Col>
                         <Col span={24}>{getBadge(item.status)}</Col>
                       </EventInfoCardResponsive>

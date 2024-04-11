@@ -26,6 +26,9 @@ export interface EventsListDataType {
   time: string;
   slug: string;
   hidden: boolean;
+  onControl: boolean;
+  canSell: boolean;
+  canTransfer: boolean;
 }
 
 export interface EventListRequestProps {
@@ -246,6 +249,111 @@ export const savePopupSettingAction = createAsyncThunk<
   async (payload, { rejectWithValue }) => {
     try {
       const response = await EventsService.savePopupSetting(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ *  update on control
+ */
+export const updateOnControlAction = createAsyncThunk<
+  {},
+  { id: string; state: boolean },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'updateOnControl/updateOnControlAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventsService.updateOnControl(
+        payload.id,
+        payload.state,
+      );
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ *  update sell
+ */
+export const updateSellStateAction = createAsyncThunk<
+  {},
+  { id: string; state: boolean },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'updateSellState/updateSellStateAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventsService.updateSellState(
+        payload.id,
+        payload.state,
+      );
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ *  update transfer
+ */
+export const updateTransferStateAction = createAsyncThunk<
+  {},
+  { id: string; state: boolean },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'updateTransferState/updateTransferStateAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventsService.updateTransferState(
+        payload.id,
+        payload.state,
+      );
       if (verificationApi(response)) {
         return response.data;
       }

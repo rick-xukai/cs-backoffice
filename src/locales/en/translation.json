@@ -467,5 +467,19 @@
   "Are you sure you want to delete this organizer?": "Are you sure you want to delete this organizer?",
   "Total Ticket Holders": "Total Ticket Holders",
   "Tickets Scanned": "Tickets Scanned",
-  "Click here to view the full list of ticket holders, including transferred and resold tickets.": "Click here to view the full list of ticket holders, including transferred and resold tickets."
+  "Click here to view the full list of ticket holders, including transferred and resold tickets.": "Click here to view the full list of ticket holders, including transferred and resold tickets.",
+  "Show on CrowdControl": "Show on CrowdControl",
+  "Are you sure you want to show this event on CrowdControl?": "Are you sure you want to show this event on CrowdControl?",
+  "Remove from CrowdControl": "Remove from CrowdControl",
+  "Are you sure you want to remove this event from CrowdControl?": "Are you sure you want to remove this event from CrowdControl?",
+  "Deactivate Secondary Market": "Deactivate Secondary Market",
+  "Open Secondary Market": "Open Secondary Market",
+  "Deactivate Tickets Transfers": "Deactivate Ticket Transfers",
+  "Stop Secondary Market": "Stop Secondary Market",
+  "Are you sure you want to deactivate the secondary market for this event? This action will automatically recall all on-listing tickets.": "Are you sure you want to deactivate the secondary market for this event? This action will automatically recall all on-listing tickets.",
+  "Are you sure you want to reopen the secondary market for this event?": "Are you sure you want to reopen the secondary market for this event?",
+  "Stop Ticket Transfers": "Stop Ticket Transfers",
+  "Are you sure you want to deactivate ticket transfers for this event? This action will automatically recall all the in transferring tickets.": "Are you sure you want to deactivate ticket transfers for this event? This action will automatically recall all the in transferring tickets.",
+  "Open Ticket Transfers": "Open Ticket Transfers",
+  "Are you sure you want to reopen the ticket transfers for this event?": "Are you sure you want to reopen the ticket transfers for this event?"
 }
