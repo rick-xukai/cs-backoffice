@@ -1,6 +1,7 @@
 /* eslint-disable */
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import { message } from 'antd';
 
 import { AuthorizationType } from '../constants/API';
 import { CookieKeys } from '../constants/Keys';
@@ -133,6 +134,12 @@ export class RequestClientClass {
         this.setHeaders({
           authorization: `${AuthorizationType.bearer} ${userNotActiveToken}`,
         });
+      }
+      if (!userToken && !userNotActiveToken) {
+        this.cookies.remove(`${PREFIX}${CookieKeys.authUser}`);
+        this.cookies.remove(`${PREFIX}${CookieKeys.userNotActiveToken}`);
+        message.error('The token has expired, please login again');
+        return;
       }
     }
     const options: any = {
