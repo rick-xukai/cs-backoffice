@@ -481,5 +481,6 @@
   "Stop Ticket Transfers": "Stop Ticket Transfers",
   "Are you sure you want to deactivate ticket transfers for this event? This action will automatically recall all the in transferring tickets.": "Are you sure you want to deactivate ticket transfers for this event? This action will automatically recall all the in transferring tickets.",
   "Open Ticket Transfers": "Open Ticket Transfers",
-  "Are you sure you want to reopen the ticket transfers for this event?": "Are you sure you want to reopen the ticket transfers for this event?"
+  "Are you sure you want to reopen the ticket transfers for this event?": "Are you sure you want to reopen the ticket transfers for this event?",
+  "Organisers are subjected to 5%+$0.50 per ticket. No charges for free tickets": "Organisers are subjected to 5%+$0.50 per ticket. No charges for free tickets."
 }

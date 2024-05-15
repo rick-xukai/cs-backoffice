@@ -504,6 +504,12 @@ const CreateEventFormContainer = styled.div`
   .ant-form-item {
     margin-bottom: 15px;
   }
+  .price-free-content {
+    margin-top: 5px;
+    font-weight: 400;
+    font-size: 12px;
+    color: rgb(171, 172, 182);
+  }
   @media (max-width: 992px) {
     .item-suggest-description {
       margin-bottom: 30px !important;
