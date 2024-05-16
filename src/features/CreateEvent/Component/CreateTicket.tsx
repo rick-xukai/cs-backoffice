@@ -52,7 +52,7 @@ import {
   TipsCmp,
 } from './CreateTicketComponents';
 import {
-  calculatePrice,
+  // calculatePrice,
   requiredValidateForm,
   thousandsSeparator,
 } from '../../../utils/func';
@@ -66,7 +66,7 @@ const initialValues = {
   image: '',
   stock: '',
   price: '',
-  absorbFees: false,
+  absorbFees: true,
   sellStartTime: '',
   sellEndTime: '',
   description: '',
@@ -632,10 +632,10 @@ const CreateTicket = ({
     }
   }, [ticketValue]);
 
-  const calculatedPrice = calculatePrice(
-    Number(ticketValue.price.toString().replace(/,/g, '')),
-    ticketValue.absorbFees,
-  );
+  // const calculatedPrice = calculatePrice(
+  //   Number(ticketValue.price.toString().replace(/,/g, '')),
+  //   ticketValue.absorbFees,
+  // );
 
   const matchConnectTickets = ticketValue.connectedTickets.map((item) => {
     const findTicket = listTicketType.find(
@@ -810,15 +810,15 @@ const CreateTicket = ({
                       'Ticket Price',
                       onSave,
                     )}
-                    help={
-                      ticketValue.price
-                        ? `User Pay: ${calculatedPrice.userPay} SGD. Take Home: ${calculatedPrice.takeHome} SGD`
-                        : requiredValidateForm(
-                            ticketValue.price,
-                            'Ticket Price',
-                            onSave,
-                          ).help
-                    }
+                    // help={
+                    //   ticketValue.price
+                    //     ? `User Pay: ${calculatedPrice.userPay} SGD. Take Home: ${calculatedPrice.takeHome} SGD`
+                    //     : requiredValidateForm(
+                    //         ticketValue.price,
+                    //         'Ticket Price',
+                    //         onSave,
+                    //       ).help
+                    // }
                     className="ticket-price side-by-side"
                   >
                     <>
