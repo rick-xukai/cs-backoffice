@@ -5,7 +5,7 @@ import {
   Button,
   Form,
   Input,
-  Checkbox,
+  // Checkbox,
   DatePicker,
   Select,
   Modal,
@@ -52,7 +52,7 @@ import {
   TipsCmp,
 } from './CreateTicketComponents';
 import {
-  calculatePrice,
+  // calculatePrice,
   requiredValidateForm,
   thousandsSeparator,
 } from '../../../utils/func';
@@ -66,7 +66,7 @@ const initialValues = {
   image: '',
   stock: '',
   price: '',
-  absorbFees: false,
+  absorbFees: true,
   sellStartTime: '',
   sellEndTime: '',
   description: '',
@@ -632,10 +632,10 @@ const CreateTicket = ({
     }
   }, [ticketValue]);
 
-  const calculatedPrice = calculatePrice(
-    Number(ticketValue.price.toString().replace(/,/g, '')),
-    ticketValue.absorbFees,
-  );
+  // const calculatedPrice = calculatePrice(
+  //   Number(ticketValue.price.toString().replace(/,/g, '')),
+  //   ticketValue.absorbFees,
+  // );
 
   const matchConnectTickets = ticketValue.connectedTickets.map((item) => {
     const findTicket = listTicketType.find(
@@ -810,49 +810,59 @@ const CreateTicket = ({
                       'Ticket Price',
                       onSave,
                     )}
-                    help={
-                      ticketValue.price
-                        ? `User Pay: ${calculatedPrice.userPay} SGD. Take Home: ${calculatedPrice.takeHome} SGD`
-                        : requiredValidateForm(
-                            ticketValue.price,
-                            'Ticket Price',
-                            onSave,
-                          ).help
-                    }
+                    // help={
+                    //   ticketValue.price
+                    //     ? `User Pay: ${calculatedPrice.userPay} SGD. Take Home: ${calculatedPrice.takeHome} SGD`
+                    //     : requiredValidateForm(
+                    //         ticketValue.price,
+                    //         'Ticket Price',
+                    //         onSave,
+                    //       ).help
+                    // }
                     className="ticket-price side-by-side"
                   >
-                    <Input
-                      style={{
-                        height: 38,
-                        display: 'block',
-                        width: '100%',
-                      }}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val && Number.isNaN(Number(val))) return false;
-                        if (Number(val) >= PRICE_LIMIT) return false;
-                        return changeTicketValues(e.target.value, 'price');
-                      }}
-                      onBlur={(e) => {
-                        const val = e.target.value;
-                        if (Number(val) < 0)
-                          return changeTicketValues('', 'price');
-                        return changeTicketValues(
-                          thousandsSeparator(val),
-                          'price',
-                        );
-                      }}
-                      onFocus={(e) => {
-                        const val = e.target.value;
-                        return changeTicketValues(
-                          val.replace(/,/g, ''),
-                          'price',
-                        );
-                      }}
-                      value={ticketValue.price}
-                    />
+                    <>
+                      <Input
+                        style={{
+                          height: 38,
+                          display: 'block',
+                          width: '100%',
+                        }}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val && Number.isNaN(Number(val))) return false;
+                          if (Number(val) >= PRICE_LIMIT) return false;
+                          return changeTicketValues(e.target.value, 'price');
+                        }}
+                        onBlur={(e) => {
+                          const val = e.target.value;
+                          if (Number(val) < 0)
+                            return changeTicketValues('', 'price');
+                          return changeTicketValues(
+                            thousandsSeparator(val),
+                            'price',
+                          );
+                        }}
+                        onFocus={(e) => {
+                          const val = e.target.value;
+                          return changeTicketValues(
+                            val.replace(/,/g, ''),
+                            'price',
+                          );
+                        }}
+                        value={ticketValue.price}
+                      />
+                      <div className="price-free-content">
+                        <span>Note: </span>
+                        <span>
+                          {t(
+                            'Organisers are subjected to 5%+$0.50 per ticket. No charges for free tickets',
+                          )}
+                        </span>
+                      </div>
+                    </>
                   </Form.Item>
-                  <Form.Item>
+                  {/* <Form.Item>
                     <Checkbox
                       onChange={(e) =>
                         changeTicketValues(e.target.checked, 'absorbFees')
@@ -867,7 +877,7 @@ const CreateTicket = ({
                         'Ticketing fees are deducted from your ticket revenue',
                       )}
                     </Checkbox>
-                  </Form.Item>
+                  </Form.Item> */}
                   <Form.Item
                     label="Selling Time"
                     required
