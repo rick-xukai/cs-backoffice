@@ -1,15 +1,10 @@
 {
-  "functions": {
-    "app.js": {
-      "runtime": "nodejs12.x"
-    }
-  },
   "build": {
     "env": {
-      "NODE_VERSION": "12"
+      "NODE_VERSION": "18"
     }
   },
   "env": {
-    "NODE_VERSION": "12"
+    "NODE_VERSION": "18"
   }
 } 
