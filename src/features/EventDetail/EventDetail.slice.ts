@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { verificationApi } from '../../utils/func';
 import { RootState } from '../../app/store';
 import EventsService from '../../services/API/Events';
+import { PromoListProps } from '../CreateEvent/CreateEvent.slice';
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
@@ -16,15 +17,23 @@ export interface TicketTypesItemType {
   description: string;
   price: number;
   stock: number;
+  soldTotal: number;
   ceilingPrice: number;
   purchaseLimit: number;
   image: string;
   imageType: string;
+  imageName: string;
   thumbnailUrl: string;
   thumbnailType: string;
+  thumbnailName: string;
   externalLink: string;
   blockchainUrl: string;
   royaltiesFee?: number;
+  absorbFees: boolean;
+  sellStartTime: string;
+  sellEndTime: string;
+  visibility: boolean;
+  connectedTickets: any[];
 }
 export interface EventDetailDataType {
   id: number;
@@ -40,6 +49,11 @@ export interface EventDetailDataType {
   uuid: string;
   status: number;
   ticketTypes: TicketTypesItemType[];
+  descriptionImages: Array<{
+    image: string;
+    size: string;
+  }>;
+  discounts: PromoListProps[];
 }
 
 /**
@@ -102,6 +116,8 @@ const initialState: EventDetailState = {
     uuid: '',
     status: 1,
     ticketTypes: [],
+    descriptionImages: [],
+    discounts: [],
   },
   error: null,
 };

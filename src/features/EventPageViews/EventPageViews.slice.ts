@@ -153,6 +153,16 @@ export const eventPageViewsSlice = createSlice({
       })
       .addCase(getEventPageViewsAction.rejected, (state, action) => {
         state.loading = false;
+        state.pageViewsData = {
+          id: '',
+          name: '',
+          summary: {
+            viewCount: 0,
+            averageDailyCount: 0,
+          },
+          countries: [],
+          origins: [],
+        };
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
@@ -171,6 +181,7 @@ export const eventPageViewsSlice = createSlice({
       )
       .addCase(getEventPageViewsAnalysisAction.rejected, (state, action) => {
         state.analysisLoading = false;
+        state.eventPageViewsAnalysisData = [];
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {

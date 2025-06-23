@@ -334,7 +334,7 @@ const CreateEvent = () => {
       const { data } = response.payload;
       const payload = {
         ...data,
-        descriptionImages: data.descriptionImages.map((item: any) => ({
+        descriptionImages: (data.descriptionImages || []).map((item: any) => ({
           column: DescriptionImagesSize.find((size) => size.text === item.size)
             ?.key,
           response: item.image,
@@ -342,12 +342,19 @@ const CreateEvent = () => {
           size: 1,
           name: item.image,
         })),
-        ticketTypes: data.ticketTypes.map((item: any) => ({
+        discounts: (data.discounts || []).map((discount: any) => ({
+          ...discount,
+        })),
+        ticketTypes: (data.ticketTypes || []).map((item: any) => ({
           ...item,
-          connectedTickets: item.connectedTickets.map((ticket: any) => ({
-            ...ticket,
-            ...listTicketType.find((type) => type.id === ticket.ticketTypeId),
-          })),
+          connectedTickets: (item.connectedTickets || []).map(
+            (ticket: any) => ({
+              ...ticket,
+              ...(Array.isArray(listTicketType) ? listTicketType : []).find(
+                (type) => type.id === ticket.ticketTypeId,
+              ),
+            }),
+          ),
         })),
       };
       setCreateEventFormValue(payload);

@@ -12,6 +12,8 @@ export interface ErrorType {
 
 export interface UniqueBuyersDataType {
   name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   ownedTickets: number;
   gender: string;
@@ -45,7 +47,7 @@ export interface ChartsDataType {
  * Unique Buyers
  */
 export const getUniqueBuyersAction = createAsyncThunk<
-  UniqueBuyersDataType,
+  UniqueBuyersDataType[],
   {
     eventId: string | number;
     keyword: string;
@@ -60,7 +62,7 @@ export const getUniqueBuyersAction = createAsyncThunk<
     try {
       const response = await EventsService.getUnqiueBuyers(payload);
       if (verificationApi(response)) {
-        return response;
+        return response.data;
       }
       return rejectWithValue({
         code: response.code,
@@ -78,7 +80,7 @@ export const getUniqueBuyersAction = createAsyncThunk<
 );
 
 export const getUniqueBuyersChartsAction = createAsyncThunk<
-  UniqueBuyersDataType,
+  ChartsDataType,
   {
     eventId: string | number;
   },
@@ -91,7 +93,7 @@ export const getUniqueBuyersChartsAction = createAsyncThunk<
     try {
       const response = await EventsService.getUniqueBuyersCharts(payload);
       if (verificationApi(response)) {
-        return response;
+        return response.data;
       }
       return rejectWithValue({
         code: response.code,
@@ -152,10 +154,11 @@ export const uniqueBuyersSlice = createSlice({
       })
       .addCase(getUniqueBuyersAction.fulfilled, (state, action: any) => {
         state.uniqueBuyersLoading = false;
-        state.uniqueBuyers = action.payload.data;
+        state.uniqueBuyers = action.payload;
       })
       .addCase(getUniqueBuyersAction.rejected, (state, action) => {
         state.uniqueBuyersLoading = false;
+        state.uniqueBuyers = [];
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
@@ -167,10 +170,21 @@ export const uniqueBuyersSlice = createSlice({
       })
       .addCase(getUniqueBuyersChartsAction.fulfilled, (state, action: any) => {
         state.chartsLoading = false;
-        state.chartsData = action.payload.data;
+        state.chartsData = action.payload;
       })
       .addCase(getUniqueBuyersChartsAction.rejected, (state, action) => {
         state.chartsLoading = false;
+        state.chartsData = {
+          id: 0,
+          name: '',
+          summary: {
+            userCount: 0,
+            conversionRate: 0,
+          },
+          countries: [],
+          genders: [],
+          ages: [],
+        };
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {

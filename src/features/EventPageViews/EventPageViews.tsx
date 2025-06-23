@@ -165,7 +165,7 @@ const EventPageViews = () => {
     },
   };
 
-  const countriesCount = countries.reduce((a, b) => a + b.count, 0);
+  const countriesCount = (countries || []).reduce((a, b) => a + b.count, 0);
   return (
     <>
       <PageHeaderComponent
@@ -305,7 +305,7 @@ const EventPageViews = () => {
                 <p>Page Views by Country</p>
               </Title>
               <ProgressContent>
-                {countries && countries.length ? (
+                {countries && countries.length && Array.isArray(countries) ? (
                   <Row gutter={[0, 18]}>
                     {orderBy(countries || [], ['count'], ['desc']).map(
                       (item) => (
@@ -360,7 +360,7 @@ const EventPageViews = () => {
                   },
                 }}
                 data={
-                  !isEmpty(origins)
+                  !isEmpty(origins) && Array.isArray(origins)
                     ? origins.map((item) => ({
                         type: 'Page Views Origin',
                         name: item.name,

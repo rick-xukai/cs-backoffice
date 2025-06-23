@@ -25,6 +25,13 @@ const MenuList = (): IMenu[] => {
       role: UserScreens.Events.role,
     },
     {
+      key: MenuKeys.emails,
+      title: t('Emails'),
+      icon: <SVG src={Images.Emails} />,
+      path: UserScreens.Emails.path,
+      role: UserScreens.Emails.role,
+    },
+    {
       key: MenuKeys.organisers,
       title: t('Organisers'),
       icon: <SVG src={Images.OrganisersMenuIcon} />,

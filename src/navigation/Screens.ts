@@ -19,6 +19,8 @@ import TicketsSold from '../features/TicketsSold/Loadable';
 import PageNotFound from '../features/404Page/Loadable';
 import Organisers from '../features/Organisers/Loadable';
 import CreateOrganisers from '../features/CreateOrganisers';
+import Emails from '../features/Emails/Loadable';
+import CreateEditEmail from '../features/CreateEditEmail/Loadable';
 // Auth features
 import Login from '../features/Authentication/Login/Loadable';
 import Register from '../features/Authentication/Register/Loadable';
@@ -167,7 +169,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.tickets],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.superAdmin],
   },
   TicketDetail: {
     title: 'Tickets Details - CrowdServe BO',
@@ -189,7 +191,7 @@ export const UserScreens = {
     subMenuKeys: [],
     menuKeys: [vMenuKeys.users],
     guard: true,
-    role: [],
+    role: [UserRoleKeys.superAdmin],
   },
   UserDetail: {
     title: 'User Detail - CrowdServe BO',
@@ -224,7 +226,11 @@ export const UserScreens = {
     subMenuKeys: [vMenuKeys.settings],
     menuKeys: [vMenuKeys.profile],
     guard: true,
-    role: [UserRoleKeys.organizerAdmin, UserRoleKeys.organizerUser],
+    role: [
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+      UserRoleKeys.superAdmin,
+    ],
   },
   UserAndPermissions: {
     title: 'UserAndPermissions - CrowdServe BO',
@@ -317,7 +323,45 @@ export const UserScreens = {
       UserRoleKeys.organizerUser,
     ],
   },
-
+  Emails: {
+    title: 'Emails - CrowdControl',
+    path: UserRoutes.emails,
+    component: Emails,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.emails],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
+  CreateEmail: {
+    title: 'Create Email - CrowdControl',
+    path: UserRoutes.createEmail,
+    component: CreateEditEmail,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.emails],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
+  EditEmail: {
+    title: 'Edit Email - CrowdControl',
+    path: UserRoutes.editEmail,
+    component: CreateEditEmail,
+    subMenuKeys: [],
+    menuKeys: [vMenuKeys.emails],
+    guard: true,
+    role: [
+      UserRoleKeys.superAdmin,
+      UserRoleKeys.organizerAdmin,
+      UserRoleKeys.organizerUser,
+    ],
+  },
   PageNotFoundComponent: {
     title: 'Page Not Found - CrowdServe BO',
     path: UserRoutes.pageNotFound,

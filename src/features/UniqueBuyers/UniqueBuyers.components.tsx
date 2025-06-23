@@ -65,48 +65,73 @@ export const WorldMap = ({
   const mapRef: any = useRef();
 
   useEffect(() => {
-    echarts.registerMap('world', JSON.stringify(mapData));
-    const myChart = echarts.init(mapRef.current as unknown as HTMLDivElement);
-    const option = {
-      visualMap: {
-        show: false,
-        inRange: {
-          color: [Colors.red5, Colors.branding, Colors.red4],
+    console.log('WorldMap data:', data); // 调试信息
+
+    if (!mapRef.current) return () => {}; // 返回空的清理函数
+
+    try {
+      echarts.registerMap('world', JSON.stringify(mapData));
+      const myChart = echarts.init(mapRef.current as unknown as HTMLDivElement);
+
+      const option = {
+        visualMap: {
+          show: false,
+          min: 0,
+          max: Math.max(...data.map((item) => item.value), 100),
+          inRange: {
+            color: [Colors.red5, Colors.branding, Colors.red4],
+          },
+          text: ['High', 'Low'],
+          calculable: true,
+          padding: 0,
         },
-        text: ['High', 'Low'],
-        calculable: true,
-        padding: 0,
-      },
-      tooltip: {
-        trigger: 'item',
-        show: true,
-        borderWidth: 0,
-        formatter: (params: any) => `${params.name}: ${params.value || '-'}`,
-      },
-      series: [
-        {
-          name: 'Map',
-          type: 'map',
-          roam: true,
-          map: 'world',
-          emphasis: {
-            label: {
-              show: true,
+        tooltip: {
+          trigger: 'item',
+          show: true,
+          borderWidth: 0,
+          formatter: (params: any) => `${params.name}: ${params.value || '0'}`,
+        },
+        series: [
+          {
+            name: 'UniqueUsers',
+            type: 'map',
+            roam: true,
+            map: 'world',
+            emphasis: {
+              label: {
+                show: true,
+              },
             },
+            data,
+            itemStyle: {
+              borderWidth: 0.5,
+              borderColor: '#DCDCE1',
+              areaColor: '#EEEEF3',
+            },
+            zoom: 1.2,
           },
-          data,
-          itemStyle: {
-            borderWidth: 0.5,
-            borderColor: '#DCDCE1',
-            areaColor: '#EEEEF3',
-          },
-          zoom: 1.2,
-        },
-      ],
-    };
-    myChart.setOption(option);
-    myChart.resize();
+        ],
+      };
+
+      myChart.setOption(option);
+      myChart.resize();
+
+      // 窗口大小变化时重新调整
+      const handleResize = () => {
+        myChart.resize();
+      };
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        myChart.dispose();
+      };
+    } catch (error) {
+      console.error('WorldMap initialization error:', error);
+      return () => {}; // 返回空的清理函数
+    }
   }, [points, data]);
+
   return (
     <div
       ref={mapRef}

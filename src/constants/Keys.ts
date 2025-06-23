@@ -41,6 +41,7 @@ export const SortKeys = {
 };
 export const FormatTimeKeys = {
   norm: 'MMM dd, yyyy, HH:mm',
+  norm1: 'MMM DD, yyyy, HH:mm',
   mdy: 'MMM dd, yyyy',
   hms: 'HH:mm:ss',
   hm: 'HH:mm',

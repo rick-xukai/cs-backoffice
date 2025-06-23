@@ -170,6 +170,38 @@ export const eventDashboardSlice = createSlice({
       })
       .addCase(getEventDashboardAction.rejected, (state, action) => {
         state.loading = false;
+        state.data = {
+          id: '',
+          name: '',
+          startTime: '',
+          endTime: '',
+          publishTime: '',
+          image: '',
+          status: 0,
+          stocks: {
+            stockTotal: 0,
+            soldTotal: 0,
+            importTotal: 0,
+          },
+          buyers: {
+            userCount: 0,
+            conversionRate: 0,
+          },
+          pageViews: {
+            viewCount: 0,
+            averageDailyCount: 0,
+          },
+          netSales: {
+            revenue: 0,
+            grossSales: 0,
+          },
+          attendees: {
+            ticketScanned: 0,
+            uniqueUser: 0,
+          },
+          ticketTypes: [],
+          discounts: [],
+        };
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {

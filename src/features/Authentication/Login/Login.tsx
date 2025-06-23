@@ -158,14 +158,16 @@ const Login = () => {
         });
         dispatch(resetEventRelatedState());
         dispatch(resetOrganiserRelatedState());
-        if (data.user.status === ActiveStatus.active) {
-          history.replace(UserRoutes.events);
-        } else {
-          history.push({
-            pathname: AuthRoutes.changePassword,
-            state: { token: data.token },
-          });
-        }
+        console.log('data', data);
+        history.replace(UserRoutes.events);
+        // if (data.user.status === ActiveStatus.active) {
+        //   history.replace(UserRoutes.events);
+        // } else {
+        //   history.push({
+        //     pathname: AuthRoutes.changePassword,
+        //     state: { token: data.token },
+        //   });
+        // }
       } else {
         setShowScannerError(true);
       }

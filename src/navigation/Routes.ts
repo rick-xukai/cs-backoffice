@@ -48,6 +48,9 @@ export const UserRoutes = {
   organisers: '/organisers',
   createOrganiser: '/create-organiser',
   editOrganiser: '/edit-organiser/:organiserId',
+  emails: '/emails',
+  createEmail: '/create-email',
+  editEmail: '/edit-email/:id',
 };
 
 export const AuthRoutes = {

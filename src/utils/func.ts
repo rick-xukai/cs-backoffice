@@ -434,3 +434,19 @@ export const getDays = (startDate: any, endDate: any) => {
   daysList.push(eDate.format(FormatTimeKeys.mDy));
   return daysList;
 };
+
+export const isUrl = (url: string) => {
+  const regex =
+    /^(((ht|f)tps?):\/\/)?([^!@#$%^&*?.\s-]([^!@#$%^&*?.\s]{0,63}[^!@#$%^&*?.\s])?\.)+[a-z]{2,6}\/?/;
+  return regex.test(url);
+};
+
+// eslint-disable-next-line
+export const fileToBase64 = (file: any) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};

@@ -162,6 +162,24 @@ const API = {
   updateTransferState: {
     put: '/admin/event/{eventId}/can_transfer/{state}',
   },
+  getEmailsList: {
+    get: '/admin/event_reminder',
+  },
+  getEventReminderList: {
+    get: '/admin/event_reminder/event_list',
+  },
+  createEmail: {
+    post: '/admin/event_reminder',
+  },
+  getEmailDetail: {
+    get: '/admin/event_reminder/{id}',
+  },
+  updateEmailDetail: {
+    put: '/admin/event_reminder/{id}',
+  },
+  deleteEmail: {
+    delete: '/admin/event_reminder/{id}',
+  },
 };
 
 export default API;

@@ -181,6 +181,7 @@ export const uniqueAttendeesSlice = createSlice({
       })
       .addCase(getUniqueAttendeesAction.rejected, (state, action) => {
         state.loading = false;
+        state.uniqueAttendees = [];
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
@@ -196,6 +197,7 @@ export const uniqueAttendeesSlice = createSlice({
       })
       .addCase(getEventScannedAction.rejected, (state, action) => {
         state.loading = false;
+        state.eventScanned = [];
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {

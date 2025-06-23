@@ -604,7 +604,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                   return true;
                 }
                 if (
-                  !ticketSoldCount.ticketTypes.find(
+                  !(ticketSoldCount?.ticketTypes || []).find(
                     (item) => item.name === obj['Ticket Type'],
                   )
                 ) {
@@ -612,7 +612,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                   validationFailure('invalidData');
                   return true;
                 }
-                if (obj['Event Name'] !== ticketSoldCount.name) {
+                if (obj['Event Name'] !== (ticketSoldCount?.name || '')) {
                   errorFlag = true;
                   validationFailure('invalidData');
                   return true;
@@ -672,7 +672,9 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
       <TableComponent
         loading={false}
         columns={columns}
-        tableData={(isComponent && listData.slice(0, 4)) || listData}
+        tableData={
+          (isComponent && (listData || []).slice(0, 4)) || listData || []
+        }
         emptyText={
           <div className="table-empty-text">
             <img src={Images.NoDataIcon} alt="" />
@@ -781,10 +783,13 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
             href: UserRoutes.events,
           },
           {
-            label: ticketSoldCount.name,
+            label: ticketSoldCount?.name || 'Event',
             href: UserRoutes.eventDashboard
               .replace(':id', params.id)
-              .replace(':name', ticketSoldCount.name),
+              .replace(
+                ':name',
+                encodeURIComponent(ticketSoldCount?.name || 'event'),
+              ),
           },
           {
             label: t('Tickets'),
@@ -798,7 +803,9 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
               <div className="info-content">
                 <div>
                   <p className="content-title">{t('Tickets')}</p>
-                  <p className="content-name">{ticketSoldCount.name}</p>
+                  <p className="content-name">
+                    {ticketSoldCount?.name || 'Event'}
+                  </p>
                 </div>
               </div>
             </Col>
@@ -808,19 +815,19 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                   <p className="content-info">
                     <span>Tickets Sold</span>
                     <span className="bold content-title-sold">
-                      {ticketSoldCount.stocks.soldTotal}
+                      {ticketSoldCount?.stocks?.soldTotal || 0}
                     </span>
                   </p>
                   <p className="content-info">
                     <span>Tickets Imported</span>
                     <span className="bold">
-                      {ticketSoldCount.stocks.importTotal}
+                      {ticketSoldCount?.stocks?.importTotal || 0}
                     </span>
                   </p>
                   <p className="content-info">
                     <span>Ticket cancelled</span>
                     <span className="bold">
-                      {ticketSoldCount.stocks.cancelTotal}
+                      {ticketSoldCount?.stocks?.cancelTotal || 0}
                     </span>
                   </p>
                 </div>
@@ -860,7 +867,7 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                         dispatch(setPage(1));
                       }}
                     >
-                      {ticketSoldCount.ticketTypes.map((item) => (
+                      {(ticketSoldCount?.ticketTypes || []).map((item) => (
                         <Option key={item.id} value={item.id}>
                           {item.name}
                         </Option>
@@ -921,7 +928,9 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
               <Col lg={7} span={24} className="export-action">
                 <Button
                   className="action-button"
-                  disabled={!listData.length || getAllListDataLoading}
+                  disabled={
+                    !(listData && listData.length) || getAllListDataLoading
+                  }
                   onClick={handleExportAllListData}
                 >
                   {(getAllListDataLoading && (
@@ -930,7 +939,9 @@ const TicketsSold = ({ isComponent }: { isComponent?: boolean }) => {
                   {t('Export')}
                 </Button>
                 <CSVLink
-                  filename={`${ticketSoldCount.name}_Tickets_Export.csv`}
+                  filename={`${
+                    ticketSoldCount?.name || 'Event'
+                  }_Tickets_Export.csv`}
                   headers={formatDownloadHeaders().headers}
                   data={formatDownloadHeaders().data}
                   className="export-tickets-list"

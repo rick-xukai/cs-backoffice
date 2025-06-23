@@ -512,6 +512,7 @@ export const createEventSlice = createSlice({
       })
       .addCase(getListTicketTypeAction.rejected, (state, action) => {
         state.listTicketTypeLoading = false;
+        state.listTicketType = [];
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {

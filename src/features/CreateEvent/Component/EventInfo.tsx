@@ -93,8 +93,12 @@ const EventInfo = ({
     useState<boolean>(false);
   const [noSearchResult, setNoSearchResult] = useState<boolean>(false);
   const [mapLatLng, setMapLatLng] = useState({
-    lat: Number(formValue.locationCoord.split(',')[0]),
-    lng: Number(formValue.locationCoord.split(',')[1]),
+    lat: formValue.locationCoord
+      ? Number(formValue.locationCoord.split(',')[0])
+      : 0,
+    lng: formValue.locationCoord
+      ? Number(formValue.locationCoord.split(',')[1])
+      : 0,
   });
   const [openAiLoading, setOpenAiLoading] = useState(false);
 
@@ -261,8 +265,12 @@ const EventInfo = ({
   );
 
   useEffect(() => {
-    const currentLat = Number(formValue.locationCoord.split(',')[0]);
-    const currentLng = Number(formValue.locationCoord.split(',')[1]);
+    const currentLat = formValue.locationCoord
+      ? Number(formValue.locationCoord.split(',')[0])
+      : 0;
+    const currentLng = formValue.locationCoord
+      ? Number(formValue.locationCoord.split(',')[1])
+      : 0;
     if (formValue.image) {
       setBannerFile(formValue.image);
     }

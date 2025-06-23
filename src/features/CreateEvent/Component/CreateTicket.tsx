@@ -332,8 +332,12 @@ const CreateTicket = ({
   };
 
   useEffect(() => {
+    const safeListTicketType = Array.isArray(listTicketType)
+      ? listTicketType
+      : [];
+
     setEventsListData(
-      listTicketType
+      safeListTicketType
         .filter(
           (item) =>
             !formValue.ticketTypes.find((ticket: any) => ticket.id === item.id),
@@ -638,7 +642,10 @@ const CreateTicket = ({
   // );
 
   const matchConnectTickets = ticketValue.connectedTickets.map((item) => {
-    const findTicket = listTicketType.find(
+    const safeListTicketType = Array.isArray(listTicketType)
+      ? listTicketType
+      : [];
+    const findTicket = safeListTicketType.find(
       (ticket) => ticket.id === item.id || ticket.id === item.ticketTypeId,
     );
     return {
@@ -929,7 +936,7 @@ const CreateTicket = ({
                       ticketValue.ceilingPrice ||
                       ticketValue.connectedTickets.length
                         ? [1]
-                        : [] || ticketValue.connectedTickets.length
+                        : []
                     }
                   >
                     <FoldingPanel.Panel header="Advanced Settings" key={1}>

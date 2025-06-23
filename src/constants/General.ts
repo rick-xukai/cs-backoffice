@@ -166,3 +166,35 @@ export const EmailExist = 1101;
 export const GetSettingsType = {
   eventPopup: 'event_popup',
 };
+export enum EmailStatus {
+  sent = 1,
+  scheduled = 0,
+}
+export const EmailStatusKey = [
+  {
+    key: null,
+    name: 'All',
+  },
+  {
+    key: 0,
+    name: 'Scheduled',
+  },
+  {
+    key: 1,
+    name: 'Sent',
+  },
+];
+export enum SendingTime {
+  send = 'Send Immediately',
+  limited = 'Scheduled Time Delivery',
+}
+export const MaxEditorLength = 5000;
+export const SizeWhiteList = ['12px', '15px', '20px', '40px'];
+export const EmailTemplateDearUser =
+  '<div style="font-size: 15px; margin-bottom: 24px; max-width: 640px !important; margin: auto !important;">Dear {User Name},</div>';
+export const FacebookIconLink =
+  'https://app-dev.ticket-crowdserve.com/_next/static/media/facebook.157defdf.jpg';
+export const InstagramIconLink =
+  'https://app-dev.ticket-crowdserve.com/_next/static/media/ins.a99d301f.jpg';
+export const WebsiteIconLink =
+  'https://app-dev.ticket-crowdserve.com/_next/static/media/website.3d6350de.jpg';

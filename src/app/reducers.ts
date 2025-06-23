@@ -25,6 +25,8 @@ import uniqueBuyersReducer from '../features/UniqueBuyers/UniqueBuyers.slice';
 import uniqueAttendeesReducer from '../features/UniqueAttendees/UniqueAttendees.slice';
 import organiserReducer from '../features/Organisers/Organisers.slice';
 import createOrganiserReducer from '../features/CreateOrganisers/CreateOrganisers.slice';
+import emailEditReducer from '../features/CreateEditEmail/CreateEditEmail.slice';
+import emailListReducer from '../features/Emails/Emails.slice';
 
 const createRootReducer = (history: any) =>
   combineReducers({
@@ -53,6 +55,8 @@ const createRootReducer = (history: any) =>
     uniqueAttendees: uniqueAttendeesReducer,
     organiser: organiserReducer,
     createOrganiser: createOrganiserReducer,
+    emailEdit: emailEditReducer,
+    emailList: emailListReducer,
   });
 
 export default createRootReducer;

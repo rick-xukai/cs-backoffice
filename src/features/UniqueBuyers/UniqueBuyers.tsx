@@ -122,7 +122,7 @@ const UniqueBuyers = () => {
     keyword: '',
   });
   const config = {
-    data: genders.map((item) => ({
+    data: (genders || []).map((item) => ({
       type: 'Gender',
       ...item,
     })),
@@ -165,7 +165,7 @@ const UniqueBuyers = () => {
       ),
     },
   };
-  const pieData = parseAgesData(ages);
+  const pieData = parseAgesData(ages || []);
   const totalPieCount = pieData.reduce(
     (acc: any, item: any) => acc + item.value,
     0,
@@ -174,7 +174,7 @@ const UniqueBuyers = () => {
     () => ({
       appendPadding: 10,
       hieght: 140,
-      data: parseAgesData(ages),
+      data: parseAgesData(ages || []),
       color: pieColors,
       angleField: 'value',
       colorField: 'type',
@@ -314,7 +314,7 @@ const UniqueBuyers = () => {
     ),
     [],
   );
-  const countriesCount = countries.reduce((a, b) => a + b.count, 0);
+  const countriesCount = (countries || []).reduce((a, b) => a + b.count, 0);
 
   const formatDownloadHeaders = () => {
     const headers: any = [];
@@ -327,7 +327,13 @@ const UniqueBuyers = () => {
       }
       return item;
     });
-    const data: any = uniqueBuyersData.map((item) => ({
+
+    // 确保 uniqueBuyersData 是数组
+    const safeUniqueBuyersData = Array.isArray(uniqueBuyersData)
+      ? uniqueBuyersData
+      : [];
+
+    const data: any = safeUniqueBuyersData.map((item) => ({
       ...item,
       birthday: item.birthday
         ? moment(item.birthday).format(FormatTimeKeys.mDy)
@@ -339,11 +345,17 @@ const UniqueBuyers = () => {
     return { headers, data };
   };
 
+  const downloadData = useMemo(
+    () => formatDownloadHeaders(),
+    [uniqueBuyersData],
+  );
+
   const matchCountires: any = useMemo(() => {
+    console.log('UniqueBuyers countries data:', countries); // 调试信息
     const newList: any = [];
     const others: any = [];
-    for (let index = 0; index < countries.length; index += 1) {
-      const item = countries[index];
+    for (let index = 0; index < (countries || []).length; index += 1) {
+      const item = (countries || [])[index];
       if (
         mapData.features.find(
           (feature) => feature.properties.name === item.name,
@@ -354,7 +366,7 @@ const UniqueBuyers = () => {
         others.push(item);
       }
     }
-    return others.length
+    const result = others.length
       ? [
           ...newList,
           {
@@ -363,6 +375,8 @@ const UniqueBuyers = () => {
           },
         ]
       : newList;
+    console.log('UniqueBuyers matchCountires result:', result); // 调试信息
+    return result;
   }, [countries]);
 
   return chartsLoading ? (
@@ -404,13 +418,13 @@ const UniqueBuyers = () => {
                     <p className="content-info">
                       <span></span>
                       <span className="bold content-title-sold large-text">
-                        {summary.userCount}
+                        {summary?.userCount || 0}
                       </span>
                     </p>
                     <p className="content-info">
                       <span>Conversion Rate</span>
                       <span className="bold">
-                        {(summary.conversionRate * 100).toFixed(2)}%
+                        {((summary?.conversionRate || 0) * 100).toFixed(2)}%
                       </span>
                     </p>
                   </div>
@@ -427,7 +441,7 @@ const UniqueBuyers = () => {
                   </Title>
                   <SubTitle>*Data only comes from primary market</SubTitle>
                   <WorldMap
-                    data={countries.map((item) => ({
+                    data={matchCountires.map((item: any) => ({
                       name: item.name,
                       value: item.count,
                     }))}
@@ -541,13 +555,15 @@ const UniqueBuyers = () => {
                 <Col className="export-action single">
                   <CSVLink
                     filename={`${params.name}_Unique_Buyers_Export.csv`}
-                    headers={formatDownloadHeaders().headers}
-                    data={formatDownloadHeaders().data}
+                    headers={downloadData.headers}
+                    data={downloadData.data}
                   >
                     <Button
                       className="action-button"
                       style={{ marginRight: 0 }}
-                      disabled={isEmpty(uniqueBuyersData)}
+                      disabled={isEmpty(
+                        Array.isArray(uniqueBuyersData) ? uniqueBuyersData : [],
+                      )}
                     >
                       <DownloadOutlined />
                       {t('Export')}
@@ -558,7 +574,9 @@ const UniqueBuyers = () => {
               <TableComponent
                 loading={uniqueBuyersLoading}
                 columns={columns}
-                tableData={uniqueBuyersData}
+                tableData={
+                  Array.isArray(uniqueBuyersData) ? uniqueBuyersData : []
+                }
                 emptyText={<NoData />}
                 showCustomPagination={false}
               />

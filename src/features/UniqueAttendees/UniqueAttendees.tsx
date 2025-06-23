@@ -170,8 +170,10 @@ const UniqueAttendees = () => {
       }
       return item;
     });
-    const data: any =
-      option === SelectOptions.uniqueAttendees
+    let data: any = [];
+
+    if (option === SelectOptions.uniqueAttendees) {
+      data = Array.isArray(uniqueAttendees)
         ? uniqueAttendees.map((item) => ({
             ...item,
             birthday: item.birthday
@@ -179,12 +181,18 @@ const UniqueAttendees = () => {
               : '-',
             isActivated: item.isActivated ? 'Active' : 'Inactive',
           }))
-        : eventScanned.map((item) => ({
+        : [];
+    } else {
+      data = Array.isArray(eventScanned)
+        ? eventScanned.map((item) => ({
             ...item,
             source:
               sourceOptions.find((opt) => opt.value === item.source)?.label ||
               '-',
-          }));
+          }))
+        : [];
+    }
+
     return { headers, data };
   };
 
@@ -244,16 +252,26 @@ const UniqueAttendees = () => {
     setStatusState(undefined);
   }, [option]);
 
+  const getTableData = () => {
+    if (option === SelectOptions.uniqueAttendees) {
+      return Array.isArray(uniqueAttendees) ? uniqueAttendees : [];
+    }
+    return Array.isArray(eventScanned) ? eventScanned : [];
+  };
+
+  const getDataLength = () => {
+    if (option === SelectOptions.uniqueAttendees) {
+      return Array.isArray(uniqueAttendees) ? uniqueAttendees.length : 0;
+    }
+    return Array.isArray(eventScanned) ? eventScanned.length : 0;
+  };
+
   const table = (
     <div>
       <TableComponent
         loading={loading}
         columns={columns}
-        tableData={
-          option === SelectOptions.uniqueAttendees
-            ? uniqueAttendees
-            : eventScanned
-        }
+        tableData={getTableData()}
         emptyText={
           <div className="table-empty-text">
             <img src={Images.NoDataIcon} alt="" />
@@ -263,16 +281,8 @@ const UniqueAttendees = () => {
         showCustomPagination={false}
       />
       <Pagination
-        pageSize={
-          option === SelectOptions.uniqueAttendees
-            ? uniqueAttendees.length
-            : eventScanned.length
-        }
-        total={
-          option === SelectOptions.uniqueAttendees
-            ? uniqueAttendees.length
-            : eventScanned.length
-        }
+        pageSize={getDataLength()}
+        total={getDataLength()}
         hideOnSinglePage
       />
     </div>
@@ -426,9 +436,13 @@ const UniqueAttendees = () => {
                             setTicketTypeState(e);
                           }}
                           value={ticketTypeState}
-                          options={listTicketType.filter(
-                            (item) => item.eventName === params.name,
-                          )}
+                          options={
+                            Array.isArray(listTicketType)
+                              ? listTicketType.filter(
+                                  (item) => item.eventName === params.name,
+                                )
+                              : []
+                          }
                           fieldNames={{
                             label: 'name',
                             value: 'id',
@@ -463,11 +477,16 @@ const UniqueAttendees = () => {
                 >
                   <Button
                     className="action-button"
-                    disabled={
-                      option === SelectOptions.uniqueAttendees
-                        ? isEmpty(uniqueAttendees)
-                        : isEmpty(eventScanned)
-                    }
+                    disabled={(() => {
+                      if (option === SelectOptions.uniqueAttendees) {
+                        return isEmpty(
+                          Array.isArray(uniqueAttendees) ? uniqueAttendees : [],
+                        );
+                      }
+                      return isEmpty(
+                        Array.isArray(eventScanned) ? eventScanned : [],
+                      );
+                    })()}
                   >
                     <DownloadOutlined />
                     {t('Export')}
