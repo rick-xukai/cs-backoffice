@@ -11,6 +11,9 @@
     "test": "craco test --watchAll=false",
     "eject": "craco eject"
   },
+  "engines": {
+    "node": "12.x"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
