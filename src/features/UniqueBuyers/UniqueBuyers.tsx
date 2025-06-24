@@ -351,7 +351,6 @@ const UniqueBuyers = () => {
   );
 
   const matchCountires: any = useMemo(() => {
-    console.log('UniqueBuyers countries data:', countries); // 调试信息
     const newList: any = [];
     const others: any = [];
     for (let index = 0; index < (countries || []).length; index += 1) {
@@ -375,7 +374,6 @@ const UniqueBuyers = () => {
           },
         ]
       : newList;
-    console.log('UniqueBuyers matchCountires result:', result); // 调试信息
     return result;
   }, [countries]);
 
@@ -553,6 +551,7 @@ const UniqueBuyers = () => {
                   </Row>
                 </Col>
                 <Col className="export-action single">
+                  {/* @ts-ignore */}
                   <CSVLink
                     filename={`${params.name}_Unique_Buyers_Export.csv`}
                     headers={downloadData.headers}

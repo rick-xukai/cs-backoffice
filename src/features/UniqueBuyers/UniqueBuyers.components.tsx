@@ -65,8 +65,6 @@ export const WorldMap = ({
   const mapRef: any = useRef();
 
   useEffect(() => {
-    console.log('WorldMap data:', data); // 调试信息
-
     if (!mapRef.current) return () => {}; // 返回空的清理函数
 
     try {
@@ -127,7 +125,6 @@ export const WorldMap = ({
         myChart.dispose();
       };
     } catch (error) {
-      console.error('WorldMap initialization error:', error);
       return () => {}; // 返回空的清理函数
     }
   }, [points, data]);

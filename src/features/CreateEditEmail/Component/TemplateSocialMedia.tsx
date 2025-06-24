@@ -47,6 +47,7 @@ const TemplateSocialMedia = ({
         {formFieldValue.facebookLink && (
           <button
             type="button"
+            aria-label="Facebook Link"
             style={{
               border: 'none',
               width: '30px',
@@ -60,11 +61,12 @@ const TemplateSocialMedia = ({
               style={{ display: 'inline-block', width: '100%', height: '100%' }}
               href={formFieldValue.facebookLink}
               target="_blank"
+              rel="noopener noreferrer"
             >
               <img
                 style={{ width: '30px', borderRadius: '50%' }}
                 src={FacebookIconLink}
-                alt=""
+                alt="Facebook"
               />
             </a>
           </button>
@@ -72,6 +74,7 @@ const TemplateSocialMedia = ({
         {formFieldValue.instagramLink && (
           <button
             type="button"
+            aria-label="Instagram Link"
             style={{
               border: 'none',
               width: '30px',
@@ -85,11 +88,12 @@ const TemplateSocialMedia = ({
               style={{ display: 'inline-block', width: '100%', height: '100%' }}
               href={formFieldValue.instagramLink}
               target="_blank"
+              rel="noopener noreferrer"
             >
               <img
                 style={{ width: '30px', borderRadius: '50%' }}
                 src={InstagramIconLink}
-                alt=""
+                alt="Instagram"
               />
             </a>
           </button>
@@ -97,6 +101,7 @@ const TemplateSocialMedia = ({
         {formFieldValue.websiteLink && (
           <button
             type="button"
+            aria-label="Website Link"
             style={{
               border: 'none',
               width: '30px',
@@ -110,11 +115,12 @@ const TemplateSocialMedia = ({
               style={{ display: 'inline-block', width: '100%', height: '100%' }}
               href={formFieldValue.websiteLink}
               target="_blank"
+              rel="noopener noreferrer"
             >
               <img
                 style={{ width: '30px', borderRadius: '50%' }}
                 src={WebsiteIconLink}
-                alt=""
+                alt="Website"
               />
             </a>
           </button>

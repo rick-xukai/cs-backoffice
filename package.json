@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "nodemon -w ./src/style/AntDesign/customTheme.less ./src/style/*.scss --exec \"craco start\"",
-    "build": "craco build",
+    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider nodemon -w ./src/style/AntDesign/customTheme.less ./src/style/*.scss --exec \"craco start\"",
+    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider craco build",
     "start:prod": "cross-env PORT=8081 NODE_ENV=production node server",
     "pm2": "pm2 start 'yarn start:prod' --name crowdserve-frontend-admin",
     "pm2:restart": "pm2 restart crowdserve-frontend-admin",
-    "test": "craco test --watchAll=false",
+    "test": "cross-env NODE_OPTIONS=--openssl-legacy-provider craco test --watchAll=false",
     "eject": "craco eject"
   },
   "engines": {
@@ -86,7 +86,7 @@
     "@types/history": "^4.7.8",
     "@types/jest": "^24.0.0",
     "@types/lodash": "^4.14.172",
-    "@types/node": "^12.0.0",
+    "@types/node": "^18.0.0",
     "@types/numeral": "^2.0.2",
     "@types/papaparse": "^5.3.7",
     "@types/qs": "^6.9.7",
@@ -108,6 +108,7 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "eslint-plugin-redux-saga": "^1.2.1",
     "nodemon": "^2.0.7",
-    "prettier": "^2.3.0"
+    "prettier": "^2.3.0",
+    "sass": "^1.69.0"
   }
 }

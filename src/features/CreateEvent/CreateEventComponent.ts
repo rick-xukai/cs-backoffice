@@ -336,7 +336,9 @@ const CreateEventFormContainer = styled.div`
       content: '*';
     }
     .ant-form-item-label
-      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      > label.ant-form-item-required:not(
+        .ant-form-item-required-mark-optional
+      )::before {
       display: none;
     }
     .ant-picker {
@@ -587,19 +589,19 @@ const UploadText = styled.p`
   color: ${Colors.grey6};
 `;
 
-const ImageDragger = styled(Dragger)``;
+const ImageDragger = styled(Dragger as any)``;
 
-const DraggetForm = styled(Form.Item)`
+const DraggetForm = styled(Form.Item as any)`
   .ant-upload-list {
     display: none;
   }
 `;
 
-const ImagesContainer = styled(Row)`
+const ImagesContainer = styled(Row as any)`
   margin-bottom: 16px;
 `;
 
-const ImageItem = styled(Col)`
+const ImageItem = styled(Col as any)`
   overflow: hidden;
   transition: 0.2s;
   img {
@@ -774,7 +776,7 @@ export const ConnectTicketItem = styled.li`
   }
 `;
 
-export const SelectEventsTable = styled(Row)`
+export const SelectEventsTable = styled(Row as any)`
   .header {
     background: ${Colors.white2};
     padding: 8px 16px;
@@ -796,7 +798,7 @@ const NoSearchResultButton = styled.span`
   margin-left: 5px;
 `;
 
-export const ModalFooterButton = styled(Button)`
+export const ModalFooterButton = styled(Button as any)`
   height: 32px;
   min-width: 83px;
   line-height: 11px;
@@ -893,7 +895,7 @@ export const TotalAvailableQuantitySold = styled.div`
   line-height: 30px;
 `;
 
-const PublishComponentContainer = styled(Row)`
+const PublishComponentContainer = styled(Row as any)`
   .main-box {
     background: ${Colors.white};
     padding: 20px;
@@ -959,7 +961,7 @@ const PublishComponentContainer = styled(Row)`
   }
 `;
 
-const EventInfoCard = styled(Col)`
+const EventInfoCard = styled(Col as any)`
   padding: 20px;
   border-radius: 2px;
   border: 1px solid ${Colors.grey9};
@@ -1105,9 +1107,9 @@ export const PromoListBundle = styled.li`
   ${promoListStyle}
 `;
 
-export const LabelAndValueArea = styled(Row)``;
+export const LabelAndValueArea = styled(Row as any)``;
 
-export const LabelAndValue = styled(Col)`
+export const LabelAndValue = styled(Col as any)`
   .label {
     font-size: 13px;
     font-weight: 400;

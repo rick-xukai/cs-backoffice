@@ -158,7 +158,6 @@ const Login = () => {
         });
         dispatch(resetEventRelatedState());
         dispatch(resetOrganiserRelatedState());
-        console.log('data', data);
         history.replace(UserRoutes.events);
         // if (data.user.status === ActiveStatus.active) {
         //   history.replace(UserRoutes.events);
