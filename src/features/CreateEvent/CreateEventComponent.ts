@@ -589,19 +589,19 @@ const UploadText = styled.p`
   color: ${Colors.grey6};
 `;
 
-const ImageDragger = styled(Dragger as any)``;
+const ImageDragger = styled(Dragger)``;
 
-const DraggetForm = styled(Form.Item as any)`
+const DraggetForm = styled(Form.Item)`
   .ant-upload-list {
     display: none;
   }
 `;
 
-const ImagesContainer = styled(Row as any)`
+const ImagesContainer = styled(Row)`
   margin-bottom: 16px;
 `;
 
-const ImageItem = styled(Col as any)`
+const ImageItem = styled(Col)`
   overflow: hidden;
   transition: 0.2s;
   img {
@@ -776,7 +776,7 @@ export const ConnectTicketItem = styled.li`
   }
 `;
 
-export const SelectEventsTable = styled(Row as any)`
+export const SelectEventsTable = styled(Row)`
   .header {
     background: ${Colors.white2};
     padding: 8px 16px;
@@ -798,7 +798,7 @@ const NoSearchResultButton = styled.span`
   margin-left: 5px;
 `;
 
-export const ModalFooterButton = styled(Button as any)`
+export const ModalFooterButton = styled(Button)`
   height: 32px;
   min-width: 83px;
   line-height: 11px;
@@ -895,7 +895,7 @@ export const TotalAvailableQuantitySold = styled.div`
   line-height: 30px;
 `;
 
-const PublishComponentContainer = styled(Row as any)`
+const PublishComponentContainer = styled(Row)`
   .main-box {
     background: ${Colors.white};
     padding: 20px;
@@ -961,7 +961,7 @@ const PublishComponentContainer = styled(Row as any)`
   }
 `;
 
-const EventInfoCard = styled(Col as any)`
+const EventInfoCard = styled(Col)`
   padding: 20px;
   border-radius: 2px;
   border: 1px solid ${Colors.grey9};
@@ -1107,9 +1107,9 @@ export const PromoListBundle = styled.li`
   ${promoListStyle}
 `;
 
-export const LabelAndValueArea = styled(Row as any)``;
+export const LabelAndValueArea = styled(Row)``;
 
-export const LabelAndValue = styled(Col as any)`
+export const LabelAndValue = styled(Col)`
   .label {
     font-size: 13px;
     font-weight: 400;
